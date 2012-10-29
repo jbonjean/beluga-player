@@ -63,6 +63,31 @@ public class DJNativeSwingComponent extends JPanel
 
 		webBrowser.setBarsVisible(false);
 		webBrowser.setStatusBarVisible(false);
+		webBrowser.setDefaultPopupMenuRegistered(false); // disable right click
+		
+//		webBrowser.getNativeComponent().addMouseListener(new MouseListener() {
+//		
+//		public void mouseReleased(MouseEvent e) {
+//			log.info("mouseReleased");
+//		}
+//		
+//		public void mousePressed(MouseEvent e) {
+//			log.info("mousePressed");
+//		}
+//		
+//		public void mouseExited(MouseEvent e) {
+//			log.info("mouseExited");
+//		}
+//		
+//		public void mouseEntered(MouseEvent e) {
+//			log.info("mouseEntered");
+//		}
+//		
+//		public void mouseClicked(MouseEvent e) {
+//			log.info("mouseClicked");
+//		}
+//	});
+		
 		webBrowser.addWebBrowserListener(new WebBrowserAdapter()
 		{
 			@Override
