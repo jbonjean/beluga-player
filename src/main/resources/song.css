@@ -1,0 +1,114 @@
+body {
+	background-color: #e8e7b9;
+	font-size: 10pt;
+}
+
+a {
+	color: black;
+	text-decoration: none;
+}
+
+.clear {
+	clear: both;
+}
+
+.debug {
+	position: fixed;
+	right: 10px;
+	bottom: 10px;
+}
+
+.mainControls {
+}
+.mainControls .exit {
+	float: right;
+}
+.mainControls .stationSelect {
+	float: left;
+	margin-top: -5px;
+}
+
+.controls {
+	padding-top:10px;
+}
+.controls a,
+.songControls a {
+	display:block;
+	float: left;
+	width: 45%;
+	text-align: center;
+	padding: 1%;
+	border: 1px solid #e8e7ff;
+}
+.controls a:hover,
+.songControls a:hover {
+	background-color: #e8e7ff;
+}
+
+.stationInfos {
+	text-align: center;
+	padding: 10px;
+	padding-top: 20px;
+	padding-bottom: 20px;
+	font-weight: bold;
+	font-size: 15pt;
+	color: #888888;
+}
+
+.content {
+	padding-top: 35px;
+}
+.albumCover {
+	float: left;
+	width: 200px;
+	min-height: 200px;
+}
+.albumCover img {
+	width: 200px;
+	max-height: 200px;
+}
+.albumCover .albumTitle {
+	text-align: center;
+	font-weight: bold;
+	padding-top: 5px;
+	width: 200px;
+}
+
+.songInfos {
+	float: left;
+	margin-left: 20px;
+	word-wrap: break-word;
+	width: 280px;
+}
+.songName {
+	font-weight: bold;
+	font-size: 14px;
+}
+.songControls,
+.songExtras {
+	float: left;
+	padding-top: 20px;
+	margin-left: 20px;
+	width: 280px;
+}
+.songControls a {
+	background: #d7d6a2;
+	margin: 5px;
+	width: 50px;
+}
+.songControls a.like {
+	color: #6cc46e;
+}
+.songControls a.dislike {
+	color: #d05656;
+}
+.songControls a.ban {
+	color: 
+}
+
+.songExtra .time {
+}
+
+.like.liked {
+	background-color: green;
+}

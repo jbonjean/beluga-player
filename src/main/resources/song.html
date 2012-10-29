@@ -1,0 +1,63 @@
+<html>
+<head>
+<style type="text/css">
+	$CSS$
+</style>
+<script type="text/javascript">
+	function updateTime(text) {
+		document.getElementById("time").innerHTML = text;
+	}
+</script>
+</head>
+<body>
+
+<div class="debug">
+	<div class="reload"><a href="command://reload">Reload</a></div>
+</div>
+
+<div class="mainControls">
+	<div class="stationSelect">
+		<select  id="stationSelect" onchange="document.location='command://stationSelect?stationId=' + document.getElementById('stationSelect').options[document.getElementById('stationSelect').selectedIndex].value">
+			$STATION_LIST$
+		</select>
+	</div>
+	<div class="exit"><a href="command://exit">Exit</a></div>
+	<div class="clear"></div>
+</div>
+
+<div class="controls">
+	<a href="command://next">Next</a>
+	<a href="command://pause">Pause</a>
+	<div class="clear"></div>
+</div>
+
+<div class="content">
+	<div class="albumCover">
+		<div class="coverImage">
+			<img src="$ALBUM_COVER_URL$" />
+		</div>
+		<div class="albumTitle">$ALBUM_NAME$</div>
+	</div>
+	
+	<div class="songInfos">
+		<div class="albumInfos">
+			<div class="songName">$SONG_NAME$</div>
+			<div class="artistName">by $ARTIST_NAME$</div>
+		</div>
+	</div>
+	
+	<div class="songControls">
+		<a class="like $LIKE_CLASS$" href="command://like">Like</a>
+		<a class="ban" href="command://ban">Ban</a>
+		<a class="sleep" href="command://sleep">Sleep</a>
+	</div>
+	
+	<div class="songExtras">
+		<div id="time" class="time"></div>
+	</div>
+	
+	<div class="clear"></div>
+</div>
+
+</body>
+</html>
