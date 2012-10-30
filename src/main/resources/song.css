@@ -1,5 +1,5 @@
 body {
-	background-color: #e8e7b9;
+	background-color: #e8e7e6;
 	font-size: 10pt;
 	cursor: default;
 	-webkit-user-drag: none;
@@ -23,7 +23,7 @@ a {
 .debug {
 	position: fixed;
 	right: 10px;
-	bottom: 10px;
+	bottom: 40px;
 }
 
 .mainControls {
@@ -33,17 +33,31 @@ a {
 }
 .mainControls .stationSelect {
 	float: left;
-	margin-top: -5px;
+	margin-left: 5px;
 }
 
 .controls {
-	padding-top:10px;
 }
+
+.controls a {
+	width: 245px;
+	border-radius:20px;
+	background-color: #d7d6a2;
+	border: 1px solid #ffffff;
+	position: fixed;
+	bottom: 10px;
+}
+.controls a.next {
+	left: 10px;
+}
+.controls a.pause {
+	right: 10px;
+}
+
 .controls a,
 .songControls a {
 	display:block;
 	float: left;
-	width: 45%;
 	text-align: center;
 	padding: 1%;
 	border: 1px solid #e8e7ff;
@@ -103,6 +117,7 @@ a {
 	background: #d7d6a2;
 	margin: 5px;
 	width: 50px;
+	border-radius:10px;
 }
 .songControls a.like {
 	color: #6cc46e;
@@ -119,4 +134,37 @@ a {
 
 .like.liked {
 	background-color: green;
+}
+
+/* The CSS */
+select {
+    padding:3px;
+    margin: 0;
+    border-radius:4px;
+    -webkit-box-shadow:
+        0 3px 0 #ccc,
+        0 -1px #fff inset;
+    background: #f8f8f8;
+    color:#888;
+    border:none;
+    outline:none;
+    display: inline-block;
+    -webkit-appearance:none;
+    cursor:pointer;
+}
+@media screen and (-webkit-min-device-pixel-ratio:0) {
+    select {padding-right:18px}
+    label {position:relative}
+    label:after {
+        content:'<>';
+        font:11px "Consolas", monospace;
+        color:#aaa;
+        -webkit-transform:rotate(90deg);
+        position:absolute;
+        right:4px;
+        top:2px;
+        padding:0 0 2px;
+        pointer-events:none;
+        border-bottom:1px solid #ddd;
+    }
 }
