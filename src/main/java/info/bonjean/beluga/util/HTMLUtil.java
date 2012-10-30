@@ -30,7 +30,7 @@ import org.apache.commons.io.FileUtils;
 /**
  * 
  * @author Julien Bonjean <julien@bonjean.info>
- *
+ * 
  */
 public class HTMLUtil
 {
@@ -65,9 +65,7 @@ public class HTMLUtil
 
 	public static String getWelcome()
 	{
-
 		Map<String, String> tokens = new HashMap<String, String>();
-		tokens.put("$USERNAME$", configuration.getUserName());
 
 		return replace(readFile("/welcome.html"), tokens);
 	}
@@ -110,5 +108,19 @@ public class HTMLUtil
 			html.append("</option>");
 		}
 		return html.toString();
+	}
+
+	public static String getConfiguration()
+	{
+		Map<String, String> tokens = new HashMap<String, String>();
+		tokens.put("$USERNAME$", configuration.getUserName());
+		tokens.put("$PASSWORD$", configuration.getPassword());
+		tokens.put("$PROXY_HOST$", configuration.getProxyServer());
+		String proxyHost = "";
+		if(configuration.getProxyServerPort() != null)
+			proxyHost = String.valueOf(configuration.getProxyServerPort());
+		tokens.put("$PROXY_PORT$", proxyHost);
+
+		return replace(readFile("/configuration.html"), tokens);
 	}
 }

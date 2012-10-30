@@ -54,6 +54,7 @@ public class BelugaConfiguration
 	{
 		try
 		{
+			// TODO: check proxy port is valid (number)
 			properties.store(new FileOutputStream(CONFIGURATION_FILE), null);
 		} catch (Exception e)
 		{
@@ -130,10 +131,11 @@ public class BelugaConfiguration
 
 	public Integer getInteger(Property property, Integer defaultValue)
 	{
-		if (properties.get(property.getKey()) == null)
+		String stringValue = (String) properties.get(property.getKey());
+		if ( stringValue == null || stringValue.isEmpty())
 			return defaultValue;
 
-		return new Integer((String) properties.get(property.getKey()));
+		return new Integer(stringValue);
 	}
 
 	public Integer getInteger(Property property)
@@ -184,14 +186,14 @@ public class BelugaConfiguration
 		set(Property.PROXY_HOST, proxyServer);
 	}
 
-	public int getProxyServerPort()
+	public Integer getProxyServerPort()
 	{
-		return getInteger(Property.PROXY_PORT);
+		return getInteger(Property.PROXY_PORT, null);
 	}
 
-	public void setProxyServerPort(int proxyServerPort)
+	public void setProxyServerPort(String proxyServerPort)
 	{
-		set(Property.PROXY_PORT, String.valueOf(proxyServerPort));
+		set(Property.PROXY_PORT, proxyServerPort);
 	}
 
 	public String getDefaultStationId()

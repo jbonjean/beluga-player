@@ -18,6 +18,7 @@ package info.bonjean.beluga.gui;
 
 import info.bonjean.beluga.Main;
 import info.bonjean.beluga.client.PandoraClient;
+import info.bonjean.beluga.configuration.BelugaConfiguration;
 import info.bonjean.beluga.log.Logger;
 import info.bonjean.beluga.player.VLCPlayer;
 import info.bonjean.beluga.response.Song;
@@ -51,6 +52,7 @@ public class DJNativeSwingComponent extends JPanel
 	private static final long serialVersionUID = -664565924437929082L;
 	private static final PandoraClient pandoraClient = PandoraClient.getInstance();
 	private static final BelugaState state = BelugaState.getInstance();
+	private static final BelugaConfiguration configuration = BelugaConfiguration.getInstance();
 	private static final Logger log = new Logger(Main.class);
 
 	private static final JWebBrowser webBrowser = new JWebBrowser();
@@ -78,7 +80,7 @@ public class DJNativeSwingComponent extends JPanel
 					if (command.equals("next"))
 					{
 						nextSong();
-						updateUIContent();
+						updateSongUI();
 
 					} else if (command.equals("like"))
 					{
@@ -86,19 +88,19 @@ public class DJNativeSwingComponent extends JPanel
 						if(state.getSong().getSongRating() > 0)
 							positive = false;
 						pandoraClient.addFeedback(positive);
-						updateUIContent();
+						updateSongUI();
 
 					} else if (command.equals("ban"))
 					{
 						pandoraClient.addFeedback(false);
 						nextSong();
-						updateUIContent();
+						updateSongUI();
 
 					} else if (command.equals("sleep"))
 					{
 						pandoraClient.sleepSong();
 						nextSong();
-						updateUIContent();
+						updateSongUI();
 
 					} else if (command.equals("pause"))
 					{
@@ -110,7 +112,28 @@ public class DJNativeSwingComponent extends JPanel
 
 					} else if (command.equals("reload"))
 					{
-						updateUIContent();
+						updateSongUI();
+						
+					} else if (command.equals("configuration"))
+					{
+						log.info("Update configuration");
+						Object[] parameters = e.getParameters();
+						configuration.setUserName((String) parameters[0]);
+						configuration.setPassword((String) parameters[1]);
+						configuration.setProxyServer((String) parameters[2]);
+						configuration.setProxyServerPort((String) parameters[3]);
+						configuration.store();
+						
+						try
+						{
+							pandoraClient.login();
+							gotoSongUI();
+				
+						} catch (Exception e1)
+						{
+							log.error(e1.getMessage());
+							gotoConfigurationUI();
+						}
 
 					} else if (command.startsWith("stationSelect"))
 					{
@@ -120,7 +143,7 @@ public class DJNativeSwingComponent extends JPanel
 
 						pandoraClient.selectStation(stationId);
 						nextSong();
-						updateUIContent();
+						updateSongUI();
 					}
 				} catch (Exception e1)
 				{
@@ -130,15 +153,23 @@ public class DJNativeSwingComponent extends JPanel
 		});
 
 		webBrowser.setJavascriptEnabled(true);
-		updateUIContent();
-
 		add(webBrowser, BorderLayout.CENTER);
 	}
 
-	private static void updateUIContent()
+	private static void updateSongUI()
 	{
 		webBrowser.setHTMLContent(HTMLUtil.getSong());
 		displayedSong = state.getSong();
+	}
+	
+	private static void updateWelcomeUI()
+	{
+		webBrowser.setHTMLContent(HTMLUtil.getWelcome());
+	}
+	
+	private static void updateConfigurationUI()
+	{
+		webBrowser.setHTMLContent(HTMLUtil.getConfiguration());
 	}
 
 	private static void nextSong()
@@ -155,24 +186,46 @@ public class DJNativeSwingComponent extends JPanel
 			log.error(e.getMessage());
 		}
 	}
-
-	public static void start()
+	
+	public static void gotoSongUI()
 	{
 		try
 		{
-			PandoraClient pandoraClient = PandoraClient.getInstance();
-			pandoraClient.login();
 			pandoraClient.updateStationList();
 			pandoraClient.selectStation(state.getStationList().get(0));
-
-			nextSong();
 
 		} catch (Exception e)
 		{
 			log.error(e.getMessage());
 			System.exit(-1);
 		}
+		
+		nextSong();
+		
+		updateSongUI();
+		
+		ActionListener taskPerformer = new ActionListener()
+		{
+			public void actionPerformed(ActionEvent evt)
+			{
+				if (!displayedSong.getTrackToken().equals(state.getSong().getTrackToken()))
+				{
+					log.info("Song changed, update main window");
+					updateSongUI();
+				}
+				if (player.isPlaying())
+					webBrowser.executeJavascript("updateTime('" + player.getProgression() + "')");
+			}
+		};
+		new Timer(1000, taskPerformer).start();
+	}
+	
+	public static void gotoConfigurationUI() {
+		updateConfigurationUI();
+	}
 
+	public static void start()
+	{
 		UIUtils.setPreferredLookAndFeel();
 		NativeInterface.open();
 
@@ -187,24 +240,20 @@ public class DJNativeSwingComponent extends JPanel
 				frame.setResizable(false);
 				frame.setLocationByPlatform(true);
 				frame.setVisible(true);
+				updateWelcomeUI();
+				
+				try
+				{
+					pandoraClient.login();
+					gotoSongUI();
+		
+				} catch (Exception e)
+				{
+					log.error(e.getMessage());
+					gotoConfigurationUI();
+				}
 			}
 		});
-
-		ActionListener taskPerformer = new ActionListener()
-		{
-			public void actionPerformed(ActionEvent evt)
-			{
-				if (!displayedSong.getTrackToken().equals(state.getSong().getTrackToken()))
-				{
-
-					log.info("Song changed, update main window");
-					updateUIContent();
-				}
-				if (player.isPlaying())
-					webBrowser.executeJavascript("updateTime('" + player.getProgression() + "')");
-			}
-		};
-		new Timer(1000, taskPerformer).start();
 
 		NativeInterface.runEventPump();
 	}

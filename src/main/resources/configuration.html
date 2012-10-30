@@ -1,0 +1,46 @@
+<html>
+<head>
+<style type="text/css">
+	$CSS$
+</style>
+<script type="text/javascript">
+	function updateTime(text) {
+		document.getElementById("time").innerHTML = text;
+	}
+	window.onload = init;
+	function init() {
+		document.getElementById('cover').ondragstart = function() { return false; };
+	}
+</script>
+</head>
+<body onselectstart='return false;'>
+
+<div class="error">
+</div>
+
+<h1>Configuration</h1>
+
+<form name="configuration" onsubmit="sendNSCommand('configuration', configuration.username.value, configuration.password.value, configuration.proxyHost.value, configuration.proxyPort.value); return false;">
+	<div>
+		<label for="username">Username</label>
+		<input name="username" id="username" type="text" value="$USERNAME$"/>
+	</div>
+	<div>
+		<label for="password">Password</label>
+		<input name="password" id="password" type="text" value="$PASSWORD$"/>
+	</div>
+	<div>
+		<label for="proxyHost">Proxy Host</label>
+		<input name="proxyHost" id="proxyHost" type="text" value="$PROXY_HOST$"/>
+	</div>
+	<div>
+		<label for="proxyPort">Proxy Port</label>
+		<input name="proxyPort" id="proxyPort" type="text" value="$PROXY_PORT$"/>
+	</div>
+	<div>
+		<input type="submit" value="Save"/>
+	</div>
+</form>
+
+</body>
+</html

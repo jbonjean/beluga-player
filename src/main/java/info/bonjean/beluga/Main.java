@@ -25,7 +25,7 @@ import java.io.IOException;
 /**
  * 
  * @author Julien Bonjean <julien@bonjean.info>
- *
+ * 
  */
 public class Main
 {
@@ -36,7 +36,6 @@ public class Main
 	{
 		BelugaConfiguration configuration = BelugaConfiguration.getInstance();
 		configuration.load();
-
 		DJNativeSwingComponent.start();
 	}
 }

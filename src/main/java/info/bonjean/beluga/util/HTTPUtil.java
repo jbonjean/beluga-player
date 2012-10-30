@@ -47,7 +47,7 @@ import com.google.gson.Gson;
 /**
  * 
  * @author Julien Bonjean <julien@bonjean.info>
- *
+ * 
  */
 public class HTTPUtil
 {
@@ -55,7 +55,7 @@ public class HTTPUtil
 
 	private static final Gson gson = GsonUtil.getGsonInstance();
 	private static final BelugaConfiguration configuration = BelugaConfiguration.getInstance();
-	private static String SERVICE_URL = "http://tuner.pandora.com/services/json/?";
+	private static final String SERVICE_URL = "http://tuner.pandora.com/services/json/?";
 
 	public static Result request(Method method, ParameterMap params, JsonData jsonData, boolean encrypt) throws Exception
 	{
@@ -90,7 +90,8 @@ public class HTTPUtil
 	{
 		URI url = new URI(urlStr);
 		HttpClient client = new DefaultHttpClient();
-		ConnRouteParams.setDefaultProxy(client.getParams(), new HttpHost(configuration.getProxyServer(), configuration.getProxyServerPort(), "http"));
+		if (!configuration.getProxyServer().isEmpty())
+			ConnRouteParams.setDefaultProxy(client.getParams(), new HttpHost(configuration.getProxyServer(), configuration.getProxyServerPort(), "http"));
 		StringEntity json = new StringEntity(data.toString());
 		json.setContentType("application/json");
 		HttpPost post = new HttpPost(url);
