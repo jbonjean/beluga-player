@@ -120,12 +120,13 @@ a {
 .albumCover {
 	float: left;
 	width: 200px;
-	min-height: 200px;
 }
-.albumCover img {
+.albumCover .cover {
 	width: 200px;
 	max-height: 200px;
+	box-shadow: 1px 1px 5px 2px #000;
 }
+
 .albumCover .albumTitle {
 	text-align: center;
 	font-weight: bold;
