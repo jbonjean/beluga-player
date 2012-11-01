@@ -1,5 +1,5 @@
 body {
-	background-color: #e8e7e6;
+	background-color: #f2f1f0;
 	font-size: 10pt;
 	cursor: default;
 	-webkit-user-drag: none;
@@ -34,16 +34,65 @@ a {
 .mainControls .stationSelect {
 	float: left;
 	margin-left: 5px;
+	margin-top:10px;
 }
 
 .controls {
 }
 
+
+.controls a,
+.songControls a {
+	display:block;
+	float: left;
+	text-align: center;
+	padding: 1%;
+	border-radius:7px;
+	border: 1px solid #918e8c;
+	background: -webkit-gradient(
+		linear, left top, left bottom,
+		from(#fefefe),
+		to(#e8e7e6));
+}
+.controls a:hover,
+.songControls a:hover {
+	background: -webkit-gradient(
+		linear, left top, left bottom, 
+		from(#f6f9fd),
+		to(#dde1e6));
+}
+.controls a:active,
+.songControls a:active {
+	background: -webkit-gradient(
+		linear, left top, left bottom, 
+		from(#d3d3d5),
+		to(#d3d3d5));
+}
+
+.songControls a {
+	margin: 5px;
+	width: 50px;
+}
+.songControls a.like {
+	color: #47c14a;
+	margin-left: 0px;
+}
+.songControls a.like.liked {
+	color: #ffffff;
+	background: -webkit-gradient(
+	linear, left top, left bottom,
+	from(#71d074),
+	to(#47c14a));
+
+}
+.songControls a.ban {
+	color: #d05656;
+}
+.songControls a.sleep {
+	color: #555555;
+}
 .controls a {
 	width: 245px;
-	border-radius:20px;
-	background-color: #d7d6a2;
-	border: 1px solid #ffffff;
 	position: fixed;
 	bottom: 10px;
 }
@@ -52,19 +101,6 @@ a {
 }
 .controls a.pause {
 	right: 10px;
-}
-
-.controls a,
-.songControls a {
-	display:block;
-	float: left;
-	text-align: center;
-	padding: 1%;
-	border: 1px solid #e8e7ff;
-}
-.controls a:hover,
-.songControls a:hover {
-	background-color: #e8e7ff;
 }
 
 .stationInfos {
@@ -78,7 +114,8 @@ a {
 }
 
 .content {
-	padding-top: 35px;
+	padding-top: 25px;
+	padding-left: 10px;
 }
 .albumCover {
 	float: left;
@@ -113,58 +150,6 @@ a {
 	margin-left: 20px;
 	width: 280px;
 }
-.songControls a {
-	background: #d7d6a2;
-	margin: 5px;
-	width: 50px;
-	border-radius:10px;
-}
-.songControls a.like {
-	color: #6cc46e;
-}
-.songControls a.dislike {
-	color: #d05656;
-}
-.songControls a.ban {
-	color: 
-}
 
 .songExtra .time {
-}
-
-.like.liked {
-	background-color: green;
-}
-
-/* The CSS */
-select {
-    padding:3px;
-    margin: 0;
-    border-radius:4px;
-    -webkit-box-shadow:
-        0 3px 0 #ccc,
-        0 -1px #fff inset;
-    background: #f8f8f8;
-    color:#888;
-    border:none;
-    outline:none;
-    display: inline-block;
-    -webkit-appearance:none;
-    cursor:pointer;
-}
-@media screen and (-webkit-min-device-pixel-ratio:0) {
-    select {padding-right:18px}
-    label {position:relative}
-    label:after {
-        content:'<>';
-        font:11px "Consolas", monospace;
-        color:#aaa;
-        -webkit-transform:rotate(90deg);
-        position:absolute;
-        right:4px;
-        top:2px;
-        padding:0 0 2px;
-        pointer-events:none;
-        border-bottom:1px solid #ddd;
-    }
 }
