@@ -38,6 +38,8 @@ public class Song
 	private int songRating;
 	private String stationId;
 	private String trackGain;
+	private boolean songBookmarked = false;
+	private boolean artistBookmarked = false;
 
 	public String getTrackToken()
 	{
@@ -167,5 +169,25 @@ public class Song
 	public void setTrackGain(String trackGain)
 	{
 		this.trackGain = trackGain;
+	}
+
+	public boolean isSongBookmarked()
+	{
+		return songBookmarked;
+	}
+
+	public void setSongBookmarked(boolean songBookmarked)
+	{
+		this.songBookmarked = songBookmarked;
+	}
+
+	public boolean isArtistBookmarked()
+	{
+		return artistBookmarked;
+	}
+
+	public void setArtistBookmarked(boolean artistBookmarked)
+	{
+		this.artistBookmarked = artistBookmarked;
 	}
 }

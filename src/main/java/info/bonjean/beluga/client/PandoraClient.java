@@ -18,12 +18,14 @@ package info.bonjean.beluga.client;
 
 import info.bonjean.beluga.configuration.BelugaConfiguration;
 import info.bonjean.beluga.log.Logger;
+import info.bonjean.beluga.request.ArtistBookmark;
 import info.bonjean.beluga.request.Feedback;
 import info.bonjean.beluga.request.Method;
 import info.bonjean.beluga.request.ParameterMap;
 import info.bonjean.beluga.request.PartnerAuth;
 import info.bonjean.beluga.request.PlayList;
-import info.bonjean.beluga.request.SleepSong;
+import info.bonjean.beluga.request.SongSleep;
+import info.bonjean.beluga.request.SongBookmark;
 import info.bonjean.beluga.request.StationList;
 import info.bonjean.beluga.request.UserLogin;
 import info.bonjean.beluga.response.Result;
@@ -205,11 +207,35 @@ public class PandoraClient
 	{
 		ParameterMap params = getDefaultParameterMap();
 
-		SleepSong sleepSong = new SleepSong();
-		sleepSong.setSyncTime(PandoraUtil.getSyncTime());
-		sleepSong.setUserAuthToken(state.getUserAuthToken());
-		sleepSong.setTrackToken(state.getSong().getTrackToken());
+		SongSleep songSleep = new SongSleep();
+		songSleep.setSyncTime(PandoraUtil.getSyncTime());
+		songSleep.setUserAuthToken(state.getUserAuthToken());
+		songSleep.setTrackToken(state.getSong().getTrackToken());
 
-		HTTPUtil.request(Method.SLEEP_SONG, params, sleepSong, true);
+		HTTPUtil.request(Method.SLEEP_SONG, params, songSleep, true);
+	}
+	
+	public void addSongBookmark() throws ClientProtocolException, URISyntaxException, IOException
+	{
+		ParameterMap params = getDefaultParameterMap();
+
+		SongBookmark songBookmark = new SongBookmark();
+		songBookmark.setSyncTime(PandoraUtil.getSyncTime());
+		songBookmark.setUserAuthToken(state.getUserAuthToken());
+		songBookmark.setTrackToken(state.getSong().getTrackToken());
+
+		HTTPUtil.request(Method.ADD_SONG_BOOKMARK, params, songBookmark, true);
+	}
+	
+	public void addArtistBookmark() throws ClientProtocolException, URISyntaxException, IOException
+	{
+		ParameterMap params = getDefaultParameterMap();
+
+		ArtistBookmark artistBookmark = new ArtistBookmark();
+		artistBookmark.setSyncTime(PandoraUtil.getSyncTime());
+		artistBookmark.setUserAuthToken(state.getUserAuthToken());
+		artistBookmark.setTrackToken(state.getSong().getTrackToken());
+
+		HTTPUtil.request(Method.ADD_ARTIST_BOOKMARK, params, artistBookmark, true);
 	}
 }

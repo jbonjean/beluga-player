@@ -22,10 +22,11 @@ import info.bonjean.beluga.response.Station;
 import info.bonjean.beluga.statefull.BelugaState;
 
 import java.io.IOException;
+import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 
 /**
  * 
@@ -44,7 +45,9 @@ public class HTMLUtil
 		String html = null;
 		try
 		{
-			html = FileUtils.readFileToString(FileUtils.toFile(HTMLUtil.class.getResource(name)), "UTF-8");
+			StringWriter writer = new StringWriter();
+			IOUtils.copy(HTMLUtil.class.getResourceAsStream(name), writer, "UTF-8");
+			html = writer.toString();
 		} catch (IOException e)
 		{
 			log.error(e.toString());
@@ -117,7 +120,7 @@ public class HTMLUtil
 		tokens.put("$PASSWORD$", configuration.getPassword());
 		tokens.put("$PROXY_HOST$", configuration.getProxyServer());
 		String proxyHost = "";
-		if(configuration.getProxyServerPort() != null)
+		if (configuration.getProxyServerPort() != null)
 			proxyHost = String.valueOf(configuration.getProxyServerPort());
 		tokens.put("$PROXY_PORT$", proxyHost);
 

@@ -21,7 +21,7 @@ package info.bonjean.beluga.request;
  * @author Julien Bonjean <julien@bonjean.info>
  *
  */
-public class SleepSong extends AuthentifiedJsonData
+public class ArtistBookmark extends AuthentifiedJsonData
 {
 	private String trackToken;
 
