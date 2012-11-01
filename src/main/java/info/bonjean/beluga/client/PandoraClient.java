@@ -33,8 +33,12 @@ import info.bonjean.beluga.statefull.BelugaState;
 import info.bonjean.beluga.util.HTTPUtil;
 import info.bonjean.beluga.util.PandoraUtil;
 
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.net.URISyntaxException;
 import java.util.List;
+
+import org.apache.http.client.ClientProtocolException;
 
 /**
  * 
@@ -69,7 +73,7 @@ public class PandoraClient
 		return params;
 	}
 
-	public void partnerLogin() throws Exception
+	public void partnerLogin() throws ClientProtocolException, URISyntaxException, IOException 
 	{
 		Result result = HTTPUtil.request(Method.PARTNER_LOGIN, null, new PartnerAuth(), false);
 
@@ -77,7 +81,7 @@ public class PandoraClient
 		state.setPartnerAuthToken(result.getPartnerAuthToken());
 	}
 
-	public void userLogin() throws Exception
+	public void userLogin() throws ClientProtocolException, URISyntaxException, IOException 
 	{
 		ParameterMap params = new ParameterMap();
 		params.add("partner_id", state.getPartnerId());
@@ -95,12 +99,12 @@ public class PandoraClient
 		state.setUserAuthToken(result.getUserAuthToken());
 	}
 
-	public void updateStationList() throws Exception
+	public void updateStationList() throws ClientProtocolException, URISyntaxException, IOException
 	{
 		state.setStationList(getStationList());
 	}
 
-	private List<Station> getStationList() throws Exception
+	private List<Station> getStationList() throws ClientProtocolException, URISyntaxException, IOException
 	{
 		ParameterMap params = getDefaultParameterMap();
 
@@ -117,7 +121,7 @@ public class PandoraClient
 		return state.getStationList();
 	}
 
-	public void selectStation(Station station) throws Exception
+	public void selectStation(Station station) throws ClientProtocolException, URISyntaxException, IOException
 	{
 		log.info("Select station " + station.getStationName());
 
@@ -135,7 +139,7 @@ public class PandoraClient
 		return null;
 	}
 
-	public void selectStation(String stationId) throws Exception
+	public void selectStation(String stationId) throws ClientProtocolException, URISyntaxException, IOException
 	{
 		selectStation(getStationById(stationId));
 	}
@@ -154,7 +158,7 @@ public class PandoraClient
 		return song.getAudioUrlMap().get("highQuality").getAudioUrl();
 	}
 
-	private List<Song> getPlaylist(Station station) throws Exception
+	private List<Song> getPlaylist(Station station) throws ClientProtocolException, URISyntaxException, IOException
 	{
 		ParameterMap params = getDefaultParameterMap();
 
@@ -173,13 +177,13 @@ public class PandoraClient
 		return currentPlaylist;
 	}
 
-	public void login() throws Exception
+	public void login() throws ClientProtocolException, URISyntaxException, IOException
 	{
 		partnerLogin();
 		userLogin();
 	}
 
-	public void addFeedback(boolean isPositive) throws Exception
+	public void addFeedback(boolean isPositive) throws ClientProtocolException, URISyntaxException, IOException 
 	{
 		ParameterMap params = getDefaultParameterMap();
 
@@ -197,7 +201,7 @@ public class PandoraClient
 			state.getSong().setSongRating(0);
 	}
 
-	public void sleepSong() throws Exception
+	public void sleepSong() throws ClientProtocolException, URISyntaxException, IOException
 	{
 		ParameterMap params = getDefaultParameterMap();
 

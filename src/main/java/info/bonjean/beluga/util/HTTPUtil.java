@@ -25,16 +25,19 @@ import info.bonjean.beluga.response.Response;
 import info.bonjean.beluga.response.Result;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.StringTokenizer;
 
 import org.apache.http.HttpHost;
 import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.utils.URLEncodedUtils;
@@ -57,7 +60,7 @@ public class HTTPUtil
 	private static final BelugaConfiguration configuration = BelugaConfiguration.getInstance();
 	private static final String SERVICE_URL = "http://tuner.pandora.com/services/json/?";
 
-	public static Result request(Method method, ParameterMap params, JsonData jsonData, boolean encrypt) throws Exception
+	public static Result request(Method method, ParameterMap params, JsonData jsonData, boolean encrypt) throws ClientProtocolException, URISyntaxException, IOException
 	{
 		String urlStr = createRequestUrl(method, params);
 		String data = gson.toJson(jsonData);
@@ -86,7 +89,7 @@ public class HTTPUtil
 		return url.toString();
 	}
 
-	private static String request(String urlStr, String data) throws Exception
+	private static String request(String urlStr, String data) throws URISyntaxException, ClientProtocolException, IOException
 	{
 		URI url = new URI(urlStr);
 		HttpClient client = new DefaultHttpClient();
