@@ -21,11 +21,14 @@ import info.bonjean.beluga.log.Logger;
 import info.bonjean.beluga.response.Station;
 import info.bonjean.beluga.statefull.BelugaState;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.IOUtils;
 
 /**
@@ -39,6 +42,32 @@ public class HTMLUtil
 
 	private static final BelugaState state = BelugaState.getInstance();
 	private static final BelugaConfiguration configuration = BelugaConfiguration.getInstance();
+
+	public static byte[] getResourceAsByteArray(String resource)
+	{
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		InputStream bais;
+		try
+		{
+			bais = HTMLUtil.class.getResourceAsStream(resource);
+			int c;
+			while ((c = bais.read()) != -1)
+			{
+				baos.write(c);
+			}
+			bais.close();
+			baos.close();
+		} catch (IOException e)
+		{
+			log.error(e.toString());
+		}
+		return baos.toByteArray();
+	}
+	
+	public static String getResourceAsBase64String(String resource)
+	{
+		return Base64.encodeBase64String(getResourceAsByteArray(resource));
+	}
 
 	private static String readFile(String name)
 	{
@@ -69,6 +98,7 @@ public class HTMLUtil
 	public static String getWelcome()
 	{
 		Map<String, String> tokens = new HashMap<String, String>();
+		tokens.put("$IMG_LOAD$", getResourceAsBase64String("/img/ajax-loader.gif"));
 
 		return replace(readFile("/welcome.html"), tokens);
 	}

@@ -146,7 +146,7 @@ public class PandoraClient
 		selectStation(getStationById(stationId));
 	}
 
-	public String nextSong() throws Exception
+	public String nextSong() throws ClientProtocolException, URISyntaxException, IOException
 	{
 		if (state.getPlaylist().isEmpty())
 			state.setPlaylist(getPlaylist(state.getStation()));

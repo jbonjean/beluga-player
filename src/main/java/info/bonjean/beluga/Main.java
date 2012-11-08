@@ -17,10 +17,19 @@
 package info.bonjean.beluga;
 
 import info.bonjean.beluga.configuration.BelugaConfiguration;
-import info.bonjean.beluga.gui.DJNativeSwingComponent;
+import info.bonjean.beluga.gui.UIBrowserListener;
+import info.bonjean.beluga.gui.UI;
+import info.bonjean.beluga.gui.UIWindowListener;
 import info.bonjean.beluga.log.Logger;
 
+import java.awt.BorderLayout;
 import java.io.IOException;
+
+import javax.swing.JFrame;
+import javax.swing.SwingUtilities;
+
+import chrriis.common.UIUtils;
+import chrriis.dj.nativeswing.swtimpl.NativeInterface;
 
 /**
  * 
@@ -36,6 +45,33 @@ public class Main
 	{
 		BelugaConfiguration configuration = BelugaConfiguration.getInstance();
 		configuration.load();
-		DJNativeSwingComponent.start();
+		startUI();
+	}
+	
+	public static void startUI()
+	{
+		UIUtils.setPreferredLookAndFeel();
+		NativeInterface.open();
+
+		SwingUtilities.invokeLater(new Runnable()
+		{
+			public void run()
+			{
+				JFrame frame = new JFrame("Beluga Player");
+				UI ui = new UI();
+				frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+				frame.getContentPane().add(ui, BorderLayout.CENTER);
+				frame.setSize(550, 400);
+				frame.setResizable(false);
+				frame.setLocationByPlatform(true);
+				frame.setVisible(true);
+				
+				UIBrowserListener browserListener = new UIBrowserListener(ui);
+				ui.getWebBrowser().addWebBrowserListener(browserListener);
+				UIWindowListener windowListener = new UIWindowListener(ui, browserListener);
+				frame.addWindowListener(windowListener);
+			}
+		});
+		NativeInterface.runEventPump();
 	}
 }
