@@ -18,6 +18,7 @@ package info.bonjean.beluga.gui;
 
 import info.bonjean.beluga.client.PandoraClient;
 import info.bonjean.beluga.configuration.BelugaConfiguration;
+import info.bonjean.beluga.exception.CryptoException;
 import info.bonjean.beluga.log.Logger;
 import info.bonjean.beluga.player.VLCPlayer;
 import info.bonjean.beluga.response.Song;
@@ -62,29 +63,30 @@ public class UIBrowserListener extends WebBrowserAdapter
 		{
 			public void actionPerformed(ActionEvent evt)
 			{
-				if (!displayedSong.getTrackToken().equals(state.getSong().getTrackToken()))
-				{
-					log.info("Song changed, update main window");
-					displayedSong = state.getSong();
-					ui.updateSongUI();
-				}
 				if (player.isPlaying())
+				{
+					if (!displayedSong.getTrackToken().equals(state.getSong().getTrackToken()))
+					{
+						log.info("Song changed, update main window");
+						displayedSong = state.getSong();
+						ui.updateSongUI();
+					}
 					ui.getWebBrowser().executeJavascript("updateTime('" + player.getProgression() + "')");
+				}
 			}
 		});
 	}
 
-	private void nextSong() throws ClientProtocolException, URISyntaxException, IOException
+	private void nextSong() throws ClientProtocolException, URISyntaxException, IOException, CryptoException
 	{
 		String url = pandoraClient.nextSong();
 		displayedSong = state.getSong();
 		log.info("Playing: " + url);
 		player.play(url);
-		if(!timer.isRunning())
+		if (!timer.isRunning())
 			timer.start();
 	}
 
-		
 	@Override
 	public void commandReceived(WebBrowserCommandEvent webBrowserCommandEvent)
 	{
@@ -100,7 +102,7 @@ public class UIBrowserListener extends WebBrowserAdapter
 				pandoraClient.selectStation(state.getStationList().get(0));
 				nextSong();
 				ui.updateSongUI();
-				
+
 			} else if (command.equals("next"))
 			{
 				nextSong();
@@ -160,6 +162,12 @@ public class UIBrowserListener extends WebBrowserAdapter
 			}
 		} catch (Exception e)
 		{
+			if (e instanceof CryptoException)
+			{
+				log.error("Crypto related problem (any help is welcome to fix this bug), let's retry");
+				commandReceived(new WebBrowserCommandEvent(ui.getWebBrowser(), "login", new Object[] {}));
+				return;
+			}
 			e.printStackTrace();
 			System.exit(-1);
 		}

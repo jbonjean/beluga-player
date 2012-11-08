@@ -16,6 +16,7 @@
  */
 package info.bonjean.beluga.util;
 
+import info.bonjean.beluga.exception.CryptoException;
 import info.bonjean.beluga.log.Logger;
 import info.bonjean.beluga.response.Song;
 
@@ -33,7 +34,7 @@ public class PandoraUtil
 	@SuppressWarnings("unused")
 	private static Logger log = new Logger(PandoraUtil.class);
 
-	public static String getSyncTime(String encryptedSyncTime)
+	public static String getSyncTime(String encryptedSyncTime) throws CryptoException
 	{
 		return CryptoUtil.pandoraDecrypt(encryptedSyncTime).substring(4, 14);
 	}

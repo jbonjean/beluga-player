@@ -16,6 +16,7 @@
  */
 package info.bonjean.beluga.util;
 
+import info.bonjean.beluga.exception.CryptoException;
 import info.bonjean.beluga.log.Logger;
 
 import com.aregner.pandora.Blowfish;
@@ -24,7 +25,7 @@ import com.aregner.pandora.PandoraKeys;
 /**
  * 
  * @author Julien Bonjean <julien@bonjean.info>
- *
+ * 
  */
 public class CryptoUtil
 {
@@ -65,37 +66,49 @@ public class CryptoUtil
 		return result;
 	}
 
-	public static String pandoraDecrypt(String s)
+	public static String pandoraDecrypt(String s) throws CryptoException
 	{
-		StringBuilder result = new StringBuilder();
-		int length = s.length();
-		int i16 = 0;
-		for (int i = 0; i < length; i += 16)
+		try
 		{
-			i16 = (i + 16 > length) ? (length - 1) : (i + 16);
-			result.append(blowfish_decode.decrypt(pad(fromHex(s.substring(i, i16)), 8).toCharArray()));
+			StringBuilder result = new StringBuilder();
+			int length = s.length();
+			int i16 = 0;
+			for (int i = 0; i < length; i += 16)
+			{
+				i16 = (i + 16 > length) ? (length - 1) : (i + 16);
+				result.append(blowfish_decode.decrypt(pad(fromHex(s.substring(i, i16)), 8).toCharArray()));
+			}
+			return result.toString().trim();
+		} catch (Exception e)
+		{
+			throw new CryptoException(e);
 		}
-		return result.toString().trim();
 	}
 
-	public static String pandoraEncrypt(String s)
+	public static String pandoraEncrypt(String s) throws CryptoException
 	{
-		int length = s.length();
-		StringBuilder result = new StringBuilder(length * 2);
-		int i8 = 0;
-		for (int i = 0; i < length; i += 8)
+		try
 		{
-			i8 = (i + 8 >= length) ? (length) : (i + 8);
-			String substring = s.substring(i, i8);
-			String padded = pad(substring, 8);
-			long[] blownstring = blowfish_encode.encrypt(padded.toCharArray());
-			for (int c = 0; c < blownstring.length; c++)
+			int length = s.length();
+			StringBuilder result = new StringBuilder(length * 2);
+			int i8 = 0;
+			for (int i = 0; i < length; i += 8)
 			{
-				if (blownstring[c] < 0x10)
-					result.append("0");
-				result.append(Integer.toHexString((int) blownstring[c]));
+				i8 = (i + 8 >= length) ? (length) : (i + 8);
+				String substring = s.substring(i, i8);
+				String padded = pad(substring, 8);
+				long[] blownstring = blowfish_encode.encrypt(padded.toCharArray());
+				for (int c = 0; c < blownstring.length; c++)
+				{
+					if (blownstring[c] < 0x10)
+						result.append("0");
+					result.append(Integer.toHexString((int) blownstring[c]));
+				}
 			}
+			return result.toString();
+		} catch (Exception e)
+		{
+			throw new CryptoException(e);
 		}
-		return result.toString();
 	}
 }

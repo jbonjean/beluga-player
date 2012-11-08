@@ -17,6 +17,7 @@
 package info.bonjean.beluga.util;
 
 import info.bonjean.beluga.configuration.BelugaConfiguration;
+import info.bonjean.beluga.exception.CryptoException;
 import info.bonjean.beluga.log.Logger;
 import info.bonjean.beluga.request.JsonData;
 import info.bonjean.beluga.request.Method;
@@ -60,7 +61,7 @@ public class HTTPUtil
 	private static final BelugaConfiguration configuration = BelugaConfiguration.getInstance();
 	private static final String SERVICE_URL = "http://tuner.pandora.com/services/json/?";
 
-	public static Result request(Method method, ParameterMap params, JsonData jsonData, boolean encrypt) throws ClientProtocolException, URISyntaxException, IOException
+	public static Result request(Method method, ParameterMap params, JsonData jsonData, boolean encrypt) throws ClientProtocolException, URISyntaxException, IOException, CryptoException
 	{
 		String urlStr = createRequestUrl(method, params);
 		String data = gson.toJson(jsonData);

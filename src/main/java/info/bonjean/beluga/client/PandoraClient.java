@@ -17,6 +17,7 @@
 package info.bonjean.beluga.client;
 
 import info.bonjean.beluga.configuration.BelugaConfiguration;
+import info.bonjean.beluga.exception.CryptoException;
 import info.bonjean.beluga.log.Logger;
 import info.bonjean.beluga.request.ArtistBookmark;
 import info.bonjean.beluga.request.Feedback;
@@ -75,7 +76,7 @@ public class PandoraClient
 		return params;
 	}
 
-	public void partnerLogin() throws ClientProtocolException, URISyntaxException, IOException 
+	public void partnerLogin() throws ClientProtocolException, URISyntaxException, IOException, CryptoException 
 	{
 		Result result = HTTPUtil.request(Method.PARTNER_LOGIN, null, new PartnerAuth(), false);
 
@@ -83,7 +84,7 @@ public class PandoraClient
 		state.setPartnerAuthToken(result.getPartnerAuthToken());
 	}
 
-	public void userLogin() throws ClientProtocolException, URISyntaxException, IOException 
+	public void userLogin() throws ClientProtocolException, URISyntaxException, IOException, CryptoException 
 	{
 		ParameterMap params = new ParameterMap();
 		params.add("partner_id", state.getPartnerId());
@@ -101,12 +102,12 @@ public class PandoraClient
 		state.setUserAuthToken(result.getUserAuthToken());
 	}
 
-	public void updateStationList() throws ClientProtocolException, URISyntaxException, IOException
+	public void updateStationList() throws ClientProtocolException, URISyntaxException, IOException, CryptoException
 	{
 		state.setStationList(getStationList());
 	}
 
-	private List<Station> getStationList() throws ClientProtocolException, URISyntaxException, IOException
+	private List<Station> getStationList() throws ClientProtocolException, URISyntaxException, IOException, CryptoException
 	{
 		ParameterMap params = getDefaultParameterMap();
 
@@ -123,7 +124,7 @@ public class PandoraClient
 		return state.getStationList();
 	}
 
-	public void selectStation(Station station) throws ClientProtocolException, URISyntaxException, IOException
+	public void selectStation(Station station) throws ClientProtocolException, URISyntaxException, IOException, CryptoException
 	{
 		log.info("Select station " + station.getStationName());
 
@@ -141,12 +142,12 @@ public class PandoraClient
 		return null;
 	}
 
-	public void selectStation(String stationId) throws ClientProtocolException, URISyntaxException, IOException
+	public void selectStation(String stationId) throws ClientProtocolException, URISyntaxException, IOException, CryptoException
 	{
 		selectStation(getStationById(stationId));
 	}
 
-	public String nextSong() throws ClientProtocolException, URISyntaxException, IOException
+	public String nextSong() throws ClientProtocolException, URISyntaxException, IOException, CryptoException
 	{
 		if (state.getPlaylist().isEmpty())
 			state.setPlaylist(getPlaylist(state.getStation()));
@@ -160,7 +161,7 @@ public class PandoraClient
 		return song.getAudioUrlMap().get("highQuality").getAudioUrl();
 	}
 
-	private List<Song> getPlaylist(Station station) throws ClientProtocolException, URISyntaxException, IOException
+	private List<Song> getPlaylist(Station station) throws ClientProtocolException, URISyntaxException, IOException, CryptoException
 	{
 		ParameterMap params = getDefaultParameterMap();
 
@@ -179,13 +180,13 @@ public class PandoraClient
 		return currentPlaylist;
 	}
 
-	public void login() throws ClientProtocolException, URISyntaxException, IOException
+	public void login() throws ClientProtocolException, URISyntaxException, IOException, CryptoException
 	{
 		partnerLogin();
 		userLogin();
 	}
 
-	public void addFeedback(boolean isPositive) throws ClientProtocolException, URISyntaxException, IOException 
+	public void addFeedback(boolean isPositive) throws ClientProtocolException, URISyntaxException, IOException, CryptoException 
 	{
 		ParameterMap params = getDefaultParameterMap();
 
@@ -203,7 +204,7 @@ public class PandoraClient
 			state.getSong().setSongRating(0);
 	}
 
-	public void sleepSong() throws ClientProtocolException, URISyntaxException, IOException
+	public void sleepSong() throws ClientProtocolException, URISyntaxException, IOException, CryptoException
 	{
 		ParameterMap params = getDefaultParameterMap();
 
@@ -215,7 +216,7 @@ public class PandoraClient
 		HTTPUtil.request(Method.SLEEP_SONG, params, songSleep, true);
 	}
 	
-	public void addSongBookmark() throws ClientProtocolException, URISyntaxException, IOException
+	public void addSongBookmark() throws ClientProtocolException, URISyntaxException, IOException, CryptoException
 	{
 		ParameterMap params = getDefaultParameterMap();
 
@@ -227,7 +228,7 @@ public class PandoraClient
 		HTTPUtil.request(Method.ADD_SONG_BOOKMARK, params, songBookmark, true);
 	}
 	
-	public void addArtistBookmark() throws ClientProtocolException, URISyntaxException, IOException
+	public void addArtistBookmark() throws ClientProtocolException, URISyntaxException, IOException, CryptoException
 	{
 		ParameterMap params = getDefaultParameterMap();
 
