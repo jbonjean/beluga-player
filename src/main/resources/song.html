@@ -15,12 +15,19 @@
 			links[i].ondragstart = function() { return false; };
 		} 
 	}
+	function displayLoader() {
+		document.getElementById('loader').style.display = 'block';
+	}
 </script>
 </head>
 <body onselectstart='return false;'>
 
 <div class="debug">
 	<div class="reload"><a href="command://reload">Reload</a></div>
+</div>
+
+<div id="loader">
+	<img src="data:image/png;base64,$LOADER$"/>
 </div>
 
 <div class="mainControls">

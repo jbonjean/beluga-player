@@ -54,6 +54,7 @@ public class UI extends JPanel
 
 	public void updateSongUI()
 	{
+		webBrowser.executeJavascript("displayLoader()");
 		webBrowser.setHTMLContent(HTMLUtil.getSong());
 	}
 
