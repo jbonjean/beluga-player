@@ -16,6 +16,8 @@
  */
 package info.bonjean.beluga.request;
 
+import info.bonjean.beluga.exception.InternalException;
+
 import java.io.UnsupportedEncodingException;
 import java.util.LinkedList;
 import java.util.List;
@@ -37,7 +39,7 @@ public class ParameterMap
 		return params;
 	}
 
-	public void add(String key, String value) throws UnsupportedEncodingException
+	public void add(String key, String value)
 	{
 		params.add(new BasicNameValuePair(key, value));
 	}

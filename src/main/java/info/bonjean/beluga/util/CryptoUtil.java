@@ -81,7 +81,7 @@ public class CryptoUtil
 			return result.toString().trim();
 		} catch (Exception e)
 		{
-			throw new CryptoException(e);
+			throw new CryptoException();
 		}
 	}
 
@@ -108,7 +108,7 @@ public class CryptoUtil
 			return result.toString();
 		} catch (Exception e)
 		{
-			throw new CryptoException(e);
+			throw new CryptoException();
 		}
 	}
 }

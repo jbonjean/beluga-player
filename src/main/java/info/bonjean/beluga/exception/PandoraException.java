@@ -16,11 +16,36 @@
  */
 package info.bonjean.beluga.exception;
 
+import info.bonjean.beluga.request.Method;
+
 /**
  * 
  * @author Julien Bonjean <julien@bonjean.info>
  * 
  */
-public class CryptoException extends BelugaException
+public class PandoraException extends BelugaException
 {
+	private Method method;
+	private String message;
+	private long code;
+	
+	public PandoraException(Method method, String message, long code){
+		this.method = method;
+		this.message = message;
+		this.code = code;
+	}
+	
+	@Override
+	public String toString() {
+		return "Pandora returned an error when calling " + method + ", code: " + code + ", message: " + message;
+	}
+	
+	public PandoraError getError()
+	{
+		return PandoraError.get(code);
+	}
+	
+	public Method getMethod() {
+		return method;
+	}
 }

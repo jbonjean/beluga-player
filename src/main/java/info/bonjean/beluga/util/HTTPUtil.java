@@ -17,7 +17,11 @@
 package info.bonjean.beluga.util;
 
 import info.bonjean.beluga.configuration.BelugaConfiguration;
+import info.bonjean.beluga.exception.BelugaException;
+import info.bonjean.beluga.exception.CommunicationException;
 import info.bonjean.beluga.exception.CryptoException;
+import info.bonjean.beluga.exception.InternalException;
+import info.bonjean.beluga.exception.PandoraException;
 import info.bonjean.beluga.log.Logger;
 import info.bonjean.beluga.request.JsonData;
 import info.bonjean.beluga.request.Method;
@@ -61,7 +65,7 @@ public class HTTPUtil
 	private static final BelugaConfiguration configuration = BelugaConfiguration.getInstance();
 	private static final String SERVICE_URL = "http://tuner.pandora.com/services/json/?";
 
-	public static Result request(Method method, ParameterMap params, JsonData jsonData, boolean encrypt) throws ClientProtocolException, URISyntaxException, IOException, CryptoException
+	public static Result request(Method method, ParameterMap params, JsonData jsonData, boolean encrypt) throws BelugaException
 	{
 		String urlStr = createRequestUrl(method, params);
 		String data = gson.toJson(jsonData);
@@ -77,38 +81,50 @@ public class HTTPUtil
 		log.info("Response: " + requestResponse);
 		response = gson.fromJson(requestResponse, Response.class);
 
+		if (response.getStat().equals("fail"))
+			throw new PandoraException(method, response.getMessage(), response.getCode());
+
 		return response.getResult();
 	}
 
-	private static String createRequestUrl(Method method, ParameterMap params) throws UnsupportedEncodingException
+	private static String createRequestUrl(Method method, ParameterMap params)
 	{
 		StringBuffer url = new StringBuffer(SERVICE_URL);
 		if (params == null)
 			params = new ParameterMap();
 		params.add("method", method.getName());
+
 		url.append(URLEncodedUtils.format(params.getNameValuePairList(), "UTF-8"));
 		return url.toString();
 	}
 
-	private static String request(String urlStr, String data) throws URISyntaxException, ClientProtocolException, IOException
+	private static String request(String urlStr, String data) throws CommunicationException
 	{
-		URI url = new URI(urlStr);
-		HttpClient client = new DefaultHttpClient();
-		if (!configuration.getProxyServer().isEmpty())
-			ConnRouteParams.setDefaultProxy(client.getParams(), new HttpHost(configuration.getProxyServer(), configuration.getProxyServerPort(), "http"));
-		StringEntity json = new StringEntity(data.toString());
-		json.setContentType("application/json");
-		HttpPost post = new HttpPost(url);
-		post.addHeader("Content-Type", "application/json");
-		post.setEntity(json);
-		HttpResponse httpResponse = client.execute(post);
-		InputStream in = httpResponse.getEntity().getContent();
-		BufferedReader reader = new BufferedReader(new InputStreamReader(in));
-
-		String line = null;
 		StringBuffer sb = new StringBuffer();
-		while ((line = reader.readLine()) != null)
-			sb.append(line);
+
+		try
+		{
+
+			URI url = new URI(urlStr);
+			HttpClient client = new DefaultHttpClient();
+			if (!configuration.getProxyServer().isEmpty())
+				ConnRouteParams.setDefaultProxy(client.getParams(), new HttpHost(configuration.getProxyServer(), configuration.getProxyServerPort(), "http"));
+			StringEntity json = new StringEntity(data.toString());
+			json.setContentType("application/json");
+			HttpPost post = new HttpPost(url);
+			post.addHeader("Content-Type", "application/json");
+			post.setEntity(json);
+			HttpResponse httpResponse = client.execute(post);
+			InputStream in = httpResponse.getEntity().getContent();
+			BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+
+			String line = null;
+			while ((line = reader.readLine()) != null)
+				sb.append(line);
+		} catch (Exception e)
+		{
+			throw new CommunicationException(e);
+		}
 
 		return sb.toString();
 	}

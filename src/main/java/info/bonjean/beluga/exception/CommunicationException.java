@@ -21,6 +21,14 @@ package info.bonjean.beluga.exception;
  * @author Julien Bonjean <julien@bonjean.info>
  * 
  */
-public class CryptoException extends BelugaException
+public class CommunicationException extends BelugaException
 {
+	public CommunicationException(String message)
+	{
+		super(message);
+	}
+	public CommunicationException(Throwable cause)
+	{
+		super(cause);
+	}
 }

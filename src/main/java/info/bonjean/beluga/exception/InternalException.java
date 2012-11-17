@@ -21,6 +21,10 @@ package info.bonjean.beluga.exception;
  * @author Julien Bonjean <julien@bonjean.info>
  * 
  */
-public class CryptoException extends BelugaException
+public class InternalException extends BelugaException
 {
+	public InternalException(Throwable cause)
+	{
+		super(cause);
+	}
 }

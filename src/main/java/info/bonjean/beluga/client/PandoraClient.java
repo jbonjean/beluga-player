@@ -17,7 +17,9 @@
 package info.bonjean.beluga.client;
 
 import info.bonjean.beluga.configuration.BelugaConfiguration;
+import info.bonjean.beluga.exception.BelugaException;
 import info.bonjean.beluga.exception.CryptoException;
+import info.bonjean.beluga.exception.InternalException;
 import info.bonjean.beluga.log.Logger;
 import info.bonjean.beluga.request.ArtistBookmark;
 import info.bonjean.beluga.request.Feedback;
@@ -46,7 +48,7 @@ import org.apache.http.client.ClientProtocolException;
 /**
  * 
  * @author Julien Bonjean <julien@bonjean.info>
- *
+ * 
  */
 public class PandoraClient
 {
@@ -67,16 +69,17 @@ public class PandoraClient
 		return instance;
 	}
 
-	public ParameterMap getDefaultParameterMap() throws UnsupportedEncodingException
+	public ParameterMap getDefaultParameterMap()
 	{
 		ParameterMap params = new ParameterMap();
 		params.add("partner_id", state.getPartnerId());
 		params.add("auth_token", state.getUserAuthToken());
 		params.add("user_id", state.getUserId());
+
 		return params;
 	}
 
-	public void partnerLogin() throws ClientProtocolException, URISyntaxException, IOException, CryptoException 
+	public void partnerLogin() throws BelugaException
 	{
 		Result result = HTTPUtil.request(Method.PARTNER_LOGIN, null, new PartnerAuth(), false);
 
@@ -84,7 +87,7 @@ public class PandoraClient
 		state.setPartnerAuthToken(result.getPartnerAuthToken());
 	}
 
-	public void userLogin() throws ClientProtocolException, URISyntaxException, IOException, CryptoException 
+	public void userLogin() throws BelugaException
 	{
 		ParameterMap params = new ParameterMap();
 		params.add("partner_id", state.getPartnerId());
@@ -102,12 +105,12 @@ public class PandoraClient
 		state.setUserAuthToken(result.getUserAuthToken());
 	}
 
-	public void updateStationList() throws ClientProtocolException, URISyntaxException, IOException, CryptoException
+	public void updateStationList() throws BelugaException
 	{
 		state.setStationList(getStationList());
 	}
 
-	private List<Station> getStationList() throws ClientProtocolException, URISyntaxException, IOException, CryptoException
+	private List<Station> getStationList() throws BelugaException
 	{
 		ParameterMap params = getDefaultParameterMap();
 
@@ -124,7 +127,7 @@ public class PandoraClient
 		return state.getStationList();
 	}
 
-	public void selectStation(Station station) throws ClientProtocolException, URISyntaxException, IOException, CryptoException
+	public void selectStation(Station station) throws BelugaException
 	{
 		log.info("Select station " + station.getStationName());
 
@@ -142,12 +145,12 @@ public class PandoraClient
 		return null;
 	}
 
-	public void selectStation(String stationId) throws ClientProtocolException, URISyntaxException, IOException, CryptoException
+	public void selectStation(String stationId) throws BelugaException
 	{
 		selectStation(getStationById(stationId));
 	}
 
-	public String nextSong() throws ClientProtocolException, URISyntaxException, IOException, CryptoException
+	public String nextSong() throws BelugaException
 	{
 		if (state.getPlaylist().isEmpty())
 			state.setPlaylist(getPlaylist(state.getStation()));
@@ -161,7 +164,7 @@ public class PandoraClient
 		return song.getAudioUrlMap().get("highQuality").getAudioUrl();
 	}
 
-	private List<Song> getPlaylist(Station station) throws ClientProtocolException, URISyntaxException, IOException, CryptoException
+	private List<Song> getPlaylist(Station station) throws BelugaException
 	{
 		ParameterMap params = getDefaultParameterMap();
 
@@ -180,13 +183,13 @@ public class PandoraClient
 		return currentPlaylist;
 	}
 
-	public void login() throws ClientProtocolException, URISyntaxException, IOException, CryptoException
+	public void login() throws BelugaException
 	{
 		partnerLogin();
 		userLogin();
 	}
 
-	public void addFeedback(boolean isPositive) throws ClientProtocolException, URISyntaxException, IOException, CryptoException 
+	public void addFeedback(boolean isPositive) throws BelugaException
 	{
 		ParameterMap params = getDefaultParameterMap();
 
@@ -204,7 +207,7 @@ public class PandoraClient
 			state.getSong().setSongRating(0);
 	}
 
-	public void sleepSong() throws ClientProtocolException, URISyntaxException, IOException, CryptoException
+	public void sleepSong() throws BelugaException
 	{
 		ParameterMap params = getDefaultParameterMap();
 
@@ -215,8 +218,8 @@ public class PandoraClient
 
 		HTTPUtil.request(Method.SLEEP_SONG, params, songSleep, true);
 	}
-	
-	public void addSongBookmark() throws ClientProtocolException, URISyntaxException, IOException, CryptoException
+
+	public void addSongBookmark() throws BelugaException
 	{
 		ParameterMap params = getDefaultParameterMap();
 
@@ -227,8 +230,8 @@ public class PandoraClient
 
 		HTTPUtil.request(Method.ADD_SONG_BOOKMARK, params, songBookmark, true);
 	}
-	
-	public void addArtistBookmark() throws ClientProtocolException, URISyntaxException, IOException, CryptoException
+
+	public void addArtistBookmark() throws BelugaException
 	{
 		ParameterMap params = getDefaultParameterMap();
 

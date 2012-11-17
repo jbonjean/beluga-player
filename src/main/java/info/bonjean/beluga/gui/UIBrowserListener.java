@@ -18,22 +18,23 @@ package info.bonjean.beluga.gui;
 
 import info.bonjean.beluga.client.PandoraClient;
 import info.bonjean.beluga.configuration.BelugaConfiguration;
+import info.bonjean.beluga.exception.BelugaException;
+import info.bonjean.beluga.exception.CommunicationException;
 import info.bonjean.beluga.exception.CryptoException;
+import info.bonjean.beluga.exception.PandoraError;
+import info.bonjean.beluga.exception.PandoraException;
 import info.bonjean.beluga.log.Logger;
 import info.bonjean.beluga.player.VLCPlayer;
+import info.bonjean.beluga.request.Method;
 import info.bonjean.beluga.response.Song;
 import info.bonjean.beluga.statefull.BelugaState;
 import info.bonjean.beluga.util.HTTPUtil;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.IOException;
-import java.net.URISyntaxException;
 import java.util.Map;
 
 import javax.swing.Timer;
-
-import org.apache.http.client.ClientProtocolException;
 
 import chrriis.dj.nativeswing.swtimpl.components.WebBrowserAdapter;
 import chrriis.dj.nativeswing.swtimpl.components.WebBrowserCommandEvent;
@@ -55,6 +56,8 @@ public class UIBrowserListener extends WebBrowserAdapter
 	private final BelugaConfiguration configuration = BelugaConfiguration.getInstance();
 	private final VLCPlayer player = VLCPlayer.getInstance();
 	private Timer timer;
+	private int retryCount = 0;
+	private final int MAX_RETRIES = 3;
 
 	public UIBrowserListener(final UI ui)
 	{
@@ -77,7 +80,7 @@ public class UIBrowserListener extends WebBrowserAdapter
 		});
 	}
 
-	private void nextSong() throws ClientProtocolException, URISyntaxException, IOException, CryptoException
+	private void nextSong() throws BelugaException
 	{
 		String url = pandoraClient.nextSong();
 		displayedSong = state.getSong();
@@ -142,6 +145,10 @@ public class UIBrowserListener extends WebBrowserAdapter
 
 			} else if (command.equals("configuration"))
 			{
+				ui.updateConfigurationUI();
+
+			} else if (command.equals("save-configuration"))
+			{
 				log.info("Update configuration");
 				Object[] parameters = webBrowserCommandEvent.getParameters();
 				configuration.setUserName((String) parameters[0]);
@@ -149,6 +156,8 @@ public class UIBrowserListener extends WebBrowserAdapter
 				configuration.setProxyServer((String) parameters[2]);
 				configuration.setProxyServerPort((String) parameters[3]);
 				configuration.store();
+				log.info("Redirect to login");
+				commandReceived(new WebBrowserCommandEvent(ui.getWebBrowser(), "login", new Object[] {}));
 
 			} else if (command.startsWith("stationSelect"))
 			{
@@ -160,16 +169,38 @@ public class UIBrowserListener extends WebBrowserAdapter
 				nextSong();
 				ui.updateSongUI();
 			}
-		} catch (Exception e)
+		} catch (BelugaException e)
 		{
-			if (e instanceof CryptoException)
+			if (retryCount == MAX_RETRIES)
+			{
+				log.error("Too many errors occured");
+				
+			} else if (e instanceof CryptoException)
 			{
 				log.error("Crypto related problem (any help is welcome to fix this bug), let's retry");
-				commandReceived(new WebBrowserCommandEvent(ui.getWebBrowser(), "login", new Object[] {}));
+				retryCount++;
+				commandReceived(webBrowserCommandEvent);
 				return;
+			} else if (e instanceof CommunicationException)
+			{
+				log.error("Communication problem, let's retry");
+				retryCount++;
+				commandReceived(webBrowserCommandEvent);
+				return;
+			} else if (e instanceof PandoraException)
+			{
+				PandoraException pe = (PandoraException) e;
+				if (pe.getError() == PandoraError.UNKNOWN && pe.getMethod() == Method.USER_LOGIN)
+				{
+					log.error("Invalid credentials, redirect to configuration");
+					commandReceived(new WebBrowserCommandEvent(ui.getWebBrowser(), "configuration", new Object[] {}));
+					return;
+				}
 			}
+
 			e.printStackTrace();
 			System.exit(-1);
 		}
+		retryCount = 0;
 	}
 }
