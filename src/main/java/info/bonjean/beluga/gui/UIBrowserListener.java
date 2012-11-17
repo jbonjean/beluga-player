@@ -108,7 +108,6 @@ public class UIBrowserListener extends WebBrowserAdapter
 
 			} else if (command.equals("next"))
 			{
-				ui.getWebBrowser().executeJavascript("displayLoader()");
 				nextSong();
 				ui.updateSongUI();
 
