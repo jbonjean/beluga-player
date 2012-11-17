@@ -19,6 +19,7 @@ package info.bonjean.beluga.util;
 import info.bonjean.beluga.configuration.BelugaConfiguration;
 import info.bonjean.beluga.exception.CommunicationException;
 import info.bonjean.beluga.exception.InternalException;
+import info.bonjean.beluga.gui.Page;
 import info.bonjean.beluga.log.Logger;
 import info.bonjean.beluga.response.Station;
 import info.bonjean.beluga.statefull.BelugaState;
@@ -78,22 +79,20 @@ public class HTMLUtil
 
 	private static String readFile(String name)
 	{
-		String html = null;
+		String content = null;
 		try
 		{
 			StringWriter writer = new StringWriter();
 			IOUtils.copy(HTMLUtil.class.getResourceAsStream(name), writer, "UTF-8");
-			html = writer.toString();
-		} catch (IOException e)
+			content = writer.toString();
+		} catch (Exception e)
 		{
-			log.error(e.toString());
+			log.error("Cannot load resource " + name);
+			System.exit(-1);
 		}
-		if (html == null)
-			html = "error";
-
-		return html;
+		return content;
 	}
-
+	
 	private static String replace(String html, Map<String, String> tokens)
 	{
 		for (String token : tokens.keySet())
@@ -102,26 +101,63 @@ public class HTMLUtil
 		return html;
 	}
 
+	private static String loadPage(Page page, Map<String, String> tokens)
+	{
+		// load page raw HTML
+		String html = replace(readFile(page.getHTML()), tokens);
+		
+		// clear tokens for main html (wrapper)
+		tokens.clear();
+		
+		// add css token
+		StringBuffer sb = new StringBuffer();
+		sb.append(readFile(Page.COMMON.getCss()));
+		sb.append(readFile(page.getCss()));
+		tokens.put("$CSS$", sb.toString());
+		
+		// add js token
+		sb = new StringBuffer();
+		sb.append(readFile(Page.COMMON.getJs()));
+		sb.append(readFile(page.getJs()));
+		tokens.put("$JS$", sb.toString());
+		
+		// add ajax loader image
+		String loader = null;
+		try
+		{
+			loader = getResourceAsBase64String("/img/ajax-loader-2.gif");
+		} catch (InternalException e)
+		{
+			log.error("Cannot load loading animation");
+			loader = "";
+		}
+		tokens.put("$LOADER$", loader);
+		
+		// add html token (include page to display)
+		tokens.put("$CONTENT$", html);
+		
+		return replace(readFile(Page.COMMON.getHTML()), tokens);
+	}
+
 	public static String getWelcome()
 	{
 		Map<String, String> tokens = new HashMap<String, String>();
 		String loader = null;
 		try
 		{
-			loader = getResourceAsBase64String("/img/ajax-loader.gif");
+			loader = getResourceAsBase64String(Page.IMG_PATH + "ajax-loader.gif");
 		} catch (InternalException e)
 		{
 			log.error("Cannot load loading animation");
 			loader = "";
 		}
-		tokens.put("$IMG_LOAD$", loader);
-		return replace(readFile("/welcome.html"), tokens);
+		tokens.put("$LOADER$", loader);
+		return loadPage(Page.WELCOME, tokens);
 	}
 
 	public static String getSong()
 	{
 		Map<String, String> tokens = new HashMap<String, String>();
-		tokens.put("$CSS$", readFile("/song.css"));
 		tokens.put("$USERNAME$", configuration.getUserName());
 		tokens.put("$STATION_NAME$", state.getStation().getStationName());
 		tokens.put("$ALBUM_NAME$", state.getSong().getAlbumName());
@@ -149,16 +185,6 @@ public class HTMLUtil
 				cover = "";
 			}
 		}
-		String loader = null;
-		try
-		{
-			loader = getResourceAsBase64String("/img/ajax-loader-2.gif");
-		} catch (InternalException e)
-		{
-			log.error("Cannot load loading animation");
-			loader = "";
-		}
-		tokens.put("$LOADER$", loader);
 		tokens.put("$ALBUM_COVER$", cover);
 		tokens.put("$SONG_NAME$", state.getSong().getSongName());
 		tokens.put("$STATION_LIST$", generateStationListHTML());
@@ -167,7 +193,21 @@ public class HTMLUtil
 			feedbackClass = "liked";
 		tokens.put("$LIKE_CLASS$", feedbackClass);
 
-		return replace(readFile("/song.html"), tokens);
+		return loadPage(Page.SONG, tokens);
+	}
+
+	public static String getConfiguration()
+	{
+		Map<String, String> tokens = new HashMap<String, String>();
+		tokens.put("$USERNAME$", configuration.getUserName());
+		tokens.put("$PASSWORD$", configuration.getPassword());
+		tokens.put("$PROXY_HOST$", configuration.getProxyServer());
+		String proxyHost = "";
+		if (configuration.getProxyServerPort() != null)
+			proxyHost = String.valueOf(configuration.getProxyServerPort());
+		tokens.put("$PROXY_PORT$", proxyHost);
+		
+		return loadPage(Page.CONFIGURATION, tokens);
 	}
 
 	private static String generateStationListHTML()
@@ -185,19 +225,5 @@ public class HTMLUtil
 			html.append("</option>");
 		}
 		return html.toString();
-	}
-
-	public static String getConfiguration()
-	{
-		Map<String, String> tokens = new HashMap<String, String>();
-		tokens.put("$USERNAME$", configuration.getUserName());
-		tokens.put("$PASSWORD$", configuration.getPassword());
-		tokens.put("$PROXY_HOST$", configuration.getProxyServer());
-		String proxyHost = "";
-		if (configuration.getProxyServerPort() != null)
-			proxyHost = String.valueOf(configuration.getProxyServerPort());
-		tokens.put("$PROXY_PORT$", proxyHost);
-
-		return replace(readFile("/configuration.html"), tokens);
 	}
 }

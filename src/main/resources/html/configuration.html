@@ -1,23 +1,3 @@
-<html>
-<head>
-<style type="text/css">
-	$CSS$
-</style>
-<script type="text/javascript">
-	function updateTime(text) {
-		document.getElementById("time").innerHTML = text;
-	}
-	window.onload = init;
-	function init() {
-		document.getElementById('cover').ondragstart = function() { return false; };
-	}
-</script>
-</head>
-<body onselectstart='return false;'>
-
-<div class="error">
-</div>
-
 <h1>Configuration</h1>
 
 <form name="configuration" onsubmit="sendNSCommand('save-configuration', configuration.username.value, configuration.password.value, configuration.proxyHost.value, configuration.proxyPort.value); return false;">
@@ -41,6 +21,3 @@
 		<input type="submit" value="Save"/>
 	</div>
 </form>
-
-</body>
-</html
