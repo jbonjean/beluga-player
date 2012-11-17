@@ -17,6 +17,8 @@
 package info.bonjean.beluga.util;
 
 import info.bonjean.beluga.configuration.BelugaConfiguration;
+import info.bonjean.beluga.exception.CommunicationException;
+import info.bonjean.beluga.exception.InternalException;
 import info.bonjean.beluga.log.Logger;
 import info.bonjean.beluga.response.Station;
 import info.bonjean.beluga.statefull.BelugaState;
@@ -43,7 +45,7 @@ public class HTMLUtil
 	private static final BelugaState state = BelugaState.getInstance();
 	private static final BelugaConfiguration configuration = BelugaConfiguration.getInstance();
 
-	public static byte[] getResourceAsByteArray(String resource)
+	public static byte[] getResourceAsByteArray(String resource) throws InternalException
 	{
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		InputStream bais;
@@ -59,14 +61,19 @@ public class HTMLUtil
 			baos.close();
 		} catch (IOException e)
 		{
-			log.error(e.toString());
+			throw new InternalException(e);
 		}
 		return baos.toByteArray();
 	}
 	
-	public static String getResourceAsBase64String(String resource)
+	public static String getResourceAsBase64String(String resource) throws InternalException
 	{
 		return Base64.encodeBase64String(getResourceAsByteArray(resource));
+	}
+	
+	public static String getURLContentAsBase64String(String url) throws CommunicationException
+	{
+		return Base64.encodeBase64String(HTTPUtil.request(url));
 	}
 
 	private static String readFile(String name)
@@ -98,8 +105,16 @@ public class HTMLUtil
 	public static String getWelcome()
 	{
 		Map<String, String> tokens = new HashMap<String, String>();
-		tokens.put("$IMG_LOAD$", getResourceAsBase64String("/img/ajax-loader.gif"));
-
+		String loader = null;
+		try
+		{
+			loader = getResourceAsBase64String("/img/ajax-loader.gif");
+		} catch (InternalException e)
+		{
+			log.error("Cannot load loading animation");
+			loader = "";
+		}
+		tokens.put("$IMG_LOAD$", loader);
 		return replace(readFile("/welcome.html"), tokens);
 	}
 
@@ -112,10 +127,29 @@ public class HTMLUtil
 		tokens.put("$ALBUM_NAME$", state.getSong().getAlbumName());
 		tokens.put("$ARTIST_NAME$", state.getSong().getArtistName());
 		String coverUrl = state.getSong().getAlbumArtUrl();
-		if (coverUrl == null || coverUrl.isEmpty())
-			// TODO: find something better
-			coverUrl = "http://c95711.r11.cf3.rackcdn.com/VHV-2150.jpg";
-		tokens.put("$ALBUM_COVER_URL$", coverUrl);
+		String cover = null;
+		if (coverUrl != null && !coverUrl.isEmpty())
+		{
+			try
+			{
+				cover = getURLContentAsBase64String(coverUrl);
+			} catch (CommunicationException e)
+			{
+				log.error("Cannot retrieve cover: " + coverUrl);
+			}
+		}
+		if(cover == null)
+		{
+			try
+			{
+				cover = getResourceAsBase64String("/img/beluga.200x200.png");
+			} catch (InternalException e)
+			{
+				log.error("Cannot load default cover");
+				cover = "";
+			}
+		}
+		tokens.put("$ALBUM_COVER$", cover);
 		tokens.put("$SONG_NAME$", state.getSong().getSongName());
 		tokens.put("$STATION_LIST$", generateStationListHTML());
 		String feedbackClass = "";

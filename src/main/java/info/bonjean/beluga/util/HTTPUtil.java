@@ -16,39 +16,27 @@
  */
 package info.bonjean.beluga.util;
 
-import info.bonjean.beluga.configuration.BelugaConfiguration;
 import info.bonjean.beluga.exception.BelugaException;
 import info.bonjean.beluga.exception.CommunicationException;
-import info.bonjean.beluga.exception.CryptoException;
-import info.bonjean.beluga.exception.InternalException;
 import info.bonjean.beluga.exception.PandoraException;
 import info.bonjean.beluga.log.Logger;
+import info.bonjean.beluga.request.BelugaHTTPClient;
 import info.bonjean.beluga.request.JsonData;
 import info.bonjean.beluga.request.Method;
 import info.bonjean.beluga.request.ParameterMap;
 import info.bonjean.beluga.response.Response;
 import info.bonjean.beluga.response.Result;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.StringTokenizer;
 
-import org.apache.http.HttpHost;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
+import org.apache.commons.io.IOUtils;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.utils.URLEncodedUtils;
-import org.apache.http.conn.params.ConnRouteParams;
 import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.DefaultHttpClient;
 
 import com.google.gson.Gson;
 
@@ -62,7 +50,6 @@ public class HTTPUtil
 	private static Logger log = new Logger(HTTPUtil.class);
 
 	private static final Gson gson = GsonUtil.getGsonInstance();
-	private static final BelugaConfiguration configuration = BelugaConfiguration.getInstance();
 	private static final String SERVICE_URL = "http://tuner.pandora.com/services/json/?";
 
 	public static Result request(Method method, ParameterMap params, JsonData jsonData, boolean encrypt) throws BelugaException
@@ -77,7 +64,7 @@ public class HTTPUtil
 		if (encrypt)
 			data = CryptoUtil.pandoraEncrypt(data);
 		Response response;
-		String requestResponse = HTTPUtil.request(urlStr, data);
+		String requestResponse = HTTPUtil.jsonRequest(urlStr, data);
 		log.info("Response: " + requestResponse);
 		response = gson.fromJson(requestResponse, Response.class);
 
@@ -98,35 +85,32 @@ public class HTTPUtil
 		return url.toString();
 	}
 
-	private static String request(String urlStr, String data) throws CommunicationException
+	private static String jsonRequest(String urlStr, String data) throws CommunicationException
 	{
-		StringBuffer sb = new StringBuffer();
-
 		try
 		{
-
-			URI url = new URI(urlStr);
-			HttpClient client = new DefaultHttpClient();
-			if (!configuration.getProxyServer().isEmpty())
-				ConnRouteParams.setDefaultProxy(client.getParams(), new HttpHost(configuration.getProxyServer(), configuration.getProxyServerPort(), "http"));
 			StringEntity json = new StringEntity(data.toString());
 			json.setContentType("application/json");
-			HttpPost post = new HttpPost(url);
+			HttpPost post = new HttpPost(urlStr);
 			post.addHeader("Content-Type", "application/json");
 			post.setEntity(json);
-			HttpResponse httpResponse = client.execute(post);
-			InputStream in = httpResponse.getEntity().getContent();
-			BufferedReader reader = new BufferedReader(new InputStreamReader(in));
-
-			String line = null;
-			while ((line = reader.readLine()) != null)
-				sb.append(line);
+			return IOUtils.toString(BelugaHTTPClient.getInstance().httpRequest(post));
 		} catch (Exception e)
 		{
 			throw new CommunicationException(e);
 		}
+	}
 
-		return sb.toString();
+	public static byte[] request(String urlStr) throws CommunicationException
+	{
+		try
+		{
+			HttpGet get = new HttpGet(urlStr);
+			return IOUtils.toByteArray(BelugaHTTPClient.getInstance().httpRequest(get));
+		} catch (IOException e)
+		{
+			throw new CommunicationException(e);
+		}
 	}
 
 	public static Map<String, String> parseUrl(String url)

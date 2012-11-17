@@ -16,6 +16,7 @@
  */
 package info.bonjean.beluga.gui;
 
+import info.bonjean.beluga.exception.InternalException;
 import info.bonjean.beluga.log.Logger;
 import info.bonjean.beluga.util.HTMLUtil;
 

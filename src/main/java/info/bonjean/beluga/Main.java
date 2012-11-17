@@ -23,6 +23,8 @@ import info.bonjean.beluga.gui.UIWindowListener;
 import info.bonjean.beluga.log.Logger;
 
 import java.awt.BorderLayout;
+import java.awt.Image;
+import java.awt.Toolkit;
 import java.io.IOException;
 
 import javax.swing.JFrame;
@@ -65,6 +67,8 @@ public class Main
 				frame.setResizable(false);
 				frame.setLocationByPlatform(true);
 				frame.setVisible(true);
+				Image image = Toolkit.getDefaultToolkit().getImage(Main.class.getResource("/icons/beluga.40x40.png"));
+				frame.setIconImage(image);
 				
 				UIBrowserListener browserListener = new UIBrowserListener(ui);
 				ui.getWebBrowser().addWebBrowserListener(browserListener);
