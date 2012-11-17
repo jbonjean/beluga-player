@@ -149,6 +149,16 @@ public class HTMLUtil
 				cover = "";
 			}
 		}
+		String loader = null;
+		try
+		{
+			loader = getResourceAsBase64String("/img/ajax-loader-2.gif");
+		} catch (InternalException e)
+		{
+			log.error("Cannot load loading animation");
+			loader = "";
+		}
+		tokens.put("$LOADER$", loader);
 		tokens.put("$ALBUM_COVER$", cover);
 		tokens.put("$SONG_NAME$", state.getSong().getSongName());
 		tokens.put("$STATION_LIST$", generateStationListHTML());
