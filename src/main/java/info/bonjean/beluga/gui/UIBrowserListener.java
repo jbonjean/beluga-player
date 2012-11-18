@@ -28,6 +28,7 @@ import info.bonjean.beluga.exception.PandoraException;
 import info.bonjean.beluga.gui.notification.Notification;
 import info.bonjean.beluga.log.Logger;
 import info.bonjean.beluga.player.VLCPlayer;
+import info.bonjean.beluga.request.BelugaHTTPClient;
 import info.bonjean.beluga.request.Method;
 import info.bonjean.beluga.response.Song;
 import info.bonjean.beluga.statefull.BelugaState;
@@ -99,8 +100,6 @@ public class UIBrowserListener extends WebBrowserAdapter
 	public void commandReceived(WebBrowserCommandEvent webBrowserCommandEvent)
 	{
 		String command = webBrowserCommandEvent.getCommand();
-		log.info("Received command: " + command);
-
 		try
 		{
 			if (command.equals("login"))
@@ -170,7 +169,11 @@ public class UIBrowserListener extends WebBrowserAdapter
 				configuration.setPassword((String) parameters[1]);
 				configuration.setProxyServer((String) parameters[2]);
 				configuration.setProxyServerPort((String) parameters[3]);
+				configuration.setProxyDNS((String) parameters[4]);
 				configuration.store();
+				
+				// reset the HTTP client to apply proxy changes
+				BelugaHTTPClient.reset();
 				log.info("Redirect to login");
 				commandReceived(new WebBrowserCommandEvent(ui.getWebBrowser(), "login", new Object[] {}));
 
@@ -208,6 +211,12 @@ public class UIBrowserListener extends WebBrowserAdapter
 				if (pe.getError() == PandoraError.UNKNOWN && pe.getMethod() == Method.USER_LOGIN)
 				{
 					log.error("Invalid credentials, redirect to configuration");
+					commandReceived(new WebBrowserCommandEvent(ui.getWebBrowser(), "configuration", new Object[] {}));
+					return;
+				}
+				if (pe.getError() == PandoraError.LICENSING_RESTRICTIONS)
+				{
+					log.error("Pandora is not available in your country, you should consider using a proxy or custom DNS");
 					commandReceived(new WebBrowserCommandEvent(ui.getWebBrowser(), "configuration", new Object[] {}));
 					return;
 				}

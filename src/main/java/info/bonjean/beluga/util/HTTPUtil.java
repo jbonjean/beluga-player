@@ -50,7 +50,7 @@ import com.google.gson.JsonSyntaxException;
  */
 public class HTTPUtil
 {
-	private static Logger log = new Logger(HTTPUtil.class);
+	private static final Logger log = new Logger(HTTPUtil.class);
 
 	private static final Gson gson = GsonUtil.getGsonInstance();
 	private static final String SERVICE_URL = "http://tuner.pandora.com/services/json/?";

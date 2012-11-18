@@ -209,6 +209,7 @@ public class HTMLUtil
 		if (configuration.getProxyServerPort() != null)
 			proxyHost = String.valueOf(configuration.getProxyServerPort());
 		tokens.put("$PROXY_PORT$", proxyHost);
+		tokens.put("$PROXY_DNS$", configuration.getProxyDNS());
 		tokens.put("$BACKGROUND$", getResourceAsBase64String(Page.IMG_PATH + "beluga.600x400.png"));
 
 		return loadPage(Page.CONFIGURATION, tokens);

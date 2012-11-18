@@ -207,4 +207,14 @@ public class BelugaConfiguration
 	{
 		set(Property.DEFAULT_STATION, defaultStationId);
 	}
+	
+	public String getProxyDNS()
+	{
+		return getString(Property.PROXY_DNS);
+	}
+	
+	public void setProxyDNS(String proxyDNS)
+	{
+		set(Property.PROXY_DNS, proxyDNS);
+	}
 }

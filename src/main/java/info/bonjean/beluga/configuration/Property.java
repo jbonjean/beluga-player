@@ -25,7 +25,7 @@ package info.bonjean.beluga.configuration;
  */
 public enum Property
 {
-	USER("user"), PASSWORD("password"), PROXY_HOST("proxy.host"), PROXY_PORT("proxy.port"), DEFAULT_STATION("default.station");
+	USER("user"), PASSWORD("password"), PROXY_HOST("proxy.host"), PROXY_PORT("proxy.port"), PROXY_DNS("proxy.dns"), DEFAULT_STATION("default.station");
 
 	private final String key;
 
