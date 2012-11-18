@@ -25,11 +25,13 @@ import info.bonjean.beluga.exception.CommunicationException;
 import info.bonjean.beluga.exception.CryptoException;
 import info.bonjean.beluga.exception.PandoraError;
 import info.bonjean.beluga.exception.PandoraException;
+import info.bonjean.beluga.gui.notification.Notification;
 import info.bonjean.beluga.log.Logger;
 import info.bonjean.beluga.player.VLCPlayer;
 import info.bonjean.beluga.request.Method;
 import info.bonjean.beluga.response.Song;
 import info.bonjean.beluga.statefull.BelugaState;
+import info.bonjean.beluga.util.HTMLUtil;
 import info.bonjean.beluga.util.HTTPUtil;
 
 import java.awt.event.ActionEvent;
@@ -85,6 +87,7 @@ public class UIBrowserListener extends WebBrowserAdapter
 	private void nextSong() throws BelugaException
 	{
 		String url = pandoraClient.nextSong();
+		new Notification(HTMLUtil.getNotification());
 		displayedSong = state.getSong();
 		log.info("Playing: " + url);
 		player.play(url);

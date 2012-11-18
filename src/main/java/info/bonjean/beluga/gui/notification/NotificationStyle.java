@@ -16,34 +16,34 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
-package info.bonjean.beluga.gui;
+package info.bonjean.beluga.gui.notification;
+
+import java.awt.GraphicsConfiguration;
+
+import javax.swing.Icon;
+import javax.swing.JWindow;
+
+import ch.swingfx.twinkle.style.AbstractNotificationStyle;
+import ch.swingfx.twinkle.style.INotificationStyle;
+import ch.swingfx.twinkle.window.ICreateNotificationWindow;
 
 /**
  * 
  * @author Julien Bonjean <julien@bonjean.info>
  * 
  */
-public enum Page
+public class NotificationStyle extends AbstractNotificationStyle
 {
-	COMMON, WELCOME, CONFIGURATION, SONG, NOTIFICATION;
-	
-	public static final String HTML_PATH = "/html/";
-	public static final String CSS_PATH = "/css/";
-	public static final String JS_PATH = "/js/";
-	public static final String IMG_PATH = "/img/";
-	
-	public String getHTML()
+	public NotificationStyle()
 	{
-		return HTML_PATH + name().toLowerCase() + ".html";
-	}
-	
-	public String getCss()
-	{
-		return CSS_PATH + name().toLowerCase() + ".css";
-	}
-	
-	public String getJs()
-	{
-		return JS_PATH + name().toLowerCase() + ".js";
+		super();
+		withNotificationWindowCreator(new ICreateNotificationWindow()
+		{
+			@Override
+			public JWindow createNotificationWindow(Icon icon, String title, String message, INotificationStyle style, GraphicsConfiguration graphicsConfiguration)
+			{
+				return new NotificationWindow(icon, title, message, style, graphicsConfiguration);
+			}
+		});
 	}
 }

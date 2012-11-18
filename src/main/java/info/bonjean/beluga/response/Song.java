@@ -42,6 +42,7 @@ public class Song
 	private String trackGain;
 	private boolean songBookmarked = false;
 	private boolean artistBookmarked = false;
+	private String albumArtBase64;
 
 	public String getTrackToken()
 	{
@@ -191,5 +192,15 @@ public class Song
 	public void setArtistBookmarked(boolean artistBookmarked)
 	{
 		this.artistBookmarked = artistBookmarked;
+	}
+
+	public String getAlbumArtBase64()
+	{
+		return albumArtBase64;
+	}
+
+	public void setAlbumArtBase64(String albumArtBase64)
+	{
+		this.albumArtBase64 = albumArtBase64;
 	}
 }

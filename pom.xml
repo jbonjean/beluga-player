@@ -41,6 +41,11 @@
 	</build>
 	<dependencies>
 		<dependency>
+			<groupId>ch.swingfx</groupId>
+			<artifactId>twinkle</artifactId>
+			<version>1.0.0</version>
+		</dependency>
+		<dependency>
 			<groupId>xom</groupId>
 			<artifactId>xom</artifactId>
 			<version>1.2.5</version>

@@ -16,34 +16,40 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
-package info.bonjean.beluga.gui;
+package info.bonjean.beluga.gui.notification.data;
+
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.net.URLConnection;
+
+import javax.xml.bind.DatatypeConverter;
 
 /**
  * 
  * @author Julien Bonjean <julien@bonjean.info>
  * 
+ * Code from: http://stackoverflow.com/questions/9388264/jeditorpane-with-inline-image
+ * 
  */
-public enum Page
-{
-	COMMON, WELCOME, CONFIGURATION, SONG, NOTIFICATION;
-	
-	public static final String HTML_PATH = "/html/";
-	public static final String CSS_PATH = "/css/";
-	public static final String JS_PATH = "/js/";
-	public static final String IMG_PATH = "/img/";
-	
-	public String getHTML()
-	{
-		return HTML_PATH + name().toLowerCase() + ".html";
-	}
-	
-	public String getCss()
-	{
-		return CSS_PATH + name().toLowerCase() + ".css";
-	}
-	
-	public String getJs()
-	{
-		return JS_PATH + name().toLowerCase() + ".js";
-	}
+public class DataConnection extends URLConnection {
+
+    public DataConnection(URL u) {
+        super(u);
+    }
+
+    @Override
+    public void connect() throws IOException {
+        connected = true;
+    }
+
+    @Override
+    public InputStream getInputStream() throws IOException {
+        String data = url.toString();
+        data = data.replaceFirst("^.*;base64,", "");
+        byte[] bytes = DatatypeConverter.parseBase64Binary(data);
+        return new ByteArrayInputStream(bytes);
+    }
+
 }

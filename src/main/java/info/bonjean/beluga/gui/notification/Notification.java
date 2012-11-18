@@ -16,34 +16,24 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
-package info.bonjean.beluga.gui;
+package info.bonjean.beluga.gui.notification;
+
+import ch.swingfx.twinkle.NotificationBuilder;
 
 /**
  * 
  * @author Julien Bonjean <julien@bonjean.info>
  * 
  */
-public enum Page
+public class Notification extends NotificationBuilder
 {
-	COMMON, WELCOME, CONFIGURATION, SONG, NOTIFICATION;
-	
-	public static final String HTML_PATH = "/html/";
-	public static final String CSS_PATH = "/css/";
-	public static final String JS_PATH = "/js/";
-	public static final String IMG_PATH = "/img/";
-	
-	public String getHTML()
-	{
-		return HTML_PATH + name().toLowerCase() + ".html";
-	}
-	
-	public String getCss()
-	{
-		return CSS_PATH + name().toLowerCase() + ".css";
-	}
-	
-	public String getJs()
-	{
-		return JS_PATH + name().toLowerCase() + ".js";
+	public Notification(String html) {
+		super();
+		withStyle(new NotificationStyle());
+		withTitle("Beluga");
+		withMessage(html);
+		withFadeInAnimation(false);
+		withFadeOutAnimation(false);
+		showNotification();
 	}
 }

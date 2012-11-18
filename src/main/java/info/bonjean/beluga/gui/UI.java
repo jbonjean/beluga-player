@@ -46,7 +46,7 @@ public class UI extends JPanel
 		super(new BorderLayout());
 		webBrowser.setBarsVisible(false);
 		webBrowser.setStatusBarVisible(false);
-		webBrowser.setDefaultPopupMenuRegistered(false); // disable right click
+		webBrowser.setDefaultPopupMenuRegistered(false);
 		webBrowser.setJavascriptEnabled(true);
 		add(webBrowser, BorderLayout.CENTER);
 	}

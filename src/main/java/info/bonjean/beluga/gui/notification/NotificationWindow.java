@@ -16,34 +16,35 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
-package info.bonjean.beluga.gui;
+package info.bonjean.beluga.gui.notification;
+
+import info.bonjean.beluga.gui.notification.data.Handler;
+
+import java.awt.GraphicsConfiguration;
+
+import javax.swing.Icon;
+import javax.swing.JTextPane;
+import javax.swing.JWindow;
+
+import ch.swingfx.twinkle.style.INotificationStyle;
 
 /**
  * 
  * @author Julien Bonjean <julien@bonjean.info>
  * 
  */
-public enum Page
+public class NotificationWindow extends JWindow
 {
-	COMMON, WELCOME, CONFIGURATION, SONG, NOTIFICATION;
-	
-	public static final String HTML_PATH = "/html/";
-	public static final String CSS_PATH = "/css/";
-	public static final String JS_PATH = "/js/";
-	public static final String IMG_PATH = "/img/";
-	
-	public String getHTML()
+	private static final long serialVersionUID = 516771806497568097L;
+
+	public NotificationWindow(Icon icon, String title, String message, INotificationStyle style, GraphicsConfiguration graphicsConfiguration)
 	{
-		return HTML_PATH + name().toLowerCase() + ".html";
-	}
-	
-	public String getCss()
-	{
-		return CSS_PATH + name().toLowerCase() + ".css";
-	}
-	
-	public String getJs()
-	{
-		return JS_PATH + name().toLowerCase() + ".js";
+		super(graphicsConfiguration);
+		Handler.install();
+		JTextPane textPane = new JTextPane();
+		textPane.setContentType("text/html");
+		textPane.setText(message);
+		add(textPane);
+		setBounds(0, 0, 300, 92);
 	}
 }

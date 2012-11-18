@@ -22,6 +22,7 @@ import info.bonjean.beluga.configuration.BelugaConfiguration;
 import info.bonjean.beluga.exception.CommunicationException;
 import info.bonjean.beluga.gui.Page;
 import info.bonjean.beluga.log.Logger;
+import info.bonjean.beluga.response.Song;
 import info.bonjean.beluga.response.Station;
 import info.bonjean.beluga.statefull.BelugaState;
 
@@ -34,9 +35,7 @@ import java.util.Map;
 
 import nu.xom.Builder;
 import nu.xom.Document;
-import nu.xom.Node;
 import nu.xom.Nodes;
-import nu.xom.ParsingException;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.IOUtils;
@@ -141,6 +140,13 @@ public class HTMLUtil
 
 		return replace(getResourceAsString(Page.COMMON.getHTML()), tokens);
 	}
+	
+	private static String shorten(String str, int length)
+	{
+		if(str.length() > length)
+			return str.substring(0, length - 3) + "...";
+		return str;
+	}
 
 	public static String getWelcome()
 	{
@@ -157,23 +163,7 @@ public class HTMLUtil
 		tokens.put("$STATION_NAME$", state.getStation().getStationName());
 		tokens.put("$ALBUM_NAME$", state.getSong().getAlbumName());
 		tokens.put("$ARTIST_NAME$", state.getSong().getArtistName());
-		String coverUrl = state.getSong().getAlbumArtUrl();
-		String cover = null;
-		if (coverUrl != null && !coverUrl.isEmpty())
-		{
-			try
-			{
-				cover = getURLContentAsBase64String(coverUrl);
-			} catch (CommunicationException e)
-			{
-				log.error("Cannot retrieve cover: " + coverUrl);
-			}
-		}
-		if (cover == null)
-		{
-			cover = getResourceAsBase64String(Page.IMG_PATH + "beluga.200x200.png");
-		}
-		tokens.put("$ALBUM_COVER$", cover);
+		tokens.put("$ALBUM_COVER$", state.getSong().getAlbumArtBase64());
 		tokens.put("$SONG_NAME$", state.getSong().getSongName());
 		tokens.put("$STATION_LIST$", generateStationListHTML());
 		String feedbackClass = "";
@@ -186,9 +176,9 @@ public class HTMLUtil
 			Builder parser = new Builder();
 			Document doc = parser.build(state.getSong().getSongExplorerUrl());
 			Nodes nodes = doc.query("/songExplorer/focusTrait/text()");
-			for(int i = 0; i < nodes.size() ; i++)
+			for (int i = 0; i < nodes.size(); i++)
 			{
-				if(i>0)
+				if (i > 0)
 					focusTraits.append(", ");
 				focusTraits.append(nodes.get(i).getValue());
 			}
@@ -199,6 +189,15 @@ public class HTMLUtil
 		tokens.put("$FOCUS_TRAITS$", focusTraits.toString());
 
 		return loadPage(Page.SONG, tokens);
+	}
+	
+	public static String getNotification()
+	{
+		Map<String, String> tokens = new HashMap<String, String>();
+		tokens.put("$ALBUM_COVER$", state.getSong().getAlbumArtBase64());
+		tokens.put("$ARTIST_NAME$", shorten(state.getSong().getArtistName(),30));
+		tokens.put("$SONG_NAME$", shorten(state.getSong().getSongName(),30));
+		return replace(getResourceAsString(Page.NOTIFICATION.getHTML()), tokens);
 	}
 
 	public static String getConfiguration()
@@ -215,7 +214,7 @@ public class HTMLUtil
 
 		return loadPage(Page.CONFIGURATION, tokens);
 	}
-
+	
 	private static String generateStationListHTML()
 	{
 		StringBuffer html = new StringBuffer();
@@ -231,5 +230,26 @@ public class HTMLUtil
 			html.append("</option>");
 		}
 		return html.toString();
+	}
+
+	public static String retrieveAlbumArt(Song song)
+	{
+		String coverUrl = song.getAlbumArtUrl();
+		String cover = null;
+		if (coverUrl != null && !coverUrl.isEmpty())
+		{
+			try
+			{
+				cover = getURLContentAsBase64String(coverUrl);
+			} catch (CommunicationException e)
+			{
+				log.error("Cannot retrieve cover: " + coverUrl);
+			}
+		}
+		if (cover == null)
+		{
+			cover = getResourceAsBase64String(Page.IMG_PATH + "beluga.200x200.png");
+		}
+		return cover;
 	}
 }

@@ -51,7 +51,7 @@ public class Main
 		configuration.load();
 		startUI();
 	}
-	
+
 	public static void startUI()
 	{
 		UIUtils.setPreferredLookAndFeel();
@@ -71,7 +71,7 @@ public class Main
 				frame.setVisible(true);
 				Image image = Toolkit.getDefaultToolkit().getImage(Main.class.getResource("/icons/beluga.40x40.png"));
 				frame.setIconImage(image);
-				
+
 				UIBrowserListener browserListener = new UIBrowserListener(ui);
 				ui.getWebBrowser().addWebBrowserListener(browserListener);
 				UIWindowListener windowListener = new UIWindowListener(ui, browserListener);

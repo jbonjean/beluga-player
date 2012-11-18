@@ -35,6 +35,7 @@ import info.bonjean.beluga.response.Result;
 import info.bonjean.beluga.response.Song;
 import info.bonjean.beluga.response.Station;
 import info.bonjean.beluga.statefull.BelugaState;
+import info.bonjean.beluga.util.HTMLUtil;
 import info.bonjean.beluga.util.HTTPUtil;
 import info.bonjean.beluga.util.PandoraUtil;
 
@@ -127,7 +128,6 @@ public class PandoraClient
 		log.info("Select station " + station.getStationName());
 
 		state.setStation(station);
-		state.setPlaylist(getPlaylist(station));
 	}
 
 	private Station getStationById(String stationId)
@@ -147,8 +147,15 @@ public class PandoraClient
 
 	public String nextSong() throws BelugaException
 	{
-		if (state.getPlaylist().isEmpty())
+		if (state.getPlaylist() == null || state.getPlaylist().isEmpty())
+		{
+			// retrieve playlist from Pandora
 			state.setPlaylist(getPlaylist(state.getStation()));
+			
+			// update extra information
+			for(Song song : state.getPlaylist())
+				song.setAlbumArtBase64(HTMLUtil.retrieveAlbumArt(song));
+		}
 
 		Song song = state.getPlaylist().get(0);
 		state.setSong(song);
