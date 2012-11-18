@@ -30,7 +30,6 @@ public class Notification extends NotificationBuilder
 	public Notification(String html) {
 		super();
 		withStyle(new NotificationStyle());
-		withTitle("Beluga");
 		withMessage(html);
 		withFadeInAnimation(false);
 		withFadeOutAnimation(false);

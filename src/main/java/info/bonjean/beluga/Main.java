@@ -22,7 +22,6 @@ import info.bonjean.beluga.configuration.BelugaConfiguration;
 import info.bonjean.beluga.gui.UI;
 import info.bonjean.beluga.gui.UIBrowserListener;
 import info.bonjean.beluga.gui.UIWindowListener;
-import info.bonjean.beluga.log.Logger;
 
 import java.awt.BorderLayout;
 import java.awt.Image;
@@ -42,11 +41,11 @@ import chrriis.dj.nativeswing.swtimpl.NativeInterface;
  */
 public class Main
 {
-	@SuppressWarnings("unused")
-	private static final Logger log = new Logger(Main.class);
-
 	public static void main(String[] args) throws IOException
 	{
+		if(args.length ==1 && args[0].equals("-version"))
+			System.out.println("Beluga Player 0.1");
+		
 		BelugaConfiguration configuration = BelugaConfiguration.getInstance();
 		configuration.load();
 		startUI();
