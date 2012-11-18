@@ -87,7 +87,7 @@ public class UIBrowserListener extends WebBrowserAdapter
 	private void nextSong() throws BelugaException
 	{
 		String url = pandoraClient.nextSong();
-		new Notification(HTMLUtil.getNotification());
+		new Notification(HTMLUtil.getNotificationHTML(state.getSong()));
 		displayedSong = state.getSong();
 		log.info("Playing: " + url);
 		player.play(url);

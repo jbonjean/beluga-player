@@ -24,13 +24,13 @@ import info.bonjean.beluga.gui.Page;
 import info.bonjean.beluga.log.Logger;
 import info.bonjean.beluga.response.Song;
 import info.bonjean.beluga.response.Station;
-import info.bonjean.beluga.statefull.BelugaState;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import nu.xom.Builder;
@@ -49,7 +49,6 @@ public class HTMLUtil
 {
 	private final static Logger log = new Logger(HTMLUtil.class);
 
-	private static final BelugaState state = BelugaState.getInstance();
 	private static final BelugaConfiguration configuration = BelugaConfiguration.getInstance();
 
 	public static byte[] getResourceAsByteArray(String resource)
@@ -148,7 +147,7 @@ public class HTMLUtil
 		return str;
 	}
 
-	public static String getWelcome()
+	public static String getWelcomeHTML()
 	{
 		Map<String, String> tokens = new HashMap<String, String>();
 		tokens.put("$LOADER$", getResourceAsBase64String(Page.IMG_PATH + "ajax-loader.gif"));
@@ -156,25 +155,25 @@ public class HTMLUtil
 		return loadPage(Page.WELCOME, tokens);
 	}
 
-	public static String getSong()
+	public static String getSongHTML(List<Station> stations, Station station, Song song)
 	{
 		Map<String, String> tokens = new HashMap<String, String>();
 		tokens.put("$USERNAME$", configuration.getUserName());
-		tokens.put("$STATION_NAME$", state.getStation().getStationName());
-		tokens.put("$ALBUM_NAME$", state.getSong().getAlbumName());
-		tokens.put("$ARTIST_NAME$", state.getSong().getArtistName());
-		tokens.put("$ALBUM_COVER$", state.getSong().getAlbumArtBase64());
-		tokens.put("$SONG_NAME$", state.getSong().getSongName());
-		tokens.put("$STATION_LIST$", generateStationListHTML());
+		tokens.put("$STATION_NAME$", station.getStationName());
+		tokens.put("$ALBUM_NAME$", song.getAlbumName());
+		tokens.put("$ARTIST_NAME$", song.getArtistName());
+		tokens.put("$ALBUM_COVER$", song.getAlbumArtBase64());
+		tokens.put("$SONG_NAME$", song.getSongName());
+		tokens.put("$STATION_LIST$", generateStationListHTML(stations, station));
 		String feedbackClass = "";
-		if (state.getSong().getSongRating() > 0)
+		if (song.getSongRating() > 0)
 			feedbackClass = "liked";
 		tokens.put("$LIKE_CLASS$", feedbackClass);
 		StringBuffer focusTraits = new StringBuffer();
 		try
 		{
 			Builder parser = new Builder();
-			Document doc = parser.build(state.getSong().getSongExplorerUrl());
+			Document doc = parser.build(song.getSongExplorerUrl());
 			Nodes nodes = doc.query("/songExplorer/focusTrait/text()");
 			for (int i = 0; i < nodes.size(); i++)
 			{
@@ -191,16 +190,16 @@ public class HTMLUtil
 		return loadPage(Page.SONG, tokens);
 	}
 	
-	public static String getNotification()
+	public static String getNotificationHTML(Song song)
 	{
 		Map<String, String> tokens = new HashMap<String, String>();
-		tokens.put("$ALBUM_COVER$", state.getSong().getAlbumArtBase64());
-		tokens.put("$ARTIST_NAME$", shorten(state.getSong().getArtistName(),30));
-		tokens.put("$SONG_NAME$", shorten(state.getSong().getSongName(),30));
+		tokens.put("$ALBUM_COVER$", song.getAlbumArtBase64());
+		tokens.put("$ARTIST_NAME$", shorten(song.getArtistName(),30));
+		tokens.put("$SONG_NAME$", shorten(song.getSongName(),30));
 		return replace(getResourceAsString(Page.NOTIFICATION.getHTML()), tokens);
 	}
 
-	public static String getConfiguration()
+	public static String getConfigurationHTML()
 	{
 		Map<String, String> tokens = new HashMap<String, String>();
 		tokens.put("$USERNAME$", configuration.getUserName());
@@ -215,15 +214,15 @@ public class HTMLUtil
 		return loadPage(Page.CONFIGURATION, tokens);
 	}
 	
-	private static String generateStationListHTML()
+	private static String generateStationListHTML(List<Station> stations, Station selectedStation)
 	{
 		StringBuffer html = new StringBuffer();
-		for (Station station : state.getStationList())
+		for (Station station : stations)
 		{
 			html.append("<option value='");
 			html.append(station.getStationId());
 			html.append("' ");
-			if (station.getStationId().equals(state.getStation().getStationId()))
+			if (station.getStationId().equals(selectedStation.getStationId()))
 				html.append("selected");
 			html.append(">");
 			html.append(station.getStationName());

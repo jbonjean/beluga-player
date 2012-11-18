@@ -22,6 +22,7 @@ import info.bonjean.beluga.Main;
 import info.bonjean.beluga.client.PandoraClient;
 import info.bonjean.beluga.gui.notification.Notification;
 import info.bonjean.beluga.log.Logger;
+import info.bonjean.beluga.statefull.BelugaState;
 import info.bonjean.beluga.util.HTMLUtil;
 import info.bonjean.beluga.util.PandoraUtil;
 import uk.co.caprica.vlcj.player.MediaPlayer;
@@ -53,7 +54,7 @@ public class VLCPlayer
 				try
 				{
 					mediaPlayer.playMedia(PandoraClient.getInstance().nextSong());
-					new Notification(HTMLUtil.getNotification());
+					new Notification(HTMLUtil.getNotificationHTML(BelugaState.getInstance().getSong()));
 
 				} catch (Exception e)
 				{

@@ -18,6 +18,7 @@
  */
 package info.bonjean.beluga.gui;
 
+import info.bonjean.beluga.statefull.BelugaState;
 import info.bonjean.beluga.util.HTMLUtil;
 
 import java.awt.BorderLayout;
@@ -54,16 +55,16 @@ public class UI extends JPanel
 	public void updateSongUI()
 	{
 		webBrowser.executeJavascript("displayLoader()");
-		webBrowser.setHTMLContent(HTMLUtil.getSong());
+		webBrowser.setHTMLContent(HTMLUtil.getSongHTML(BelugaState.getInstance().getStationList(), BelugaState.getInstance().getStation(), BelugaState.getInstance().getSong()));
 	}
 
 	public void updateWelcomeUI()
 	{
-		webBrowser.setHTMLContent(HTMLUtil.getWelcome());
+		webBrowser.setHTMLContent(HTMLUtil.getWelcomeHTML());
 	}
 
 	public void updateConfigurationUI()
 	{
-		webBrowser.setHTMLContent(HTMLUtil.getConfiguration());
+		webBrowser.setHTMLContent(HTMLUtil.getConfigurationHTML());
 	}
 }
