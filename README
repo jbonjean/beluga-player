@@ -7,16 +7,12 @@
                       __/ |      
                      |___/       
 
-Beluga is a simple Pandora client developed for personal use but other people
-may find it interesting so I decided to publish it.
+Beluga Player is a simple Pandora (pandora.com) client developed for personal
+use but other people may find it interesting so I decided to publish it.
 This is still a work in progress, many features are missing, but it seems to be
 pretty stable.
 
-Install twinkle in your local repository:
- - cd /tmp
- - git clone https://github.com/spreiter301/Core.git && cd Core && mvn install
- - cd /tmp
- - git clone https://github.com/spreiter301/Twinkle.git && cd Twinkle && mvn install
+To start: java -jar beluga-0.1-standalone-x86_64.jar
 
 Special thanks to:
  - Pandoroid project (http://aregner.com/android/pandoroid/), I reuse the
