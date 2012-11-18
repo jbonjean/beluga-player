@@ -23,4 +23,5 @@ package info.bonjean.beluga.exception;
  */
 public class CryptoException extends BelugaException
 {
+	private static final long serialVersionUID = 2446849746521445258L;
 }

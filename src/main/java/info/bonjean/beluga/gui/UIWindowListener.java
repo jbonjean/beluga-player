@@ -16,8 +16,6 @@
  */
 package info.bonjean.beluga.gui;
 
-import info.bonjean.beluga.log.Logger;
-
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 
@@ -30,7 +28,6 @@ import chrriis.dj.nativeswing.swtimpl.components.WebBrowserCommandEvent;
  */
 public class UIWindowListener implements WindowListener
 {
-	private static final Logger log = new Logger(UIWindowListener.class);
 	private UI ui;
 	private UIBrowserListener browserListener;
 	

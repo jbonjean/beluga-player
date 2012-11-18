@@ -16,9 +16,6 @@
  */
 package info.bonjean.beluga.request;
 
-import info.bonjean.beluga.exception.InternalException;
-
-import java.io.UnsupportedEncodingException;
 import java.util.LinkedList;
 import java.util.List;
 

@@ -17,8 +17,8 @@
 package info.bonjean.beluga;
 
 import info.bonjean.beluga.configuration.BelugaConfiguration;
-import info.bonjean.beluga.gui.UIBrowserListener;
 import info.bonjean.beluga.gui.UI;
+import info.bonjean.beluga.gui.UIBrowserListener;
 import info.bonjean.beluga.gui.UIWindowListener;
 import info.bonjean.beluga.log.Logger;
 

@@ -18,8 +18,6 @@ package info.bonjean.beluga.client;
 
 import info.bonjean.beluga.configuration.BelugaConfiguration;
 import info.bonjean.beluga.exception.BelugaException;
-import info.bonjean.beluga.exception.CryptoException;
-import info.bonjean.beluga.exception.InternalException;
 import info.bonjean.beluga.log.Logger;
 import info.bonjean.beluga.request.ArtistBookmark;
 import info.bonjean.beluga.request.Feedback;
@@ -27,8 +25,8 @@ import info.bonjean.beluga.request.Method;
 import info.bonjean.beluga.request.ParameterMap;
 import info.bonjean.beluga.request.PartnerAuth;
 import info.bonjean.beluga.request.PlayList;
-import info.bonjean.beluga.request.SongSleep;
 import info.bonjean.beluga.request.SongBookmark;
+import info.bonjean.beluga.request.SongSleep;
 import info.bonjean.beluga.request.StationList;
 import info.bonjean.beluga.request.UserLogin;
 import info.bonjean.beluga.response.Result;
@@ -38,12 +36,7 @@ import info.bonjean.beluga.statefull.BelugaState;
 import info.bonjean.beluga.util.HTTPUtil;
 import info.bonjean.beluga.util.PandoraUtil;
 
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.URISyntaxException;
 import java.util.List;
-
-import org.apache.http.client.ClientProtocolException;
 
 /**
  * 

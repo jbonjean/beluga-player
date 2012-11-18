@@ -23,6 +23,8 @@ package info.bonjean.beluga.exception;
  */
 public class CommunicationException extends BelugaException
 {
+	private static final long serialVersionUID = -3347089765636221702L;
+	
 	public CommunicationException(String message)
 	{
 		super(message);

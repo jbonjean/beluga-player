@@ -25,6 +25,7 @@ import info.bonjean.beluga.request.Method;
  */
 public class PandoraException extends BelugaException
 {
+	private static final long serialVersionUID = -3262873433055296370L;
 	private Method method;
 	private String message;
 	private long code;
