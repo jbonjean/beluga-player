@@ -134,5 +134,15 @@ body {
 	width: 280px;
 }
 
-.songExtra .time {
+.songExtras .focusTraits {
+	margin-top: 20px;
+}
+
+.songExtras .focusTraits .label {
+	float: left;
+	font-weight: bold;
+}
+
+.songExtras .focusTraits .value {
+	text-indent : 8px;
 }

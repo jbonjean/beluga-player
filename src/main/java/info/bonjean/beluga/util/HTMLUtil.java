@@ -32,6 +32,12 @@ import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.Map;
 
+import nu.xom.Builder;
+import nu.xom.Document;
+import nu.xom.Node;
+import nu.xom.Nodes;
+import nu.xom.ParsingException;
+
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.IOUtils;
 
@@ -115,7 +121,7 @@ public class HTMLUtil
 		StringBuffer sb = new StringBuffer();
 		sb.append(getResourceAsString(Page.COMMON.getCss()));
 		sb.append(getResourceAsString(page.getCss()));
-		if(System.getProperty("debug") != null)
+		if (System.getProperty("debug") != null)
 			sb.append(getResourceAsString(Page.CSS_PATH + "debug.css"));
 		tokens.put("$CSS$", sb.toString());
 
@@ -127,9 +133,9 @@ public class HTMLUtil
 
 		// add ajax loader image
 		tokens.put("$LOADER$", getResourceAsBase64String(Page.IMG_PATH + "ajax-loader-2.gif"));
-		
+
 		tokens.put("$PAGE$", page.name());
-		
+
 		// add html token (include page to display)
 		tokens.put("$CONTENT$", html);
 
@@ -174,6 +180,23 @@ public class HTMLUtil
 		if (state.getSong().getSongRating() > 0)
 			feedbackClass = "liked";
 		tokens.put("$LIKE_CLASS$", feedbackClass);
+		StringBuffer focusTraits = new StringBuffer();
+		try
+		{
+			Builder parser = new Builder();
+			Document doc = parser.build(state.getSong().getSongExplorerUrl());
+			Nodes nodes = doc.query("/songExplorer/focusTrait/text()");
+			for(int i = 0; i < nodes.size() ; i++)
+			{
+				if(i>0)
+					focusTraits.append(", ");
+				focusTraits.append(nodes.get(i).getValue());
+			}
+		} catch (Exception ex)
+		{
+			log.error("Cannot retrieve focus traits");
+		}
+		tokens.put("$FOCUS_TRAITS$", focusTraits.toString());
 
 		return loadPage(Page.SONG, tokens);
 	}
