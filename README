@@ -1,0 +1,19 @@
+  ____       _                   
+ |  _ \     | |                  
+ | |_) | ___| |_   _  __ _  __ _ 
+ |  _ < / _ \ | | | |/ _` |/ _` |
+ | |_) |  __/ | |_| | (_| | (_| |
+ |____/ \___|_|\__,_|\__, |\__,_|
+                      __/ |      
+                     |___/       
+
+Beluga is a simple Pandora client developed for personal use but other people
+may find it interesting so I decided to publish it.
+This is still a work in progress, many features are missing, but it seems to be
+pretty stable.
+
+Special thanks to:
+ - Pandoroid project (http://aregner.com/android/pandoroid/), I reuse the
+encryption part.
+ - User Opals-On-Black.com on flickr
+(http://www.flickr.com/photos/opals-on-black/) for his Beluga picture.
