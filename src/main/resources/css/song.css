@@ -8,8 +8,6 @@ body {
 	outline: 0;
 }
 
-.mainControls {
-}
 .mainControls .exit {
 	float: right;
 }
@@ -18,10 +16,6 @@ body {
 	margin-left: 5px;
 	margin-top:10px;
 }
-
-.controls {
-}
-
 
 .controls a,
 .songControls a {
@@ -65,7 +59,6 @@ body {
 	linear, left top, left bottom,
 	from(#71d074),
 	to(#47c14a));
-
 }
 .songControls a.ban {
 	color: #d05656;
@@ -120,7 +113,7 @@ body {
 	float: left;
 	margin-left: 20px;
 	word-wrap: break-word;
-	width: 280px;
+	width: 340px;
 }
 .songName {
 	font-weight: bold;
@@ -131,7 +124,7 @@ body {
 	float: left;
 	padding-top: 20px;
 	margin-left: 20px;
-	width: 280px;
+	width: 340px;
 }
 
 .songExtras .focusTraits {
