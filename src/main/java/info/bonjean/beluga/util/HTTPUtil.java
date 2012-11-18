@@ -39,6 +39,7 @@ import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.entity.StringEntity;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 
 /**
  * 
@@ -66,7 +67,15 @@ public class HTTPUtil
 		Response response;
 		String requestResponse = HTTPUtil.jsonRequest(urlStr, data);
 		log.info("Response: " + requestResponse);
-		response = gson.fromJson(requestResponse, Response.class);
+		
+		try
+		{
+			response = gson.fromJson(requestResponse, Response.class);
+		}
+		catch(JsonSyntaxException e)
+		{
+			throw new CommunicationException("Response is not valid");
+		}
 
 		if (response.getStat().equals("fail"))
 			throw new PandoraException(method, response.getMessage(), response.getCode());

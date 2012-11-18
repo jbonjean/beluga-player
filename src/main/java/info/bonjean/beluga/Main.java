@@ -63,7 +63,7 @@ public class Main
 				UI ui = new UI();
 				frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 				frame.getContentPane().add(ui, BorderLayout.CENTER);
-				frame.setSize(550, 400);
+				frame.setSize(600, 400);
 				frame.setResizable(false);
 				frame.setLocationByPlatform(true);
 				frame.setVisible(true);

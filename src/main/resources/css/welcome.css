@@ -1,0 +1,21 @@
+#background {
+	opacity: 0.1;
+	height: 100%;
+	width: 100%;
+	position: fixed;
+	left: 0;
+	top: 0;
+}
+
+.connecting {
+	padding-top: 20px;
+}
+
+.connecting .text {
+	float:left;
+	margin-top: 2px;
+	font-weight: bold;
+}
+.connecting .loader {
+	float:left;
+}

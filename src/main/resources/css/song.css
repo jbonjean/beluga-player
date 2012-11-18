@@ -1,3 +1,13 @@
+body {
+	-webkit-user-drag: none;
+	-moz-user-select: none;
+	-webkit-user-select: none;
+}
+
+:focus {
+	outline: 0;
+}
+
 .mainControls {
 }
 .mainControls .exit {

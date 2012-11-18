@@ -7,17 +7,19 @@
 	$JS$
 </script>
 </head>
-<body onselectstart='return false;'>
+<body onselectstart="return false;">
 
-<div class="debug">
-	<div class="reload"><a href="command://reload">Reload</a></div>
-</div>
+	<div class="debug">
+		<div class="reload"><a href="command://reload/$PAGE$">Reload</a></div>
+	</div>
+	
+	<div id="loader">
+		<img src="data:image/png;base64,$LOADER$"/>
+	</div>
 
-<div id="loader">
-	<img src="data:image/png;base64,$LOADER$"/>
-</div>
-
-$CONTENT$
+	<div id="content">
+		$CONTENT$
+	</div>
 
 </body>
 </html>

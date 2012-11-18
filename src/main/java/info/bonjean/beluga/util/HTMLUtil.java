@@ -18,7 +18,6 @@ package info.bonjean.beluga.util;
 
 import info.bonjean.beluga.configuration.BelugaConfiguration;
 import info.bonjean.beluga.exception.CommunicationException;
-import info.bonjean.beluga.exception.InternalException;
 import info.bonjean.beluga.gui.Page;
 import info.bonjean.beluga.log.Logger;
 import info.bonjean.beluga.response.Station;
@@ -46,7 +45,7 @@ public class HTMLUtil
 	private static final BelugaState state = BelugaState.getInstance();
 	private static final BelugaConfiguration configuration = BelugaConfiguration.getInstance();
 
-	public static byte[] getResourceAsByteArray(String resource) throws InternalException
+	public static byte[] getResourceAsByteArray(String resource)
 	{
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		InputStream bais;
@@ -62,22 +61,18 @@ public class HTMLUtil
 			baos.close();
 		} catch (IOException e)
 		{
-			throw new InternalException(e);
+			log.error("Cannot load resource " + resource);
+			System.exit(-1);
 		}
 		return baos.toByteArray();
 	}
-	
-	public static String getResourceAsBase64String(String resource) throws InternalException
+
+	public static String getResourceAsBase64String(String resource)
 	{
 		return Base64.encodeBase64String(getResourceAsByteArray(resource));
 	}
-	
-	public static String getURLContentAsBase64String(String url) throws CommunicationException
-	{
-		return Base64.encodeBase64String(HTTPUtil.request(url));
-	}
 
-	private static String readFile(String name)
+	private static String getResourceAsString(String name)
 	{
 		String content = null;
 		try
@@ -92,7 +87,12 @@ public class HTMLUtil
 		}
 		return content;
 	}
-	
+
+	public static String getURLContentAsBase64String(String url) throws CommunicationException
+	{
+		return Base64.encodeBase64String(HTTPUtil.request(url));
+	}
+
 	private static String replace(String html, Map<String, String> tokens)
 	{
 		for (String token : tokens.keySet())
@@ -104,54 +104,41 @@ public class HTMLUtil
 	private static String loadPage(Page page, Map<String, String> tokens)
 	{
 		// load page raw HTML
-		String html = replace(readFile(page.getHTML()), tokens);
-		
+		String html = replace(getResourceAsString(page.getHTML()), tokens);
+
 		// clear tokens for main html (wrapper)
 		tokens.clear();
-		
+
 		// add css token
 		StringBuffer sb = new StringBuffer();
-		sb.append(readFile(Page.COMMON.getCss()));
-		sb.append(readFile(page.getCss()));
+		sb.append(getResourceAsString(Page.COMMON.getCss()));
+		sb.append(getResourceAsString(page.getCss()));
+		if(System.getProperty("debug") != null)
+			sb.append(getResourceAsString(Page.CSS_PATH + "debug.css"));
 		tokens.put("$CSS$", sb.toString());
-		
+
 		// add js token
 		sb = new StringBuffer();
-		sb.append(readFile(Page.COMMON.getJs()));
-		sb.append(readFile(page.getJs()));
+		sb.append(getResourceAsString(Page.COMMON.getJs()));
+		sb.append(getResourceAsString(page.getJs()));
 		tokens.put("$JS$", sb.toString());
-		
+
 		// add ajax loader image
-		String loader = null;
-		try
-		{
-			loader = getResourceAsBase64String("/img/ajax-loader-2.gif");
-		} catch (InternalException e)
-		{
-			log.error("Cannot load loading animation");
-			loader = "";
-		}
-		tokens.put("$LOADER$", loader);
+		tokens.put("$LOADER$", getResourceAsBase64String(Page.IMG_PATH + "ajax-loader-2.gif"));
+		
+		tokens.put("$PAGE$", page.name());
 		
 		// add html token (include page to display)
 		tokens.put("$CONTENT$", html);
-		
-		return replace(readFile(Page.COMMON.getHTML()), tokens);
+
+		return replace(getResourceAsString(Page.COMMON.getHTML()), tokens);
 	}
 
 	public static String getWelcome()
 	{
 		Map<String, String> tokens = new HashMap<String, String>();
-		String loader = null;
-		try
-		{
-			loader = getResourceAsBase64String(Page.IMG_PATH + "ajax-loader.gif");
-		} catch (InternalException e)
-		{
-			log.error("Cannot load loading animation");
-			loader = "";
-		}
-		tokens.put("$LOADER$", loader);
+		tokens.put("$LOADER$", getResourceAsBase64String(Page.IMG_PATH + "ajax-loader.gif"));
+		tokens.put("$BACKGROUND$", getResourceAsBase64String(Page.IMG_PATH + "beluga.600x400.png"));
 		return loadPage(Page.WELCOME, tokens);
 	}
 
@@ -174,16 +161,9 @@ public class HTMLUtil
 				log.error("Cannot retrieve cover: " + coverUrl);
 			}
 		}
-		if(cover == null)
+		if (cover == null)
 		{
-			try
-			{
-				cover = getResourceAsBase64String("/img/beluga.200x200.png");
-			} catch (InternalException e)
-			{
-				log.error("Cannot load default cover");
-				cover = "";
-			}
+			cover = getResourceAsBase64String(Page.IMG_PATH + "beluga.200x200.png");
 		}
 		tokens.put("$ALBUM_COVER$", cover);
 		tokens.put("$SONG_NAME$", state.getSong().getSongName());
@@ -206,7 +186,8 @@ public class HTMLUtil
 		if (configuration.getProxyServerPort() != null)
 			proxyHost = String.valueOf(configuration.getProxyServerPort());
 		tokens.put("$PROXY_PORT$", proxyHost);
-		
+		tokens.put("$BACKGROUND$", getResourceAsBase64String(Page.IMG_PATH + "beluga.600x400.png"));
+
 		return loadPage(Page.CONFIGURATION, tokens);
 	}
 

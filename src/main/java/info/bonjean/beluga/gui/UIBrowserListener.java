@@ -139,9 +139,19 @@ public class UIBrowserListener extends WebBrowserAdapter
 			{
 				System.exit(0);
 
-			} else if (command.equals("reload"))
+			} else if (command.startsWith("reload/"))
 			{
-				ui.updateSongUI();
+				String page = command.split("/")[1];
+				log.info("Reload page " + page);
+				
+				if(page.equals(Page.WELCOME.name()))
+					ui.updateWelcomeUI();
+				else if(page.equals(Page.CONFIGURATION.name()))
+					ui.updateConfigurationUI();
+				else if(page.equals(Page.SONG.name()))
+					ui.updateSongUI();
+				else
+					log.error("Unknow page " + page);
 
 			} else if (command.equals("configuration"))
 			{
