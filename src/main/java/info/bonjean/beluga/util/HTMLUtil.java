@@ -18,6 +18,8 @@
  */
 package info.bonjean.beluga.util;
 
+import static info.bonjean.beluga.util.I18NUtil._;
+import info.bonjean.beluga.client.BelugaState;
 import info.bonjean.beluga.configuration.BelugaConfiguration;
 import info.bonjean.beluga.exception.CommunicationException;
 import info.bonjean.beluga.gui.Page;
@@ -132,6 +134,13 @@ public class HTMLUtil
 
 		// add images
 		tokens.put("$LOADER$", getResourceAsBase64String(Page.IMG_PATH + "ajax-loader-2.gif"));
+
+		// errors
+		sb = new StringBuffer();
+		for (String error : BelugaState.getInstance().getErrors())
+			sb.append("<p>" + _(error) + "</p>");
+		tokens.put("$ERRORS$", sb.toString());
+		BelugaState.getInstance().clearErrors();
 
 		tokens.put("$PAGE$", page.name());
 

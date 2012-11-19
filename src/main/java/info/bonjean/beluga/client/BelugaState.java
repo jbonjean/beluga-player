@@ -21,6 +21,7 @@ package info.bonjean.beluga.client;
 import info.bonjean.beluga.response.Song;
 import info.bonjean.beluga.response.Station;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -42,6 +43,8 @@ public class BelugaState
 	private Station station;
 	private List<Song> playlist;
 	private Song song;
+	
+	private List<String> errors = new ArrayList<String>();
 
 	private BelugaState()
 	{
@@ -133,5 +136,20 @@ public class BelugaState
 	public void setSong(Song song)
 	{
 		this.song = song;
+	}
+
+	public List<String> getErrors()
+	{
+		return errors;
+	}
+	
+	public void clearErrors()
+	{
+		errors.clear();
+	}
+
+	public void addError(String key)
+	{
+		errors.add(key);
 	}
 }

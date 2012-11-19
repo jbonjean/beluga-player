@@ -159,6 +159,9 @@ public class UIBrowserListener extends WebBrowserAdapter
 
 			} else if (command.equals("configuration"))
 			{
+				Object[] parameters = webBrowserCommandEvent.getParameters();
+				if(parameters.length > 0)
+					state.addError((String) parameters[0]);
 				ui.updateConfigurationUI();
 
 			} else if (command.equals("save-configuration"))
@@ -211,13 +214,13 @@ public class UIBrowserListener extends WebBrowserAdapter
 				if (pe.getError() == PandoraError.UNKNOWN && pe.getMethod() == Method.USER_LOGIN)
 				{
 					log.error("Invalid credentials, redirect to configuration");
-					commandReceived(new WebBrowserCommandEvent(ui.getWebBrowser(), "configuration", new Object[] {}));
+					commandReceived(new WebBrowserCommandEvent(ui.getWebBrowser(), "configuration", new Object[] {"invalid.credentials"}));
 					return;
 				}
 				if (pe.getError() == PandoraError.LICENSING_RESTRICTIONS)
 				{
 					log.error("Pandora is not available in your country, you should consider using a proxy or custom DNS");
-					commandReceived(new WebBrowserCommandEvent(ui.getWebBrowser(), "configuration", new Object[] {}));
+					commandReceived(new WebBrowserCommandEvent(ui.getWebBrowser(), "configuration", new Object[] {"pandora.not.available.check.proxy"}));
 					return;
 				}
 			}

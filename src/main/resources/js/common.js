@@ -10,4 +10,7 @@ function disableDragAndDrop(elements) {
 function init() {
 	disableDragAndDrop(document.getElementsByTagName("a"));
 	disableDragAndDrop(document.getElementsByTagName("img"));
+	document.getElementById("errors").addEventListener("webkitAnimationEnd", function(event, element) {
+    	document.getElementById("errors").style.display = "none";
+	}, false );
 }
