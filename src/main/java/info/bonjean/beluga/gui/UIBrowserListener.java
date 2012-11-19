@@ -112,11 +112,13 @@ public class UIBrowserListener extends WebBrowserAdapter
 
 			} else if (command.equals("next"))
 			{
+				ui.triggerLoader();
 				nextSong();
 				ui.updateSongUI();
 
 			} else if (command.equals("like"))
 			{
+				ui.triggerLoader();
 				boolean positive = true;
 				if (state.getSong().getSongRating() > 0)
 					positive = false;
@@ -125,12 +127,14 @@ public class UIBrowserListener extends WebBrowserAdapter
 
 			} else if (command.equals("ban"))
 			{
+				ui.triggerLoader();
 				pandoraClient.addFeedback(false);
 				nextSong();
 				ui.updateSongUI();
 
 			} else if (command.equals("sleep"))
 			{
+				ui.triggerLoader();
 				pandoraClient.sleepSong();
 				nextSong();
 				ui.updateSongUI();
@@ -159,6 +163,7 @@ public class UIBrowserListener extends WebBrowserAdapter
 
 			} else if (command.equals("configuration"))
 			{
+				ui.triggerLoader();
 				Object[] parameters = webBrowserCommandEvent.getParameters();
 				if(parameters.length > 0)
 					state.addError((String) parameters[0]);
@@ -182,6 +187,7 @@ public class UIBrowserListener extends WebBrowserAdapter
 
 			} else if (command.startsWith("stationSelect"))
 			{
+				ui.triggerLoader();
 				Map<String, String> parameters = HTTPUtil.parseUrl(command);
 				String stationId = parameters.get("stationId");
 				log.info("Select station with id: " + stationId);

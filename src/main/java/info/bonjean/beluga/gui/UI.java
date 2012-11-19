@@ -54,7 +54,6 @@ public class UI extends JPanel
 
 	public void updateSongUI()
 	{
-		webBrowser.executeJavascript("displayLoader()");
 		webBrowser.setHTMLContent(HTMLUtil.getSongHTML(BelugaState.getInstance().getStationList(), BelugaState.getInstance().getStation(), BelugaState.getInstance().getSong()));
 	}
 
@@ -66,5 +65,10 @@ public class UI extends JPanel
 	public void updateConfigurationUI()
 	{
 		webBrowser.setHTMLContent(HTMLUtil.getConfigurationHTML());
+	}
+
+	public void triggerLoader()
+	{
+		webBrowser.executeJavascript("displayLoader()");
 	}
 }
