@@ -19,7 +19,9 @@
 package info.bonjean.beluga.util;
 
 import info.bonjean.beluga.exception.CryptoException;
-import info.bonjean.beluga.log.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.aregner.pandora.Blowfish;
 import com.aregner.pandora.PandoraKeys;
@@ -32,7 +34,7 @@ import com.aregner.pandora.PandoraKeys;
 public class CryptoUtil
 {
 	@SuppressWarnings("unused")
-	private static Logger log = new Logger(CryptoUtil.class);
+	private static final Logger log = LoggerFactory.getLogger(CryptoUtil.class);
 
 	private static final Blowfish blowfish_decode = new Blowfish(PandoraKeys.in_key_p, PandoraKeys.in_key_s);
 	private static final Blowfish blowfish_encode = new Blowfish(PandoraKeys.out_key_p, PandoraKeys.out_key_s);

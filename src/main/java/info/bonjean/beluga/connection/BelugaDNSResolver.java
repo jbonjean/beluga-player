@@ -18,8 +18,6 @@
  */
 package info.bonjean.beluga.connection;
 
-import info.bonjean.beluga.log.Logger;
-
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
@@ -27,6 +25,8 @@ import java.util.List;
 
 import org.apache.http.conn.DnsResolver;
 import org.apache.http.impl.conn.SystemDefaultDnsResolver;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.xbill.DNS.ARecord;
 import org.xbill.DNS.Lookup;
 import org.xbill.DNS.Record;
@@ -42,7 +42,7 @@ import org.xbill.DNS.Type;
  */
 public class BelugaDNSResolver implements DnsResolver
 {
-	private static final Logger log = new Logger(BelugaDNSResolver.class);
+	private static final Logger log = LoggerFactory.getLogger(BelugaDNSResolver.class);
 	private Lookup dnsProxyLookup;
 	private DnsResolver fallbackDNSResolver;
 	private String pandoraURL;

@@ -28,7 +28,6 @@ import info.bonjean.beluga.exception.CryptoException;
 import info.bonjean.beluga.exception.PandoraError;
 import info.bonjean.beluga.exception.PandoraException;
 import info.bonjean.beluga.gui.notification.Notification;
-import info.bonjean.beluga.log.Logger;
 import info.bonjean.beluga.player.VLCPlayer;
 import info.bonjean.beluga.request.Method;
 import info.bonjean.beluga.response.Song;
@@ -41,6 +40,9 @@ import java.util.Map;
 
 import javax.swing.Timer;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import chrriis.dj.nativeswing.swtimpl.components.WebBrowserAdapter;
 import chrriis.dj.nativeswing.swtimpl.components.WebBrowserCommandEvent;
 
@@ -51,7 +53,7 @@ import chrriis.dj.nativeswing.swtimpl.components.WebBrowserCommandEvent;
  */
 public class UIBrowserListener extends WebBrowserAdapter
 {
-	private static final Logger log = new Logger(UIBrowserListener.class);
+	private static final Logger log = LoggerFactory.getLogger(UIBrowserListener.class);
 
 	private UI ui;
 	private Song displayedSong;

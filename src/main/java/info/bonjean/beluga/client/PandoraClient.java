@@ -20,7 +20,6 @@ package info.bonjean.beluga.client;
 
 import info.bonjean.beluga.configuration.BelugaConfiguration;
 import info.bonjean.beluga.exception.BelugaException;
-import info.bonjean.beluga.log.Logger;
 import info.bonjean.beluga.request.ArtistBookmark;
 import info.bonjean.beluga.request.Feedback;
 import info.bonjean.beluga.request.Method;
@@ -40,6 +39,9 @@ import info.bonjean.beluga.util.PandoraUtil;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * 
  * @author Julien Bonjean <julien@bonjean.info>
@@ -47,7 +49,7 @@ import java.util.List;
  */
 public class PandoraClient
 {
-	private static final Logger log = new Logger(PandoraClient.class);
+	private static final Logger log = LoggerFactory.getLogger(PandoraClient.class);
 	private static PandoraClient instance;
 
 	private static final BelugaState state = BelugaState.getInstance();

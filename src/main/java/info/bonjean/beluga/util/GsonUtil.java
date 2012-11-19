@@ -18,7 +18,8 @@
  */
 package info.bonjean.beluga.util;
 
-import info.bonjean.beluga.log.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -31,7 +32,7 @@ import com.google.gson.GsonBuilder;
 public class GsonUtil
 {
 	@SuppressWarnings("unused")
-	private static Logger log = new Logger(GsonUtil.class);
+	private static final Logger log = LoggerFactory.getLogger(GsonUtil.class);
 
 	private static Gson gson;
 

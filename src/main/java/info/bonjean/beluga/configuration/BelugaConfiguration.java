@@ -18,13 +18,14 @@
  */
 package info.bonjean.beluga.configuration;
 
-import info.bonjean.beluga.log.Logger;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Properties;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 
@@ -33,7 +34,7 @@ import java.util.Properties;
  */
 public class BelugaConfiguration
 {
-	private static final Logger log = new Logger(BelugaConfiguration.class);
+	private static final Logger log = LoggerFactory.getLogger(BelugaConfiguration.class);
 	private static final String CONFIGURATION_DIRECTORY = System.getProperty("user.home") + "/.config/beluga";
 	private static final String CONFIGURATION_FILE = CONFIGURATION_DIRECTORY + "/configuration.properties";
 	private Properties properties;

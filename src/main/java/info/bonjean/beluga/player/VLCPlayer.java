@@ -22,9 +22,12 @@ import info.bonjean.beluga.Main;
 import info.bonjean.beluga.client.BelugaState;
 import info.bonjean.beluga.client.PandoraClient;
 import info.bonjean.beluga.gui.notification.Notification;
-import info.bonjean.beluga.log.Logger;
 import info.bonjean.beluga.util.HTMLUtil;
 import info.bonjean.beluga.util.PandoraUtil;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import uk.co.caprica.vlcj.player.MediaPlayer;
 import uk.co.caprica.vlcj.player.MediaPlayerEventAdapter;
 import uk.co.caprica.vlcj.player.MediaPlayerFactory;
@@ -36,7 +39,7 @@ import uk.co.caprica.vlcj.player.MediaPlayerFactory;
  */
 public class VLCPlayer
 {
-	private static final Logger log = new Logger(Main.class);
+	private static final Logger log = LoggerFactory.getLogger(Main.class);
 	private static VLCPlayer instance;
 	private MediaPlayer mediaPlayer;
 

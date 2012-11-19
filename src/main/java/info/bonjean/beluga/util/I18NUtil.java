@@ -18,11 +18,12 @@
  */
 package info.bonjean.beluga.util;
 
-import info.bonjean.beluga.log.Logger;
-
 import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 
@@ -32,7 +33,7 @@ import java.util.ResourceBundle;
 public class I18NUtil
 {
 	private static final ResourceBundle messages = ResourceBundle.getBundle("i18n.messages", Locale.getDefault());
-	private static final Logger log = new Logger(I18NUtil.class);
+	private static final Logger log = LoggerFactory.getLogger(I18NUtil.class);
 	
 	public static String _(String key)
 	{

@@ -23,7 +23,6 @@ import info.bonjean.beluga.client.BelugaState;
 import info.bonjean.beluga.configuration.BelugaConfiguration;
 import info.bonjean.beluga.exception.CommunicationException;
 import info.bonjean.beluga.gui.Page;
-import info.bonjean.beluga.log.Logger;
 import info.bonjean.beluga.response.Song;
 import info.bonjean.beluga.response.Station;
 
@@ -41,6 +40,8 @@ import nu.xom.Nodes;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.IOUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 
@@ -49,7 +50,7 @@ import org.apache.commons.io.IOUtils;
  */
 public class HTMLUtil
 {
-	private final static Logger log = new Logger(HTMLUtil.class);
+	private final static Logger log = LoggerFactory.getLogger(HTMLUtil.class);
 
 	private static final BelugaConfiguration configuration = BelugaConfiguration.getInstance();
 

@@ -22,7 +22,6 @@ import info.bonjean.beluga.connection.BelugaHTTPClient;
 import info.bonjean.beluga.exception.BelugaException;
 import info.bonjean.beluga.exception.CommunicationException;
 import info.bonjean.beluga.exception.PandoraException;
-import info.bonjean.beluga.log.Logger;
 import info.bonjean.beluga.request.JsonData;
 import info.bonjean.beluga.request.Method;
 import info.bonjean.beluga.request.ParameterMap;
@@ -39,6 +38,8 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.entity.StringEntity;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
@@ -50,7 +51,7 @@ import com.google.gson.JsonSyntaxException;
  */
 public class HTTPUtil
 {
-	private static final Logger log = new Logger(HTTPUtil.class);
+	private static final Logger log = LoggerFactory.getLogger(HTTPUtil.class);
 
 	private static final Gson gson = GsonUtil.getGsonInstance();
 	private static final String SERVICE_URL = "http://tuner.pandora.com/services/json/?";
@@ -60,15 +61,15 @@ public class HTTPUtil
 		String urlStr = createRequestUrl(method, params);
 		String data = gson.toJson(jsonData);
 
-		log.info("===============================================");
-		log.info("Request: " + urlStr);
-		log.info("Data: " + data);
+		log.debug("===============================================");
+		log.debug("Request: " + urlStr);
+		log.debug("Data: " + data);
 
 		if (encrypt)
 			data = CryptoUtil.pandoraEncrypt(data);
 		Response response;
 		String requestResponse = HTTPUtil.jsonRequest(urlStr, data);
-		log.info("Response: " + requestResponse);
+		log.debug("Response: " + requestResponse);
 		
 		try
 		{
