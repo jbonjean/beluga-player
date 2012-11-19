@@ -44,7 +44,10 @@ public class Main
 	public static void main(String[] args)
 	{
 		if (args.length == 1 && args[0].equals("-version"))
-			System.out.println("Beluga Player 0.1");
+		{
+			System.out.println("Beluga Player 0.3");
+			System.exit(0);
+		}
 
 		BelugaConfiguration.getInstance().load();
 		startUI();
