@@ -171,6 +171,7 @@ public class UIBrowserListener extends WebBrowserAdapter
 
 			} else if (command.equals("save-configuration"))
 			{
+				ui.triggerLoader();
 				log.info("Update configuration");
 				Object[] parameters = webBrowserCommandEvent.getParameters();
 				configuration.setUserName((String) parameters[0]);
