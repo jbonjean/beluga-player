@@ -4,19 +4,19 @@
 
 <form name="configuration" onsubmit="sendNSCommand('save-configuration', configuration.username.value, configuration.password.value, configuration.proxyHost.value, configuration.proxyPort.value, configuration.proxyDNS.value); return false;">
 
-	<div>
-		<div class="header">Pandora</div>
+	<fieldset>
+		<legend>Pandora</legend>
 		<div>
 			<label for="username">Username</label>
 			<input name="username" id="username" type="text" value="$USERNAME$"/>
 		</div>
 		<div>
 			<label for="password">Password</label>
-			<input name="password" id="password" type="text" value="$PASSWORD$"/>
+			<input name="password" id="password" type="password" value="$PASSWORD$"/>
 		</div>
-	</div>
-	<div>
-		<div class="header">Connection</div>
+	</fieldset>
+	<fieldset>
+		<legend>Connection</legend>
 		<div>
 			<label for="proxyHost">Proxy Host</label>
 			<input name="proxyHost" id="proxyHost" type="text" value="$PROXY_HOST$"/>
@@ -25,11 +25,20 @@
 			<label for="proxyPort">Proxy Port</label>
 			<input name="proxyPort" id="proxyPort" type="text" value="$PROXY_PORT$"/>
 		</div>
-		or
+		<i>or</i>
 		<div>
 			<label for="proxyDNS">Proxy DNS</label>
 			<input name="proxyDNS" id="proxyDNS" type="text" value="$PROXY_DNS$"/>
+			<span class="info">
+				<img src="data:image/png;base64,$ICON_INFO$"/>
+				<span class="tooltip"> 
+					<span></span>
+					For example, ProxyDNS (http://proxydns.co/) addresses are 74.207.242.213 and 50.116.28.138
+				</span>
+			</span>
 		</div>
+	</fieldset>
+		
 	<div>
 		<input type="submit" value="Save"/>
 	</div>

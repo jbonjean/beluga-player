@@ -12,3 +12,15 @@ label {
 	width:80px;
 	display: inline-block;
 }
+
+fieldset {
+	margin-top: 10px;
+}
+
+legend {
+	font-weight: bold;
+}
+
+.info {
+	vertical-align: -35%;
+}

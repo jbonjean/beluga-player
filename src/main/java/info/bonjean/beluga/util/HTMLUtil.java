@@ -119,6 +119,7 @@ public class HTMLUtil
 		StringBuffer sb = new StringBuffer();
 		sb.append(getResourceAsString(Page.COMMON.getCss()));
 		sb.append(getResourceAsString(page.getCss()));
+		sb.append(getResourceAsString(Page.CSS_PATH + "tooltips.css"));
 		if (System.getProperty("debug") != null)
 			sb.append(getResourceAsString(Page.CSS_PATH + "debug.css"));
 		tokens.put("$CSS$", sb.toString());
@@ -129,7 +130,7 @@ public class HTMLUtil
 		sb.append(getResourceAsString(page.getJs()));
 		tokens.put("$JS$", sb.toString());
 
-		// add ajax loader image
+		// add images
 		tokens.put("$LOADER$", getResourceAsBase64String(Page.IMG_PATH + "ajax-loader-2.gif"));
 
 		tokens.put("$PAGE$", page.name());
@@ -139,10 +140,10 @@ public class HTMLUtil
 
 		return replace(getResourceAsString(Page.COMMON.getHTML()), tokens);
 	}
-	
+
 	private static String shorten(String str, int length)
 	{
-		if(str.length() > length)
+		if (str.length() > length)
 			return str.substring(0, length - 3) + "...";
 		return str;
 	}
@@ -189,13 +190,13 @@ public class HTMLUtil
 
 		return loadPage(Page.SONG, tokens);
 	}
-	
+
 	public static String getNotificationHTML(Song song)
 	{
 		Map<String, String> tokens = new HashMap<String, String>();
 		tokens.put("$ALBUM_COVER$", song.getAlbumArtBase64());
-		tokens.put("$ARTIST_NAME$", shorten(song.getArtistName(),30));
-		tokens.put("$SONG_NAME$", shorten(song.getSongName(),30));
+		tokens.put("$ARTIST_NAME$", shorten(song.getArtistName(), 30));
+		tokens.put("$SONG_NAME$", shorten(song.getSongName(), 30));
 		return replace(getResourceAsString(Page.NOTIFICATION.getHTML()), tokens);
 	}
 
@@ -211,10 +212,11 @@ public class HTMLUtil
 		tokens.put("$PROXY_PORT$", proxyHost);
 		tokens.put("$PROXY_DNS$", configuration.getProxyDNS());
 		tokens.put("$BACKGROUND$", getResourceAsBase64String(Page.IMG_PATH + "beluga.600x400.png"));
+		tokens.put("$ICON_INFO$", getResourceAsBase64String(Page.ICONS_PATH + "info-20.png"));
 
 		return loadPage(Page.CONFIGURATION, tokens);
 	}
-	
+
 	private static String generateStationListHTML(List<Station> stations, Station selectedStation)
 	{
 		StringBuffer html = new StringBuffer();

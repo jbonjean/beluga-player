@@ -31,6 +31,7 @@ public enum Page
 	public static final String CSS_PATH = "/css/";
 	public static final String JS_PATH = "/js/";
 	public static final String IMG_PATH = "/img/";
+	public static final String ICONS_PATH = "/icons/";
 	
 	public String getHTML()
 	{
