@@ -72,7 +72,7 @@ public class BelugaConfiguration
 		File directory = new File(CONFIGURATION_DIRECTORY);
 		if (!directory.exists())
 		{
-			log.info("Configuration directory does not exists, creating it");
+			log.info("Configuration directory does not exist, creating it");
 			directory.mkdirs();
 		}
 
