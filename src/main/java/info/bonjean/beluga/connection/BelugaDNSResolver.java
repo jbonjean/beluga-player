@@ -18,13 +18,20 @@
  */
 package info.bonjean.beluga.connection;
 
+import info.bonjean.beluga.log.Logger;
+
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.http.conn.DnsResolver;
 import org.apache.http.impl.conn.SystemDefaultDnsResolver;
+import org.xbill.DNS.ARecord;
+import org.xbill.DNS.Lookup;
+import org.xbill.DNS.Record;
+import org.xbill.DNS.SimpleResolver;
+import org.xbill.DNS.Type;
 
 /**
  * 
@@ -35,30 +42,49 @@ import org.apache.http.impl.conn.SystemDefaultDnsResolver;
  */
 public class BelugaDNSResolver implements DnsResolver
 {
-	private Map<String, InetAddress[]> dnsMap;
+	private static final Logger log = new Logger(BelugaDNSResolver.class);
+	private Lookup dnsProxyLookup;
 	private DnsResolver fallbackDNSResolver;
+	private String pandoraURL;
 
-	public BelugaDNSResolver()
+	public BelugaDNSResolver(String pandoraURL, String proxyDNS)
 	{
-		dnsMap = new ConcurrentHashMap<String, InetAddress[]>();
 		fallbackDNSResolver = new SystemDefaultDnsResolver();
-	}
-
-	public void add(final String host, final InetAddress... ips)
-	{
-		if (host == null)
-			throw new IllegalArgumentException("Host name may not be null");
-		if (ips == null)
-			throw new IllegalArgumentException("Array of IP addresses may not be null");
-		dnsMap.put(host, ips);
+		this.pandoraURL = pandoraURL;
+		
+		try
+		{
+			SimpleResolver resolver = new SimpleResolver(proxyDNS);
+			dnsProxyLookup = new Lookup(pandoraURL, Type.A);
+			dnsProxyLookup.setResolver(resolver);
+			dnsProxyLookup.setCache(null);
+		}
+		catch(Exception e)
+		{
+			log.error("Cannot configure DNS proxy");
+			dnsProxyLookup = null;
+		}
 	}
 
 	@Override
 	public InetAddress[] resolve(String host) throws UnknownHostException
 	{
-		InetAddress[] resolvedAddresses = dnsMap.get(host);
-		if (resolvedAddresses == null)
-			return fallbackDNSResolver.resolve(host);
-		return resolvedAddresses;
+		
+		if(dnsProxyLookup != null && pandoraURL.equalsIgnoreCase(host))
+		{
+			Record[] records = dnsProxyLookup.run();
+
+			List<InetAddress> addresses = new ArrayList<InetAddress>();
+			for(Record record : records)
+			{
+				if(record instanceof ARecord)
+					addresses.add(((ARecord)record).getAddress());
+			}
+			if(!addresses.isEmpty())
+				return addresses.toArray(new InetAddress[addresses.size()]);
+			else
+				log.error("Cannot resolve pandora address using DNS proxy");
+		}
+		return fallbackDNSResolver.resolve(host);
 	}
 }

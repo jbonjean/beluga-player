@@ -20,11 +20,8 @@ package info.bonjean.beluga.connection;
 
 import info.bonjean.beluga.configuration.BelugaConfiguration;
 import info.bonjean.beluga.exception.CommunicationException;
-import info.bonjean.beluga.log.Logger;
 
 import java.io.InputStream;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 
 import org.apache.http.HttpHost;
 import org.apache.http.HttpResponse;
@@ -42,7 +39,6 @@ import org.apache.http.impl.conn.SchemeRegistryFactory;
  */
 public class BelugaHTTPClient
 {
-	private static final Logger log = new Logger(BelugaHTTPClient.class);
 	private HttpClient client;
 	private static BelugaHTTPClient instance;
 
@@ -52,15 +48,9 @@ public class BelugaHTTPClient
 		client = new DefaultHttpClient();
 		if (!configuration.getProxyDNS().isEmpty())
 		{
-			BelugaDNSResolver dnsOverrider = new BelugaDNSResolver();
-			try
-			{
-				dnsOverrider.add("tuner.pandora.com", InetAddress.getByName(configuration.getProxyDNS()));
-				client = new DefaultHttpClient(new PoolingClientConnectionManager(SchemeRegistryFactory.createDefault(), dnsOverrider));
-			} catch (UnknownHostException e)
-			{
-				log.error("Invalid proxy DNS");
-			}
+			BelugaDNSResolver dnsOverrider = new BelugaDNSResolver("tuner.pandora.com", configuration.getProxyDNS());
+			client = new DefaultHttpClient(new PoolingClientConnectionManager(SchemeRegistryFactory.createDefault(), dnsOverrider));
+			
 		} else if (!configuration.getProxyServer().isEmpty())
 			ConnRouteParams.setDefaultProxy(client.getParams(), new HttpHost(configuration.getProxyServer(), configuration.getProxyServerPort(), "http"));
 	}

@@ -209,6 +209,12 @@ public class UIBrowserListener extends WebBrowserAdapter
 				
 			} else if (e instanceof CommunicationException)
 			{
+				if(state.getUserId() == null)
+				{
+					log.error("Communication problem before login, this is probably proxy related");
+					commandReceived(new WebBrowserCommandEvent(ui.getWebBrowser(), "configuration", new Object[] {"connection.to.pandora.failed.check.proxy"}));
+					return;
+				}
 				log.error("Communication problem, let's retry");
 				retryCount++;
 				commandReceived(webBrowserCommandEvent);
