@@ -19,10 +19,10 @@
 package info.bonjean.beluga.player;
 
 import info.bonjean.beluga.Main;
+import info.bonjean.beluga.client.BelugaState;
 import info.bonjean.beluga.client.PandoraClient;
 import info.bonjean.beluga.gui.notification.Notification;
 import info.bonjean.beluga.log.Logger;
-import info.bonjean.beluga.statefull.BelugaState;
 import info.bonjean.beluga.util.HTMLUtil;
 import info.bonjean.beluga.util.PandoraUtil;
 import uk.co.caprica.vlcj.player.MediaPlayer;

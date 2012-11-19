@@ -34,7 +34,6 @@ import info.bonjean.beluga.request.UserLogin;
 import info.bonjean.beluga.response.Result;
 import info.bonjean.beluga.response.Song;
 import info.bonjean.beluga.response.Station;
-import info.bonjean.beluga.statefull.BelugaState;
 import info.bonjean.beluga.util.HTMLUtil;
 import info.bonjean.beluga.util.HTTPUtil;
 import info.bonjean.beluga.util.PandoraUtil;

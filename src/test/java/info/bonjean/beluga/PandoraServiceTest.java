@@ -19,9 +19,9 @@ package info.bonjean.beluga;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import info.bonjean.beluga.client.BelugaState;
 import info.bonjean.beluga.client.PandoraClient;
 import info.bonjean.beluga.response.Station;
-import info.bonjean.beluga.statefull.BelugaState;
 
 import java.util.List;
 

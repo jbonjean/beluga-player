@@ -18,11 +18,11 @@
  */
 package info.bonjean.beluga.util;
 
+import info.bonjean.beluga.connection.BelugaHTTPClient;
 import info.bonjean.beluga.exception.BelugaException;
 import info.bonjean.beluga.exception.CommunicationException;
 import info.bonjean.beluga.exception.PandoraException;
 import info.bonjean.beluga.log.Logger;
-import info.bonjean.beluga.request.BelugaHTTPClient;
 import info.bonjean.beluga.request.JsonData;
 import info.bonjean.beluga.request.Method;
 import info.bonjean.beluga.request.ParameterMap;

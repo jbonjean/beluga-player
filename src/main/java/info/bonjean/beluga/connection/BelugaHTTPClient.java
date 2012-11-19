@@ -16,7 +16,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
-package info.bonjean.beluga.request;
+package info.bonjean.beluga.connection;
 
 import info.bonjean.beluga.configuration.BelugaConfiguration;
 import info.bonjean.beluga.exception.CommunicationException;
@@ -32,7 +32,6 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.conn.params.ConnRouteParams;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.impl.conn.InMemoryDnsResolver;
 import org.apache.http.impl.conn.PoolingClientConnectionManager;
 import org.apache.http.impl.conn.SchemeRegistryFactory;
 
@@ -51,9 +50,9 @@ public class BelugaHTTPClient
 	{
 		BelugaConfiguration configuration = BelugaConfiguration.getInstance();
 		client = new DefaultHttpClient();
-		if(!configuration.getProxyDNS().isEmpty())
+		if (!configuration.getProxyDNS().isEmpty())
 		{
-			InMemoryDnsResolver dnsOverrider = new InMemoryDnsResolver();
+			BelugaDNSResolver dnsOverrider = new BelugaDNSResolver();
 			try
 			{
 				dnsOverrider.add("tuner.pandora.com", InetAddress.getByName(configuration.getProxyDNS()));
@@ -62,31 +61,29 @@ public class BelugaHTTPClient
 			{
 				log.error("Invalid proxy DNS");
 			}
-		}
-		else if (!configuration.getProxyServer().isEmpty())
+		} else if (!configuration.getProxyServer().isEmpty())
 			ConnRouteParams.setDefaultProxy(client.getParams(), new HttpHost(configuration.getProxyServer(), configuration.getProxyServerPort(), "http"));
 	}
 
 	public static BelugaHTTPClient getInstance()
 	{
-		if(instance == null)
+		if (instance == null)
 			instance = new BelugaHTTPClient();
 		return instance;
 	}
-	
+
 	public static void reset()
 	{
 		instance = null;
 	}
-	
+
 	public InputStream httpRequest(HttpUriRequest request) throws CommunicationException
 	{
 		try
 		{
 			HttpResponse httpResponse = client.execute(request);
 			return httpResponse.getEntity().getContent();
-		}
-		catch(Exception e)
+		} catch (Exception e)
 		{
 			throw new CommunicationException(e);
 		}

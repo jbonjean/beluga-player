@@ -18,8 +18,10 @@
  */
 package info.bonjean.beluga.gui;
 
+import info.bonjean.beluga.client.BelugaState;
 import info.bonjean.beluga.client.PandoraClient;
 import info.bonjean.beluga.configuration.BelugaConfiguration;
+import info.bonjean.beluga.connection.BelugaHTTPClient;
 import info.bonjean.beluga.exception.BelugaException;
 import info.bonjean.beluga.exception.CommunicationException;
 import info.bonjean.beluga.exception.CryptoException;
@@ -28,10 +30,8 @@ import info.bonjean.beluga.exception.PandoraException;
 import info.bonjean.beluga.gui.notification.Notification;
 import info.bonjean.beluga.log.Logger;
 import info.bonjean.beluga.player.VLCPlayer;
-import info.bonjean.beluga.request.BelugaHTTPClient;
 import info.bonjean.beluga.request.Method;
 import info.bonjean.beluga.response.Song;
-import info.bonjean.beluga.statefull.BelugaState;
 import info.bonjean.beluga.util.HTMLUtil;
 import info.bonjean.beluga.util.HTTPUtil;
 

@@ -18,7 +18,7 @@
  */
 package info.bonjean.beluga.gui;
 
-import info.bonjean.beluga.statefull.BelugaState;
+import info.bonjean.beluga.client.BelugaState;
 import info.bonjean.beluga.util.HTMLUtil;
 
 import java.awt.BorderLayout;
