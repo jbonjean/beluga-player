@@ -142,6 +142,9 @@ public class PandoraClient
 	public void selectStation(String stationId) throws BelugaException
 	{
 		selectStation(getStationById(stationId));
+		
+		// clear the playlist
+		state.setPlaylist(null);
 	}
 
 	public String nextSong() throws BelugaException
