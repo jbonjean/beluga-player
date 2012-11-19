@@ -19,6 +19,7 @@
 package info.bonjean.beluga;
 
 import info.bonjean.beluga.configuration.BelugaConfiguration;
+import info.bonjean.beluga.gui.Page;
 import info.bonjean.beluga.gui.UI;
 import info.bonjean.beluga.gui.UIBrowserListener;
 import info.bonjean.beluga.gui.UIWindowListener;
@@ -43,11 +44,10 @@ public class Main
 {
 	public static void main(String[] args) throws IOException
 	{
-		if(args.length ==1 && args[0].equals("-version"))
+		if (args.length == 1 && args[0].equals("-version"))
 			System.out.println("Beluga Player 0.1");
-		
-		BelugaConfiguration configuration = BelugaConfiguration.getInstance();
-		configuration.load();
+
+		BelugaConfiguration.getInstance().load();
 		startUI();
 	}
 
@@ -68,7 +68,7 @@ public class Main
 				frame.setResizable(false);
 				frame.setLocationByPlatform(true);
 				frame.setVisible(true);
-				Image image = Toolkit.getDefaultToolkit().getImage(Main.class.getResource("/icons/beluga.40x40.png"));
+				Image image = Toolkit.getDefaultToolkit().getImage(Main.class.getResource(Page.ICONS_PATH + "beluga.40x40.png"));
 				frame.setIconImage(image);
 
 				UIBrowserListener browserListener = new UIBrowserListener(ui);
