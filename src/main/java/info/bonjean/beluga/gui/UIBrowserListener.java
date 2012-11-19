@@ -77,7 +77,7 @@ public class UIBrowserListener extends WebBrowserAdapter
 				{
 					if (!displayedSong.getTrackToken().equals(state.getSong().getTrackToken()))
 					{
-						log.info("Song changed, update main window");
+						log.debug("Song changed, update main window");
 						displayedSong = state.getSong();
 						ui.updateSongUI();
 					}
@@ -92,7 +92,7 @@ public class UIBrowserListener extends WebBrowserAdapter
 		String url = pandoraClient.nextSong();
 		new Notification(HTMLUtil.getNotificationHTML(state.getSong()));
 		displayedSong = state.getSong();
-		log.info("Playing: " + url);
+		log.debug("Playing: " + url);
 		player.play(url);
 		if (!timer.isRunning())
 			timer.start();

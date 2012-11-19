@@ -12,5 +12,6 @@ appender("STDOUT", ConsoleAppender) {
 }
 
 logger("info.bonjean.beluga.util.HTTPUtil", INFO)
+logger("info.bonjean.beluga.gui.UIBrowserListener", INFO)
 
 root(DEBUG, ["STDOUT"])
