@@ -198,10 +198,8 @@ public class UIBrowserListener extends WebBrowserAdapter
 				
 			} else if (e instanceof CryptoException)
 			{
-				log.error("Crypto related problem (any help is welcome to fix this bug), let's retry");
-				retryCount++;
-				commandReceived(webBrowserCommandEvent);
-				return;
+				log.error("Crypto related problem, cannot recover");
+				
 			} else if (e instanceof CommunicationException)
 			{
 				log.error("Communication problem, let's retry");

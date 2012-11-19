@@ -27,7 +27,6 @@ import info.bonjean.beluga.gui.UIWindowListener;
 import java.awt.BorderLayout;
 import java.awt.Image;
 import java.awt.Toolkit;
-import java.io.IOException;
 
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
@@ -42,7 +41,7 @@ import chrriis.dj.nativeswing.swtimpl.NativeInterface;
  */
 public class Main
 {
-	public static void main(String[] args) throws IOException
+	public static void main(String[] args)
 	{
 		if (args.length == 1 && args[0].equals("-version"))
 			System.out.println("Beluga Player 0.1");
