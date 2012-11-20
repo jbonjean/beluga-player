@@ -13,7 +13,7 @@ This is still a work in progress, many features are missing, but it seems to be
 pretty stable. It has only been tested on Linux 64 bits, that's why this is the
 only package I release.
 
-To start: java -jar beluga-0.2-linux-x86_64.jar
+To start: java -jar beluga-VERSION-linux-x86_64.jar
 
 Special thanks to:
  - Pandoroid project (http://aregner.com/android/pandoroid/), I reuse the
