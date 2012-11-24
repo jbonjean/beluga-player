@@ -17,6 +17,25 @@ body {
 	margin-top:10px;
 }
 
+.content {
+	padding-top: 25px;
+	padding-left: 10px;
+}
+
+.songControls,
+.songExtras,
+.songInfos {
+	float: left;
+	margin-left: 20px;
+	width: 320px;
+	word-wrap: break-word;
+}
+
+.songControls,
+.songExtras {
+	margin-top: 20px;
+}
+
 .controls a,
 .songControls a {
 	display:block;
@@ -88,10 +107,6 @@ body {
 	color: #888888;
 }
 
-.content {
-	padding-top: 25px;
-	padding-left: 10px;
-}
 .albumCover {
 	float: left;
 	width: 200px;
@@ -109,22 +124,9 @@ body {
 	width: 200px;
 }
 
-.songInfos {
-	float: left;
-	margin-left: 20px;
-	word-wrap: break-word;
-	width: 340px;
-}
 .songName {
 	font-weight: bold;
 	font-size: 14px;
-}
-.songControls,
-.songExtras {
-	float: left;
-	padding-top: 20px;
-	margin-left: 20px;
-	width: 340px;
 }
 
 .songExtras .focusTraits {

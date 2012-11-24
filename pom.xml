@@ -33,6 +33,7 @@
 		<maven-compiler-plugin.version>2.5.1</maven-compiler-plugin.version>
 		<maven-surefire-plugin.version>2.12.4</maven-surefire-plugin.version>
 		<launch4j-maven-plugin.version>1.5.2</launch4j-maven-plugin.version>
+		<maven-assembly-plugin.version>2.3</maven-assembly-plugin.version>
 	</properties>
 
 	<build>
@@ -56,7 +57,7 @@
 							<mainClass>info.bonjean.beluga.Main</mainClass>
 						</transformer>
 					</transformers>
-					<outputFile>${jar.output.dir}/${project.artifactId}-${swt.platform}-${project.version}.jar</outputFile>
+					<outputFile>${jar.output.dir}/${project.artifactId}-${platform}-${project.version}.jar</outputFile>
 				</configuration>
 			</plugin>
 			<plugin>
@@ -179,6 +180,7 @@
 				<activeByDefault>true</activeByDefault>
 			</activation>
 			<properties>
+				<platform>linux.x86_64</platform>
 				<swt.platform>gtk.linux.x86_64</swt.platform>
 				<jar.output.dir>dist/linux</jar.output.dir>
 			</properties>
@@ -186,6 +188,7 @@
 		<profile>
 			<id>dist-linux-32</id>
 			<properties>
+				<platform>linux.x86</platform>
 				<swt.platform>gtk.linux.x86</swt.platform>
 				<jar.output.dir>dist/linux</jar.output.dir>
 			</properties>
@@ -193,6 +196,7 @@
 		<profile>
 			<id>dist-windows-32</id>
 			<properties>
+				<platform>win32</platform>
 				<swt.platform>win32.win32.x86</swt.platform>
 				<jar.output.dir>target</jar.output.dir>
 			</properties>
@@ -222,8 +226,8 @@
 									<singleInstance>
 									</singleInstance>
 									<headerType>gui</headerType>
-									<outfile>dist/win32/${project.artifactId}-${swt.platform}-${project.version}.exe</outfile>
-									<jar>target/${project.artifactId}-${swt.platform}-${project.version}.jar</jar>
+									<outfile>dist/win32/${project.artifactId}-${platform}-${project.version}.exe</outfile>
+									<jar>target/${project.artifactId}-${platform}-${project.version}.jar</jar>
 									<classPath>
 										<mainClass>info.bonjean.beluga.Main</mainClass>
 										<addDependencies>false</addDependencies>
@@ -238,9 +242,29 @@
 										<txtProductVersion>${project.version}</txtProductVersion>
 										<productName>${project.name}</productName>
 										<internalName>${project.artifactId}</internalName>
-										<originalFilename>${project.artifactId}-${swt.platform}-${project.version}.exe</originalFilename>
+										<originalFilename>${project.artifactId}-${platform}-${project.version}.exe</originalFilename>
 									</versionInfo>
 								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
+						<artifactId>maven-assembly-plugin</artifactId>
+						<version>${maven-assembly-plugin.version}</version>
+						<configuration>
+							<descriptors>
+								<descriptor>src/main/assembly/zip.xml</descriptor>
+							</descriptors>
+							<finalName>${project.artifactId}-${platform}-${project.version}</finalName>
+							<outputDirectory>dist/win32</outputDirectory>
+						</configuration>
+						<executions>
+							<execution>
+								<id>make-assembly</id>
+								<phase>package</phase>
+								<goals>
+									<goal>single</goal>
+								</goals>
 							</execution>
 						</executions>
 					</plugin>
