@@ -25,6 +25,9 @@ import info.bonjean.beluga.gui.notification.Notification;
 import info.bonjean.beluga.util.HTMLUtil;
 import info.bonjean.beluga.util.PandoraUtil;
 
+import java.io.OutputStream;
+import java.io.PrintStream;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -45,7 +48,19 @@ public class VLCPlayer
 
 	private VLCPlayer()
 	{
+		// temporarily disable System.err to avoid this annoying VLC message 
+		PrintStream err = System.out;
+		System.setErr(new PrintStream(new OutputStream() {
+		    public void write(int b) {
+		    }
+		}));
+		
+		// load VLC library
 		MediaPlayerFactory factory = new MediaPlayerFactory();
+		
+		// re-enable error output
+		System.setErr(err);
+		
 		mediaPlayer = factory.newHeadlessMediaPlayer();
 		mediaPlayer.addMediaPlayerEventListener(new MediaPlayerEventAdapter()
 		{
