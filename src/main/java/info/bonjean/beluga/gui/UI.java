@@ -35,7 +35,7 @@ import chrriis.dj.nativeswing.swtimpl.components.JWebBrowser;
 public class UI extends JPanel
 {
 	private static final long serialVersionUID = -4119211066130381277L;
-	private final JWebBrowser webBrowser = new JWebBrowser();
+	private final JWebBrowser webBrowser = new JWebBrowser(JWebBrowser.useWebkitRuntime());
 
 	public JWebBrowser getWebBrowser()
 	{
