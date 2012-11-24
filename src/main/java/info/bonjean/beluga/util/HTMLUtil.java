@@ -34,14 +34,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import nu.xom.Builder;
-import nu.xom.Document;
-import nu.xom.Nodes;
+import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.w3c.dom.Document;
+import org.w3c.dom.NodeList;
 
 /**
  * 
@@ -183,15 +183,14 @@ public class HTMLUtil
 		StringBuffer focusTraits = new StringBuffer();
 		try
 		{
-			Builder parser = new Builder();
-			Document doc = parser.build(song.getSongExplorerUrl());
-			Nodes nodes = doc.query("/songExplorer/focusTrait/text()");
-			for (int i = 0; i < nodes.size(); i++)
-			{
-				if (i > 0)
-					focusTraits.append(", ");
-				focusTraits.append(nodes.get(i).getValue());
-			}
+			Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(song.getSongExplorerUrl());
+			NodeList nodes = doc.getElementsByTagName("focusTrait");
+			for (int i = 0; i < nodes.getLength(); i++)
+				{
+					if (i > 0)
+						focusTraits.append(", ");
+					focusTraits.append(nodes.item(i).getTextContent());
+				}
 		} catch (Exception ex)
 		{
 			log.error("Cannot retrieve focus traits");
