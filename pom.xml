@@ -20,7 +20,6 @@
 		<swt.version>3.8</swt.version>
 		<slf4j.version>1.6.4</slf4j.version>
 		<logback.version>1.0.1</logback.version>
-		<groovy.version>2.0.4</groovy.version>
 		<dnsjava.version>2.1.1</dnsjava.version>
 		<twinkle.version>1.0.0</twinkle.version>
 		<xom.version>1.2.5</xom.version>
@@ -82,12 +81,6 @@
 	</build>
 
 	<dependencies>
-		<dependency>
-			<groupId>org.codehaus.groovy</groupId>
-			<artifactId>groovy</artifactId>
-			<version>${groovy.version}</version>
-			<scope>runtime</scope>
-		</dependency>
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
