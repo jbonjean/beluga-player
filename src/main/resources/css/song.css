@@ -1,6 +1,5 @@
 body {
 	-webkit-user-drag: none;
-	-moz-user-select: none;
 	-webkit-user-select: none;
 }
 
@@ -8,9 +7,6 @@ body {
 	outline: 0;
 }
 
-.mainControls .exit {
-	float: right;
-}
 .mainControls .stationSelect {
 	float: left;
 	margin-left: 5px;
@@ -140,4 +136,69 @@ body {
 
 .songExtras .focusTraits .value {
 	text-indent : 8px;
+}
+
+/* ******* MENU ******* */
+
+.drop-menu {
+	position: absolute;
+	top:0;
+	right:0;
+	text-align: right;
+}
+	
+.plus {
+	display: inline-block;
+	-webkit-transition: .3s ease-in-out;
+}
+
+.drop-menu .title {
+	padding: 10px 10px;
+}
+
+.drop-menu .title:hover ~ .sub-menu,
+.sub-menu:hover {
+	display: inline-block;
+}
+
+.drop-menu:hover .plus {
+	-webkit-transform: rotate(45deg);
+}
+
+.sub-menu {
+	display: none;
+	margin-top: 0px;
+	padding: 0px;
+	text-align: left;
+	border: 1px solid rgba(230,230,230, 0.95);
+	background: rgba(245,245,245, 0.95);
+	-webkit-box-shadow: 0px 13px 25px rgba(0,0,0, 0.2);
+}
+
+.sub-menu li {
+	list-style-type: none;
+	border-bottom: 1px dotted #eaeaea;
+}
+
+.sub-menu li a {
+	display: block;
+	padding: 5px 10px 5px 10px;
+}
+
+.sub-menu li a:hover {
+	background: rgba(240,240,240, 0.95);
+}
+	
+.sub-menu li img {
+	margin-right: .5em;
+	width: 13px;
+	height: 13px;
+}
+
+.sub-menu li img.empty {
+	visibility: hidden;
+}
+
+.quickmix .hide-if-quickmix {
+	display: none;
 }

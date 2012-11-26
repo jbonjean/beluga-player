@@ -16,26 +16,23 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
-package info.bonjean.beluga.gui.notification;
-
-import ch.swingfx.twinkle.NotificationBuilder;
+package info.bonjean.beluga.response;
 
 /**
  * 
  * @author Julien Bonjean <julien@bonjean.info>
- * 
+ *
  */
-public class Notification extends NotificationBuilder
+public class SearchArtist extends SearchItem
 {
-	public final static int TIMEOUT = 5000;
+	private boolean likelyMatch;
 	
-	public Notification(String html) {
-		super();
-		withStyle(new NotificationStyle());
-		withMessage(html);
-		withFadeInAnimation(false);
-		withFadeOutAnimation(false);
-		withDisplayTime(TIMEOUT);
-		showNotification();
+	public boolean isLikelyMatch()
+	{
+		return likelyMatch;
+	}
+	public void setLikelyMatch(boolean likelyMatch)
+	{
+		this.likelyMatch = likelyMatch;
 	}
 }

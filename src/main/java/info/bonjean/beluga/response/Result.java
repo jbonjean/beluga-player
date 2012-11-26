@@ -34,6 +34,10 @@ public class Result
 	private String userId;
 	private List<Station> stations;
 	private List<Song> items;
+	private List<SearchSong> songs;
+	private List<SearchArtist> artists;
+	private boolean nearMatchesAvailable;
+	private String explanation;
 
 	public String getPartnerId()
 	{
@@ -103,5 +107,45 @@ public class Result
 	public void setItems(List<Song> items)
 	{
 		this.items = items;
+	}
+
+	public List<SearchSong> getSongs()
+	{
+		return songs;
+	}
+
+	public void setSongs(List<SearchSong> songs)
+	{
+		this.songs = songs;
+	}
+
+	public List<SearchArtist> getArtists()
+	{
+		return artists;
+	}
+
+	public void setArtists(List<SearchArtist> artists)
+	{
+		this.artists = artists;
+	}
+
+	public boolean isNearMatchesAvailable()
+	{
+		return nearMatchesAvailable;
+	}
+
+	public void setNearMatchesAvailable(boolean nearMatchesAvailable)
+	{
+		this.nearMatchesAvailable = nearMatchesAvailable;
+	}
+
+	public String getExplanation()
+	{
+		return explanation;
+	}
+
+	public void setExplanation(String explanation)
+	{
+		this.explanation = explanation;
 	}
 }

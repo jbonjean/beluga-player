@@ -67,6 +67,11 @@ public class UI extends JPanel
 		webBrowser.setHTMLContent(HTMLUtil.getConfigurationHTML());
 	}
 
+	public void updateStationAddUI()
+	{
+		webBrowser.setHTMLContent(HTMLUtil.getStationAddHTML());
+	}
+
 	public void triggerLoader()
 	{
 		webBrowser.executeJavascript("displayLoader()");

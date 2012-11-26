@@ -16,26 +16,24 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
-package info.bonjean.beluga.gui.notification;
-
-import ch.swingfx.twinkle.NotificationBuilder;
+package info.bonjean.beluga.request;
 
 /**
  * 
  * @author Julien Bonjean <julien@bonjean.info>
  * 
  */
-public class Notification extends NotificationBuilder
+public class Search extends AuthentifiedJsonData
 {
-	public final static int TIMEOUT = 5000;
-	
-	public Notification(String html) {
-		super();
-		withStyle(new NotificationStyle());
-		withMessage(html);
-		withFadeInAnimation(false);
-		withFadeOutAnimation(false);
-		withDisplayTime(TIMEOUT);
-		showNotification();
+	private String searchText;
+
+	public String getSearchText()
+	{
+		return searchText;
+	}
+
+	public void setSearchText(String searchText)
+	{
+		this.searchText = searchText;
 	}
 }

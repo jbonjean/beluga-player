@@ -153,13 +153,15 @@ public class UIBrowserListener extends WebBrowserAdapter
 			{
 				String page = command.split("/")[1];
 				log.info("Reload page " + page);
-				
-				if(page.equals(Page.WELCOME.name()))
+
+				if (page.equals(Page.WELCOME.name()))
 					ui.updateWelcomeUI();
-				else if(page.equals(Page.CONFIGURATION.name()))
+				else if (page.equals(Page.CONFIGURATION.name()))
 					ui.updateConfigurationUI();
-				else if(page.equals(Page.SONG.name()))
+				else if (page.equals(Page.SONG.name()))
 					ui.updateSongUI();
+				else if (page.equals(Page.STATION_ADD.name()))
+					ui.updateStationAddUI();
 				else
 					log.error("Unknow page " + page);
 
@@ -167,7 +169,7 @@ public class UIBrowserListener extends WebBrowserAdapter
 			{
 				ui.triggerLoader();
 				Object[] parameters = webBrowserCommandEvent.getParameters();
-				if(parameters.length > 0)
+				if (parameters.length > 0)
 					state.addError((String) parameters[0]);
 				ui.updateConfigurationUI();
 
@@ -182,13 +184,13 @@ public class UIBrowserListener extends WebBrowserAdapter
 				configuration.setProxyServerPort((String) parameters[3]);
 				configuration.setProxyDNS((String) parameters[4]);
 				configuration.store();
-				
+
 				// reset the HTTP client to apply proxy changes
 				BelugaHTTPClient.reset();
 				log.info("Redirect to login");
 				commandReceived(new WebBrowserCommandEvent(ui.getWebBrowser(), "login", new Object[] {}));
 
-			} else if (command.startsWith("stationSelect"))
+			} else if (command.startsWith("select-station"))
 			{
 				ui.triggerLoader();
 				Map<String, String> parameters = HTTPUtil.parseUrl(command);
@@ -198,26 +200,67 @@ public class UIBrowserListener extends WebBrowserAdapter
 				pandoraClient.selectStation(stationId);
 				nextSong();
 				ui.updateSongUI();
+			} else if (command.equals("create-station"))
+			{
+				ui.triggerLoader();
+				ui.updateStationAddUI();
+			} else if (command.equals("search"))
+			{
+				// ui.triggerLoader();
+				Object[] parameters = webBrowserCommandEvent.getParameters();
+				if (parameters.length > 0)
+				{
+					String resultsHTML = "";
+					String query = (String) webBrowserCommandEvent.getParameters()[0];
+					log.debug("query: " + query);
+
+					if (query.length() > 0)
+					{
+						pandoraClient.search(query);
+						resultsHTML = HTMLUtil.generateSearchResultsHTML(pandoraClient.search(query));
+					}
+
+					ui.getWebBrowser().executeJavascript("document.getElementById('results').innerHTML = \"" + resultsHTML + "\"");
+				}
+			} else if (command.startsWith("add-station/"))
+			{
+				ui.triggerLoader();
+				String musicToken = command.split("/")[1];
+				log.debug("token: " + musicToken);
+				pandoraClient.addStation(musicToken);
+				pandoraClient.updateStationList();
+				ui.updateSongUI();
+			} else if (command.equals("delete-station"))
+			{
+				ui.triggerLoader();
+				pandoraClient.deleteStation();
+				pandoraClient.updateStationList();
+				pandoraClient.selectStation(state.getStationList().get(0));
+				nextSong();
+				ui.updateSongUI();
+			} else
+			{
+				log.info("Unknown command received: " + command);
 			}
 		} catch (BelugaException e)
 		{
 			if (retryCount == MAX_RETRIES)
 			{
 				log.error("Too many errors occured");
-				
+
 			} else if (e instanceof CryptoException)
 			{
 				log.error("Crypto related problem, cannot recover");
-				
+
 			} else if (e instanceof CommunicationException)
 			{
-				if(state.getUserId() == null)
+				if (state.getUserId() == null)
 				{
-					log.error("Communication problem before login, this is probably proxy related");
-					commandReceived(new WebBrowserCommandEvent(ui.getWebBrowser(), "configuration", new Object[] {"connection.to.pandora.failed.check.proxy"}));
+					log.error("Communication problem before login, this is probably proxy related", e);
+					commandReceived(new WebBrowserCommandEvent(ui.getWebBrowser(), "configuration", new Object[] { "connection.to.pandora.failed.check.proxy" }));
 					return;
 				}
-				log.error("Communication problem, let's retry");
+				log.error("Communication problem, let's retry", e);
 				retryCount++;
 				commandReceived(webBrowserCommandEvent);
 				return;
@@ -227,18 +270,21 @@ public class UIBrowserListener extends WebBrowserAdapter
 				if (pe.getError() == PandoraError.UNKNOWN && pe.getMethod() == Method.USER_LOGIN)
 				{
 					log.error("Invalid credentials, redirect to configuration");
-					commandReceived(new WebBrowserCommandEvent(ui.getWebBrowser(), "configuration", new Object[] {"invalid.credentials"}));
+					commandReceived(new WebBrowserCommandEvent(ui.getWebBrowser(), "configuration", new Object[] { "invalid.credentials" }));
 					return;
 				}
 				if (pe.getError() == PandoraError.LICENSING_RESTRICTIONS)
 				{
 					log.error("Pandora is not available in your country, you should consider using a proxy or custom DNS");
-					commandReceived(new WebBrowserCommandEvent(ui.getWebBrowser(), "configuration", new Object[] {"pandora.not.available.check.proxy"}));
+					commandReceived(new WebBrowserCommandEvent(ui.getWebBrowser(), "configuration", new Object[] { "pandora.not.available.check.proxy" }));
 					return;
 				}
+				log.error("Pandora problem, let's retry", e);
+				retryCount++;
+				commandReceived(webBrowserCommandEvent);
 			}
 
-			e.printStackTrace();
+			log.error("A bug occured, please report this: ", e);
 			System.exit(-1);
 		}
 		retryCount = 0;

@@ -23,11 +23,14 @@ import info.bonjean.beluga.client.BelugaState;
 import info.bonjean.beluga.configuration.BelugaConfiguration;
 import info.bonjean.beluga.exception.CommunicationException;
 import info.bonjean.beluga.gui.Page;
+import info.bonjean.beluga.response.SearchArtist;
+import info.bonjean.beluga.response.Result;
+import info.bonjean.beluga.response.SearchItem;
 import info.bonjean.beluga.response.Song;
+import info.bonjean.beluga.response.SearchSong;
 import info.bonjean.beluga.response.Station;
 
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
 import java.util.HashMap;
@@ -68,7 +71,7 @@ public class HTMLUtil
 			}
 			bais.close();
 			baos.close();
-		} catch (IOException e)
+		} catch (Exception e)
 		{
 			log.error("Cannot load resource " + resource);
 			System.exit(-1);
@@ -186,16 +189,22 @@ public class HTMLUtil
 			Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(song.getSongExplorerUrl());
 			NodeList nodes = doc.getElementsByTagName("focusTrait");
 			for (int i = 0; i < nodes.getLength(); i++)
-				{
-					if (i > 0)
-						focusTraits.append(", ");
-					focusTraits.append(nodes.item(i).getTextContent());
-				}
+			{
+				if (i > 0)
+					focusTraits.append(", ");
+				focusTraits.append(nodes.item(i).getTextContent());
+			}
 		} catch (Exception ex)
 		{
 			log.error("Cannot retrieve focus traits");
 		}
 		tokens.put("$FOCUS_TRAITS$", focusTraits.toString());
+
+		tokens.put("$ICON_CREATE_STATION$", getResourceAsBase64String(Page.ICONS_PATH + "Add-32.png"));
+		tokens.put("$ICON_DELETE_STATION$", getResourceAsBase64String(Page.ICONS_PATH + "Delete-32.png"));
+		tokens.put("$ICON_SETTINGS$", getResourceAsBase64String(Page.ICONS_PATH + "Settings-32.png"));
+		
+		tokens.put("$QUICKMIX_CLASS$", station.isQuickMix() ? "quickmix" : "");
 
 		return loadPage(Page.SONG, tokens);
 	}
@@ -224,6 +233,12 @@ public class HTMLUtil
 		tokens.put("$ICON_INFO$", getResourceAsBase64String(Page.ICONS_PATH + "info-20.png"));
 
 		return loadPage(Page.CONFIGURATION, tokens);
+	}
+
+	public static String getStationAddHTML()
+	{
+		Map<String, String> tokens = new HashMap<String, String>();
+		return loadPage(Page.STATION_ADD, tokens);
 	}
 
 	private static String generateStationListHTML(List<Station> stations, Station selectedStation)
@@ -262,5 +277,101 @@ public class HTMLUtil
 			cover = getResourceAsBase64String(Page.IMG_PATH + "beluga.200x200.png");
 		}
 		return cover;
+	}
+
+	public static String generateSearchResultsHTML(Result results)
+	{
+		List<SearchArtist> artists = results.getArtists();
+		List<SearchSong> songs = results.getSongs();
+		StringBuffer html = new StringBuffer();
+
+		html.append("<div class='results-count'>");
+		html.append(songs.size() + artists.size());
+		html.append(" result(s)");
+		html.append("</div>");
+
+		SearchItem bestMatch = null;
+
+		if (!artists.isEmpty())
+			bestMatch = artists.get(0);
+
+		if (!songs.isEmpty() && (bestMatch == null || songs.get(0).getScore() > bestMatch.getScore()))
+			bestMatch = songs.get(0);
+
+		if (bestMatch != null)
+		{
+			html.append("<h2>");
+			html.append("Best match");
+			html.append("</h2>");
+
+			html.append(generateSearchResultHTML(bestMatch, true));
+		}
+
+		if (!artists.isEmpty())
+		{
+			html.append("<h2>");
+			html.append("Artists");
+			html.append("</h2>");
+			html.append("<div class='result-entries'>");
+			for (SearchArtist artist : artists)
+				if (!artist.getMusicToken().equals(bestMatch.getMusicToken()))
+					html.append(generateSearchResultHTML(artist, false));
+			html.append("</div>");
+		}
+
+		if (!songs.isEmpty())
+		{
+			html.append("<h2>");
+			html.append("Tracks");
+			html.append("</h2>");
+			html.append("<div class='result-entries'>");
+			for (SearchSong song : songs)
+				if (!song.getMusicToken().equals(bestMatch.getMusicToken()))
+					html.append(generateSearchResultHTML(song, false));
+			html.append("</div>");
+		}
+
+		if (results.isNearMatchesAvailable())
+		{
+			html.append("<div class='near-matches'>");
+			html.append("Search results incomplete, be more specific.");
+			html.append("</div>");
+		}
+
+		return html.toString();
+	}
+
+	private static String generateSearchResultHTML(SearchItem item, boolean qualified)
+	{
+		StringBuffer html = new StringBuffer();
+
+		html.append("<a class='result' href='command://add-station/");
+		html.append(item.getMusicToken());
+		html.append("'>");
+
+		if (item instanceof SearchSong)
+		{
+			SearchSong song = (SearchSong) item;
+			html.append("<span class='song'>");
+			html.append(song.getSongName());
+			html.append("</span>");
+		}
+
+		html.append("<span class='artist'>");
+		if (item instanceof SearchSong)
+			html.append("by");
+		html.append(item.getArtistName());
+		html.append("</span>");
+
+		if (qualified)
+		{
+			html.append("<span class='type'>");
+			html.append(item instanceof SearchSong ? " (Track)" : " (Artist)");
+			html.append("</span>");
+		}
+		
+		html.append("</a>");
+
+		return html.toString();
 	}
 }

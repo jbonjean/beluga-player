@@ -16,26 +16,41 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
-package info.bonjean.beluga.gui.notification;
-
-import ch.swingfx.twinkle.NotificationBuilder;
+package info.bonjean.beluga.request;
 
 /**
  * 
  * @author Julien Bonjean <julien@bonjean.info>
  * 
  */
-public class Notification extends NotificationBuilder
+public class CreateStation extends AuthentifiedJsonData
 {
-	public final static int TIMEOUT = 5000;
+	String musicToken;
+	String trackToken;
+	String musicType;
 	
-	public Notification(String html) {
-		super();
-		withStyle(new NotificationStyle());
-		withMessage(html);
-		withFadeInAnimation(false);
-		withFadeOutAnimation(false);
-		withDisplayTime(TIMEOUT);
-		showNotification();
+	public String getMusicToken()
+	{
+		return musicToken;
+	}
+	public void setMusicToken(String musicToken)
+	{
+		this.musicToken = musicToken;
+	}
+	public String getTrackToken()
+	{
+		return trackToken;
+	}
+	public void setTrackToken(String trackToken)
+	{
+		this.trackToken = trackToken;
+	}
+	public String getMusicType()
+	{
+		return musicType;
+	}
+	public void setMusicType(String musicType)
+	{
+		this.musicType = musicType;
 	}
 }

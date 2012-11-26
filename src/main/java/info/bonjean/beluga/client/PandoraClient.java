@@ -21,17 +21,21 @@ package info.bonjean.beluga.client;
 import info.bonjean.beluga.configuration.BelugaConfiguration;
 import info.bonjean.beluga.exception.BelugaException;
 import info.bonjean.beluga.request.ArtistBookmark;
+import info.bonjean.beluga.request.CreateStation;
+import info.bonjean.beluga.request.DeleteStation;
 import info.bonjean.beluga.request.Feedback;
 import info.bonjean.beluga.request.Method;
 import info.bonjean.beluga.request.ParameterMap;
 import info.bonjean.beluga.request.PartnerAuth;
 import info.bonjean.beluga.request.PlayList;
+import info.bonjean.beluga.request.Search;
 import info.bonjean.beluga.request.SongBookmark;
 import info.bonjean.beluga.request.SongSleep;
 import info.bonjean.beluga.request.StationList;
 import info.bonjean.beluga.request.UserLogin;
 import info.bonjean.beluga.response.Result;
 import info.bonjean.beluga.response.Song;
+import info.bonjean.beluga.response.SearchSong;
 import info.bonjean.beluga.response.Station;
 import info.bonjean.beluga.util.HTMLUtil;
 import info.bonjean.beluga.util.HTTPUtil;
@@ -247,5 +251,41 @@ public class PandoraClient
 		artistBookmark.setTrackToken(state.getSong().getTrackToken());
 
 		HTTPUtil.request(Method.ADD_ARTIST_BOOKMARK, params, artistBookmark, true);
+	}
+
+	public Result search(String query) throws BelugaException
+	{
+		ParameterMap params = getDefaultParameterMap();
+
+		Search search = new Search();
+		search.setSyncTime(PandoraUtil.getSyncTime());
+		search.setUserAuthToken(state.getUserAuthToken());
+		search.setSearchText(query);
+
+		return HTTPUtil.request(Method.SEARCH, params, search, true);
+	}
+
+	public void addStation(String musicToken) throws BelugaException
+	{
+		ParameterMap params = getDefaultParameterMap();
+		
+		CreateStation createStation = new CreateStation();
+		createStation.setSyncTime(PandoraUtil.getSyncTime());
+		createStation.setUserAuthToken(state.getUserAuthToken());
+		createStation.setMusicToken(musicToken);
+		
+		HTTPUtil.request(Method.CREATE_STATION, params, createStation, true);
+	}
+	
+	public void deleteStation() throws BelugaException
+	{
+		ParameterMap params = getDefaultParameterMap();
+		
+		DeleteStation createStation = new DeleteStation();
+		createStation.setSyncTime(PandoraUtil.getSyncTime());
+		createStation.setUserAuthToken(state.getUserAuthToken());
+		createStation.setStationToken(state.getStation().getStationToken());
+		
+		HTTPUtil.request(Method.DELETE_STATION, params, createStation, true);
 	}
 }

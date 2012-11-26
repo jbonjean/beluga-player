@@ -27,7 +27,7 @@ import java.util.List;
 /**
  * 
  * @author Julien Bonjean <julien@bonjean.info>
- *
+ * 
  */
 public class BelugaState
 {
@@ -43,7 +43,7 @@ public class BelugaState
 	private Station station;
 	private List<Song> playlist;
 	private Song song;
-	
+
 	private List<String> errors = new ArrayList<String>();
 
 	private BelugaState()
@@ -142,7 +142,7 @@ public class BelugaState
 	{
 		return errors;
 	}
-	
+
 	public void clearErrors()
 	{
 		errors.clear();

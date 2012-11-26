@@ -18,6 +18,8 @@
  */
 package info.bonjean.beluga.connection;
 
+import info.bonjean.beluga.exception.CommunicationException;
+
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
@@ -57,7 +59,6 @@ public class BelugaDNSResolver implements DnsResolver
 			SimpleResolver resolver = new SimpleResolver(proxyDNS);
 			dnsProxyLookup = new Lookup(pandoraURL, Type.A);
 			dnsProxyLookup.setResolver(resolver);
-			dnsProxyLookup.setCache(null);
 		}
 		catch(Exception e)
 		{
@@ -73,17 +74,23 @@ public class BelugaDNSResolver implements DnsResolver
 		if(dnsProxyLookup != null && pandoraURL.equalsIgnoreCase(host))
 		{
 			Record[] records = dnsProxyLookup.run();
-
+			
 			List<InetAddress> addresses = new ArrayList<InetAddress>();
-			for(Record record : records)
+			if(records != null)
 			{
-				if(record instanceof ARecord)
-					addresses.add(((ARecord)record).getAddress());
+				for(Record record : records)
+				{
+					if(record instanceof ARecord)
+						addresses.add(((ARecord)record).getAddress());
+				}
 			}
 			if(!addresses.isEmpty())
 				return addresses.toArray(new InetAddress[addresses.size()]);
 			else
+			{
 				log.error("Cannot resolve pandora address using DNS proxy");
+				throw new UnknownHostException("dns.proxy.error");
+			}
 		}
 		return fallbackDNSResolver.resolve(host);
 	}

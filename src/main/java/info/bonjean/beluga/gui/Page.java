@@ -25,7 +25,7 @@ package info.bonjean.beluga.gui;
  */
 public enum Page
 {
-	COMMON, WELCOME, CONFIGURATION, SONG, NOTIFICATION;
+	COMMON, WELCOME, CONFIGURATION, SONG, NOTIFICATION, STATION_ADD;
 	
 	public static final String HTML_PATH = "/html/";
 	public static final String CSS_PATH = "/css/";
@@ -35,16 +35,16 @@ public enum Page
 	
 	public String getHTML()
 	{
-		return HTML_PATH + name().toLowerCase() + ".html";
+		return HTML_PATH + name().toLowerCase().replace("_", "-") + ".html";
 	}
 	
 	public String getCss()
 	{
-		return CSS_PATH + name().toLowerCase() + ".css";
+		return CSS_PATH + name().toLowerCase().replace("_", "-") + ".css";
 	}
 	
 	public String getJs()
 	{
-		return JS_PATH + name().toLowerCase() + ".js";
+		return JS_PATH + name().toLowerCase().replace("_", "-") + ".js";
 	}
 }
