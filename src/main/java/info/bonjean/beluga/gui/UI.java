@@ -36,6 +36,7 @@ public class UI extends JPanel
 {
 	private static final long serialVersionUID = -4119211066130381277L;
 	private final JWebBrowser webBrowser = new JWebBrowser(JWebBrowser.useWebkitRuntime());
+	private final BelugaState state = BelugaState.getInstance();
 
 	public JWebBrowser getWebBrowser()
 	{
@@ -54,22 +55,26 @@ public class UI extends JPanel
 
 	public void updateSongUI()
 	{
-		webBrowser.setHTMLContent(HTMLUtil.getSongHTML(BelugaState.getInstance().getStationList(), BelugaState.getInstance().getStation(), BelugaState.getInstance().getSong()));
+		state.setPage(Page.SONG);
+		webBrowser.setHTMLContent(HTMLUtil.getSongHTML(state.getStationList(), state.getStation(), state.getSong()));
 	}
 
 	public void updateWelcomeUI()
 	{
+		state.setPage(Page.WELCOME);
 		webBrowser.setHTMLContent(HTMLUtil.getWelcomeHTML());
 	}
 
-	public void updateConfigurationUI()
+	public void updateConfigurationUI(boolean back)
 	{
-		webBrowser.setHTMLContent(HTMLUtil.getConfigurationHTML());
+		state.setPage(Page.CONFIGURATION);
+		webBrowser.setHTMLContent(HTMLUtil.getConfigurationHTML(back));
 	}
 
 	public void updateStationAddUI()
 	{
-		webBrowser.setHTMLContent(HTMLUtil.getStationAddHTML(BelugaState.getInstance().getSong()));
+		state.setPage(Page.STATION_ADD);
+		webBrowser.setHTMLContent(HTMLUtil.getStationAddHTML(state.getSong()));
 	}
 
 	public void displayLoader()

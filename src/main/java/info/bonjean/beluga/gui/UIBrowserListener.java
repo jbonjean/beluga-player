@@ -75,7 +75,7 @@ public class UIBrowserListener extends WebBrowserAdapter
 			{
 				if (player.isPlaying())
 				{
-					if (!displayedSong.getTrackToken().equals(state.getSong().getTrackToken()))
+					if (state.getPage().equals(Page.SONG) && !displayedSong.getTrackToken().equals(state.getSong().getTrackToken()))
 					{
 						log.debug("Song changed, update main window");
 						displayedSong = state.getSong();
@@ -151,13 +151,15 @@ public class UIBrowserListener extends WebBrowserAdapter
 
 			} else if (command.startsWith("goto/"))
 			{
+				ui.displayLoader();
+				
 				String page = command.split("/")[1];
-				log.info("Reload page " + page);
+				log.info("Goto page " + page);
 
 				if (page.equals(Page.WELCOME.name()))
 					ui.updateWelcomeUI();
 				else if (page.equals(Page.CONFIGURATION.name()))
-					ui.updateConfigurationUI();
+					ui.updateConfigurationUI(true);
 				else if (page.equals(Page.SONG.name()))
 					ui.updateSongUI();
 				else if (page.equals(Page.STATION_ADD.name()))
@@ -171,7 +173,7 @@ public class UIBrowserListener extends WebBrowserAdapter
 				Object[] parameters = webBrowserCommandEvent.getParameters();
 				if (parameters.length > 0)
 					state.addError((String) parameters[0]);
-				ui.updateConfigurationUI();
+				ui.updateConfigurationUI(false);
 
 			} else if (command.equals("save-configuration"))
 			{
@@ -200,10 +202,6 @@ public class UIBrowserListener extends WebBrowserAdapter
 				pandoraClient.selectStation(stationId);
 				nextSong();
 				ui.updateSongUI();
-			} else if (command.equals("create-station"))
-			{
-				ui.displayLoader();
-				ui.updateStationAddUI();
 			} else if (command.equals("search"))
 			{
 				// ui.triggerLoader();

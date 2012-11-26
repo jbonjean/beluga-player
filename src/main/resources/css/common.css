@@ -10,6 +10,10 @@ a {
 	text-decoration: none;
 }
 
+.no-display {
+	display: none;
+}
+
 #loader {
 	position: fixed;
 	width:100%;
@@ -44,6 +48,19 @@ h2 {
 }
 h3 {
 	font-size: 14px;
+}
+
+#back {
+	position: absolute;
+	top:10px;
+	right: 10px;
+}
+#back a {
+	display: block;
+}
+#back img {
+	width: 20px;
+	height: 20px;
 }
 
 /* ******* NOTIFICATIONS ******* */

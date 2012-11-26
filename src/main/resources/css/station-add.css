@@ -31,19 +31,6 @@ a:hover {
 	text-decoration: underline;
 }
 
-#back {
-	position: absolute;
-	top:10px;
-	right: 10px;
-}
-#back a {
-	display: block;
-}
-#back img {
-	width: 20px;
-	height: 20px;
-}
-
 .tt span {
     width: 100px;
     height: auto;

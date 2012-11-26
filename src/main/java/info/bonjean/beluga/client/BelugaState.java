@@ -18,6 +18,7 @@
  */
 package info.bonjean.beluga.client;
 
+import info.bonjean.beluga.gui.Page;
 import info.bonjean.beluga.response.Song;
 import info.bonjean.beluga.response.Station;
 
@@ -43,6 +44,8 @@ public class BelugaState
 	private Station station;
 	private List<Song> playlist;
 	private Song song;
+	
+	private Page page;
 
 	private List<String> errors = new ArrayList<String>();
 
@@ -151,5 +154,15 @@ public class BelugaState
 	public void addError(String key)
 	{
 		errors.add(key);
+	}
+
+	public Page getPage()
+	{
+		return page;
+	}
+
+	public void setPage(Page page)
+	{
+		this.page = page;
 	}
 }

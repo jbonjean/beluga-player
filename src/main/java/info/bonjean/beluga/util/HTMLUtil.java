@@ -114,7 +114,7 @@ public class HTMLUtil
 		return html;
 	}
 
-	private static String loadPage(Page page, Map<String, String> tokens)
+	private static String loadPage(Page page, Map<String, String> tokens, boolean back)
 	{
 		// load page raw HTML
 		String html = replace(getResourceAsString(page.getHTML()), tokens);
@@ -130,6 +130,8 @@ public class HTMLUtil
 		if (System.getProperty("debug") != null)
 			sb.append(getResourceAsString(Page.CSS_PATH + "debug.css"));
 		tokens.put("$CSS$", sb.toString());
+		
+		tokens.put("$DISPLAY_BACK_CLASS$", back ? "" : "no-display");
 
 		// add js token
 		sb = new StringBuffer();
@@ -139,6 +141,7 @@ public class HTMLUtil
 
 		// add images
 		tokens.put("$LOADER$", getResourceAsBase64String(Page.IMG_PATH + "ajax-loader-2.gif"));
+		tokens.put("$ICON_BACK$", getResourceAsBase64String(Page.ICONS_PATH + "Previous-32.png"));
 
 		// errors
 		sb = new StringBuffer();
@@ -167,7 +170,7 @@ public class HTMLUtil
 		Map<String, String> tokens = new HashMap<String, String>();
 		tokens.put("$LOADER$", getResourceAsBase64String(Page.IMG_PATH + "ajax-loader.gif"));
 		tokens.put("$BACKGROUND$", getResourceAsBase64String(Page.IMG_PATH + "beluga.600x400.png"));
-		return loadPage(Page.WELCOME, tokens);
+		return loadPage(Page.WELCOME, tokens, false);
 	}
 
 	public static String getSongHTML(List<Station> stations, Station station, Song song)
@@ -207,7 +210,7 @@ public class HTMLUtil
 		
 		tokens.put("$QUICKMIX_CLASS$", station.isQuickMix() ? "quickmix" : "");
 
-		return loadPage(Page.SONG, tokens);
+		return loadPage(Page.SONG, tokens, false);
 	}
 
 	public static String getNotificationHTML(Song song)
@@ -219,7 +222,7 @@ public class HTMLUtil
 		return replace(getResourceAsString(Page.NOTIFICATION.getHTML()), tokens);
 	}
 
-	public static String getConfigurationHTML()
+	public static String getConfigurationHTML(boolean back)
 	{
 		Map<String, String> tokens = new HashMap<String, String>();
 		tokens.put("$USERNAME$", configuration.getUserName());
@@ -233,19 +236,19 @@ public class HTMLUtil
 		tokens.put("$BACKGROUND$", getResourceAsBase64String(Page.IMG_PATH + "beluga.600x400.png"));
 		tokens.put("$ICON_INFO$", getResourceAsBase64String(Page.ICONS_PATH + "info-20.png"));
 
-		return loadPage(Page.CONFIGURATION, tokens);
+		return loadPage(Page.CONFIGURATION, tokens, back);
 	}
 
 	public static String getStationAddHTML(Song song)
 	{
 		Map<String, String> tokens = new HashMap<String, String>();
-		tokens.put("$ICON_BACK$", getResourceAsBase64String(Page.ICONS_PATH + "Previous-32.png"));
 		tokens.put("$ARTIST_NAME$", song.getArtistName());
 		tokens.put("$SONG_NAME$", song.getSongName());
 		tokens.put("$TRACK_TOKEN$", song.getTrackToken());
-		return loadPage(Page.STATION_ADD, tokens);
+		
+		return loadPage(Page.STATION_ADD, tokens, true);
 	}
-
+	
 	private static String generateStationListHTML(List<Station> stations, Station selectedStation)
 	{
 		StringBuffer html = new StringBuffer();
