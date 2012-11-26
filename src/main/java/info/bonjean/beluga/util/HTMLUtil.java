@@ -41,6 +41,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringEscapeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
@@ -173,7 +174,7 @@ public class HTMLUtil
 	{
 		Map<String, String> tokens = new HashMap<String, String>();
 		tokens.put("$USERNAME$", configuration.getUserName());
-		tokens.put("$STATION_NAME$", station.getStationName());
+		tokens.put("$STATION_NAME$", StringEscapeUtils.escapeJavaScript(station.getStationName()));
 		tokens.put("$ALBUM_NAME$", shorten(song.getAlbumName(), 100));
 		tokens.put("$ARTIST_NAME$", song.getArtistName());
 		tokens.put("$ALBUM_COVER$", song.getAlbumArtBase64());
