@@ -235,10 +235,13 @@ public class HTMLUtil
 		return loadPage(Page.CONFIGURATION, tokens);
 	}
 
-	public static String getStationAddHTML()
+	public static String getStationAddHTML(Song song)
 	{
 		Map<String, String> tokens = new HashMap<String, String>();
 		tokens.put("$ICON_BACK$", getResourceAsBase64String(Page.ICONS_PATH + "Previous-32.png"));
+		tokens.put("$ARTIST_NAME$", song.getArtistName());
+		tokens.put("$SONG_NAME$", song.getSongName());
+		tokens.put("$TRACK_TOKEN$", song.getTrackToken());
 		return loadPage(Page.STATION_ADD, tokens);
 	}
 
@@ -357,7 +360,7 @@ public class HTMLUtil
 		StringBuffer html = new StringBuffer();
 
 		html.append("<div class='result'>");
-		html.append("<a href='command://add-station/");
+		html.append("<a href='command://add-station/search/");
 		html.append(item.getMusicToken());
 		html.append("'>");
 

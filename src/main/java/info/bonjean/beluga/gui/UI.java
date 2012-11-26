@@ -69,7 +69,7 @@ public class UI extends JPanel
 
 	public void updateStationAddUI()
 	{
-		webBrowser.setHTMLContent(HTMLUtil.getStationAddHTML());
+		webBrowser.setHTMLContent(HTMLUtil.getStationAddHTML(BelugaState.getInstance().getSong()));
 	}
 
 	public void displayLoader()

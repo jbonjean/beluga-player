@@ -275,6 +275,19 @@ public class PandoraClient
 
 		HTTPUtil.request(Method.CREATE_STATION, params, createStation, true);
 	}
+	
+	public void addStation(String type, String trackToken) throws BelugaException
+	{
+		ParameterMap params = getDefaultParameterMap();
+
+		CreateStation createStation = new CreateStation();
+		createStation.setSyncTime(PandoraUtil.getSyncTime());
+		createStation.setUserAuthToken(state.getUserAuthToken());
+		createStation.setMusicType(type);
+		createStation.setTrackToken(trackToken);
+
+		HTTPUtil.request(Method.CREATE_STATION, params, createStation, true);
+	}
 
 	public void deleteStation() throws BelugaException
 	{

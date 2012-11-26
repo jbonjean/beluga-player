@@ -18,8 +18,6 @@
  */
 package info.bonjean.beluga.connection;
 
-import info.bonjean.beluga.exception.CommunicationException;
-
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.ArrayList;

@@ -226,9 +226,19 @@ public class UIBrowserListener extends WebBrowserAdapter
 			} else if (command.startsWith("add-station/"))
 			{
 				ui.displayLoader();
-				String musicToken = command.split("/")[1];
-				log.debug("token: " + musicToken);
-				pandoraClient.addStation(musicToken);
+				String[] parameters = command.split("/");
+				String type = parameters[1];
+				String token = parameters[2];
+				if(type.equals("search"))
+				{
+					log.debug("Add station from search results, token: " + token);
+					pandoraClient.addStation(token);
+				}
+				else
+				{
+					log.debug("Add station from "+ type +", token: " + token);
+					pandoraClient.addStation(type, token);
+				}
 				pandoraClient.updateStationList();
 				ui.updateSongUI();
 			} else if (command.equals("delete-station"))
