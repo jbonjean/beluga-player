@@ -70,7 +70,6 @@ public class BelugaDNSResolver implements DnsResolver
 	@Override
 	public InetAddress[] resolve(String host) throws UnknownHostException
 	{
-		
 		if(dnsProxyLookup != null && pandoraURL.equalsIgnoreCase(host))
 		{
 			Record[] records = dnsProxyLookup.run();
@@ -85,7 +84,10 @@ public class BelugaDNSResolver implements DnsResolver
 				}
 			}
 			if(!addresses.isEmpty())
+			{
+				log.debug("Resolved Pandora address using DNS proxy");
 				return addresses.toArray(new InetAddress[addresses.size()]);
+			}
 			else
 			{
 				log.error("Cannot resolve pandora address using DNS proxy");

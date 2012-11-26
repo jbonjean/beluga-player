@@ -114,13 +114,13 @@ public class UIBrowserListener extends WebBrowserAdapter
 
 			} else if (command.equals("next"))
 			{
-				ui.triggerLoader();
+				ui.displayLoader();
 				nextSong();
 				ui.updateSongUI();
 
 			} else if (command.equals("like"))
 			{
-				ui.triggerLoader();
+				ui.displayLoader();
 				boolean positive = true;
 				if (state.getSong().getSongRating() > 0)
 					positive = false;
@@ -129,14 +129,14 @@ public class UIBrowserListener extends WebBrowserAdapter
 
 			} else if (command.equals("ban"))
 			{
-				ui.triggerLoader();
+				ui.displayLoader();
 				pandoraClient.addFeedback(false);
 				nextSong();
 				ui.updateSongUI();
 
 			} else if (command.equals("sleep"))
 			{
-				ui.triggerLoader();
+				ui.displayLoader();
 				pandoraClient.sleepSong();
 				nextSong();
 				ui.updateSongUI();
@@ -149,7 +149,7 @@ public class UIBrowserListener extends WebBrowserAdapter
 			{
 				System.exit(0);
 
-			} else if (command.startsWith("reload/"))
+			} else if (command.startsWith("goto/"))
 			{
 				String page = command.split("/")[1];
 				log.info("Reload page " + page);
@@ -167,7 +167,7 @@ public class UIBrowserListener extends WebBrowserAdapter
 
 			} else if (command.equals("configuration"))
 			{
-				ui.triggerLoader();
+				ui.displayLoader();
 				Object[] parameters = webBrowserCommandEvent.getParameters();
 				if (parameters.length > 0)
 					state.addError((String) parameters[0]);
@@ -175,7 +175,7 @@ public class UIBrowserListener extends WebBrowserAdapter
 
 			} else if (command.equals("save-configuration"))
 			{
-				ui.triggerLoader();
+				ui.displayLoader();
 				log.info("Update configuration");
 				Object[] parameters = webBrowserCommandEvent.getParameters();
 				configuration.setUserName((String) parameters[0]);
@@ -192,7 +192,7 @@ public class UIBrowserListener extends WebBrowserAdapter
 
 			} else if (command.startsWith("select-station"))
 			{
-				ui.triggerLoader();
+				ui.displayLoader();
 				Map<String, String> parameters = HTTPUtil.parseUrl(command);
 				String stationId = parameters.get("stationId");
 				log.info("Select station with id: " + stationId);
@@ -202,7 +202,7 @@ public class UIBrowserListener extends WebBrowserAdapter
 				ui.updateSongUI();
 			} else if (command.equals("create-station"))
 			{
-				ui.triggerLoader();
+				ui.displayLoader();
 				ui.updateStationAddUI();
 			} else if (command.equals("search"))
 			{
@@ -221,10 +221,11 @@ public class UIBrowserListener extends WebBrowserAdapter
 					}
 
 					ui.getWebBrowser().executeJavascript("document.getElementById('results').innerHTML = \"" + resultsHTML + "\"");
+					ui.hideLoader();
 				}
 			} else if (command.startsWith("add-station/"))
 			{
-				ui.triggerLoader();
+				ui.displayLoader();
 				String musicToken = command.split("/")[1];
 				log.debug("token: " + musicToken);
 				pandoraClient.addStation(musicToken);
@@ -232,7 +233,7 @@ public class UIBrowserListener extends WebBrowserAdapter
 				ui.updateSongUI();
 			} else if (command.equals("delete-station"))
 			{
-				ui.triggerLoader();
+				ui.displayLoader();
 				pandoraClient.deleteStation();
 				pandoraClient.updateStationList();
 				pandoraClient.selectStation(state.getStationList().get(0));
@@ -279,7 +280,7 @@ public class UIBrowserListener extends WebBrowserAdapter
 					commandReceived(new WebBrowserCommandEvent(ui.getWebBrowser(), "configuration", new Object[] { "pandora.not.available.check.proxy" }));
 					return;
 				}
-				log.error("Pandora problem, let's retry", e);
+				log.error(e.toString(), e);
 				retryCount++;
 				commandReceived(webBrowserCommandEvent);
 			}

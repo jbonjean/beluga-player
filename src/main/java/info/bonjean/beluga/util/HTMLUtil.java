@@ -174,7 +174,7 @@ public class HTMLUtil
 		Map<String, String> tokens = new HashMap<String, String>();
 		tokens.put("$USERNAME$", configuration.getUserName());
 		tokens.put("$STATION_NAME$", station.getStationName());
-		tokens.put("$ALBUM_NAME$", song.getAlbumName());
+		tokens.put("$ALBUM_NAME$", shorten(song.getAlbumName(), 100));
 		tokens.put("$ARTIST_NAME$", song.getArtistName());
 		tokens.put("$ALBUM_COVER$", song.getAlbumArtBase64());
 		tokens.put("$SONG_NAME$", song.getSongName());
@@ -238,6 +238,7 @@ public class HTMLUtil
 	public static String getStationAddHTML()
 	{
 		Map<String, String> tokens = new HashMap<String, String>();
+		tokens.put("$ICON_BACK$", getResourceAsBase64String(Page.ICONS_PATH + "Previous-32.png"));
 		return loadPage(Page.STATION_ADD, tokens);
 	}
 
@@ -261,6 +262,7 @@ public class HTMLUtil
 	public static String retrieveAlbumArt(Song song)
 	{
 		String coverUrl = song.getAlbumArtUrl();
+		log.debug("Retrieve cover from: " + coverUrl);
 		String cover = null;
 		if (coverUrl != null && !coverUrl.isEmpty())
 		{
@@ -285,11 +287,6 @@ public class HTMLUtil
 		List<SearchSong> songs = results.getSongs();
 		StringBuffer html = new StringBuffer();
 
-		html.append("<div class='results-count'>");
-		html.append(songs.size() + artists.size());
-		html.append(" result(s)");
-		html.append("</div>");
-
 		SearchItem bestMatch = null;
 
 		if (!artists.isEmpty())
@@ -297,20 +294,30 @@ public class HTMLUtil
 
 		if (!songs.isEmpty() && (bestMatch == null || songs.get(0).getScore() > bestMatch.getScore()))
 			bestMatch = songs.get(0);
+		
+		if(bestMatch instanceof SearchArtist)
+			artists.remove(bestMatch);
+		else
+			songs.remove(bestMatch);
 
 		if (bestMatch != null)
 		{
-			html.append("<h2>");
+			html.append("<h2 class='best-match'>");
 			html.append("Best match");
-			html.append("</h2>");
-
+			html.append("</h2>: ");
+			html.append("<div class='best-match'>");
 			html.append(generateSearchResultHTML(bestMatch, true));
+			html.append("</div>");
 		}
 
 		if (!artists.isEmpty())
 		{
 			html.append("<h2>");
 			html.append("Artists");
+			html.append("<span class='count'> [");
+			html.append(artists.size());
+			html.append(" result(s)");
+			html.append("]</span>");
 			html.append("</h2>");
 			html.append("<div class='result-entries'>");
 			for (SearchArtist artist : artists)
@@ -323,6 +330,10 @@ public class HTMLUtil
 		{
 			html.append("<h2>");
 			html.append("Tracks");
+			html.append("<span class='count'> [");
+			html.append(songs.size());
+			html.append(" result(s)");
+			html.append("]</span>");
 			html.append("</h2>");
 			html.append("<div class='result-entries'>");
 			for (SearchSong song : songs)
@@ -333,7 +344,7 @@ public class HTMLUtil
 
 		if (results.isNearMatchesAvailable())
 		{
-			html.append("<div class='near-matches'>");
+			html.append("<div id='near-matches'>");
 			html.append("Search results incomplete, be more specific.");
 			html.append("</div>");
 		}
@@ -345,7 +356,8 @@ public class HTMLUtil
 	{
 		StringBuffer html = new StringBuffer();
 
-		html.append("<a class='result' href='command://add-station/");
+		html.append("<div class='result'>");
+		html.append("<a href='command://add-station/");
 		html.append(item.getMusicToken());
 		html.append("'>");
 
@@ -359,7 +371,7 @@ public class HTMLUtil
 
 		html.append("<span class='artist'>");
 		if (item instanceof SearchSong)
-			html.append("by");
+			html.append(" by ");
 		html.append(item.getArtistName());
 		html.append("</span>");
 
@@ -371,6 +383,7 @@ public class HTMLUtil
 		}
 		
 		html.append("</a>");
+		html.append("</div>");
 
 		return html.toString();
 	}

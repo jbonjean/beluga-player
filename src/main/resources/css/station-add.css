@@ -3,6 +3,94 @@ label {
 	display: inline-block;
 }
 
-.info {
-	vertical-align: -35%;
+h2 {
+	font-size: 12px;
+	color: #ccc;
+}
+
+h2 .count {
+	font-weight: normal;
+}
+
+.best-match {
+	display: inline-block;
+}
+
+#near-matches {
+	font-size: 11px;
+	margin-top: 15px;
+	font-style: italic;
+	color: #666;
+}
+
+a {
+	color: #48479b;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+#back {
+	position: absolute;
+	top:10px;
+	right: 10px;
+}
+#back a {
+	display: block;
+}
+#back img {
+	width: 20px;
+	height: 20px;
+}
+
+.tt span {
+    width: 100px;
+    height: auto;
+    line-height: 20px;
+    padding: 10px;
+    left: 50%;
+    margin-left: -64px;
+    font-family: 'Alegreya SC', Georgia, serif;
+    font-weight: 400;  
+    font-style: italic;
+    font-size: 14px;
+    color: #719DAB;
+    text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    border: 4px solid #fff;
+    background: rgba(255,255,255,0.3);
+    text-indent: 0px;
+    border-radius: 5px;
+    position: absolute;
+    pointer-events: none;
+    bottom: 100px;
+    opacity: 0;
+    box-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+    transition: all 0.3s ease-in-out;
+}
+
+.tt span:before,
+.tt span:after{
+    content: '';
+    position: absolute;
+    bottom: -15px;
+    left: 50%;
+    margin-left: -9px;
+    width: 0;
+    height: 0;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-top: 10px solid rgba(0,0,0,0.1);
+}
+
+.tt span:after{
+    bottom: -14px;
+    margin-left: -10px;
+    border-top: 10px solid #fff;
+}
+
+.tt:hover span{
+    opacity: 0.9;
+    bottom: 70px;
 }

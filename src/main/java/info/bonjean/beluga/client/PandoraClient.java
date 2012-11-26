@@ -35,7 +35,6 @@ import info.bonjean.beluga.request.StationList;
 import info.bonjean.beluga.request.UserLogin;
 import info.bonjean.beluga.response.Result;
 import info.bonjean.beluga.response.Song;
-import info.bonjean.beluga.response.SearchSong;
 import info.bonjean.beluga.response.Station;
 import info.bonjean.beluga.util.HTMLUtil;
 import info.bonjean.beluga.util.HTTPUtil;
@@ -148,7 +147,7 @@ public class PandoraClient
 	public void selectStation(String stationId) throws BelugaException
 	{
 		selectStation(getStationById(stationId));
-		
+
 		// clear the playlist
 		state.setPlaylist(null);
 	}
@@ -159,9 +158,9 @@ public class PandoraClient
 		{
 			// retrieve playlist from Pandora
 			state.setPlaylist(getPlaylist(state.getStation()));
-			
+
 			// update extra information
-			for(Song song : state.getPlaylist())
+			for (Song song : state.getPlaylist())
 				song.setAlbumArtBase64(HTMLUtil.retrieveAlbumArt(song));
 		}
 
@@ -268,24 +267,24 @@ public class PandoraClient
 	public void addStation(String musicToken) throws BelugaException
 	{
 		ParameterMap params = getDefaultParameterMap();
-		
+
 		CreateStation createStation = new CreateStation();
 		createStation.setSyncTime(PandoraUtil.getSyncTime());
 		createStation.setUserAuthToken(state.getUserAuthToken());
 		createStation.setMusicToken(musicToken);
-		
+
 		HTTPUtil.request(Method.CREATE_STATION, params, createStation, true);
 	}
-	
+
 	public void deleteStation() throws BelugaException
 	{
 		ParameterMap params = getDefaultParameterMap();
-		
+
 		DeleteStation createStation = new DeleteStation();
 		createStation.setSyncTime(PandoraUtil.getSyncTime());
 		createStation.setUserAuthToken(state.getUserAuthToken());
 		createStation.setStationToken(state.getStation().getStationToken());
-		
+
 		HTTPUtil.request(Method.DELETE_STATION, params, createStation, true);
 	}
 }

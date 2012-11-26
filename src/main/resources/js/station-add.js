@@ -6,6 +6,7 @@ var searchDelay;
 
 function searchSubmit(query)
 {
+	displayLoader();
 	sendNSCommand('search', query);
 }
 

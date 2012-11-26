@@ -1,5 +1,5 @@
 body {
-	background-image: #f2f1f0;
+	background-color: #f2f1f0;
 	font-size: 13px;
 	cursor: default;
 	font-family: Arial;
@@ -34,6 +34,16 @@ a {
 
 .debug {
 	display:none;
+}
+
+h1 {
+	font-size: 18px;
+}
+h2 {
+	font-size: 16px;
+}
+h3 {
+	font-size: 14px;
 }
 
 /* ******* NOTIFICATIONS ******* */
