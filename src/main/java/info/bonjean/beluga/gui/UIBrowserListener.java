@@ -164,6 +164,8 @@ public class UIBrowserListener extends WebBrowserAdapter
 					ui.updateSongUI();
 				else if (page.equals(Page.STATION_ADD.name()))
 					ui.updateStationAddUI();
+				else if (page.equals(Page.USER_CREATE.name()))
+					ui.updateUserCreateUI();
 				else
 					log.error("Unknow page " + page);
 
@@ -204,7 +206,6 @@ public class UIBrowserListener extends WebBrowserAdapter
 				ui.updateSongUI();
 			} else if (command.equals("search"))
 			{
-				// ui.triggerLoader();
 				Object[] parameters = webBrowserCommandEvent.getParameters();
 				if (parameters.length > 0)
 				{
@@ -247,6 +248,13 @@ public class UIBrowserListener extends WebBrowserAdapter
 				pandoraClient.selectStation(state.getStationList().get(0));
 				nextSong();
 				ui.updateSongUI();
+			} else if (command.equals("create-user"))
+			{
+				ui.displayLoader();
+				log.info("Create user");
+				Object[] parameters = webBrowserCommandEvent.getParameters();
+				pandoraClient.createUser((String) parameters[0], (String) parameters[1], (String) parameters[2], (String) parameters[3], (String) parameters[4], (String) parameters[5]);
+				commandReceived(new WebBrowserCommandEvent(ui.getWebBrowser(), "configuration", new Object[]{}));
 			} else
 			{
 				log.info("Unknown command received: " + command);
@@ -286,6 +294,11 @@ public class UIBrowserListener extends WebBrowserAdapter
 				{
 					log.error("Pandora is not available in your country, you should consider using a proxy or custom DNS");
 					commandReceived(new WebBrowserCommandEvent(ui.getWebBrowser(), "configuration", new Object[] { "pandora.not.available.check.proxy" }));
+					return;
+				}
+				if (state.getPage().equals(Page.USER_CREATE))
+				{
+					ui.hideLoader();
 					return;
 				}
 				log.error(e.toString(), e);

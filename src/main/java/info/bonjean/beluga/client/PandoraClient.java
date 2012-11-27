@@ -22,6 +22,7 @@ import info.bonjean.beluga.configuration.BelugaConfiguration;
 import info.bonjean.beluga.exception.BelugaException;
 import info.bonjean.beluga.request.ArtistBookmark;
 import info.bonjean.beluga.request.CreateStation;
+import info.bonjean.beluga.request.CreateUser;
 import info.bonjean.beluga.request.DeleteStation;
 import info.bonjean.beluga.request.Feedback;
 import info.bonjean.beluga.request.Method;
@@ -299,5 +300,36 @@ public class PandoraClient
 		createStation.setStationToken(state.getStation().getStationToken());
 
 		HTTPUtil.request(Method.DELETE_STATION, params, createStation, true);
+	}
+
+	public void createUser(String username, String password, String birthYearStr, String zipCode, String gender, String emailOptInStr) throws BelugaException
+	{
+		Integer birthYear = 0;
+		try
+		{
+			birthYear = Integer.valueOf(birthYearStr);
+		}
+		catch(NumberFormatException e)
+		{
+			// we don't care, Pandora is going to reject it anyway
+		}
+		Boolean emailOptIn = Boolean.valueOf(emailOptInStr);
+		
+		ParameterMap params = new ParameterMap();
+		params.add("partner_id", state.getPartnerId());
+		params.add("auth_token", state.getPartnerAuthToken());
+
+		CreateUser createUser = new CreateUser();
+		createUser.setUsername(username);
+		createUser.setPassword(password);
+		createUser.setBirthYear(birthYear);
+		createUser.setZipCode(zipCode);
+		createUser.setGender(gender);
+		createUser.setEmailOptIn(emailOptIn);
+		
+		createUser.setSyncTime(PandoraUtil.getSyncTime());
+		createUser.setPartnerAuthToken(state.getPartnerAuthToken());
+
+		HTTPUtil.request(Method.CREATE_USER, params, createUser, true);
 	}
 }

@@ -249,6 +249,12 @@ public class HTMLUtil
 		return loadPage(Page.STATION_ADD, tokens, true);
 	}
 	
+	public static String getUserCreateHTML(Song song)
+	{
+		Map<String, String> tokens = new HashMap<String, String>();
+		return loadPage(Page.USER_CREATE, tokens, false);
+	}
+	
 	private static String generateStationListHTML(List<Station> stations, Station selectedStation)
 	{
 		StringBuffer html = new StringBuffer();

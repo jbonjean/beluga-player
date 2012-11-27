@@ -53,6 +53,16 @@ public class UI extends JPanel
 		add(webBrowser, BorderLayout.CENTER);
 	}
 
+	public void displayLoader()
+	{
+		webBrowser.executeJavascript("displayLoader()");
+	}
+	
+	public void hideLoader()
+	{
+		webBrowser.executeJavascript("hideLoader()");
+	}
+
 	public void updateSongUI()
 	{
 		state.setPage(Page.SONG);
@@ -77,13 +87,9 @@ public class UI extends JPanel
 		webBrowser.setHTMLContent(HTMLUtil.getStationAddHTML(state.getSong()));
 	}
 
-	public void displayLoader()
+	public void updateUserCreateUI()
 	{
-		webBrowser.executeJavascript("displayLoader()");
-	}
-	
-	public void hideLoader()
-	{
-		webBrowser.executeJavascript("hideLoader()");
+		state.setPage(Page.USER_CREATE);
+		webBrowser.setHTMLContent(HTMLUtil.getUserCreateHTML(state.getSong()));
 	}
 }

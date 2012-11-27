@@ -25,7 +25,7 @@ package info.bonjean.beluga.gui;
  */
 public enum Page
 {
-	COMMON, WELCOME, CONFIGURATION, SONG, NOTIFICATION, STATION_ADD;
+	COMMON, WELCOME, CONFIGURATION, SONG, NOTIFICATION, STATION_ADD, USER_CREATE;
 	
 	public static final String HTML_PATH = "/html/";
 	public static final String CSS_PATH = "/css/";

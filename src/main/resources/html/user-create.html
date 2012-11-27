@@ -1,0 +1,38 @@
+<h1>New User</h1>
+
+<form name="user">
+
+	<fieldset>
+		<legend>Pandora</legend>
+		<div>
+			<label for="username">Username</label>
+			<input name="username" id="username" type="email"/>
+		</div>
+		<div>
+			<label for="password">Password</label>
+			<input name="password" id="password" type="password"/>
+		</div>
+		<div>
+			<label for="birthYear">Birth Year</label>
+			<input name="birthYear" id="proxyHost" type="number"/>
+		</div>
+		<div>
+			<label for="zipCode">ZIP Code</label>
+			<input name="zipCode" id="zipCode" type="text"/>
+		</div>
+		<div>
+			<label for="gender">Gender</label>
+			<input type="radio" name="gender" value="male">Male
+			<input type="radio" name="gender" value="female">Female
+		</div>
+		<div>
+			<label for="emailOptIn">Receive emails</label>
+			<input type="checkbox" name="emailOptIn">
+		</div>
+		
+	</fieldset>
+		
+	<div>
+		<input type="button" value="Create" onclick="createUser()" />
+	</div>
+</form>
