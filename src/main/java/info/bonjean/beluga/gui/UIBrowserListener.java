@@ -243,6 +243,8 @@ public class UIBrowserListener extends WebBrowserAdapter
 					pandoraClient.addStation(type, token);
 				}
 				pandoraClient.updateStationList();
+				if(state.getSong() == null)
+					nextSong();
 				ui.updateSongUI();
 			} else if (command.equals("delete-station"))
 			{
