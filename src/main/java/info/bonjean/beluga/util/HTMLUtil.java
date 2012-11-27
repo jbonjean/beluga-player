@@ -130,7 +130,7 @@ public class HTMLUtil
 		if (System.getProperty("debug") != null)
 			sb.append(getResourceAsString(Page.CSS_PATH + "debug.css"));
 		tokens.put("$CSS$", sb.toString());
-		
+
 		tokens.put("$DISPLAY_BACK_CLASS$", back ? "" : "no-display");
 
 		// add js token
@@ -207,7 +207,7 @@ public class HTMLUtil
 		tokens.put("$ICON_CREATE_STATION$", getResourceAsBase64String(Page.ICONS_PATH + "Add-32.png"));
 		tokens.put("$ICON_DELETE_STATION$", getResourceAsBase64String(Page.ICONS_PATH + "Delete-32.png"));
 		tokens.put("$ICON_SETTINGS$", getResourceAsBase64String(Page.ICONS_PATH + "Settings-32.png"));
-		
+
 		tokens.put("$QUICKMIX_CLASS$", station.isQuickMix() ? "quickmix" : "");
 
 		return loadPage(Page.SONG, tokens, false);
@@ -242,19 +242,19 @@ public class HTMLUtil
 	public static String getStationAddHTML(Song song)
 	{
 		Map<String, String> tokens = new HashMap<String, String>();
-		tokens.put("$ARTIST_NAME$", song.getArtistName());
-		tokens.put("$SONG_NAME$", song.getSongName());
-		tokens.put("$TRACK_TOKEN$", song.getTrackToken());
-		
+		tokens.put("$ARTIST_NAME$", song == null ? "" : song.getArtistName());
+		tokens.put("$SONG_NAME$", song == null ? "" : song.getSongName());
+		tokens.put("$TRACK_TOKEN$", song == null ? "" : song.getTrackToken());
+
 		return loadPage(Page.STATION_ADD, tokens, true);
 	}
-	
+
 	public static String getUserCreateHTML(Song song)
 	{
 		Map<String, String> tokens = new HashMap<String, String>();
 		return loadPage(Page.USER_CREATE, tokens, false);
 	}
-	
+
 	private static String generateStationListHTML(List<Station> stations, Station selectedStation)
 	{
 		StringBuffer html = new StringBuffer();
@@ -307,8 +307,8 @@ public class HTMLUtil
 
 		if (!songs.isEmpty() && (bestMatch == null || songs.get(0).getScore() > bestMatch.getScore()))
 			bestMatch = songs.get(0);
-		
-		if(bestMatch instanceof SearchArtist)
+
+		if (bestMatch instanceof SearchArtist)
 			artists.remove(bestMatch);
 		else
 			songs.remove(bestMatch);
@@ -394,7 +394,7 @@ public class HTMLUtil
 			html.append(item instanceof SearchSong ? " (Track)" : " (Artist)");
 			html.append("</span>");
 		}
-		
+
 		html.append("</a>");
 		html.append("</div>");
 

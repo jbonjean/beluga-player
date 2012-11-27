@@ -108,9 +108,13 @@ public class UIBrowserListener extends WebBrowserAdapter
 			{
 				pandoraClient.login();
 				pandoraClient.updateStationList();
-				pandoraClient.selectStation(state.getStationList().get(0));
-				nextSong();
-				ui.updateSongUI();
+				if(!state.getStationList().isEmpty())
+				{
+					nextSong();
+					ui.updateSongUI();
+				}
+				else
+					ui.updateStationAddUI();
 
 			} else if (command.equals("next"))
 			{
@@ -245,7 +249,6 @@ public class UIBrowserListener extends WebBrowserAdapter
 				ui.displayLoader();
 				pandoraClient.deleteStation();
 				pandoraClient.updateStationList();
-				pandoraClient.selectStation(state.getStationList().get(0));
 				nextSong();
 				ui.updateSongUI();
 			} else if (command.equals("create-user"))

@@ -109,6 +109,8 @@ public class PandoraClient
 	public void updateStationList() throws BelugaException
 	{
 		state.setStationList(getStationList());
+		if(state.getStation() == null && !state.getStationList().isEmpty())
+			selectStation(state.getStationList().get(0));
 	}
 
 	private List<Station> getStationList() throws BelugaException
