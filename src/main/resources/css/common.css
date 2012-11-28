@@ -3,6 +3,7 @@ body {
 	font-size: 13px;
 	cursor: default;
 	font-family: Arial;
+	margin: 0px;
 }
 
 a {
@@ -10,8 +11,20 @@ a {
 	text-decoration: none;
 }
 
+a:hover {
+	cursor: hand;
+}
+
 .no-display {
 	display: none;
+}
+
+#debug {
+	display: block;
+	position: fixed;
+	right: 10px;
+	bottom: 40px;
+	z-index: 500;
 }
 
 #loader {
@@ -20,24 +33,19 @@ a {
 	height:100%;
 	background: #ffffff ;
 	opacity: 0.6;
-	z-index: 10;
 	padding: 0;
 	margin:0;
 	display: none;
+	z-index: 10;
 }
 
 #loader img {
 	margin-left: 250px;
 	margin-top: 150px;
-	opacity: 1;
 }
 
 .clear {
 	clear: both;
-}
-
-.debug {
-	display:none;
 }
 
 h1 {
@@ -61,6 +69,18 @@ h3 {
 #back img {
 	width: 20px;
 	height: 20px;
+}
+
+#container {
+	height: 100%;
+	width: 100%;
+	margin: 0px;
+	padding: 0px;
+	overflow: hidden;
+}
+
+#content {
+	margin: 10px;
 }
 
 /* ******* NOTIFICATIONS ******* */

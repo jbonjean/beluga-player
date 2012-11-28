@@ -27,11 +27,17 @@ public enum Page
 {
 	COMMON, WELCOME, CONFIGURATION, SONG, NOTIFICATION, STATION_ADD, USER_CREATE;
 	
+	public static final String TEMPLATE_PATH = "/vm/pages/";
 	public static final String HTML_PATH = "/html/";
 	public static final String CSS_PATH = "/css/";
 	public static final String JS_PATH = "/js/";
 	public static final String IMG_PATH = "/img/";
 	public static final String ICONS_PATH = "/icons/";
+	
+	public String getTemplate()
+	{
+		return TEMPLATE_PATH + name().toLowerCase().replace("_", "-") + ".vm";
+	}
 	
 	public String getHTML()
 	{

@@ -23,6 +23,7 @@ import info.bonjean.beluga.client.BelugaState;
 import info.bonjean.beluga.configuration.BelugaConfiguration;
 import info.bonjean.beluga.exception.CommunicationException;
 import info.bonjean.beluga.gui.Page;
+import info.bonjean.beluga.gui.RenderingEngine;
 import info.bonjean.beluga.response.SearchArtist;
 import info.bonjean.beluga.response.Result;
 import info.bonjean.beluga.response.SearchItem;
@@ -42,6 +43,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.velocity.VelocityContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
@@ -83,6 +85,12 @@ public class HTMLUtil
 	public static String getResourceAsBase64String(String resource)
 	{
 		return Base64.encodeBase64String(getResourceAsByteArray(resource));
+	}
+	
+	
+	public static String getImage(String name)
+	{
+		return "data:image/png;base64," + Base64.encodeBase64String(getResourceAsByteArray(Page.IMG_PATH + name));
 	}
 
 	private static String getResourceAsString(String name)
@@ -167,10 +175,12 @@ public class HTMLUtil
 
 	public static String getWelcomeHTML()
 	{
-		Map<String, String> tokens = new HashMap<String, String>();
-		tokens.put("$LOADER$", getResourceAsBase64String(Page.IMG_PATH + "ajax-loader.gif"));
-		tokens.put("$BACKGROUND$", getResourceAsBase64String(Page.IMG_PATH + "beluga.600x400.png"));
-		return loadPage(Page.WELCOME, tokens, false);
+		VelocityContext context = new VelocityContext();
+		context.put("HTMLUtil", HTMLUtil.class);
+		context.put("pageBack", "toto");
+		context.put("page", Page.WELCOME.name().toLowerCase());
+		context.put("debug", System.getProperty("debug") != null);
+		return RenderingEngine.getInstance().render(context, Page.WELCOME.getTemplate());
 	}
 
 	public static String getSongHTML(List<Station> stations, Station station, Song song)

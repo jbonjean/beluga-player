@@ -1,0 +1,15 @@
+#parse("vm/header.vm")
+
+<h1>Welcome to Beluga!</h1>
+
+<div class="connecting">
+	<div class="text">
+		Connecting to Pandora
+	</div>
+	<div id="welcome-loader">
+		<img src="$HTMLUtil.getImage("ajax-loader.gif")"/>
+	</div>
+	<div class="spacer"></div>
+</div>
+
+#parse("vm/footer.vm")

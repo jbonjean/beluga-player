@@ -1,0 +1,40 @@
+<html>
+	<head>
+		<style type="text/css">
+			#include( "css/common.css" )
+			#parse( "css/${page}.css" )
+		</style>
+		<script type="text/javascript">
+			#include( "js/common.js" )
+			#include( "js/${page}.js" )
+		</script>
+	</head>
+	<body onselectstart="return false;">
+		<div id="container">
+	
+			#if( $debug )
+		    	<div id="debug">
+					<a href="command://goto/$page">Reload</a>
+				</div>
+		    #end
+			
+			<div id="loader">
+				<img src="$HTMLUtil.getImage("ajax-loader-2.gif")"/>
+			</div>
+			
+			#if( $pageBack )
+				<div id="back">
+					<a href="command://goto/$pageBack">
+						<img src="$HTMLUtil.getImage("Previous-32.png")" title="Back to $pageBack"/>
+					</a>
+				</div>
+			#end
+			
+			#if( $errors )
+				<div id="errors" class="tn-box tn-box-color-1">
+					$errors
+				</div>
+			#end
+		
+			<div id="content">
+	

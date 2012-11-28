@@ -289,7 +289,7 @@ public class UIBrowserListener extends WebBrowserAdapter
 			} else if (e instanceof PandoraException)
 			{
 				PandoraException pe = (PandoraException) e;
-				if (pe.getError() == PandoraError.UNKNOWN && pe.getMethod() == Method.USER_LOGIN)
+				if (pe.getError() == PandoraError.INVALID_CREDENTIALS && pe.getMethod() == Method.USER_LOGIN)
 				{
 					log.error("Invalid credentials, redirect to configuration");
 					commandReceived(new WebBrowserCommandEvent(ui.getWebBrowser(), "configuration", new Object[] { "invalid.credentials" }));
