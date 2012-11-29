@@ -122,7 +122,7 @@ public class HTMLUtil
 		return html;
 	}
 
-	private static String loadPage(Page page, Map<String, String> tokens, boolean back)
+	private static String loadPage(Page page, Map<String, String> tokens, Page pageBack)
 	{
 		// load page raw HTML
 		String html = replace(getResourceAsString(page.getHTML()), tokens);
@@ -139,7 +139,7 @@ public class HTMLUtil
 			sb.append(getResourceAsString(Page.CSS_PATH + "debug.css"));
 		tokens.put("$CSS$", sb.toString());
 
-		tokens.put("$DISPLAY_BACK_CLASS$", back ? "" : "no-display");
+		//tokens.put("$DISPLAY_BACK_CLASS$", pageBack ? "" : "no-display");
 
 		// add js token
 		sb = new StringBuffer();
@@ -173,6 +173,22 @@ public class HTMLUtil
 		return str;
 	}
 
+	public static String getPageHTML(Page page, Page pageBack)
+	{
+		VelocityContext context = new VelocityContext();
+		context.put("errors", BelugaState.getInstance().getErrors());
+		context.put("stationList", BelugaState.getInstance().getStationList());
+		context.put("station", BelugaState.getInstance().getStation());
+		context.put("song", BelugaState.getInstance().getSong());
+		context.put("configuration", BelugaConfiguration.getInstance());
+		context.put("HTMLUtil", HTMLUtil.class);
+		context.put("text", I18NUtil.class);
+		context.put("pageBack", pageBack != null ? pageBack.name().toLowerCase() : null);
+		context.put("page", page.name().toLowerCase());
+		context.put("debug", System.getProperty("debug") != null);
+		return RenderingEngine.getInstance().render(context, page.getTemplate());
+	}
+	
 	public static String getWelcomeHTML()
 	{
 		VelocityContext context = new VelocityContext();
@@ -220,7 +236,7 @@ public class HTMLUtil
 
 		tokens.put("$QUICKMIX_CLASS$", station.isQuickMix() ? "quickmix" : "");
 
-		return loadPage(Page.SONG, tokens, false);
+		return loadPage(Page.SONG, tokens, null);
 	}
 
 	public static String getNotificationHTML(Song song)
@@ -232,21 +248,21 @@ public class HTMLUtil
 		return replace(getResourceAsString(Page.NOTIFICATION.getHTML()), tokens);
 	}
 
-	public static String getConfigurationHTML(boolean back)
+	public static String getConfigurationHTML(Page pageBack)
 	{
 		Map<String, String> tokens = new HashMap<String, String>();
 		tokens.put("$USERNAME$", configuration.getUserName());
 		tokens.put("$PASSWORD$", configuration.getPassword());
-		tokens.put("$PROXY_HOST$", configuration.getProxyServer());
+		tokens.put("$PROXY_HOST$", configuration.getProxyHost());
 		String proxyHost = "";
-		if (configuration.getProxyServerPort() != null)
-			proxyHost = String.valueOf(configuration.getProxyServerPort());
+		if (configuration.getProxyPort() != null)
+			proxyHost = String.valueOf(configuration.getProxyPort());
 		tokens.put("$PROXY_PORT$", proxyHost);
-		tokens.put("$PROXY_DNS$", configuration.getProxyDNS());
+		tokens.put("$PROXY_DNS$", configuration.getDNSProxy());
 		tokens.put("$BACKGROUND$", getResourceAsBase64String(Page.IMG_PATH + "beluga.600x400.png"));
 		tokens.put("$ICON_INFO$", getResourceAsBase64String(Page.ICONS_PATH + "info-20.png"));
 
-		return loadPage(Page.CONFIGURATION, tokens, back);
+		return loadPage(Page.CONFIGURATION, tokens, pageBack);
 	}
 
 	public static String getStationAddHTML(Song song)
@@ -256,13 +272,13 @@ public class HTMLUtil
 		tokens.put("$SONG_NAME$", song == null ? "" : song.getSongName());
 		tokens.put("$TRACK_TOKEN$", song == null ? "" : song.getTrackToken());
 
-		return loadPage(Page.STATION_ADD, tokens, true);
+		return loadPage(Page.STATION_ADD, tokens, Page.SONG);
 	}
 
 	public static String getUserCreateHTML(Song song)
 	{
 		Map<String, String> tokens = new HashMap<String, String>();
-		return loadPage(Page.USER_CREATE, tokens, false);
+		return loadPage(Page.USER_CREATE, tokens, null);
 	}
 
 	private static String generateStationListHTML(List<Station> stations, Station selectedStation)

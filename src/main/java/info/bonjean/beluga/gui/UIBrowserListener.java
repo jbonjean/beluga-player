@@ -163,7 +163,7 @@ public class UIBrowserListener extends WebBrowserAdapter
 				if (page.equals(Page.WELCOME.name()))
 					ui.updateWelcomeUI();
 				else if (page.equals(Page.CONFIGURATION.name()))
-					ui.updateConfigurationUI(true);
+					ui.updateConfigurationUI(null);
 				else if (page.equals(Page.SONG.name()))
 					ui.updateSongUI();
 				else if (page.equals(Page.STATION_ADD.name()))
@@ -179,7 +179,7 @@ public class UIBrowserListener extends WebBrowserAdapter
 				Object[] parameters = webBrowserCommandEvent.getParameters();
 				if (parameters.length > 0)
 					state.addError((String) parameters[0]);
-				ui.updateConfigurationUI(false);
+				ui.updateConfigurationUI(null);
 
 			} else if (command.equals("save-configuration"))
 			{
@@ -188,9 +188,9 @@ public class UIBrowserListener extends WebBrowserAdapter
 				Object[] parameters = webBrowserCommandEvent.getParameters();
 				configuration.setUserName((String) parameters[0]);
 				configuration.setPassword((String) parameters[1]);
-				configuration.setProxyServer((String) parameters[2]);
-				configuration.setProxyServerPort((String) parameters[3]);
-				configuration.setProxyDNS((String) parameters[4]);
+				configuration.setProxyHost((String) parameters[2]);
+				configuration.setProxyPort((String) parameters[3]);
+				configuration.setDNSProxy((String) parameters[4]);
 				configuration.store();
 
 				// reset the HTTP client to apply proxy changes

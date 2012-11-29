@@ -1,11 +1,9 @@
 #parse("vm/header.vm")
 
-<h1>Welcome to Beluga!</h1>
+<h1>$text['beluga.player']</h1>
 
 <div class="connecting">
-	<div class="text">
-		Connecting to Pandora
-	</div>
+	<div class="text">$text['connecting.to.beluga']</div>
 	<div id="welcome-loader">
 		<img src="$HTMLUtil.getImage("ajax-loader.gif")"/>
 	</div>

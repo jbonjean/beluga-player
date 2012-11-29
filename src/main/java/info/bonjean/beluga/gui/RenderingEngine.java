@@ -43,6 +43,7 @@ public class RenderingEngine
 		engine.setProperty("classpath.resource.loader.class", ClasspathResourceLoader.class.getName());
 		engine.setProperty(RuntimeConstants.FILE_RESOURCE_LOADER_CACHE, "true");
 		engine.setProperty(RuntimeConstants.ENCODING_DEFAULT, "UTF-8");
+		engine.setProperty(RuntimeConstants.RUNTIME_REFERENCES_STRICT, true);
 		engine.init();
 	}
 

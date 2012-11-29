@@ -46,13 +46,13 @@ public class BelugaHTTPClient
 	{
 		BelugaConfiguration configuration = BelugaConfiguration.getInstance();
 		client = new DefaultHttpClient();
-		if (!configuration.getProxyDNS().isEmpty())
+		if (!configuration.getDNSProxy().isEmpty())
 		{
-			BelugaDNSResolver dnsOverrider = new BelugaDNSResolver("tuner.pandora.com", configuration.getProxyDNS());
+			BelugaDNSResolver dnsOverrider = new BelugaDNSResolver("tuner.pandora.com", configuration.getDNSProxy());
 			client = new DefaultHttpClient(new PoolingClientConnectionManager(SchemeRegistryFactory.createDefault(), dnsOverrider));
 			
-		} else if (!configuration.getProxyServer().isEmpty())
-			ConnRouteParams.setDefaultProxy(client.getParams(), new HttpHost(configuration.getProxyServer(), configuration.getProxyServerPort(), "http"));
+		} else if (!configuration.getProxyHost().isEmpty())
+			ConnRouteParams.setDefaultProxy(client.getParams(), new HttpHost(configuration.getProxyHost(), configuration.getProxyPort(), "http"));
 	}
 
 	public static BelugaHTTPClient getInstance()

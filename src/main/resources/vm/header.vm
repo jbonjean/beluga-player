@@ -2,6 +2,7 @@
 	<head>
 		<style type="text/css">
 			#include( "css/common.css" )
+			#include( "css/tooltips.css" )
 			#parse( "css/${page}.css" )
 		</style>
 		<script type="text/javascript">
@@ -30,9 +31,13 @@
 				</div>
 			#end
 			
-			#if( $errors )
+			#if( ! $errors.isEmpty() )
 				<div id="errors" class="tn-box tn-box-color-1">
-					$errors
+					<ul>
+					#foreach( $error in $errors )
+						<li>$error</li>
+					#end
+					</ul>
 				</div>
 			#end
 		

@@ -179,22 +179,27 @@ public class BelugaConfiguration
 		set(Property.PASSWORD, password);
 	}
 
-	public String getProxyServer()
+	public String getProxyHost()
 	{
 		return getString(Property.PROXY_HOST);
 	}
 
-	public void setProxyServer(String proxyServer)
+	public void setProxyHost(String proxyServer)
 	{
 		set(Property.PROXY_HOST, proxyServer);
 	}
 
-	public Integer getProxyServerPort()
+	public String getProxyPortStr()
+	{
+		return getProxyPort() == null ? "" : String.valueOf(getProxyPort());
+	}
+	
+	public Integer getProxyPort()
 	{
 		return getInteger(Property.PROXY_PORT, null);
 	}
 
-	public void setProxyServerPort(String proxyServerPort)
+	public void setProxyPort(String proxyServerPort)
 	{
 		set(Property.PROXY_PORT, proxyServerPort);
 	}
@@ -209,12 +214,12 @@ public class BelugaConfiguration
 		set(Property.DEFAULT_STATION, defaultStationId);
 	}
 	
-	public String getProxyDNS()
+	public String getDNSProxy()
 	{
 		return getString(Property.PROXY_DNS);
 	}
 	
-	public void setProxyDNS(String proxyDNS)
+	public void setDNSProxy(String proxyDNS)
 	{
 		set(Property.PROXY_DNS, proxyDNS);
 	}

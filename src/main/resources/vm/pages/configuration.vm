@@ -1,0 +1,50 @@
+#parse("vm/header.vm")
+
+<h1>$text['settings']</h1>
+
+<form name="configuration" onsubmit="sendNSCommand('save-configuration', configuration.username.value, configuration.password.value, configuration.proxyHost.value, configuration.proxyPort.value, configuration.proxyDNS.value); return false;">
+
+	<fieldset>
+		<legend>$text['pandora']</legend>
+		<div>
+			<label for="username">$text['username']</label>
+			<input name="username" id="username" type="text" value="$configuration.getUserName()"/>
+		</div>
+		<div>
+			<label for="password">$text['password']</label>
+			<input name="password" id="password" type="password" value="$configuration.getPassword()"/>
+		</div>
+		<div>
+			<a href="javascript:sendNSCommand('goto/USER_CREATE');">New User</a>
+		</div>
+	</fieldset>
+	<fieldset>
+		<legend>Connection</legend>
+		<div>
+			<label for="proxyHost">$text['proxy.host']</label>
+			<input name="proxyHost" id="proxyHost" type="text" value="$configuration.getProxyHost()"/>
+		</div>
+		<div>
+			<label for="proxyPort">$text['proxy.port']</label>
+			<input name="proxyPort" id="proxyPort" type="text" value="$configuration.getProxyPortStr()"/>
+		</div>
+		<i>or</i>
+		<div>
+			<label for="proxyDNS">$text['dns.proxy']</label>
+			<input name="proxyDNS" id="proxyDNS" type="text" value="$configuration.getDNSProxy()"/>
+			<span class="info">
+				<img src="$HTMLUtil.getImage("info-20.png")"/>
+				<span class="tooltip"> 
+					<span></span>
+					$text['dns.proxy.tooltip']
+				</span>
+			</span>
+		</div>
+	</fieldset>
+		
+	<div>
+		<input type="submit" value="$text['save']"/>
+	</div>
+</form>
+
+#parse("vm/footer.vm")

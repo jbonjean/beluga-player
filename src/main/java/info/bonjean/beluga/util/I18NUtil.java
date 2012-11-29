@@ -34,14 +34,18 @@ public class I18NUtil
 {
 	private static final ResourceBundle messages = ResourceBundle.getBundle("i18n.messages", Locale.getDefault());
 	private static final Logger log = LoggerFactory.getLogger(I18NUtil.class);
-	
+
 	public static String _(String key)
+	{
+		return get(key);
+	}
+
+	public static String get(String key)
 	{
 		try
 		{
 			return messages.getString(key);
-		}
-		catch(MissingResourceException e)
+		} catch (MissingResourceException e)
 		{
 			log.error("Missing i18n entry for key " + key);
 			return key;
