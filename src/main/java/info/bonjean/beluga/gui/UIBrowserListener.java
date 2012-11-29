@@ -301,6 +301,13 @@ public class UIBrowserListener extends WebBrowserAdapter
 					commandReceived(new WebBrowserCommandEvent(ui.getWebBrowser(), "configuration", new Object[] { "pandora.not.available.check.proxy" }));
 					return;
 				}
+				if (pe.getError() == PandoraError.INVALID_AUTH_TOKEN)
+				{
+					ui.updateWelcomeUI();
+					log.error("Token has expired");
+					commandReceived(new WebBrowserCommandEvent(ui.getWebBrowser(), "login", new Object[] {}));
+					return;
+				}
 				if (state.getPage().equals(Page.USER_CREATE))
 				{
 					ui.hideLoader();
