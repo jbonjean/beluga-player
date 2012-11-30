@@ -44,6 +44,7 @@ public class BelugaDNSResolver implements DnsResolver
 {
 	private static final Logger log = LoggerFactory.getLogger(BelugaDNSResolver.class);
 	private static final int DNS_PROXY_MAX_RETRY = 5;
+	private static final int DNS_TIMEOUT_SECONDS = 5;
 	private Lookup dnsProxyLookup;
 	private DnsResolver fallbackDNSResolver;
 	private String pandoraURL;
@@ -56,6 +57,7 @@ public class BelugaDNSResolver implements DnsResolver
 		try
 		{
 			SimpleResolver resolver = new SimpleResolver(proxyDNS);
+			resolver.setTimeout(DNS_TIMEOUT_SECONDS);
 			dnsProxyLookup = new Lookup(pandoraURL, Type.A);
 			dnsProxyLookup.setResolver(resolver);
 		} catch (Exception e)
