@@ -2,7 +2,8 @@
 
 <div>
 	<label for="query">Song or Artist</label>
-	<input name="query" id="query" type="search" autofocus="autofocus" oninput="search(this.value)" value=""/>
+	<input name="query" id="query" type="search" autofocus="autofocus" placeholder="Enter you query..." value=""/>
+	<input id="searchButton" type="button" value="Search" onclick="submitSearch()"/>
 </div>
 
 <div id="results">

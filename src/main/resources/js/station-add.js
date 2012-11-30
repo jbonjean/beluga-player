@@ -1,17 +1,22 @@
 function init()
 {
+	var s = document.getElementById("query");
+	s.addEventListener("search", function(e) {
+    	search(s.value);
+	}, false);
 }
 
-var searchDelay;
-
-function searchSubmit(query)
+function submitSearch()
 {
-	displayLoader();
-	sendNSCommand('search', query);
+	search(document.getElementById("query").value);
+	
 }
 
 function search(query)
 {
-	window.clearTimeout(searchDelay);
-    searchDelay = setTimeout(function(){searchSubmit(query)},1000);
+	if(query != null && query != "")
+	{
+		displayLoader();
+		sendNSCommand('search', query);
+	}
 }
