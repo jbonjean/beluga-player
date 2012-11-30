@@ -43,6 +43,7 @@ import org.xbill.DNS.Type;
 public class BelugaDNSResolver implements DnsResolver
 {
 	private static final Logger log = LoggerFactory.getLogger(BelugaDNSResolver.class);
+	private static final int DNS_PROXY_MAX_RETRY = 5;
 	private Lookup dnsProxyLookup;
 	private DnsResolver fallbackDNSResolver;
 	private String pandoraURL;
@@ -51,14 +52,13 @@ public class BelugaDNSResolver implements DnsResolver
 	{
 		fallbackDNSResolver = new SystemDefaultDnsResolver();
 		this.pandoraURL = pandoraURL;
-		
+
 		try
 		{
 			SimpleResolver resolver = new SimpleResolver(proxyDNS);
 			dnsProxyLookup = new Lookup(pandoraURL, Type.A);
 			dnsProxyLookup.setResolver(resolver);
-		}
-		catch(Exception e)
+		} catch (Exception e)
 		{
 			log.error("Cannot configure DNS proxy");
 			dnsProxyLookup = null;
@@ -68,29 +68,34 @@ public class BelugaDNSResolver implements DnsResolver
 	@Override
 	public InetAddress[] resolve(String host) throws UnknownHostException
 	{
-		if(dnsProxyLookup != null && pandoraURL.equalsIgnoreCase(host))
+		if (dnsProxyLookup != null && pandoraURL.equalsIgnoreCase(host))
 		{
-			Record[] records = dnsProxyLookup.run();
-			
 			List<InetAddress> addresses = new ArrayList<InetAddress>();
-			if(records != null)
+
+			for (int i = 0; i < DNS_PROXY_MAX_RETRY; i++)
 			{
-				for(Record record : records)
+				Record[] records = dnsProxyLookup.run();
+
+				if (records != null)
 				{
-					if(record instanceof ARecord)
-						addresses.add(((ARecord)record).getAddress());
+					for (Record record : records)
+					{
+						if (record instanceof ARecord)
+							addresses.add(((ARecord) record).getAddress());
+					}
 				}
+				if (!addresses.isEmpty())
+					break;
+				else
+					log.warn("DNS proxy problem, try " + (i + 1));
 			}
-			if(!addresses.isEmpty())
-			{
-				log.debug("Resolved Pandora address using DNS proxy");
-				return addresses.toArray(new InetAddress[addresses.size()]);
-			}
-			else
+			if (addresses.isEmpty())
 			{
 				log.error("Cannot resolve pandora address using DNS proxy");
 				throw new UnknownHostException("dns.proxy.error");
 			}
+			log.debug("Resolved Pandora address using DNS proxy");
+			return addresses.toArray(new InetAddress[addresses.size()]);
 		}
 		return fallbackDNSResolver.resolve(host);
 	}
