@@ -19,6 +19,7 @@
 package info.bonjean.beluga.gui;
 
 import info.bonjean.beluga.client.BelugaState;
+import info.bonjean.beluga.exception.InternalException;
 import info.bonjean.beluga.util.HTMLUtil;
 
 import java.awt.BorderLayout;
@@ -57,39 +58,20 @@ public class UI extends JPanel
 	{
 		webBrowser.executeJavascript("displayLoader()");
 	}
-	
+
 	public void hideLoader()
 	{
 		webBrowser.executeJavascript("hideLoader()");
 	}
 
-	public void updateSongUI()
+	public void updateUI(Page page, Page pageBack) throws InternalException
 	{
-		state.setPage(Page.SONG);
-		webBrowser.setHTMLContent(HTMLUtil.getSongHTML(state.getStationList(), state.getStation(), state.getSong()));
+		state.setPage(page);
+		webBrowser.setHTMLContent(HTMLUtil.getPageHTML(page, pageBack));
 	}
 
-	public void updateWelcomeUI()
+	public void updateUI(Page page) throws InternalException
 	{
-		state.setPage(Page.WELCOME);
-		webBrowser.setHTMLContent(HTMLUtil.getWelcomeHTML());
-	}
-
-	public void updateConfigurationUI(boolean back)
-	{
-		state.setPage(Page.CONFIGURATION);
-		webBrowser.setHTMLContent(HTMLUtil.getConfigurationHTML(back));
-	}
-
-	public void updateStationAddUI()
-	{
-		state.setPage(Page.STATION_ADD);
-		webBrowser.setHTMLContent(HTMLUtil.getStationAddHTML(state.getSong()));
-	}
-
-	public void updateUserCreateUI()
-	{
-		state.setPage(Page.USER_CREATE);
-		webBrowser.setHTMLContent(HTMLUtil.getUserCreateHTML(state.getSong()));
+		updateUI(page, null);
 	}
 }

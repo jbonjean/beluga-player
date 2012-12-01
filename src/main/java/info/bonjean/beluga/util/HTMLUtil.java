@@ -18,36 +18,27 @@
  */
 package info.bonjean.beluga.util;
 
-import static info.bonjean.beluga.util.I18NUtil._;
 import info.bonjean.beluga.client.BelugaState;
 import info.bonjean.beluga.configuration.BelugaConfiguration;
 import info.bonjean.beluga.exception.CommunicationException;
+import info.bonjean.beluga.exception.InternalException;
 import info.bonjean.beluga.gui.Page;
 import info.bonjean.beluga.gui.RenderingEngine;
-import info.bonjean.beluga.response.SearchArtist;
 import info.bonjean.beluga.response.Result;
+import info.bonjean.beluga.response.SearchArtist;
 import info.bonjean.beluga.response.SearchItem;
-import info.bonjean.beluga.response.Song;
 import info.bonjean.beluga.response.SearchSong;
-import info.bonjean.beluga.response.Station;
 
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.StringWriter;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-
-import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.velocity.VelocityContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.w3c.dom.Document;
-import org.w3c.dom.NodeList;
 
 /**
  * 
@@ -114,66 +105,12 @@ public class HTMLUtil
 		return Base64.encodeBase64String(HTTPUtil.request(url));
 	}
 
-	private static String replace(String html, Map<String, String> tokens)
+	public static String getPageHTML(Page page) throws InternalException
 	{
-		for (String token : tokens.keySet())
-			html = html.replace(token, tokens.get(token));
-
-		return html;
+		return getPageHTML(page, null);
 	}
-
-	private static String loadPage(Page page, Map<String, String> tokens, Page pageBack)
-	{
-		// load page raw HTML
-		String html = replace(getResourceAsString(page.getHTML()), tokens);
-
-		// clear tokens for main html (wrapper)
-		tokens.clear();
-
-		// add css token
-		StringBuffer sb = new StringBuffer();
-		sb.append(getResourceAsString(Page.COMMON.getCss()));
-		sb.append(getResourceAsString(page.getCss()));
-		sb.append(getResourceAsString(Page.CSS_PATH + "tooltips.css"));
-		if (System.getProperty("debug") != null)
-			sb.append(getResourceAsString(Page.CSS_PATH + "debug.css"));
-		tokens.put("$CSS$", sb.toString());
-
-		//tokens.put("$DISPLAY_BACK_CLASS$", pageBack ? "" : "no-display");
-
-		// add js token
-		sb = new StringBuffer();
-		sb.append(getResourceAsString(Page.COMMON.getJs()));
-		sb.append(getResourceAsString(page.getJs()));
-		tokens.put("$JS$", sb.toString());
-
-		// add images
-		tokens.put("$LOADER$", getResourceAsBase64String(Page.IMG_PATH + "ajax-loader-2.gif"));
-		tokens.put("$ICON_BACK$", getResourceAsBase64String(Page.ICONS_PATH + "Previous-32.png"));
-
-		// errors
-		sb = new StringBuffer();
-		for (String error : BelugaState.getInstance().getErrors())
-			sb.append("<p>" + _(error) + "</p>");
-		tokens.put("$ERRORS$", sb.toString());
-		BelugaState.getInstance().clearErrors();
-
-		tokens.put("$PAGE$", page.name());
-
-		// add html token (include page to display)
-		tokens.put("$CONTENT$", html);
-
-		return replace(getResourceAsString(Page.COMMON.getHTML()), tokens);
-	}
-
-	private static String shorten(String str, int length)
-	{
-		if (str.length() > length)
-			return str.substring(0, length - 3) + "...";
-		return str;
-	}
-
-	public static String getPageHTML(Page page, Page pageBack)
+	
+	public static String getPageHTML(Page page, Page pageBack) throws InternalException
 	{
 		VelocityContext context = new VelocityContext();
 		context.put("errors", BelugaState.getInstance().getErrors());
@@ -189,115 +126,28 @@ public class HTMLUtil
 		return RenderingEngine.getInstance().render(context, page.getTemplate());
 	}
 	
-	public static String getWelcomeHTML()
+	public static String getSearchResultsHTML(Result results) throws InternalException
 	{
+		List<SearchArtist> artists = results.getArtists();
+		List<SearchSong> songs = results.getSongs();
+
+		SearchItem bestMatch = null;
+		if (!artists.isEmpty())
+			bestMatch = artists.get(0);
+		if (!songs.isEmpty() && (bestMatch == null || songs.get(0).getScore() > bestMatch.getScore()))
+			bestMatch = songs.get(0);
+		if (bestMatch instanceof SearchArtist)
+			artists.remove(bestMatch);
+		else
+			songs.remove(bestMatch);
+		
 		VelocityContext context = new VelocityContext();
-		context.put("HTMLUtil", HTMLUtil.class);
-		context.put("pageBack", "toto");
-		context.put("page", Page.WELCOME.name().toLowerCase());
-		context.put("debug", System.getProperty("debug") != null);
-		return RenderingEngine.getInstance().render(context, Page.WELCOME.getTemplate());
+		context.put("artists", artists);
+		context.put("songs", songs);
+		context.put("bestMatch", bestMatch);
+		return RenderingEngine.getInstance().render(context, "/vm/search_results.vm");
 	}
-
-	public static String getSongHTML(List<Station> stations, Station station, Song song)
-	{
-		Map<String, String> tokens = new HashMap<String, String>();
-		tokens.put("$USERNAME$", configuration.getUserName());
-		tokens.put("$STATION_NAME$", StringEscapeUtils.escapeJavaScript(station.getStationName()));
-		tokens.put("$ALBUM_NAME$", shorten(song.getAlbumName(), 100));
-		tokens.put("$ARTIST_NAME$", song.getArtistName());
-		tokens.put("$ALBUM_COVER$", song.getAlbumArtBase64());
-		tokens.put("$SONG_NAME$", song.getSongName());
-		tokens.put("$STATION_LIST$", generateStationListHTML(stations, station));
-		String feedbackClass = "";
-		if (song.getSongRating() > 0)
-			feedbackClass = "liked";
-		tokens.put("$LIKE_CLASS$", feedbackClass);
-		StringBuffer focusTraits = new StringBuffer();
-		try
-		{
-			Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(song.getSongExplorerUrl());
-			NodeList nodes = doc.getElementsByTagName("focusTrait");
-			for (int i = 0; i < nodes.getLength(); i++)
-			{
-				if (i > 0)
-					focusTraits.append(", ");
-				focusTraits.append(nodes.item(i).getTextContent());
-			}
-		} catch (Exception ex)
-		{
-			log.error("Cannot retrieve focus traits");
-		}
-		tokens.put("$FOCUS_TRAITS$", focusTraits.toString());
-
-		tokens.put("$ICON_CREATE_STATION$", getResourceAsBase64String(Page.ICONS_PATH + "Add-32.png"));
-		tokens.put("$ICON_DELETE_STATION$", getResourceAsBase64String(Page.ICONS_PATH + "Delete-32.png"));
-		tokens.put("$ICON_SETTINGS$", getResourceAsBase64String(Page.ICONS_PATH + "Settings-32.png"));
-
-		tokens.put("$QUICKMIX_CLASS$", station.isQuickMix() ? "quickmix" : "");
-
-		return loadPage(Page.SONG, tokens, null);
-	}
-
-	public static String getNotificationHTML(Song song)
-	{
-		Map<String, String> tokens = new HashMap<String, String>();
-		tokens.put("$ALBUM_COVER$", song.getAlbumArtBase64());
-		tokens.put("$ARTIST_NAME$", shorten(song.getArtistName(), 30));
-		tokens.put("$SONG_NAME$", shorten(song.getSongName(), 30));
-		return replace(getResourceAsString(Page.NOTIFICATION.getHTML()), tokens);
-	}
-
-	public static String getConfigurationHTML(Page pageBack)
-	{
-		Map<String, String> tokens = new HashMap<String, String>();
-		tokens.put("$USERNAME$", configuration.getUserName());
-		tokens.put("$PASSWORD$", configuration.getPassword());
-		tokens.put("$PROXY_HOST$", configuration.getProxyHost());
-		String proxyHost = "";
-		if (configuration.getProxyPort() != null)
-			proxyHost = String.valueOf(configuration.getProxyPort());
-		tokens.put("$PROXY_PORT$", proxyHost);
-		tokens.put("$PROXY_DNS$", configuration.getDNSProxy());
-		tokens.put("$BACKGROUND$", getResourceAsBase64String(Page.IMG_PATH + "beluga.600x400.png"));
-		tokens.put("$ICON_INFO$", getResourceAsBase64String(Page.ICONS_PATH + "info-20.png"));
-
-		return loadPage(Page.CONFIGURATION, tokens, pageBack);
-	}
-
-	public static String getStationAddHTML(Song song)
-	{
-		Map<String, String> tokens = new HashMap<String, String>();
-		tokens.put("$ARTIST_NAME$", song == null ? "" : song.getArtistName());
-		tokens.put("$SONG_NAME$", song == null ? "" : song.getSongName());
-		tokens.put("$TRACK_TOKEN$", song == null ? "" : song.getTrackToken());
-
-		return loadPage(Page.STATION_ADD, tokens, Page.SONG);
-	}
-
-	public static String getUserCreateHTML(Song song)
-	{
-		Map<String, String> tokens = new HashMap<String, String>();
-		return loadPage(Page.USER_CREATE, tokens, null);
-	}
-
-	private static String generateStationListHTML(List<Station> stations, Station selectedStation)
-	{
-		StringBuffer html = new StringBuffer();
-		for (Station station : stations)
-		{
-			html.append("<option value='");
-			html.append(station.getStationId());
-			html.append("' ");
-			if (station.getStationId().equals(selectedStation.getStationId()))
-				html.append("selected");
-			html.append(">");
-			html.append(station.getStationName());
-			html.append("</option>");
-		}
-		return html.toString();
-	}
-
+	
 	public static String generateSearchResultsHTML(Result results)
 	{
 		List<SearchArtist> artists = results.getArtists();

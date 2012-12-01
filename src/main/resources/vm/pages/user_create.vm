@@ -1,0 +1,42 @@
+#parse("vm/header.vm")
+
+<h1>$text['new.user']</h1>
+
+<form name="user">
+
+	<fieldset>
+		<legend>$text['pandora']</legend>
+		<div>
+			<label for="username">$text['username']</label>
+			<input name="username" id="username" type="email"/>
+		</div>
+		<div>
+			<label for="password">$text['password']</label>
+			<input name="password" id="password" type="password"/>
+		</div>
+		<div>
+			<label for="birthYear">$text['birth.year']</label>
+			<input name="birthYear" id="proxyHost" type="number"/>
+		</div>
+		<div>
+			<label for="zipCode">$text['zip.code']</label>
+			<input name="zipCode" id="zipCode" type="text"/>
+		</div>
+		<div>
+			<label for="gender">$text['gender']</label>
+			<input type="radio" name="gender" value="male">$text['male']
+			<input type="radio" name="gender" value="female">$text['female']
+		</div>
+		<div>
+			<label for="emailOptIn">$text['email.opt.in']</label>
+			<input type="checkbox" name="emailOptIn">
+		</div>
+		
+	</fieldset>
+		
+	<div>
+		<input type="button" value="$text['create']" onclick="createUser()" />
+	</div>
+</form>
+
+#parse("vm/footer.vm")

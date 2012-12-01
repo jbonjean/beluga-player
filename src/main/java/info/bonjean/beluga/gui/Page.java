@@ -32,25 +32,24 @@ public enum Page
 	public static final String CSS_PATH = "/css/";
 	public static final String JS_PATH = "/js/";
 	public static final String IMG_PATH = "/img/";
-	public static final String ICONS_PATH = "/icons/";
 	
 	public String getTemplate()
 	{
-		return TEMPLATE_PATH + name().toLowerCase().replace("_", "-") + ".vm";
+		return TEMPLATE_PATH + name().toLowerCase() + ".vm";
 	}
 	
 	public String getHTML()
 	{
-		return HTML_PATH + name().toLowerCase().replace("_", "-") + ".html";
+		return HTML_PATH + name().toLowerCase() + ".html";
 	}
 	
 	public String getCss()
 	{
-		return CSS_PATH + name().toLowerCase().replace("_", "-") + ".css";
+		return CSS_PATH + name().toLowerCase() + ".css";
 	}
 	
 	public String getJs()
 	{
-		return JS_PATH + name().toLowerCase().replace("_", "-") + ".js";
+		return JS_PATH + name().toLowerCase() + ".js";
 	}
 }

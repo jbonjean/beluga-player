@@ -25,6 +25,7 @@ import info.bonjean.beluga.connection.BelugaHTTPClient;
 import info.bonjean.beluga.exception.BelugaException;
 import info.bonjean.beluga.exception.CommunicationException;
 import info.bonjean.beluga.exception.CryptoException;
+import info.bonjean.beluga.exception.InternalException;
 import info.bonjean.beluga.exception.PandoraError;
 import info.bonjean.beluga.exception.PandoraException;
 import info.bonjean.beluga.gui.notification.Notification;
@@ -79,7 +80,14 @@ public class UIBrowserListener extends WebBrowserAdapter
 					{
 						log.debug("Song changed, update main window");
 						displayedSong = state.getSong();
-						ui.updateSongUI();
+						try
+						{
+							ui.updateUI(Page.SONG);
+						} catch (InternalException e)
+						{
+							log.error("A bug occured, please report this: ", e);
+							System.exit(-1);
+						}
 					}
 					ui.getWebBrowser().executeJavascript("updateTime('" + player.getProgression() + "')");
 				}
@@ -90,7 +98,7 @@ public class UIBrowserListener extends WebBrowserAdapter
 	private void nextSong() throws BelugaException
 	{
 		String url = pandoraClient.nextSong();
-		new Notification(HTMLUtil.getNotificationHTML(state.getSong()));
+		new Notification(HTMLUtil.getPageHTML(Page.NOTIFICATION));
 		displayedSong = state.getSong();
 		log.debug("Playing: " + url);
 		player.play(url);
@@ -111,16 +119,16 @@ public class UIBrowserListener extends WebBrowserAdapter
 				if(!state.getStationList().isEmpty())
 				{
 					nextSong();
-					ui.updateSongUI();
+					ui.updateUI(Page.SONG);
 				}
 				else
-					ui.updateStationAddUI();
+					ui.updateUI(Page.STATION_ADD);
 
 			} else if (command.equals("next"))
 			{
 				ui.displayLoader();
 				nextSong();
-				ui.updateSongUI();
+				ui.updateUI(Page.SONG);
 
 			} else if (command.equals("like"))
 			{
@@ -129,21 +137,21 @@ public class UIBrowserListener extends WebBrowserAdapter
 				if (state.getSong().getSongRating() > 0)
 					positive = false;
 				pandoraClient.addFeedback(positive);
-				ui.updateSongUI();
+				ui.updateUI(Page.SONG);
 
 			} else if (command.equals("ban"))
 			{
 				ui.displayLoader();
 				pandoraClient.addFeedback(false);
 				nextSong();
-				ui.updateSongUI();
+				ui.updateUI(Page.SONG);
 
 			} else if (command.equals("sleep"))
 			{
 				ui.displayLoader();
 				pandoraClient.sleepSong();
 				nextSong();
-				ui.updateSongUI();
+				ui.updateUI(Page.SONG);
 
 			} else if (command.equals("pause"))
 			{
@@ -157,19 +165,13 @@ public class UIBrowserListener extends WebBrowserAdapter
 			{
 				ui.displayLoader();
 				
-				String page = command.split("/")[1];
-				log.info("Goto page " + page);
+				String pageStr = command.split("/")[1];
+				log.info("Goto page " + pageStr);
 
-				if (page.equals(Page.WELCOME.name()))
-					ui.updateWelcomeUI();
-				else if (page.equals(Page.CONFIGURATION.name()))
-					ui.updateConfigurationUI(null);
-				else if (page.equals(Page.SONG.name()))
-					ui.updateSongUI();
-				else if (page.equals(Page.STATION_ADD.name()))
-					ui.updateStationAddUI();
-				else if (page.equals(Page.USER_CREATE.name()))
-					ui.updateUserCreateUI();
+				Page page = Page.valueOf(pageStr.toUpperCase());
+				
+				if(page != null)
+					ui.updateUI(page);
 				else
 					log.error("Unknow page " + page);
 
@@ -179,7 +181,7 @@ public class UIBrowserListener extends WebBrowserAdapter
 				Object[] parameters = webBrowserCommandEvent.getParameters();
 				if (parameters.length > 0)
 					state.addError((String) parameters[0]);
-				ui.updateConfigurationUI(null);
+				ui.updateUI(Page.CONFIGURATION);
 
 			} else if (command.equals("save-configuration"))
 			{
@@ -207,7 +209,7 @@ public class UIBrowserListener extends WebBrowserAdapter
 
 				pandoraClient.selectStation(stationId);
 				nextSong();
-				ui.updateSongUI();
+				ui.updateUI(Page.SONG);
 			} else if (command.equals("search"))
 			{
 				Object[] parameters = webBrowserCommandEvent.getParameters();
@@ -220,7 +222,7 @@ public class UIBrowserListener extends WebBrowserAdapter
 					if (query.length() > 0)
 					{
 						pandoraClient.search(query);
-						resultsHTML = HTMLUtil.generateSearchResultsHTML(pandoraClient.search(query));
+						resultsHTML = HTMLUtil.getSearchResultsHTML(pandoraClient.search(query));
 					}
 
 					ui.getWebBrowser().executeJavascript("document.getElementById('results').innerHTML = \"" + resultsHTML + "\"");
@@ -245,14 +247,14 @@ public class UIBrowserListener extends WebBrowserAdapter
 				pandoraClient.updateStationList();
 				if(state.getSong() == null)
 					nextSong();
-				ui.updateSongUI();
+				ui.updateUI(Page.SONG);
 			} else if (command.equals("delete-station"))
 			{
 				ui.displayLoader();
 				pandoraClient.deleteStation();
 				pandoraClient.updateStationList();
 				nextSong();
-				ui.updateSongUI();
+				ui.updateUI(Page.SONG);
 			} else if (command.equals("create-user"))
 			{
 				ui.displayLoader();

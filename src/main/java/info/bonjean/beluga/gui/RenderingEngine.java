@@ -18,6 +18,8 @@
  */
 package info.bonjean.beluga.gui;
 
+import info.bonjean.beluga.exception.InternalException;
+
 import java.io.StringWriter;
 
 import org.apache.velocity.Template;
@@ -54,11 +56,18 @@ public class RenderingEngine
 		return instance;
 	}
 
-	public String render(VelocityContext context, String templateFile)
+	public String render(VelocityContext context, String templateFile) throws InternalException
 	{
-		Template template = engine.getTemplate(templateFile, "UTF-8");
-		StringWriter writer = new StringWriter();
-		template.merge(context, writer);
-		return writer.toString();
+		try
+		{
+			Template template = engine.getTemplate(templateFile, "UTF-8");
+			StringWriter writer = new StringWriter();
+			template.merge(context, writer);
+			return writer.toString();
+		}
+		catch(Exception e)
+		{
+			throw new InternalException(e);
+		}
 	}
 }

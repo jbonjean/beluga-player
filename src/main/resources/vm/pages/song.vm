@@ -3,8 +3,8 @@
 <div class="mainControls">
 	<div class="stationSelect">
 		<select  id="stationSelect" onchange="document.location='command://select-station?stationId=' + document.getElementById('stationSelect').options[document.getElementById('stationSelect').selectedIndex].value">
-			#foreach( $station in $stations )
-				<option value="$station.getStationId()" #if ($song.getSongRating() > 0) selected #end>$station.getStationName()</option>
+			#foreach( $stationLocal in $stations )
+				<option value="$stationLocal.getStationId()" #if ($stationLocal.getStationId() == $station.getStationId()) selected #end>$stationLocal.getStationName()</option>
 			#end
 		</select>
 	</div>
@@ -50,7 +50,7 @@
 			<div class="label">$text['traits']: </div>
 			<div class="value">
 				#foreach ($trait in $song.getFocusTraits())
-			        $value#if ($velocityCount != $song.getFocusTraits().size()), #end
+			        $trait#if ($velocityCount != $song.getFocusTraits().size()), #end
 			    #end
 			</div>
 			<div class="spacer"></div>

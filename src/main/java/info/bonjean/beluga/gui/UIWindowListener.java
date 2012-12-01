@@ -18,8 +18,13 @@
  */
 package info.bonjean.beluga.gui;
 
+import info.bonjean.beluga.exception.InternalException;
+
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import chrriis.dj.nativeswing.swtimpl.components.WebBrowserCommandEvent;
 
@@ -30,9 +35,10 @@ import chrriis.dj.nativeswing.swtimpl.components.WebBrowserCommandEvent;
  */
 public class UIWindowListener implements WindowListener
 {
+	private static final Logger log = LoggerFactory.getLogger(UIWindowListener.class);
 	private UI ui;
 	private UIBrowserListener browserListener;
-	
+
 	public UIWindowListener(UI ui, UIBrowserListener browserListener)
 	{
 		this.ui = ui;
@@ -72,7 +78,14 @@ public class UIWindowListener implements WindowListener
 	@Override
 	public void windowOpened(WindowEvent e)
 	{
-		ui.updateWelcomeUI();
+		try
+		{
+			ui.updateUI(Page.WELCOME);
+		} catch (InternalException e1)
+		{
+			log.error("A bug occured, please report this: ", e);
+			System.exit(-1);
+		}
 		browserListener.commandReceived(new WebBrowserCommandEvent(ui.getWebBrowser(), "login", new Object[] {}));
 	}
 }
