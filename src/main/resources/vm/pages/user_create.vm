@@ -2,6 +2,10 @@
 
 <h1>$text['new.user']</h1>
 
+<div id="warning">
+	$text['user.creation.warning']
+</div>
+
 <form name="user">
 
 	<fieldset>
@@ -31,7 +35,12 @@
 			<label for="emailOptIn">$text['email.opt.in']</label>
 			<input type="checkbox" name="emailOptIn">
 		</div>
-		
+		<div id="terms-of-use">
+			<input type="checkbox" name="termsOfUse">
+			<span>
+				<label for="termsOfUse">$text['i.agree.to.the.terms.of.use']</label>
+			</span>
+		</div>
 	</fieldset>
 		
 	<div>

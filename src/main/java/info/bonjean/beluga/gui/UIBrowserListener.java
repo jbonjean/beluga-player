@@ -161,7 +161,7 @@ public class UIBrowserListener extends WebBrowserAdapter
 			} else if (command.equals("exit"))
 			{
 				System.exit(0);
-
+				
 			} else if (command.startsWith("goto/"))
 			{
 				ui.displayLoader();

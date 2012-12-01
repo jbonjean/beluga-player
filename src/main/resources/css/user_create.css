@@ -1,15 +1,26 @@
-#background {
-	opacity: 0.1;
-	height: 100%;
-	width: 100%;
-	position: fixed;
-	left: 0;
-	top: 0;
-	z-index: -10;
-}
-
 label {
 	width:120px;
+	display: inline-block;
+}
+
+#warning {
+	font-weight: bold;
+	font-size: 11px;
+	color: #cccccc;
+}
+
+#terms-of-use {
+	margin-top: 20px;
+}
+
+#terms-of-use input {
+	float:left;
+}
+
+#terms-of-use label {
+	color: red;
+	font-weight: bold;
+	width:520px;
 	display: inline-block;
 }
 

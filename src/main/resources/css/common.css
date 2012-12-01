@@ -24,7 +24,7 @@ a:hover {
 	position: fixed;
 	right: 10px;
 	bottom: 40px;
-	z-index: 500;
+	z-index: 2000;
 }
 
 #loader {

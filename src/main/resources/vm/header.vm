@@ -31,15 +31,5 @@
 				</div>
 			#end
 			
-			#if( ! $errors.isEmpty() )
-				<div id="errors" class="tn-box tn-box-color-1">
-					<ul>
-					#foreach( $error in $errors )
-						<li>$error</li>
-					#end
-					</ul>
-				</div>
-			#end
-		
 			<div id="content">
 	
