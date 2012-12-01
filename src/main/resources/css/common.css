@@ -4,6 +4,7 @@ body {
 	cursor: default;
 	font-family: Arial;
 	margin: 0px;
+	overflow: hidden;
 }
 
 a {

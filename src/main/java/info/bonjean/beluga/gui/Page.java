@@ -25,7 +25,7 @@ package info.bonjean.beluga.gui;
  */
 public enum Page
 {
-	COMMON, WELCOME, CONFIGURATION, SONG, NOTIFICATION, STATION_ADD, USER_CREATE;
+	COMMON, WELCOME, CONFIGURATION, SONG, NOTIFICATION, STATION_ADD, USER_CREATE, ABOUT;
 	
 	public static final String TEMPLATE_PATH = "/vm/pages/";
 	public static final String HTML_PATH = "/html/";
@@ -36,11 +36,6 @@ public enum Page
 	public String getTemplate()
 	{
 		return TEMPLATE_PATH + name().toLowerCase() + ".vm";
-	}
-	
-	public String getHTML()
-	{
-		return HTML_PATH + name().toLowerCase() + ".html";
 	}
 	
 	public String getCss()

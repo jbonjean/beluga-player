@@ -1,0 +1,10 @@
+#licence {
+	height: 100px;
+	overflow: auto;
+	border: 1px solid rgba(200,200,200,0.2);
+	color: #777;
+}
+
+#credits div {
+	margin-top: 10px;
+}
