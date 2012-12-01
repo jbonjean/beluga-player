@@ -20,6 +20,7 @@ package info.bonjean.beluga.connection;
 
 import info.bonjean.beluga.configuration.BelugaConfiguration;
 import info.bonjean.beluga.exception.CommunicationException;
+import info.bonjean.beluga.gui.UI;
 
 import java.io.InputStream;
 
@@ -31,6 +32,9 @@ import org.apache.http.conn.params.ConnRouteParams;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.conn.PoolingClientConnectionManager;
 import org.apache.http.impl.conn.SchemeRegistryFactory;
+import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.HttpConnectionParams;
+import org.apache.http.params.HttpParams;
 
 /**
  * 
@@ -39,17 +43,26 @@ import org.apache.http.impl.conn.SchemeRegistryFactory;
  */
 public class BelugaHTTPClient
 {
+	private static final int CONNECTION_TIMEOUT = 4000;
+	private static final int SOCKET_TIMEOUT = 4000;
+	private static final int MAX_RETRIES = 3;
+	
 	private HttpClient client;
 	private static BelugaHTTPClient instance;
 
 	private BelugaHTTPClient()
 	{
 		BelugaConfiguration configuration = BelugaConfiguration.getInstance();
-		client = new DefaultHttpClient();
+
+		HttpParams httpParameters = new BasicHttpParams();
+		HttpConnectionParams.setConnectionTimeout(httpParameters, CONNECTION_TIMEOUT);
+		HttpConnectionParams.setSoTimeout(httpParameters, SOCKET_TIMEOUT);
+		
+		client = new DefaultHttpClient(httpParameters);
 		if (!configuration.getDNSProxy().isEmpty())
 		{
 			BelugaDNSResolver dnsOverrider = new BelugaDNSResolver("tuner.pandora.com", configuration.getDNSProxy());
-			client = new DefaultHttpClient(new PoolingClientConnectionManager(SchemeRegistryFactory.createDefault(), dnsOverrider));
+			client = new DefaultHttpClient(new PoolingClientConnectionManager(SchemeRegistryFactory.createDefault(), dnsOverrider), httpParameters);
 			
 		} else if (!configuration.getProxyHost().isEmpty())
 			ConnRouteParams.setDefaultProxy(client.getParams(), new HttpHost(configuration.getProxyHost(), configuration.getProxyPort(), "http"));
@@ -69,13 +82,19 @@ public class BelugaHTTPClient
 
 	public InputStream httpRequest(HttpUriRequest request) throws CommunicationException
 	{
-		try
+		Exception e = null;
+		for(int i = 0 ; i < MAX_RETRIES ; i++)
 		{
-			HttpResponse httpResponse = client.execute(request);
-			return httpResponse.getEntity().getContent();
-		} catch (Exception e)
-		{
-			throw new CommunicationException(e);
+			try
+			{
+				HttpResponse httpResponse = client.execute(request);
+				return httpResponse.getEntity().getContent();
+			} catch (Exception e1)
+			{
+				e = e1;
+				UI.reportError("connection.problem");
+			}
 		}
+		throw new CommunicationException(e);
 	}
 }

@@ -21,6 +21,7 @@ package info.bonjean.beluga.player;
 import info.bonjean.beluga.Main;
 import info.bonjean.beluga.client.PandoraClient;
 import info.bonjean.beluga.gui.Page;
+import info.bonjean.beluga.gui.UI;
 import info.bonjean.beluga.gui.notification.Notification;
 import info.bonjean.beluga.util.HTMLUtil;
 import info.bonjean.beluga.util.PandoraUtil;
@@ -48,19 +49,21 @@ public class VLCPlayer
 
 	private VLCPlayer()
 	{
-		// temporarily disable System.err to avoid this annoying VLC message 
+		// temporarily disable System.err to avoid this annoying VLC message
 		PrintStream err = System.out;
-		System.setErr(new PrintStream(new OutputStream() {
-		    public void write(int b) {
-		    }
+		System.setErr(new PrintStream(new OutputStream()
+		{
+			public void write(int b)
+			{
+			}
 		}));
-		
+
 		// load VLC library
 		MediaPlayerFactory factory = new MediaPlayerFactory();
-		
+
 		// re-enable error output
 		System.setErr(err);
-		
+
 		mediaPlayer = factory.newHeadlessMediaPlayer();
 		mediaPlayer.addMediaPlayerEventListener(new MediaPlayerEventAdapter()
 		{
@@ -76,14 +79,14 @@ public class VLCPlayer
 
 				} catch (Exception e)
 				{
-					log.error(e.toString());
+					UI.reportFatalError("vlc.error", e);
 				}
 			}
 
 			@Override
 			public void error(MediaPlayer mediaPlayer)
 			{
-				log.error("Failed to play media");
+				UI.reportFatalError("vlc.error", null);
 			}
 		});
 	}

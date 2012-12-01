@@ -26,8 +26,6 @@ import java.awt.event.WindowListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import chrriis.dj.nativeswing.swtimpl.components.WebBrowserCommandEvent;
-
 /**
  * 
  * @author Julien Bonjean <julien@bonjean.info>
@@ -37,12 +35,10 @@ public class UIWindowListener implements WindowListener
 {
 	private static final Logger log = LoggerFactory.getLogger(UIWindowListener.class);
 	private UI ui;
-	private UIBrowserListener browserListener;
 
-	public UIWindowListener(UI ui, UIBrowserListener browserListener)
+	public UIWindowListener(UI ui)
 	{
 		this.ui = ui;
-		this.browserListener = browserListener;
 	}
 
 	@Override
@@ -81,11 +77,11 @@ public class UIWindowListener implements WindowListener
 		try
 		{
 			ui.updateUI(Page.WELCOME);
+			ui.dispatch("login");
 		} catch (InternalException e1)
 		{
 			log.error("A bug occured, please report this: ", e);
 			System.exit(-1);
 		}
-		browserListener.commandReceived(new WebBrowserCommandEvent(ui.getWebBrowser(), "login", new Object[] {}));
 	}
 }

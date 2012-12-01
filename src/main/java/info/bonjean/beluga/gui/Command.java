@@ -16,35 +16,19 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
-package info.bonjean.beluga.request;
+package info.bonjean.beluga.gui;
 
 /**
  * 
  * @author Julien Bonjean <julien@bonjean.info>
- *
+ * 
  */
-public class PlayList extends AuthentifiedJsonData
+public enum Command
 {
-	private String stationToken;
-	private String additionalAudioUrl;
+	LOGIN, NEXT, LIKE, BAN, SLEEP, PAUSE, EXIT, GOTO, CONFIGURATION, SAVE_CONFIGURATION, SELECT_STATION, SEARCH, ADD_STATION, DELETE_STATION, CREATE_USER;
 
-	public String getStationToken()
+	public static Command fromString(String name)
 	{
-		return stationToken;
-	}
-
-	public void setStationToken(String stationToken)
-	{
-		this.stationToken = stationToken;
-	}
-
-	public String getAdditionalAudioUrl()
-	{
-		return additionalAudioUrl;
-	}
-
-	public void setAdditionalAudioUrl(String additionalAudioUrl)
-	{
-		this.additionalAudioUrl = additionalAudioUrl;
+		return valueOf(name.toUpperCase().replace("-", "_"));
 	}
 }

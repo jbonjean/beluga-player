@@ -47,4 +47,9 @@ public enum Page
 	{
 		return JS_PATH + name().toLowerCase() + ".js";
 	}
+
+	public static Page fromString(String page)
+	{
+		return valueOf(page.toUpperCase().replace("-", "_"));
+	}
 }

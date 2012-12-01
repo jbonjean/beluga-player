@@ -21,7 +21,6 @@ package info.bonjean.beluga;
 import info.bonjean.beluga.configuration.BelugaConfiguration;
 import info.bonjean.beluga.gui.Page;
 import info.bonjean.beluga.gui.UI;
-import info.bonjean.beluga.gui.UIBrowserListener;
 import info.bonjean.beluga.gui.UIWindowListener;
 
 import java.awt.BorderLayout;
@@ -73,9 +72,7 @@ public class Main
 				Image image = Toolkit.getDefaultToolkit().getImage(Main.class.getResource(Page.IMG_PATH + "beluga.40x40.png"));
 				frame.setIconImage(image);
 
-				UIBrowserListener browserListener = new UIBrowserListener(ui);
-				ui.getWebBrowser().addWebBrowserListener(browserListener);
-				UIWindowListener windowListener = new UIWindowListener(ui, browserListener);
+				UIWindowListener windowListener = new UIWindowListener(ui);
 				frame.addWindowListener(windowListener);
 			}
 		});

@@ -6,14 +6,6 @@
 		</encoder>
 	</appender>
 
-	<logger name="info.bonjean.beluga.util.HTTPUtil">
-		<level value="INFO" />
-	</logger>
-
-	<logger name="info.bonjean.beluga.gui.UIBrowserListener">
-		<level value="INFO" />
-	</logger>
-
 	<root>
 		<level value="DEBUG" />
 		<appender-ref ref="STDOUT" />
