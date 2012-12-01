@@ -41,6 +41,7 @@ import java.util.Map;
 
 import javax.swing.Timer;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -222,9 +223,9 @@ public class UIBrowserListener extends WebBrowserAdapter
 					if (query.length() > 0)
 					{
 						pandoraClient.search(query);
-						resultsHTML = HTMLUtil.getSearchResultsHTML(pandoraClient.search(query));
+						resultsHTML = StringEscapeUtils.escapeJavaScript(HTMLUtil.getSearchResultsHTML(pandoraClient.search(query)));
 					}
-
+					
 					ui.getWebBrowser().executeJavascript("document.getElementById('results').innerHTML = \"" + resultsHTML + "\"");
 					ui.hideLoader();
 				}
@@ -252,6 +253,7 @@ public class UIBrowserListener extends WebBrowserAdapter
 			{
 				ui.displayLoader();
 				pandoraClient.deleteStation();
+				state.setStation(null);
 				pandoraClient.updateStationList();
 				nextSong();
 				ui.updateUI(Page.SONG);
@@ -305,7 +307,6 @@ public class UIBrowserListener extends WebBrowserAdapter
 				}
 				if (pe.getError() == PandoraError.INVALID_AUTH_TOKEN)
 				{
-					ui.updateWelcomeUI();
 					log.error("Token has expired");
 					commandReceived(new WebBrowserCommandEvent(ui.getWebBrowser(), "login", new Object[] {}));
 					return;

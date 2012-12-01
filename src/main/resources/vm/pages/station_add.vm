@@ -4,7 +4,8 @@
 
 <div>
 	<label for="query">$text['song.or.artist']</label>
-	<input name="query" id="query" type="search" autofocus="autofocus" oninput="search(this.value)" value=""/>
+	<input name="query" id="query" type="search" autofocus="autofocus" placeholder="$text['enter.your.query']..." value=""/>
+	<input id="searchButton" type="button" value="Search" onclick="submitSearch()"/>
 </div>
 
 <div id="results">

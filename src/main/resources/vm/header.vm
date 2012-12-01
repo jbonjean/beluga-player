@@ -7,7 +7,7 @@
 		</style>
 		<script type="text/javascript">
 			#include( "js/common.js" )
-			#include( "js/${page}.js" )
+			#parse( "js/${page}.js" )
 		</script>
 	</head>
 	<body onselectstart="return false;">

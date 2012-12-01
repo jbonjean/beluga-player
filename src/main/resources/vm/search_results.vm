@@ -1,0 +1,30 @@
+#if ($bestMatch)
+	<h2 class="best-match">$text['best.match']</h2>: 
+	<div class='best-match'>
+		#set ($item = $bestMatch)
+		#set ($qualified = true)
+		#parse ("vm/search_result.vm")
+	</div>
+#end
+
+#if (!$artists.isEmpty())
+	<h2>$text['artists']: <span class='count'> [$artists.size() $text['results']]</span></h2>
+	<div class='result-entries'>
+		#foreach( $artist in $artists )
+			#set ($item = $artist)
+			#set ($qualified = false)
+			#parse ("vm/search_result.vm")
+		#end
+	</div>
+#end
+
+#if (!$songs.isEmpty())
+	<h2>$text['tracks']: <span class='count'> [$songs.size() $text['results']]</span></h2>
+	<div class='result-entries'>
+		#foreach( $song in $songs )
+			#set ($item = $song)
+			#set ($qualified = false)
+			#parse ("vm/search_result.vm")
+		#end
+	</div>
+#end

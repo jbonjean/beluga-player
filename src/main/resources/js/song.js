@@ -7,8 +7,8 @@ function updateTime(text)
 	document.getElementById("time").innerHTML = text;
 }
 
-function deleteStation(stationName)
+function deleteStation()
 {
-	if(confirm('Are you sure you want to delete the station "' + stationName + '"?')) 
+	if(confirm("$text['are.you.sure.you.want.to.delete.this.station']")) 
 		sendNSCommand('delete-station');
 }

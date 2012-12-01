@@ -13,7 +13,7 @@
 		<ul class="sub-menu">
 			<li><a href="command://goto/station_add"><img src="$HTMLUtil.getImage("Add-32.png")" border="0">$text['add.station']</a></li>
 			#if (! $station.isQuickMix())
-				<li><a href="javascript:deleteStation('$station.getStationToken()');"><img src="$HTMLUtil.getImage("Delete-32.png")" border="0">$text['delete.station']</a></li>
+				<li><a href="javascript:deleteStation();"><img src="$HTMLUtil.getImage("Delete-32.png")" border="0">$text['delete.station']</a></li>
 			#end
 			<li><a href="command://goto/configuration"><img src="$HTMLUtil.getImage("Settings-32.png")" border="0">$text['settings']</a></li>
 			<li><a href="command://about"><img class="empty" src="" border="0">$text['about']</a></li>
