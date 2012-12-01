@@ -1,0 +1,72 @@
+#parse("vm/header.vm")
+
+<div class="mainControls">
+	<div class="stationSelect">
+		<select  id="stationSelect" onchange="document.location='command://select-station?stationId=' + document.getElementById('stationSelect').options[document.getElementById('stationSelect').selectedIndex].value">
+			#foreach( $station in $stations )
+				<option value="$station.getStationId()" #if ($song.getSongRating() > 0) selected #end>$station.getStationName()</option>
+			#end
+		</select>
+	</div>
+	<div class="drop-menu">
+		<div class="title"><span class="plus">+</span>$text['menu']</div>
+		<ul class="sub-menu">
+			<li><a href="command://goto/station_add"><img src="$HTMLUtil.getImage("Add-32.png")" border="0">$text['add.station']</a></li>
+			#if (! $station.isQuickMix())
+				<li><a href="javascript:deleteStation('$station.getStationToken()');"><img src="$HTMLUtil.getImage("Delete-32.png")" border="0">$text['delete.station']</a></li>
+			#end
+			<li><a href="command://goto/configuration"><img src="$HTMLUtil.getImage("Settings-32.png")" border="0">$text['settings']</a></li>
+			<li><a href="command://about"><img class="empty" src="" border="0">$text['about']</a></li>
+			<li><a href="command://exit"><img class="empty" src="" border="0">$text['exit']</a></li>
+		</ul>
+	</div>
+	<div class="clear"></div>
+</div>
+
+
+<div class="content">
+	<div class="albumCover">
+		<img id="cover" class="cover" src="data:image/png;base64,$song.getAlbumArtBase64()"/>
+		<div class="albumTitle">$song.getAlbumName()</div>
+	</div>
+	
+	<div class="songInfos">
+		<div class="albumInfos">
+			<div class="songName">$song.getSongName()</div>
+			<div class="artistName">$text['by'] $song.getArtistName()</div>
+		</div>
+	</div>
+	
+	<div class="songControls">
+		<a class="like #if ($song.getSongRating() > 0) liked #end" href="command://like">$text['like']</a>
+		<a class="ban" href="command://ban">$text['ban']</a>
+		<a class="sleep" href="command://sleep">$text['sleep']</a>
+	</div>
+	
+	<div class="songExtras">
+		<div id="time" class="time"></div>
+		
+		<div class="focusTraits">
+			<div class="label">$text['traits']: </div>
+			<div class="value">
+				#foreach ($trait in $song.getFocusTraits())
+			        $value#if ($velocityCount != $song.getFocusTraits().size()), #end
+			    #end
+			</div>
+			<div class="spacer"></div>
+		</div>
+	</div>
+	
+	<div class="description">
+	</div>
+	
+	<div class="clear"></div>
+</div>
+
+<div class="controls">
+	<a class="next" href="command://next">$text['next']</a>
+	<a class="pause" href="command://pause">$text['pause']</a>
+	<div class="clear"></div>
+</div>
+
+#parse("vm/footer.vm")

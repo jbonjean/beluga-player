@@ -20,6 +20,8 @@ package info.bonjean.beluga.client;
 
 import info.bonjean.beluga.configuration.BelugaConfiguration;
 import info.bonjean.beluga.exception.BelugaException;
+import info.bonjean.beluga.exception.CommunicationException;
+import info.bonjean.beluga.gui.Page;
 import info.bonjean.beluga.request.ArtistBookmark;
 import info.bonjean.beluga.request.CreateStation;
 import info.bonjean.beluga.request.CreateUser;
@@ -41,10 +43,15 @@ import info.bonjean.beluga.util.HTMLUtil;
 import info.bonjean.beluga.util.HTTPUtil;
 import info.bonjean.beluga.util.PandoraUtil;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.w3c.dom.Document;
+import org.w3c.dom.NodeList;
 
 /**
  * 
@@ -109,7 +116,7 @@ public class PandoraClient
 	public void updateStationList() throws BelugaException
 	{
 		state.setStationList(getStationList());
-		if(state.getStation() == null && !state.getStationList().isEmpty())
+		if (state.getStation() == null && !state.getStationList().isEmpty())
 			selectStation(state.getStationList().get(0));
 	}
 
@@ -164,7 +171,10 @@ public class PandoraClient
 
 			// update extra information
 			for (Song song : state.getPlaylist())
-				song.setAlbumArtBase64(HTMLUtil.retrieveAlbumArt(song));
+			{
+				song.setAlbumArtBase64(retrieveAlbumArt(song));
+				song.setFocusTraits(retrieveFocusTraits(song));
+			}
 		}
 
 		Song song = state.getPlaylist().get(0);
@@ -174,6 +184,46 @@ public class PandoraClient
 		log.info("Next song is " + song.getSongName() + " (" + song.getSongRating() + ")");
 
 		return song.getAudioUrlMap().get("highQuality").getAudioUrl();
+	}
+	
+	public static String retrieveAlbumArt(Song song)
+	{
+		String coverUrl = song.getAlbumArtUrl();
+		log.debug("Retrieve cover from: " + coverUrl);
+		String cover = null;
+		if (coverUrl != null && !coverUrl.isEmpty())
+		{
+			try
+			{
+				cover = HTMLUtil.getURLContentAsBase64String(coverUrl);
+			} catch (CommunicationException e)
+			{
+				log.error("Cannot retrieve cover: " + coverUrl);
+			}
+		}
+		if (cover == null)
+		{
+			cover = HTMLUtil.getResourceAsBase64String(Page.IMG_PATH + "beluga.200x200.png");
+		}
+		return cover;
+	}
+
+	public static List<String> retrieveFocusTraits(Song song)
+	{
+		List<String> traits = new ArrayList<String>();
+		try
+		{
+			Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(song.getSongExplorerUrl());
+			NodeList nodes = doc.getElementsByTagName("focusTrait");
+			for (int i = 0; i < nodes.getLength(); i++)
+			{
+				traits.add(nodes.item(i).getTextContent());
+			}
+		} catch (Exception ex)
+		{
+			log.error("Cannot retrieve focus traits for song " + song.getSongName());
+		}
+		return traits;
 	}
 
 	private List<Song> getPlaylist(Station station) throws BelugaException
@@ -278,7 +328,7 @@ public class PandoraClient
 
 		HTTPUtil.request(Method.CREATE_STATION, params, createStation, true);
 	}
-	
+
 	public void addStation(String type, String trackToken) throws BelugaException
 	{
 		ParameterMap params = getDefaultParameterMap();
@@ -310,13 +360,12 @@ public class PandoraClient
 		try
 		{
 			birthYear = Integer.valueOf(birthYearStr);
-		}
-		catch(NumberFormatException e)
+		} catch (NumberFormatException e)
 		{
 			// we don't care, Pandora is going to reject it anyway
 		}
 		Boolean emailOptIn = Boolean.valueOf(emailOptInStr);
-		
+
 		ParameterMap params = new ParameterMap();
 		params.add("partner_id", state.getPartnerId());
 		params.add("auth_token", state.getPartnerAuthToken());
@@ -328,7 +377,7 @@ public class PandoraClient
 		createUser.setZipCode(zipCode);
 		createUser.setGender(gender);
 		createUser.setEmailOptIn(emailOptIn);
-		
+
 		createUser.setSyncTime(PandoraUtil.getSyncTime());
 		createUser.setPartnerAuthToken(state.getPartnerAuthToken());
 

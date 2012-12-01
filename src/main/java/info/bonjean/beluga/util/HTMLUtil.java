@@ -177,7 +177,7 @@ public class HTMLUtil
 	{
 		VelocityContext context = new VelocityContext();
 		context.put("errors", BelugaState.getInstance().getErrors());
-		context.put("stationList", BelugaState.getInstance().getStationList());
+		context.put("stations", BelugaState.getInstance().getStationList());
 		context.put("station", BelugaState.getInstance().getStation());
 		context.put("song", BelugaState.getInstance().getSong());
 		context.put("configuration", BelugaConfiguration.getInstance());
@@ -296,28 +296,6 @@ public class HTMLUtil
 			html.append("</option>");
 		}
 		return html.toString();
-	}
-
-	public static String retrieveAlbumArt(Song song)
-	{
-		String coverUrl = song.getAlbumArtUrl();
-		log.debug("Retrieve cover from: " + coverUrl);
-		String cover = null;
-		if (coverUrl != null && !coverUrl.isEmpty())
-		{
-			try
-			{
-				cover = getURLContentAsBase64String(coverUrl);
-			} catch (CommunicationException e)
-			{
-				log.error("Cannot retrieve cover: " + coverUrl);
-			}
-		}
-		if (cover == null)
-		{
-			cover = getResourceAsBase64String(Page.IMG_PATH + "beluga.200x200.png");
-		}
-		return cover;
 	}
 
 	public static String generateSearchResultsHTML(Result results)

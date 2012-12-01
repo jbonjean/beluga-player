@@ -70,12 +70,11 @@ public class HTTPUtil
 		Response response;
 		String requestResponse = HTTPUtil.jsonRequest(urlStr, data);
 		log.debug("Response: " + requestResponse);
-		
+
 		try
 		{
 			response = gson.fromJson(requestResponse, Response.class);
-		}
-		catch(JsonSyntaxException e)
+		} catch (JsonSyntaxException e)
 		{
 			throw new CommunicationException("Response is not valid");
 		}

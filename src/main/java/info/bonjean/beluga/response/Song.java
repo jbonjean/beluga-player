@@ -18,6 +18,7 @@
  */
 package info.bonjean.beluga.response;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -43,6 +44,7 @@ public class Song
 	private boolean songBookmarked = false;
 	private boolean artistBookmarked = false;
 	private String albumArtBase64;
+	private List<String> focusTraits;
 
 	public String getTrackToken()
 	{
@@ -202,5 +204,15 @@ public class Song
 	public void setAlbumArtBase64(String albumArtBase64)
 	{
 		this.albumArtBase64 = albumArtBase64;
+	}
+
+	public List<String> getFocusTraits()
+	{
+		return focusTraits;
+	}
+
+	public void setFocusTraits(List<String> focusTraits)
+	{
+		this.focusTraits = focusTraits;
 	}
 }

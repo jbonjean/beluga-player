@@ -70,7 +70,7 @@ public class Main
 				frame.setResizable(false);
 				frame.setLocationByPlatform(true);
 				frame.setVisible(true);
-				Image image = Toolkit.getDefaultToolkit().getImage(Main.class.getResource(Page.ICONS_PATH + "beluga.40x40.png"));
+				Image image = Toolkit.getDefaultToolkit().getImage(Main.class.getResource(Page.IMG_PATH + "beluga.40x40.png"));
 				frame.setIconImage(image);
 
 				UIBrowserListener browserListener = new UIBrowserListener(ui);
