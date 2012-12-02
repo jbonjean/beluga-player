@@ -184,7 +184,10 @@ public class UI
 		case NEXT:
 			displayLoader();
 			nextSong();
-			updateUI(Page.SONG);
+			if(state.getPage().equals(Page.SONG))
+				updateUI(Page.SONG);
+			else
+				hideLoader();
 			break;
 
 		case LIKE:
@@ -224,13 +227,20 @@ public class UI
 				hideLoader();
 				break;
 			}
-			if (page == Page.AUDIO)
+			switch (page)
 			{
+			case AUDIO:
 				updateAudioUI();
 				hideLoader();
 				break;
+			case CONFIGURATION:
+			case ABOUT:
+			case STATION_ADD:
+				updateUI(page, state.getPage());
+				break;
+			default:
+				updateUI(page);
 			}
-			updateUI(page);
 			break;
 
 		case CONFIGURATION:
