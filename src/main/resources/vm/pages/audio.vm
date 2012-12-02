@@ -1,0 +1,53 @@
+<html>
+	<head>
+		<style type="text/css">
+			#include( "css/common.css" )
+			#parse( "jplayer/jplayer.blue.monday.css" )
+			#parse( "css/${page}.css" )
+		</style>
+		<script type="text/javascript">
+			#include( "jplayer/jquery-1.8.3.min.js" )
+			#include( "jplayer/jquery.jplayer.min.js" )
+			#parse( "js/${page}.js" )
+		</script>
+	</head>
+	<body>
+	
+		#if( $debug )
+			<div id="debug">
+				<a href="command://goto/$page">Reload</a>
+			</div>
+		#end
+		
+	    <div id="jquery_jplayer_1" class="jp-jplayer"></div>
+
+		<a href="command://next" class="next" title="$text['next']"></a>
+		<div id="jp_container_1" class="jp-audio">
+			<div class="jp-type-single">
+				<div class="jp-gui jp-interface">
+					<ul class="jp-controls">
+						<li><a href="javascript:;" class="jp-play" tabindex="1">$text['play']</a></li>
+						<li><a href="javascript:;" class="jp-pause" tabindex="1">$text['pause']</a></li>
+						<li><a href="javascript:;" class="jp-mute" tabindex="1" title="mute">$text['mute']</a></li>
+						<li><a href="javascript:;" class="jp-unmute" tabindex="1" title="unmute">$text['unmute']</a></li>
+						<li><a href="javascript:;" class="jp-volume-max" tabindex="1" title="max volume">$text['max.volume']</a></li>
+					</ul>
+					<div class="jp-progress">
+						<div class="jp-seek-bar">
+							<div class="jp-play-bar"></div>
+
+						</div>
+					</div>
+					<div class="jp-volume-bar">
+						<div class="jp-volume-bar-value"></div>
+					</div>
+					<div class="jp-time-holder">
+						<div class="jp-current-time"></div>
+						<div class="jp-duration"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+	
+	</body>
+</html>

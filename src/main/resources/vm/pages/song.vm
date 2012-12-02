@@ -2,7 +2,7 @@
 
 <div class="mainControls">
 	<div class="stationSelect">
-		<select  id="stationSelect" onchange="document.location='command://select-station?stationId=' + document.getElementById('stationSelect').options[document.getElementById('stationSelect').selectedIndex].value">
+		<select  id="stationSelect" onchange="document.location='command://select-station/' + document.getElementById('stationSelect').options[document.getElementById('stationSelect').selectedIndex].value">
 			#foreach( $stationLocal in $stations )
 				<option value="$stationLocal.getStationId()" #if ($stationLocal.getStationId() == $station.getStationId()) selected #end>$stationLocal.getStationName()</option>
 			#end
@@ -60,12 +60,6 @@
 	<div class="description">
 	</div>
 	
-	<div class="clear"></div>
-</div>
-
-<div class="controls">
-	<a class="next" href="command://next">$text['next']</a>
-	<a class="pause" href="command://pause">$text['pause']</a>
 	<div class="clear"></div>
 </div>
 

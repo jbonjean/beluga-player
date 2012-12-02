@@ -23,7 +23,6 @@ import info.bonjean.beluga.gui.Page;
 import info.bonjean.beluga.gui.UI;
 import info.bonjean.beluga.gui.UIWindowListener;
 
-import java.awt.BorderLayout;
 import java.awt.Image;
 import java.awt.Toolkit;
 
@@ -59,19 +58,20 @@ public class Main
 
 		SwingUtilities.invokeLater(new Runnable()
 		{
+			@Override
 			public void run()
 			{
 				JFrame frame = new JFrame("Beluga Player");
-				UI ui = new UI();
+				frame.setLayout(null);
 				frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-				frame.getContentPane().add(ui, BorderLayout.CENTER);
-				frame.setSize(600, 400);
+				frame.setSize(600, 420);
 				frame.setResizable(false);
 				frame.setLocationByPlatform(true);
 				frame.setVisible(true);
 				Image image = Toolkit.getDefaultToolkit().getImage(Main.class.getResource(Page.IMG_PATH + "beluga.40x40.png"));
 				frame.setIconImage(image);
 
+				final UI ui = new UI(frame);
 				UIWindowListener windowListener = new UIWindowListener(ui);
 				frame.addWindowListener(windowListener);
 			}

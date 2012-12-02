@@ -73,10 +73,15 @@ public class HTMLUtil
 	{
 		return Base64.encodeBase64String(getResourceAsByteArray(resource));
 	}
+	
+	public static String getImageAbsPath(String path)
+	{
+		return "data:image/png;base64," + Base64.encodeBase64String(getResourceAsByteArray(path));
+	}
 
 	public static String getImage(String name)
 	{
-		return "data:image/png;base64," + Base64.encodeBase64String(getResourceAsByteArray(Page.IMG_PATH + name));
+		return getImageAbsPath(Page.IMG_PATH + name);
 	}
 
 	public static String getURLContentAsBase64String(String url) throws CommunicationException

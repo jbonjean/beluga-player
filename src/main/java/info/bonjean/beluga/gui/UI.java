@@ -30,18 +30,10 @@ import info.bonjean.beluga.exception.InternalException;
 import info.bonjean.beluga.exception.PandoraError;
 import info.bonjean.beluga.exception.PandoraException;
 import info.bonjean.beluga.gui.notification.Notification;
-import info.bonjean.beluga.player.VLCPlayer;
-import info.bonjean.beluga.response.Song;
 import info.bonjean.beluga.util.HTMLUtil;
-import info.bonjean.beluga.util.HTTPUtil;
 
-import java.awt.BorderLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.Map;
-
+import javax.swing.JFrame;
 import javax.swing.JPanel;
-import javax.swing.Timer;
 
 import org.apache.commons.lang.StringEscapeUtils;
 import org.slf4j.Logger;
@@ -56,17 +48,14 @@ import chrriis.dj.nativeswing.swtimpl.components.WebBrowserCommandEvent;
  * @author Julien Bonjean <julien@bonjean.info>
  * 
  */
-public class UI extends JPanel
+public class UI
 {
 	private static final Logger log = LoggerFactory.getLogger(JPanel.class);
-	private static final long serialVersionUID = -4119211066130381277L;
-	private final JWebBrowser webBrowser = new JWebBrowser(JWebBrowser.useWebkitRuntime());
+	private final JWebBrowser webBrowser;
+	private final JWebBrowser playerWebBrowser;
 	private final BelugaState state = BelugaState.getInstance();
 	private final PandoraClient pandoraClient = PandoraClient.getInstance();
 	private final BelugaConfiguration configuration = BelugaConfiguration.getInstance();
-	private final VLCPlayer player = VLCPlayer.getInstance();
-	private Song displayedSong;
-	private Timer timer;
 	private int retryCount = 0;
 	private final int MAX_RETRIES = 3;
 
@@ -75,9 +64,10 @@ public class UI extends JPanel
 		return webBrowser;
 	}
 
-	public UI()
+	public UI(JFrame frame)
 	{
-		super(new BorderLayout());
+		webBrowser = new JWebBrowser(JWebBrowser.useWebkitRuntime());
+		webBrowser.setVisible(true);
 		webBrowser.setBarsVisible(false);
 		webBrowser.setStatusBarVisible(false);
 		webBrowser.setDefaultPopupMenuRegistered(false);
@@ -90,31 +80,29 @@ public class UI extends JPanel
 				dispatch(webBrowserCommandEvent.getCommand(), webBrowserCommandEvent.getParameters());
 			}
 		});
-		add(webBrowser, BorderLayout.CENTER);
 
-		timer = new Timer(1000, new ActionListener()
+		playerWebBrowser = new JWebBrowser(JWebBrowser.useWebkitRuntime());
+		playerWebBrowser.setVisible(true);
+		playerWebBrowser.setBarsVisible(false);
+		playerWebBrowser.setStatusBarVisible(false);
+		playerWebBrowser.setDefaultPopupMenuRegistered(false);
+		playerWebBrowser.setJavascriptEnabled(true);
+		playerWebBrowser.addWebBrowserListener(new WebBrowserAdapter()
 		{
-			public void actionPerformed(ActionEvent evt)
+			@Override
+			public void commandReceived(WebBrowserCommandEvent webBrowserCommandEvent)
 			{
-				if (player.isPlaying())
-				{
-					if (state.getPage().equals(Page.SONG) && !displayedSong.getTrackToken().equals(state.getSong().getTrackToken()))
-					{
-						log.debug("Song changed, update main window");
-						displayedSong = state.getSong();
-						try
-						{
-							updateUI(Page.SONG);
-						} catch (InternalException e)
-						{
-							log.error("A bug occured, please report this: ", e);
-							System.exit(-1);
-						}
-					}
-					webBrowser.executeJavascript("updateTime('" + player.getProgression() + "')");
-				}
+				dispatch(webBrowserCommandEvent.getCommand(), webBrowserCommandEvent.getParameters());
 			}
 		});
+
+		int playerWebBrowserHeight = 60;
+		int webBrowserHeight = frame.getHeight() - playerWebBrowserHeight - 25;
+		webBrowser.setBounds(0, 0, frame.getWidth(), webBrowserHeight);
+		playerWebBrowser.setBounds(0, webBrowserHeight, frame.getWidth(), playerWebBrowserHeight);
+
+		frame.add(webBrowser);
+		frame.add(playerWebBrowser);
 	}
 
 	public void displayLoader()
@@ -125,6 +113,11 @@ public class UI extends JPanel
 	public void hideLoader()
 	{
 		webBrowser.executeJavascript("hideLoader()");
+	}
+
+	public void updateAudioUI() throws InternalException
+	{
+		playerWebBrowser.setHTMLContent(HTMLUtil.getPageHTML(Page.AUDIO));
 	}
 
 	public void updateUI(Page page, Page pageBack) throws InternalException
@@ -142,11 +135,8 @@ public class UI extends JPanel
 	{
 		String url = pandoraClient.nextSong();
 		new Notification(HTMLUtil.getPageHTML(Page.NOTIFICATION));
-		displayedSong = state.getSong();
 		log.debug("Playing: " + url);
-		player.play(url);
-		if (!timer.isRunning())
-			timer.start();
+		updateAudioUI();
 	}
 
 	public void dispatch(String command)
@@ -221,11 +211,6 @@ public class UI extends JPanel
 			updateUI(Page.SONG);
 			break;
 
-		case PAUSE:
-			player.togglePause();
-			updateUI(Page.SONG);
-			break;
-
 		case EXIT:
 			System.exit(0);
 			break;
@@ -236,6 +221,13 @@ public class UI extends JPanel
 			if (page == null)
 			{
 				log.error("Unknow page " + page);
+				hideLoader();
+				break;
+			}
+			if (page == Page.AUDIO)
+			{
+				updateAudioUI();
+				hideLoader();
 				break;
 			}
 			updateUI(page);
@@ -264,8 +256,7 @@ public class UI extends JPanel
 
 		case SELECT_STATION:
 			displayLoader();
-			Map<String, String> params = HTTPUtil.parseUrl(fullCommand);
-			String stationId = params.get("stationId");
+			String stationId = parameters[0];
 			log.debug("Select station with id: " + stationId);
 			pandoraClient.selectStation(stationId);
 			nextSong();

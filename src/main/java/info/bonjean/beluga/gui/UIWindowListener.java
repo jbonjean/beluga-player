@@ -23,6 +23,8 @@ import info.bonjean.beluga.exception.InternalException;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 
+import javax.swing.SwingUtilities;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -76,11 +78,20 @@ public class UIWindowListener implements WindowListener
 	{
 		try
 		{
+			// Dummy.setup();
+			// ui.updateAudioUI();
 			ui.updateUI(Page.WELCOME);
-			ui.dispatch("login");
+			
+			SwingUtilities.invokeLater(new Runnable() {
+				@Override
+				public void run()
+				{
+					ui.dispatch("login");
+				}
+			});
 		} catch (InternalException e1)
 		{
-			log.error("A bug occured, please report this: ", e);
+			log.error("A bug occured, please report this: ", e1);
 			System.exit(-1);
 		}
 	}
