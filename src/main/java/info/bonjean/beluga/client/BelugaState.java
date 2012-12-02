@@ -46,6 +46,7 @@ public class BelugaState
 	private Song song;
 	
 	private Page page;
+	private Page pageBack;
 
 	private List<String> errors = new ArrayList<String>();
 
@@ -164,5 +165,15 @@ public class BelugaState
 	public void setPage(Page page)
 	{
 		this.page = page;
+	}
+
+	public Page getPageBack()
+	{
+		return pageBack;
+	}
+
+	public void setPageBack(Page pageBack)
+	{
+		this.pageBack = pageBack;
 	}
 }

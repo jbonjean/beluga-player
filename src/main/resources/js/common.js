@@ -26,7 +26,6 @@ function initGlobal()
     	document.getElementById("errors").style.display = "none";
 	}, false );
 	*/
-	
 	// call spage specific init
 	init();
 }

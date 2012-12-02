@@ -1,0 +1,69 @@
+div > .tooltip, li > .tooltip, a > .tooltip, span > .tooltip {
+	opacity: 0;
+	visibility: hidden;
+	margin-top: 30px;
+	margin-left: -40px;
+
+	-webkit-transition-property:opacity, visibility;
+	-webkit-transition-duration:0.5s, 0.5s;  
+	-webkit-transition-timing-function: ease-in-out, ease-in-out;
+}
+
+div:hover > .tooltip, li:hover > .tooltip, a:hover > .tooltip, span:hover > .tooltip,
+a .tooltip:hover, span .tooltip:hover, li .tooltip:hover, div .tooltip:hover {
+	opacity: 1;
+	visibility: visible;
+	overflow: visible;
+	display: inline;
+	
+	-webkit-transition-property:opacity, visibility;
+	-webkit-transition-duration:0.5s, 0.5s;  
+	-webkit-transition-timing-function: ease-in-out, ease-in-out;
+}
+
+.tooltip {
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#FFFBCF), color-stop(100%,#FFFCDF));
+
+	border: 1px solid #EFE795;
+	-webkit-border-radius: 3px;
+
+	padding: 10px;
+	margin-left: -40px;
+
+	position: absolute;
+
+	font-family: Arial;
+	font-size: 12px;
+	text-decoration: none;
+	font-style: normal;
+	color: #777;
+	text-shadow: 1px 1px 0 rgba(255,255,255,0.75);
+	
+	-webkit-box-shadow: 0 1px 3px rgba(0,0,0,0.1), inset 0 1px 0 #fff;
+
+	z-index: 10;	
+}
+
+.tooltip span { /* Triangle */
+	background: #FFFBCF;
+
+	border: 0;
+	border-top: 1px solid #EFE795;
+	border-right: 1px solid #EFE795;	
+
+	width: 10px;
+	height: 10px;
+	margin-left: 15px;
+	margin-top: -16px;
+	
+	display: block;
+	position: absolute;
+
+	-webkit-transform: rotate(-45deg);
+	
+	-webkit-box-shadow: inset -1px 1px 0 #fff;
+	
+	display /*\**/: none\9;
+	*display: none !important;
+	*display: none;
+}

@@ -2,7 +2,8 @@
 	<head>
 		<style type="text/css">
 			#include( "css/common.css" )
-			#include( "css/tooltips.css" )
+			#include( "css/tooltip.css" )
+			#include( "css/error.css" )
 			#parse( "css/${page}.css" )
 		</style>
 		<script type="text/javascript">

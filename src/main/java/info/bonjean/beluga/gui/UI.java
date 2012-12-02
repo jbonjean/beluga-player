@@ -120,15 +120,19 @@ public class UI
 		playerWebBrowser.setHTMLContent(HTMLUtil.getPageHTML(Page.AUDIO));
 	}
 
-	public void updateUI(Page page, Page pageBack) throws InternalException
-	{
-		state.setPage(page);
-		webBrowser.setHTMLContent(HTMLUtil.getPageHTML(page, pageBack));
-	}
-
 	public void updateUI(Page page) throws InternalException
 	{
-		updateUI(page, null);
+		Page pageBack = null;
+		if(!page.equals(Page.SONG))
+		{
+			if (state.getPage() == page)
+				pageBack = state.getPageBack();
+			else
+				pageBack = state.getPage();
+		}
+		state.setPageBack(pageBack);
+		state.setPage(page);
+		webBrowser.setHTMLContent(HTMLUtil.getPageHTML(page, pageBack));
 	}
 
 	private void nextSong() throws BelugaException
@@ -184,7 +188,7 @@ public class UI
 		case NEXT:
 			displayLoader();
 			nextSong();
-			if(state.getPage().equals(Page.SONG))
+			if (state.getPage().equals(Page.SONG))
 				updateUI(Page.SONG);
 			else
 				hideLoader();
@@ -227,20 +231,13 @@ public class UI
 				hideLoader();
 				break;
 			}
-			switch (page)
+			if(page.equals(Page.AUDIO))
 			{
-			case AUDIO:
 				updateAudioUI();
 				hideLoader();
-				break;
-			case CONFIGURATION:
-			case ABOUT:
-			case STATION_ADD:
-				updateUI(page, state.getPage());
-				break;
-			default:
-				updateUI(page);
 			}
+			else
+				updateUI(page);
 			break;
 
 		case CONFIGURATION:

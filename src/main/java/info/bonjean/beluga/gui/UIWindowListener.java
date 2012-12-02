@@ -80,6 +80,7 @@ public class UIWindowListener implements WindowListener
 		{
 			// Dummy.setup();
 			// ui.updateAudioUI();
+			ui.updateAudioUI();
 			ui.updateUI(Page.WELCOME);
 			
 			SwingUtilities.invokeLater(new Runnable() {

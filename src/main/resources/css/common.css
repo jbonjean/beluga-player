@@ -5,6 +5,12 @@ body {
 	font-family: Arial;
 	margin: 0px;
 	overflow: hidden;
+	-webkit-user-drag: none;
+	-webkit-user-select: none;
+}
+
+:focus {
+	outline: 0;
 }
 
 a {
@@ -85,88 +91,4 @@ h3 {
 
 #content {
 	margin: 10px;
-}
-
-/* ******* NOTIFICATIONS ******* */
-
-.tn-box {
-	width: 360px;
-	position: fixed;
-	z-index: 1000;
-	bottom: 5px;
-	right: 5px;
-	padding: 25px 15px;
-	text-align: left;
-	border-radius: 5px;
-    box-shadow: 0 1px 1px rgba(0,0,0,0.1), inset 0 1px 0 rgba(255,255,255,0.6);  
-	opacity: 0;
-	filter: alpha(opacity=0);	
-	cursor: default;
-	display: none;
-}
-.tn-box p {
-	font-size: 12px;
-	margin: 0;
-	padding: 0 10px 0 60px;
-	text-shadow: 0 1px 1px rgba(255,255,255,0.6);
-}
-.tn-box p:before{
-	text-align: center;
-	border: 3px solid rgba(255, 255, 255, 1);
-	margin-top: -17px;
-	top: 50%;
-	left: 20px;
-	width: 30px;
-	content: 'i';
-	font-size: 30px;
-	color: rgba(255, 255, 255, 1);
-	position: absolute;
-	height: 30px;
-	line-height: 30px;
-	border-radius: 50%;
-	text-shadow: 1px 1px 1px rgba(0,0,0,0.1);
-	box-shadow: 1px 1px 1px rgba(0,0,0,0.1);
-}
-
-/* Colors */
-
-.tn-box-color-1{
-	background: #ffe691;
-	border: 1px solid #f6db7b;
-}
-.tn-box-color-1 p {
-	color: #7d5912;
-}
-
-.tn-box-color-2{
-	background: #99ffb1;
-	border: 1px solid #7ce294;
-}
-.tn-box-color-2 p {
-	color: #2d8241;
-}
-
-.tn-box-color-3{
-	background: #dd9aff;
-	border: 1px solid #b367db;
-}
-.tn-box-color-3 p {
-	color: #69288b;
-}
-
-/* Fire the animations */
-
-.tn-box:not(:empty) {
-	display: block;
-	-webkit-animation: fadeOut 3s linear forwards;
-	-webkit-animation-duration: 7s;
-	-webkit-animation-delay: 0.4s;
-}
-
-@-webkit-keyframes fadeOut {
-	0% { opacity: 0; }
-	10% { opacity: 1; }
-	90% { opacity: 1; -webkit-transform: translateX(0px);}
-	99% { opacity: 0; -webkit-transform: translateX(300px);}
-	100% { opacity: 0;}
 }
