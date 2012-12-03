@@ -21,11 +21,8 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import info.bonjean.beluga.client.BelugaState;
 import info.bonjean.beluga.client.PandoraClient;
-import info.bonjean.beluga.gui.Page;
-import info.bonjean.beluga.response.Song;
 import info.bonjean.beluga.response.Station;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Test;

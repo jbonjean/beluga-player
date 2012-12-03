@@ -20,7 +20,10 @@ package info.bonjean.beluga.gui.notification;
 
 import info.bonjean.beluga.gui.notification.data.Handler;
 
+import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.GraphicsConfiguration;
+import java.awt.Insets;
 
 import javax.swing.Icon;
 import javax.swing.JTextPane;
@@ -42,9 +45,11 @@ public class NotificationWindow extends JWindow
 		super(graphicsConfiguration);
 		Handler.install();
 		JTextPane textPane = new JTextPane();
+		textPane.setMargin(new Insets(0, 0, 0, 0));
+		textPane.setPreferredSize(new Dimension(300,90));
 		textPane.setContentType("text/html");
 		textPane.setText(message);
-		add(textPane);
-		setBounds(0, 0, 300, 92);
+		getContentPane().add(textPane,BorderLayout.NORTH);
+		pack();
 	}
 }

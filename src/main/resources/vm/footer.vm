@@ -1,15 +1,4 @@
 			</div>
 		</div>
-		
-		#if( ! $errors.isEmpty() )
-			<div id="errors" class="tn-box tn-box-color-1">
-				<ul>
-				#foreach( $error in $errors )
-					<li>$text[$error]</li>
-				#end
-				</ul>
-			</div>
-		#end
-			
 	</body>
 </html>

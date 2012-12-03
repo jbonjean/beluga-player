@@ -47,6 +47,13 @@ public class HTMLUtil
 {
 	private final static Logger log = LoggerFactory.getLogger(HTMLUtil.class);
 
+	public static String shorten(String str, int length)
+	{
+		if (str.length() > length)
+			return str.substring(0, length - 3) + "...";
+		return str;
+	}
+
 	public static byte[] getResourceAsByteArray(String resource)
 	{
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -73,7 +80,7 @@ public class HTMLUtil
 	{
 		return Base64.encodeBase64String(getResourceAsByteArray(resource));
 	}
-	
+
 	public static String getImageAbsPath(String path)
 	{
 		return "data:image/png;base64," + Base64.encodeBase64String(getResourceAsByteArray(path));
@@ -97,7 +104,6 @@ public class HTMLUtil
 	public static String getPageHTML(Page page, Page pageBack) throws InternalException
 	{
 		VelocityContext context = new VelocityContext();
-		context.put("errors", BelugaState.getInstance().getErrors());
 		context.put("stations", BelugaState.getInstance().getStationList());
 		context.put("station", BelugaState.getInstance().getStation());
 		context.put("song", BelugaState.getInstance().getSong());

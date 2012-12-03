@@ -27,7 +27,7 @@
 <div class="content">
 	<div class="albumCover">
 		<img id="cover" class="cover" src="data:image/png;base64,$song.getAlbumArtBase64()"/>
-		<div class="albumTitle">$song.getAlbumName()</div>
+		<div class="albumTitle">$HTMLUtil.shorten($song.getAlbumName(), 65)</div>
 	</div>
 	
 	<div class="songInfos">

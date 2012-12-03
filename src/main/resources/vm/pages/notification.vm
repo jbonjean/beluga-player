@@ -1,14 +1,26 @@
-<table>
-	<tr>
-		<td valign="top">
-			<img width="80" height="80" src="data:image/png;base64,$song.getAlbumArtBase64()"/>
-		</td>
-		<td>
-			<b>$song.getSongName()</b><br/>
-			$text['by'] $song.getArtistName()<br/>
-			<br/>
-			<br/>
-			<br/>
-		</td>
-	</tr>
-</table>
+<html>
+	<head>
+		<style type="text/css">
+			body {
+				padding: 0px;
+				margin: 0px;
+			}
+		</style>
+	</head>
+	<body>
+		<table>
+			<tr>
+				<td valign="top">
+					<img width="80" height="80" src="data:image/png;base64,$song.getAlbumArtBase64()"/>
+				</td>
+				<td>
+					<b>$HTMLUtil.shorten($song.getSongName(), 50)</b><br/>
+					$text['by'] $HTMLUtil.shorten($song.getArtistName(), 30)<br/>
+					<br/>
+					<br/>
+					<br/>
+				</td>
+			</tr>
+		</table>
+	</body>
+</html>

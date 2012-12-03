@@ -6,7 +6,7 @@
 			#parse( "css/${page}.css" )
 		</style>
 		<script type="text/javascript">
-			#include( "jplayer/jquery-1.8.3.min.js" )
+			#include( "jquery/jquery-1.8.3.min.js" )
 			#include( "jplayer/jquery.jplayer.min.js" )
 			#include( "js/common.js" )
 			#parse( "js/${page}.js" )

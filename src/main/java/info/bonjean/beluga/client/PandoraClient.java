@@ -22,6 +22,7 @@ import info.bonjean.beluga.configuration.BelugaConfiguration;
 import info.bonjean.beluga.exception.BelugaException;
 import info.bonjean.beluga.exception.CommunicationException;
 import info.bonjean.beluga.gui.Page;
+import info.bonjean.beluga.gui.UI;
 import info.bonjean.beluga.request.ArtistBookmark;
 import info.bonjean.beluga.request.CreateStation;
 import info.bonjean.beluga.request.CreateUser;
@@ -115,6 +116,7 @@ public class PandoraClient
 
 	public void updateStationList() throws BelugaException
 	{
+		UI.reportInfo("retrieving.stations");
 		state.setStationList(getStationList());
 		if (state.getStation() == null && !state.getStationList().isEmpty())
 			selectStation(state.getStationList().get(0));
@@ -167,13 +169,21 @@ public class PandoraClient
 		if (state.getPlaylist() == null || state.getPlaylist().isEmpty())
 		{
 			// retrieve playlist from Pandora
+			UI.reportInfo("retrieving.playlist");
 			state.setPlaylist(getPlaylist(state.getStation()));
 
 			// update extra information
+			UI.reportInfo("retrieving.song.extra.information");
+			for (Song song : state.getPlaylist())
+			{
+				song.setFocusTraits(retrieveFocusTraits(song));
+			}
+			
+			// retrieve covers
+			UI.reportInfo("retrieving.album.covers");
 			for (Song song : state.getPlaylist())
 			{
 				song.setAlbumArtBase64(retrieveAlbumArt(song));
-				song.setFocusTraits(retrieveFocusTraits(song));
 			}
 		}
 
@@ -247,6 +257,7 @@ public class PandoraClient
 
 	public void login() throws BelugaException
 	{
+		UI.reportInfo("connection.to.pandora");
 		partnerLogin();
 		userLogin();
 	}

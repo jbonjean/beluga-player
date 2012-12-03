@@ -51,7 +51,7 @@ import chrriis.dj.nativeswing.swtimpl.components.WebBrowserCommandEvent;
 public class UI
 {
 	private static final Logger log = LoggerFactory.getLogger(JPanel.class);
-	private final JWebBrowser webBrowser;
+	private static JWebBrowser webBrowser;
 	private final JWebBrowser playerWebBrowser;
 	private final BelugaState state = BelugaState.getInstance();
 	private final PandoraClient pandoraClient = PandoraClient.getInstance();
@@ -107,11 +107,13 @@ public class UI
 
 	public void displayLoader()
 	{
+		webBrowser.executeJavascript("$.noty.closeAll()");
 		webBrowser.executeJavascript("displayLoader()");
 	}
 
 	public void hideLoader()
 	{
+		webBrowser.executeJavascript("$.noty.closeAll()");
 		webBrowser.executeJavascript("hideLoader()");
 	}
 
@@ -123,7 +125,7 @@ public class UI
 	public void updateUI(Page page) throws InternalException
 	{
 		Page pageBack = null;
-		if(!page.equals(Page.SONG))
+		if (!page.equals(Page.SONG))
 		{
 			if (state.getPage() == page)
 				pageBack = state.getPageBack();
@@ -231,12 +233,11 @@ public class UI
 				hideLoader();
 				break;
 			}
-			if(page.equals(Page.AUDIO))
+			if (page.equals(Page.AUDIO))
 			{
 				updateAudioUI();
 				hideLoader();
-			}
-			else
+			} else
 				updateUI(page);
 			break;
 
@@ -327,8 +328,16 @@ public class UI
 		default:
 			log.info("Unknown command received: " + fullCommand);
 		}
+		for(String errorKey : state.getErrors())
+			webBrowser.executeJavascript("showError('" + StringEscapeUtils.escapeJavaScript(_(errorKey)) + "')");
+		state.clearErrors();
 	}
 
+	public static void reportInfo(String infoKey)
+	{
+		webBrowser.executeJavascript("showInfo('" + StringEscapeUtils.escapeJavaScript(_(infoKey)) + "')");
+	}
+	
 	public static void reportError(String messageKey)
 	{
 		reportError(messageKey, false, true, null);
