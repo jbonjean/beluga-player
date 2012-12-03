@@ -48,6 +48,11 @@ public class BelugaState
 
 	private Page page;
 	private Page pageBack;
+	
+	private float volume = 1f;
+	// workaround for missing feature in webkit
+	// we store the volume value before mute to be able to restore it later
+	private float mutedVolume = 0f;
 
 	Set<String> errors = new HashSet<String>();
 
@@ -186,5 +191,25 @@ public class BelugaState
 	public void setPageBack(Page pageBack)
 	{
 		this.pageBack = pageBack;
+	}
+
+	public float getMutedVolume()
+	{
+		return mutedVolume;
+	}
+
+	public void setMutedVolume(float mutedVolume)
+	{
+		this.mutedVolume = mutedVolume;
+	}
+
+	public float getVolume()
+	{
+		return volume;
+	}
+
+	public void setVolume(float volume)
+	{
+		this.volume = volume;
 	}
 }

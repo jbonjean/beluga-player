@@ -5,36 +5,42 @@ function init()
 // disable plugin search feature, this make JWebBrowser crash
 $.jPlayer.prototype._checkForFlash = function(version){ return false; };
 
-var mutedVolume = 0;
+var mutedVolume = $mutedVolume;
+
 $(document).ready(function(){
     $("#jquery_jplayer_1").jPlayer({
-	    ready: function () {
+	    ready: function (event) {
 	    		#if ($song)
 				    $(this).jPlayer("setMedia", {
 					    m4a: '$song.getAudioUrlMap().get("lowQuality").getAudioUrl()'
 				    }).jPlayer("play");
 				#end
-				//$(this).jPlayer('volume', mutedVolume);
-				//alert($("#jp_audio_1").muted);
 			},
+		play: function (event) {
+			//alert("play");
+		},
 		ended: function() {
 			sendNSCommand('next');
 		},
 		volumechange: function (event) {
 			var options = event.jPlayer.options;
+			
+			// mute and volume > 0, we need to store the volume value
+			// to restore it later
 			if(options.muted && options.volume != 0)
 			{
-				document.getElementById('background_audio').muted = true;
-				//mutedVolume = options.volume;
-				//$(this).jPlayer('volume', 0);
+				mutedVolume = options.volume;
+				$(this).jPlayer('volume', 0);
 			}
+			// unmute (not muted and volume = 0), we restore the volume value
 			else if(!options.muted && options.volume == 0)
 			{
 				$(this).jPlayer('volume', mutedVolume);
 			}
-			//$("#jp_audio_1").prop('muted', true);
+			sendNSCommand('store-volume/' + options.volume + "/" + mutedVolume);
 		},
-		volume: 0,
+		volume: $volume,
+		muted: #if ($volume == 0) true #else false #end,
     	supplied: "m4a",
     	preload:"auto",
     	solution: "html"

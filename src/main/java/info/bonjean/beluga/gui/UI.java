@@ -328,7 +328,11 @@ public class UI
 					(String) postParameters[5]);
 			dispatch("configuration");
 			break;
-
+		case STORE_VOLUME:
+			log.debug("Store volume=" + parameters[0] + ", muted=" + parameters[1]);
+			state.setVolume(Float.parseFloat(parameters[0]));
+			state.setMutedVolume(Float.parseFloat(parameters[1]));
+			break;
 		default:
 			log.info("Unknown command received: " + fullCommand);
 		}

@@ -112,6 +112,8 @@ public class HTMLUtil
 		context.put("isPandoraReachable", BelugaState.getInstance().isPandoraReachable());
 		context.put("HTMLUtil", HTMLUtil.class);
 		context.put("text", I18NUtil.class);
+		context.put("volume", BelugaState.getInstance().getVolume());
+		context.put("mutedVolume", BelugaState.getInstance().getMutedVolume());
 		context.put("pageBack", pageBack != null ? pageBack.name().toLowerCase() : null);
 		context.put("page", page.name().toLowerCase());
 		context.put("font", getResourceAsBase64String("/font/Roboto-Regular-webfont.ttf"));
