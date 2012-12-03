@@ -32,11 +32,11 @@
 			<div class="jp-type-single">
 				<div class="jp-gui jp-interface">
 					<ul class="jp-controls">
-						<li><a href="javascript:;" class="jp-play" tabindex="1">$text['play']</a></li>
-						<li><a href="javascript:;" class="jp-pause" tabindex="1">$text['pause']</a></li>
-						<li><a href="javascript:;" class="jp-mute" tabindex="1" title="mute">$text['mute']</a></li>
-						<li><a href="javascript:;" class="jp-unmute" tabindex="1" title="unmute">$text['unmute']</a></li>
-						<li><a href="javascript:;" class="jp-volume-max" tabindex="1" title="max volume">$text['max.volume']</a></li>
+						<li><a href="javascript:;" class="jp-play" tabindex="1" title="$text['play']"></a></li>
+						<li><a href="javascript:;" class="jp-pause" tabindex="1" title="$text['pause']"></a></li>
+						<li><a href="javascript:;" class="jp-mute" tabindex="1" title="$text['mute']"></a></li>
+						<li><a href="javascript:;" class="jp-unmute" tabindex="1" title="$text['unmute']"></a></li>
+						<li><a href="javascript:;" class="jp-volume-max" tabindex="1" title="$text['max.volume']"></a></li>
 					</ul>
 					<div class="jp-progress">
 						<div class="jp-seek-bar">
