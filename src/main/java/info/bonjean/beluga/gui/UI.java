@@ -33,7 +33,6 @@ import info.bonjean.beluga.gui.notification.Notification;
 import info.bonjean.beluga.util.HTMLUtil;
 
 import javax.swing.JFrame;
-import javax.swing.JPanel;
 
 import org.apache.commons.lang.StringEscapeUtils;
 import org.slf4j.Logger;
@@ -50,7 +49,7 @@ import chrriis.dj.nativeswing.swtimpl.components.WebBrowserCommandEvent;
  */
 public class UI
 {
-	private static final Logger log = LoggerFactory.getLogger(JPanel.class);
+	private static final Logger log = LoggerFactory.getLogger(UI.class);
 	private static JWebBrowser webBrowser;
 	private final JWebBrowser playerWebBrowser;
 	private final BelugaState state = BelugaState.getInstance();
@@ -125,7 +124,12 @@ public class UI
 	public void updateUI(Page page) throws InternalException
 	{
 		Page pageBack = null;
-		if (!page.equals(Page.SONG))
+		if(page.equals(Page.CONFIGURATION))
+		{
+			if(state.isLoggedIn())
+				pageBack = Page.SONG;
+		}
+		else if (!page.equals(Page.SONG))
 		{
 			if (state.getPage() == page)
 				pageBack = state.getPageBack();
@@ -328,31 +332,46 @@ public class UI
 		default:
 			log.info("Unknown command received: " + fullCommand);
 		}
-		for(String errorKey : state.getErrors())
-			webBrowser.executeJavascript("showError('" + StringEscapeUtils.escapeJavaScript(_(errorKey)) + "')");
+		for (String errorKey : state.getErrors())
+			showError(errorKey);
 		state.clearErrors();
+	}
+	
+	public static void showError(String messageKey)
+	{
+		webBrowser.executeJavascript("showError('" + StringEscapeUtils.escapeJavaScript(_(messageKey)) + "')");
 	}
 
 	public static void reportInfo(String infoKey)
 	{
 		webBrowser.executeJavascript("showInfo('" + StringEscapeUtils.escapeJavaScript(_(infoKey)) + "')");
 	}
-	
+
 	public static void reportError(String messageKey)
 	{
-		reportError(messageKey, false, true, null);
+		reportError(messageKey, false, true, false, null);
+	}
+	
+	public static void reportError(String messageKey, boolean now)
+	{
+		reportError(messageKey, false, true, now, null);
 	}
 
 	public static void reportFatalError(String messageKey, Exception e)
 	{
-		reportError(messageKey, true, true, e);
+		reportError(messageKey, true, true, false, e);
 	}
 
-	public static void reportError(String messageKey, boolean fatal, boolean reportUI, Exception e)
+	public static void reportError(String messageKey, boolean fatal, boolean reportUI, boolean now, Exception e)
 	{
 		log.error(_(messageKey), e);
 		if (reportUI)
-			BelugaState.getInstance().addError(messageKey);
+		{
+			if (now)
+				showError(messageKey);
+			else
+				BelugaState.getInstance().addError(messageKey);
+		}
 		if (fatal)
 			System.exit(-1);
 	}
@@ -380,32 +399,26 @@ public class UI
 		} else if (e instanceof PandoraException)
 		{
 			PandoraException pe = (PandoraException) e;
-			if (pe.getError() == PandoraError.INVALID_CREDENTIALS)
+			if (pe.getError() == PandoraError.INVALID_CREDENTIALS || pe.getError() == PandoraError.LICENSING_RESTRICTIONS)
 			{
-				reportError("invalid.credentials");
-				dispatch("configuration");
-				return;
-			}
-			if (pe.getError() == PandoraError.LICENSING_RESTRICTIONS)
-			{
-				reportError("pandora.not.available.check.proxy");
+				reportError(pe.getError().getMessageKey());
 				dispatch("configuration");
 				return;
 			}
 			if (pe.getError() == PandoraError.INVALID_AUTH_TOKEN)
 			{
-				reportError("authentication.token.expired");
+				retryCount++;
 				dispatch("login");
+				reportError(pe.getError().getMessageKey(), false, false, false, null);
 				return;
 			}
 			if (state.getPage().equals(Page.USER_CREATE))
 			{
-				reportError(pe.getMessage());
 				hideLoader();
+				reportError(pe.getError().getMessageKey(), true);
 				return;
 			}
-			reportError(e.getMessage());
-			retryCount++;
+			reportError(pe.getError().getMessageKey());
 			dispatch(command, parameters);
 		}
 		reportFatalError("a.bug.occured", e);

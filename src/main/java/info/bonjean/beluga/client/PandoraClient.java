@@ -90,6 +90,9 @@ public class PandoraClient
 
 	public void partnerLogin() throws BelugaException
 	{
+		state.setPartnerId(null);
+		state.setPartnerAuthToken(null);
+		
 		Result result = HTTPUtil.request(Method.PARTNER_LOGIN, null, new PartnerAuth(), false);
 
 		state.setPartnerId(result.getPartnerId());
@@ -98,6 +101,9 @@ public class PandoraClient
 
 	public void userLogin() throws BelugaException
 	{
+		state.setUserId(null);
+		state.setUserAuthToken(null);
+		
 		ParameterMap params = new ParameterMap();
 		params.add("partner_id", state.getPartnerId());
 		params.add("auth_token", state.getPartnerAuthToken());

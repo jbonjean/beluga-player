@@ -10,3 +10,16 @@
 .connecting .loader {
 	float:left;
 }
+
+#goto-configuration {
+	margin-top: 20px;
+}
+
+#goto-configuration img {
+	width: 13px;
+	height: 13px;
+}
+
+#goto-configuration a {
+	text-decoration: underline;
+}

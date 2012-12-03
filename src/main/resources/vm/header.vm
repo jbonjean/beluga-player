@@ -10,6 +10,7 @@
 			#include( "noty/jquery.noty.js" )
 			#include( "noty/themes/default.js" )
 			#include( "noty/layouts/bottomRight.js" )
+			#include( "noty/layouts/top.js" )
 			#include( "js/common.js" )
 			#include( "js/noty.js" )
 			#parse( "js/${page}.js" )

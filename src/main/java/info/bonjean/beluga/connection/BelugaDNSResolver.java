@@ -18,6 +18,8 @@
  */
 package info.bonjean.beluga.connection;
 
+import info.bonjean.beluga.gui.UI;
+
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
@@ -43,8 +45,8 @@ import org.xbill.DNS.Type;
 public class BelugaDNSResolver implements DnsResolver
 {
 	private static final Logger log = LoggerFactory.getLogger(BelugaDNSResolver.class);
-	private static final int DNS_PROXY_MAX_RETRY = 5;
-	private static final int DNS_TIMEOUT_SECONDS = 5;
+	private static final int DNS_PROXY_MAX_RETRY = 2;
+	private static final int DNS_TIMEOUT_SECONDS = 3;
 	private Lookup dnsProxyLookup;
 	private DnsResolver fallbackDNSResolver;
 	private String pandoraURL;
@@ -62,7 +64,7 @@ public class BelugaDNSResolver implements DnsResolver
 			dnsProxyLookup.setResolver(resolver);
 		} catch (Exception e)
 		{
-			log.error("Cannot configure DNS proxy");
+			UI.reportError("cannot.configure.proxy");
 			dnsProxyLookup = null;
 		}
 	}
@@ -89,7 +91,7 @@ public class BelugaDNSResolver implements DnsResolver
 				if (!addresses.isEmpty())
 					break;
 				else
-					log.warn("DNS proxy problem, try " + (i + 1));
+					UI.reportError("dns.proxy.problem", true);
 			}
 			if (addresses.isEmpty())
 			{

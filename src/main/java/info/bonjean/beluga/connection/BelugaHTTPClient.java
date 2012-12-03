@@ -92,7 +92,7 @@ public class BelugaHTTPClient
 			} catch (Exception e1)
 			{
 				e = e1;
-				UI.reportError("connection.problem");
+				UI.reportError("connection.problem", true);
 			}
 		}
 		throw new CommunicationException(e);

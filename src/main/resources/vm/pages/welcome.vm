@@ -8,6 +8,11 @@
 		<img src="$HTMLUtil.getImage("ajax-loader.gif")"/>
 	</div>
 	<div class="spacer"></div>
+	<!--
+	<div id="goto-configuration">
+		<a href="command://goto/configuration"><img src="$HTMLUtil.getImage("Settings-32.png")" border="0">$text['settings']</a>
+	</div>
+	-->
 </div>
 
 #parse("vm/footer.vm")

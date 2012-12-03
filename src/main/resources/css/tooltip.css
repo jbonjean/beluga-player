@@ -27,7 +27,7 @@ a .tooltip:hover, span .tooltip:hover, li .tooltip:hover, div .tooltip:hover {
 	border: 1px solid #EFE795;
 	-webkit-border-radius: 3px;
 
-	padding: 10px;
+	padding: 2px;
 	margin-left: -40px;
 
 	position: absolute;
@@ -41,7 +41,15 @@ a .tooltip:hover, span .tooltip:hover, li .tooltip:hover, div .tooltip:hover {
 	
 	-webkit-box-shadow: 0 1px 3px rgba(0,0,0,0.1), inset 0 1px 0 #fff;
 
-	z-index: 10;	
+	z-index: 10;
+}
+
+.tooltip ul {
+	list-style-type: none;
+	padding: 0 5px 0 5px;
+}
+
+.tooltip ul li {
 }
 
 .tooltip span { /* Triangle */

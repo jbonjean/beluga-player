@@ -10,7 +10,7 @@ label {
 }
 
 #terms-of-use {
-	margin-top: 20px;
+	margin-top: 15px;
 }
 
 #terms-of-use input {
@@ -33,7 +33,6 @@ input[type=number] {
 }
 
 fieldset {
-	margin-top: 10px;
 }
 
 legend {

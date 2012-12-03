@@ -14,9 +14,11 @@
 			<label for="password">$text['password']</label>
 			<input name="password" id="password" type="password" value="$configuration.getPassword()"/>
 		</div>
-		<div>
-			<a href="javascript:sendNSCommand('goto/USER_CREATE');">New User</a>
-		</div>
+		#if ($isPandoraReachable)
+			<div id="new-user">
+				<a href="javascript:sendNSCommand('goto/USER_CREATE');">New User</a>
+			</div>
+		#end
 	</fieldset>
 	<fieldset>
 		<legend>Connection</legend>
@@ -36,7 +38,7 @@
 				<img src="$HTMLUtil.getImage("info-20.png")"/>
 				<span class="tooltip"> 
 					<span></span>
-					$text['dns.proxy.tooltip']
+					<ul>$text['dns.proxy.tooltip']</ul>
 				</span>
 			</span>
 		</div>

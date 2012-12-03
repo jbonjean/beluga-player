@@ -39,5 +39,5 @@ function showError(message)
 function showInfo(message)
 {
 	$.noty.closeAll();
-    noty({dismissQueue: false, type: 'alert', timeout: 0, animation: infoAnimation, text: message});
+    noty({dismissQueue: false, type: 'alert', timeout: 0, animation: infoAnimation, layout: 'top', text: message});
 }

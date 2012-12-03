@@ -108,6 +108,8 @@ public class HTMLUtil
 		context.put("station", BelugaState.getInstance().getStation());
 		context.put("song", BelugaState.getInstance().getSong());
 		context.put("configuration", BelugaConfiguration.getInstance());
+		context.put("isLoggedIn", BelugaState.getInstance().isLoggedIn());
+		context.put("isPandoraReachable", BelugaState.getInstance().isPandoraReachable());
 		context.put("HTMLUtil", HTMLUtil.class);
 		context.put("text", I18NUtil.class);
 		context.put("pageBack", pageBack != null ? pageBack.name().toLowerCase() : null);

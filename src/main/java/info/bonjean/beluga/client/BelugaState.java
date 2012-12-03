@@ -22,8 +22,9 @@ import info.bonjean.beluga.gui.Page;
 import info.bonjean.beluga.response.Song;
 import info.bonjean.beluga.response.Station;
 
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * 
@@ -44,11 +45,11 @@ public class BelugaState
 	private Station station;
 	private List<Song> playlist;
 	private Song song;
-	
+
 	private Page page;
 	private Page pageBack;
 
-	private List<String> errors = new ArrayList<String>();
+	Set<String> errors = new HashSet<String>();
 
 	private BelugaState()
 	{
@@ -60,6 +61,16 @@ public class BelugaState
 			instance = new BelugaState();
 
 		return instance;
+	}
+
+	public boolean isPandoraReachable()
+	{
+		return partnerAuthToken != null && partnerAuthToken.length() > 0;
+	}
+
+	public boolean isLoggedIn()
+	{
+		return userAuthToken != null && userAuthToken.length() > 0;
 	}
 
 	public String getUserId()
@@ -142,7 +153,7 @@ public class BelugaState
 		this.song = song;
 	}
 
-	public List<String> getErrors()
+	public Set<String> getErrors()
 	{
 		return errors;
 	}
