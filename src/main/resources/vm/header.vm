@@ -1,7 +1,7 @@
 <html>
 	<head>
 		<style type="text/css">
-			#include( "css/common.css" )
+			#parse( "css/common.css" )
 			#include( "css/tooltip.css" )
 			#parse( "css/${page}.css" )
 		</style>

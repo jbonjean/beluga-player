@@ -64,7 +64,7 @@ public class Main
 				JFrame frame = new JFrame("Beluga Player");
 				frame.setLayout(null);
 				frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-				frame.setSize(600, 420);
+				frame.setSize(600, 410);
 				frame.setResizable(false);
 				frame.setLocationByPlatform(true);
 				frame.setVisible(true);

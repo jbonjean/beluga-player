@@ -1,8 +1,15 @@
+@font-face {
+    font-family: 'CrimsonRoman';
+    src: url("data:font/opentype;base64,$font");
+    font-weight: normal;
+    font-style: normal;
+}
+
 body {
 	background-color: #f2f1f0;
-	font-size: 13px;
+	font-size: 14px;
 	cursor: default;
-	font-family: Arial;
+	font-family: CrimsonRoman;
 	margin: 0px;
 	overflow: hidden;
 	-webkit-user-drag: none;
@@ -65,7 +72,7 @@ h2 {
 	font-size: 16px;
 }
 h3 {
-	font-size: 14px;
+	font-size: 15px;
 }
 
 #back {

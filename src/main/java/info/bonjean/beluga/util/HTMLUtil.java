@@ -112,6 +112,7 @@ public class HTMLUtil
 		context.put("text", I18NUtil.class);
 		context.put("pageBack", pageBack != null ? pageBack.name().toLowerCase() : null);
 		context.put("page", page.name().toLowerCase());
+		context.put("font", getResourceAsBase64String("/font/Roboto-Regular-webfont.ttf"));
 		context.put("debug", System.getProperty("debug") != null);
 		return RenderingEngine.getInstance().render(context, page.getTemplate());
 	}
