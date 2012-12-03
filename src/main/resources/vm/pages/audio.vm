@@ -7,7 +7,7 @@
 		</style>
 		<script type="text/javascript">
 			#include( "jquery/jquery-1.8.3.min.js" )
-			#include( "jplayer/jquery.jplayer.min.js" )
+			#include( "jplayer/jquery.jplayer.js" )
 			#include( "js/common.js" )
 			#parse( "js/${page}.js" )
 		</script>
@@ -45,7 +45,7 @@
 						</div>
 					</div>
 					<div class="jp-volume-bar">
-						<div class="jp-volume-bar-value" style="width: 0%"></div>
+						<div class="jp-volume-bar-value"></div>
 					</div>
 					<div class="jp-time-holder">
 						<div class="jp-current-time"></div>
