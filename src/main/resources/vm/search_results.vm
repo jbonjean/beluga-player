@@ -28,3 +28,7 @@
 		#end
 	</div>
 #end
+
+#if ($nearchMatchesAvailable)
+	<div id='near-matches'>$text['search.results.incomplete']</div>
+#end	

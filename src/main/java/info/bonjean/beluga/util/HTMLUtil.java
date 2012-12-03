@@ -138,6 +138,7 @@ public class HTMLUtil
 		context.put("artists", artists);
 		context.put("songs", songs);
 		context.put("bestMatch", bestMatch);
+		context.put("nearchMatchesAvailable", results.isNearMatchesAvailable());
 		context.put("text", I18NUtil.class);
 		return RenderingEngine.getInstance().render(context, "/vm/search_results.vm");
 	}

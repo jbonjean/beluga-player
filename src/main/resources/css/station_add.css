@@ -34,6 +34,6 @@ a:hover {
 #results {
 	overflow : auto;
 	border: 1px solid rgba(200,200,200,0.2);
-	height: 240px;
+	height: 230px;
 	padding: 5px;
 }
