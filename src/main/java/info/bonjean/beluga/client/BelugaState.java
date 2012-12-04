@@ -22,6 +22,7 @@ import info.bonjean.beluga.gui.Page;
 import info.bonjean.beluga.response.Song;
 import info.bonjean.beluga.response.Station;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -40,7 +41,7 @@ public class BelugaState
 	private String partnerId;
 	private String partnerAuthToken;
 
-	private List<Station> stationList;
+	private List<Station> stationList = new ArrayList<Station>();
 
 	private Station station;
 	private List<Song> playlist;

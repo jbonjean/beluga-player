@@ -136,6 +136,11 @@ public class UI
 			else
 				pageBack = state.getPage();
 		}
+		if(state.getStationList().isEmpty() && pageBack == Page.SONG)
+			pageBack = null;
+		if(pageBack == Page.WELCOME)
+			pageBack = null;
+			
 		state.setPageBack(pageBack);
 		state.setPage(page);
 		webBrowser.setHTMLContent(HTMLUtil.getPageHTML(page, pageBack));
@@ -181,7 +186,7 @@ public class UI
 		{
 		case LOGIN:
 			pandoraClient.login();
-			pandoraClient.updateStationList();
+			pandoraClient.updateStationList(null);
 			if (state.getStationList().isEmpty())
 			{
 				updateUI(Page.STATION_ADD);
@@ -193,6 +198,11 @@ public class UI
 
 		case NEXT:
 			displayLoader();
+			if (state.getStationList().isEmpty())
+			{
+				updateUI(Page.STATION_ADD);
+				break;
+			}
 			nextSong();
 			if (state.getPage().equals(Page.SONG))
 				updateUI(Page.SONG);
@@ -268,11 +278,12 @@ public class UI
 
 		case SELECT_STATION:
 			displayLoader();
-			String stationId = parameters[0];
+			String stationId = null;
+			if(parameters.length > 0)
+				stationId =	parameters[0];
 			log.debug("Select station with id: " + stationId);
-			pandoraClient.selectStation(stationId);
-			nextSong();
-			updateUI(Page.SONG);
+			pandoraClient.updateStationList(stationId);
+			dispatch("next");
 			break;
 
 		case SEARCH:
@@ -306,7 +317,12 @@ public class UI
 				log.debug("Add station from " + type + ", token: " + token);
 				pandoraClient.addStation(type, token);
 			}
-			pandoraClient.updateStationList();
+			pandoraClient.updateStationList(null);
+			if (state.getStationList().isEmpty())
+			{
+				updateUI(Page.STATION_ADD);
+				break;
+			}
 			if (state.getSong() == null)
 				nextSong();
 			updateUI(Page.SONG);
@@ -315,10 +331,7 @@ public class UI
 		case DELETE_STATION:
 			displayLoader();
 			pandoraClient.deleteStation();
-			state.setStation(null);
-			pandoraClient.updateStationList();
-			nextSong();
-			updateUI(Page.SONG);
+			dispatch("select-station");
 			break;
 
 		case CREATE_USER:
@@ -416,14 +429,21 @@ public class UI
 				reportError(pe.getError().getMessageKey(), false, false, false, null);
 				return;
 			}
+			if (pe.getError() == PandoraError.INVALID_STATION)
+			{
+				reportError(pe.getError().getMessageKey());
+				dispatch("select-station");
+				return;
+			}
 			if (state.getPage().equals(Page.USER_CREATE))
 			{
 				hideLoader();
 				reportError(pe.getError().getMessageKey(), true);
 				return;
 			}
-			reportError(pe.getError().getMessageKey());
-			dispatch(command, parameters);
+			hideLoader();
+			reportError(pe.getError().getMessageKey(), true);
+			return;
 		}
 		reportFatalError("a.bug.occured", e);
 	}

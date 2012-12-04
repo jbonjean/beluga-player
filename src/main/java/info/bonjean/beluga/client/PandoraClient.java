@@ -120,12 +120,35 @@ public class PandoraClient
 		state.setUserAuthToken(result.getUserAuthToken());
 	}
 
-	public void updateStationList() throws BelugaException
+	public void updateStationList(String selectStationId) throws BelugaException
 	{
 		UI.reportInfo("retrieving.stations");
+		Station selectedStation = state.getStation();
+		
+		// update station list
 		state.setStationList(getStationList());
-		if (state.getStation() == null && !state.getStationList().isEmpty())
-			selectStation(state.getStationList().get(0));
+		
+		// select asked station
+		if(selectStationId != null)
+			state.setStation(getStationById(selectStationId));
+		
+		// no valid station selected, take the first one
+		if(state.getStation() == null && !state.getStationList().isEmpty())
+			state.setStation(state.getStationList().get(0));
+		
+		// clear the playlist if station has changed
+		if(state.getStation() != null && selectedStation != state.getStation())
+			state.setPlaylist(null);
+	}
+	
+	private Station getStationById(String stationId)
+	{
+		for (Station station : state.getStationList())
+		{
+			if (station.getStationId().equals(stationId))
+				return station;
+		}
+		return null;
 	}
 
 	private List<Station> getStationList() throws BelugaException
@@ -143,31 +166,6 @@ public class PandoraClient
 		log.info("Retrieved " + state.getStationList().size() + " stations");
 
 		return state.getStationList();
-	}
-
-	public void selectStation(Station station) throws BelugaException
-	{
-		log.info("Select station " + station.getStationName());
-
-		state.setStation(station);
-	}
-
-	private Station getStationById(String stationId)
-	{
-		for (Station station : state.getStationList())
-		{
-			if (station.getStationId().equals(stationId))
-				return station;
-		}
-		return null;
-	}
-
-	public void selectStation(String stationId) throws BelugaException
-	{
-		selectStation(getStationById(stationId));
-
-		// clear the playlist
-		state.setPlaylist(null);
 	}
 
 	public String nextSong() throws BelugaException
