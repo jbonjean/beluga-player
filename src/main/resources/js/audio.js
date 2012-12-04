@@ -16,11 +16,11 @@ $(document).ready(function(){
 				    }).jPlayer("play");
 				#end
 			},
-		play: function (event) {
-			//alert("play");
-		},
 		ended: function() {
 			sendNSCommand('next');
+		},
+		error: function() {
+			sendNSCommand('audio-error');
 		},
 		volumechange: function (event) {
 			var options = event.jPlayer.options;

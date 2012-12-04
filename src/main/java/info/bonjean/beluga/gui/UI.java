@@ -23,7 +23,6 @@ import info.bonjean.beluga.client.BelugaState;
 import info.bonjean.beluga.client.PandoraClient;
 import info.bonjean.beluga.configuration.BelugaConfiguration;
 import info.bonjean.beluga.connection.BelugaHTTPClient;
-import info.bonjean.beluga.exception.BelugaException;
 import info.bonjean.beluga.exception.CommunicationException;
 import info.bonjean.beluga.exception.CryptoException;
 import info.bonjean.beluga.exception.InternalException;
@@ -157,13 +156,13 @@ public class UI
 		try
 		{
 			doDispatch(command, parameters);
-		} catch (BelugaException e)
+		} catch (Exception e)
 		{
 			handleException(e, command, parameters);
 		}
 	}
 
-	private void doDispatch(String fullCommand, Object[] postParameters) throws BelugaException
+	private void doDispatch(String fullCommand, Object[] postParameters) throws Exception
 	{
 		String[] fullCommandSplit = fullCommand.split("/");
 
@@ -177,7 +176,7 @@ public class UI
 		// safety check
 		// this is a big exclusion list, not very pretty but it ensure that
 		// default behaviour is safety check
-		if (state.isLoggedIn() && !command.equals(Command.SEARCH) && !command.equals(Command.STORE_VOLUME) && !command.equals(Command.ADD_STATION) && !command.equals(Command.EXIT)
+		if (state.isLoggedIn() && !command.equals(Command.AUDIO_ERROR) && !command.equals(Command.SEARCH) && !command.equals(Command.STORE_VOLUME) && !command.equals(Command.ADD_STATION) && !command.equals(Command.EXIT)
 				&& !command.equals(Command.SELECT_STATION) && !(command.equals(Command.GOTO) && !parameters[0].equals("song")))
 		{
 			displayLoader();
@@ -387,6 +386,11 @@ public class UI
 			state.setVolume(Float.parseFloat(parameters[0]));
 			state.setMutedVolume(Float.parseFloat(parameters[1]));
 			return;
+			
+		case AUDIO_ERROR:
+			reportError("audio.player.error");
+			dispatch("next");
+			return;
 
 		default:
 			log.info("Unknown command received: " + fullCommand);
@@ -458,7 +462,7 @@ public class UI
 		}
 	}
 
-	private void handleException(BelugaException e, String command, Object[] parameters)
+	private void handleException(Exception e, String command, Object[] parameters)
 	{
 		retryCount++;
 		try
