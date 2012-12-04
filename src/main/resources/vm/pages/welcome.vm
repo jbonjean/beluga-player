@@ -3,10 +3,14 @@
 <h1>$text['beluga.player']</h1>
 
 <div class="connecting">
-	<div class="text">$text['connecting.to.beluga']</div>
-	<div id="welcome-loader">
-		<img src="$HTMLUtil.getImage("ajax-loader.gif")"/>
-	</div>
+	#if ($isLoggedIn)
+		<div class="text">$text['connected.to.pandora']</div>
+	#else
+		<div class="text">$text['connecting.to.pandora']</div>
+		<div id="welcome-loader">
+			<img src="$HTMLUtil.getImage("ajax-loader.gif")"/>
+		</div>
+	#end
 	<div class="spacer"></div>
 	<!--
 	<div id="goto-configuration">

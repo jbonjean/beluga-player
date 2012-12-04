@@ -22,7 +22,6 @@ import info.bonjean.beluga.configuration.BelugaConfiguration;
 import info.bonjean.beluga.exception.BelugaException;
 import info.bonjean.beluga.exception.CommunicationException;
 import info.bonjean.beluga.gui.Page;
-import info.bonjean.beluga.gui.UI;
 import info.bonjean.beluga.request.ArtistBookmark;
 import info.bonjean.beluga.request.CreateStation;
 import info.bonjean.beluga.request.CreateUser;
@@ -78,7 +77,7 @@ public class PandoraClient
 		return instance;
 	}
 
-	public ParameterMap getDefaultParameterMap()
+	private ParameterMap getDefaultParameterMap()
 	{
 		ParameterMap params = new ParameterMap();
 		params.add("partner_id", state.getPartnerId());
@@ -120,38 +119,7 @@ public class PandoraClient
 		state.setUserAuthToken(result.getUserAuthToken());
 	}
 
-	public void updateStationList(String selectStationId) throws BelugaException
-	{
-		UI.reportInfo("retrieving.stations");
-		Station selectedStation = state.getStation();
-		
-		// update station list
-		state.setStationList(getStationList());
-		
-		// select asked station
-		if(selectStationId != null)
-			state.setStation(getStationById(selectStationId));
-		
-		// no valid station selected, take the first one
-		if(state.getStation() == null && !state.getStationList().isEmpty())
-			state.setStation(state.getStationList().get(0));
-		
-		// clear the playlist if station has changed
-		if(state.getStation() != null && selectedStation != state.getStation())
-			state.setPlaylist(null);
-	}
-	
-	private Station getStationById(String stationId)
-	{
-		for (Station station : state.getStationList())
-		{
-			if (station.getStationId().equals(stationId))
-				return station;
-		}
-		return null;
-	}
-
-	private List<Station> getStationList() throws BelugaException
+	public List<Station> getStationList() throws BelugaException
 	{
 		ParameterMap params = getDefaultParameterMap();
 
@@ -168,39 +136,7 @@ public class PandoraClient
 		return state.getStationList();
 	}
 
-	public String nextSong() throws BelugaException
-	{
-		if (state.getPlaylist() == null || state.getPlaylist().isEmpty())
-		{
-			// retrieve playlist from Pandora
-			UI.reportInfo("retrieving.playlist");
-			state.setPlaylist(getPlaylist(state.getStation()));
-
-			// update extra information
-			UI.reportInfo("retrieving.song.extra.information");
-			for (Song song : state.getPlaylist())
-			{
-				song.setFocusTraits(retrieveFocusTraits(song));
-			}
-			
-			// retrieve covers
-			UI.reportInfo("retrieving.album.covers");
-			for (Song song : state.getPlaylist())
-			{
-				song.setAlbumArtBase64(retrieveAlbumArt(song));
-			}
-		}
-
-		Song song = state.getPlaylist().get(0);
-		state.setSong(song);
-		state.getPlaylist().remove(song);
-
-		log.info("Next song is " + song.getSongName() + " (" + song.getSongRating() + ")");
-
-		return song.getAudioUrlMap().get("highQuality").getAudioUrl();
-	}
-	
-	public static String retrieveAlbumArt(Song song)
+	public String retrieveAlbumArt(Song song)
 	{
 		String coverUrl = song.getAlbumArtUrl();
 		log.debug("Retrieve cover from: " + coverUrl);
@@ -222,7 +158,7 @@ public class PandoraClient
 		return cover;
 	}
 
-	public static List<String> retrieveFocusTraits(Song song)
+	public List<String> retrieveFocusTraits(Song song)
 	{
 		List<String> traits = new ArrayList<String>();
 		try
@@ -240,7 +176,7 @@ public class PandoraClient
 		return traits;
 	}
 
-	private List<Song> getPlaylist(Station station) throws BelugaException
+	public List<Song> getPlaylist(Station station) throws BelugaException
 	{
 		ParameterMap params = getDefaultParameterMap();
 
@@ -257,13 +193,6 @@ public class PandoraClient
 		log.info("Retrieved playlist (" + currentPlaylist.size() + " songs) for station " + station.getStationName());
 
 		return currentPlaylist;
-	}
-
-	public void login() throws BelugaException
-	{
-		UI.reportInfo("connection.to.pandora");
-		partnerLogin();
-		userLogin();
 	}
 
 	public void addFeedback(boolean isPositive) throws BelugaException

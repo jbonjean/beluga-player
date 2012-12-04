@@ -75,7 +75,7 @@ public class PandoraServiceTest
 	{
 		assertNull(state.getSong());
 
-		pandoraService.nextSong();
+		//pandoraService.nextSong();
 
 		assertNotNull(state.getSong());
 	}

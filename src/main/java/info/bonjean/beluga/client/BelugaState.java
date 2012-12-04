@@ -49,7 +49,7 @@ public class BelugaState
 
 	private Page page;
 	private Page pageBack;
-	
+
 	private float volume = 1f;
 	// workaround for missing feature in webkit
 	// we store the volume value before mute to be able to restore it later
@@ -212,5 +212,13 @@ public class BelugaState
 	public void setVolume(float volume)
 	{
 		this.volume = volume;
+	}
+
+	public void reset()
+	{
+		stationList = new ArrayList<Station>();
+		station = null;
+		playlist = null;
+		song = null;
 	}
 }

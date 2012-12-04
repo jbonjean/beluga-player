@@ -30,6 +30,8 @@ import info.bonjean.beluga.exception.InternalException;
 import info.bonjean.beluga.exception.PandoraError;
 import info.bonjean.beluga.exception.PandoraException;
 import info.bonjean.beluga.gui.notification.Notification;
+import info.bonjean.beluga.response.Song;
+import info.bonjean.beluga.response.Station;
 import info.bonjean.beluga.util.HTMLUtil;
 
 import javax.swing.JFrame;
@@ -124,34 +126,25 @@ public class UI
 	public void updateUI(Page page) throws InternalException
 	{
 		Page pageBack = null;
-		if(page.equals(Page.CONFIGURATION))
+		if (page.equals(Page.CONFIGURATION))
 		{
-			if(state.isLoggedIn())
+			if (state.isLoggedIn())
 				pageBack = Page.SONG;
-		}
-		else if (!page.equals(Page.SONG))
+		} else if (!page.equals(Page.SONG))
 		{
 			if (state.getPage() == page)
 				pageBack = state.getPageBack();
 			else
 				pageBack = state.getPage();
 		}
-		if(state.getStationList().isEmpty() && pageBack == Page.SONG)
+		if (state.getStationList().isEmpty() && pageBack == Page.SONG)
 			pageBack = null;
-		if(pageBack == Page.WELCOME)
+		if (pageBack == Page.WELCOME)
 			pageBack = null;
-			
+
 		state.setPageBack(pageBack);
 		state.setPage(page);
 		webBrowser.setHTMLContent(HTMLUtil.getPageHTML(page, pageBack));
-	}
-
-	private void nextSong() throws BelugaException
-	{
-		String url = pandoraClient.nextSong();
-		new Notification(HTMLUtil.getPageHTML(Page.NOTIFICATION));
-		log.debug("Playing: " + url);
-		updateAudioUI();
 	}
 
 	public void dispatch(String command)
@@ -182,75 +175,136 @@ public class UI
 		for (int i = 1; i < fullCommandSplit.length; i++)
 			parameters[i - 1] = fullCommandSplit[i];
 
+		// safety check
+		// this is a big exclusion list, not very pretty but it ensure that
+		// default behaviour is safety check
+		if (state.isLoggedIn() && !command.equals(Command.SEARCH) && !command.equals(Command.STORE_VOLUME) && !command.equals(Command.ADD_STATION) && !command.equals(Command.EXIT)
+				&& !(command.equals(Command.GOTO) && parameters[0].equals("configuration")) && !(command.equals(Command.GOTO) && parameters[0].equals("about")))
+		{
+			displayLoader();
+
+			String currentStationId = state.getStation() == null ? null : state.getStation().getStationId();
+			String selectedStationId = currentStationId == null ? configuration.getDefaultStationId() : currentStationId;
+
+			// update station list
+			state.setStationList(pandoraClient.getStationList());
+
+			// if no station, go to station creation page
+			if (state.getStationList().isEmpty())
+			{
+				updateUI(Page.STATION_ADD);
+				return;
+			}
+
+			// select station
+			state.setStation(null);
+			if (selectedStationId == null)
+				state.setStation(state.getStationList().get(0));
+			else
+			{
+				for (Station station : state.getStationList())
+				{
+					if (station.getStationId().equals(selectedStationId))
+					{
+						state.setStation(station);
+						break;
+					}
+				}
+				if (state.getStation() == null)
+					state.setStation(state.getStationList().get(0));
+			}
+
+			// update playlist if station changed
+			if (!state.getStation().getStationId().equals(currentStationId))
+			{
+				// if station changed, reset playlist
+				state.setPlaylist(null);
+
+				// update the configuration
+				configuration.setDefaultStationId(state.getStation().getStationId());
+				configuration.store();
+
+				// and prevent delete, the station does not exist anymore!
+				if (command.equals(Command.DELETE_STATION))
+					command = Command.NEXT;
+
+			}
+			if (state.getPlaylist() == null || state.getPlaylist().isEmpty())
+			{
+				// retrieve playlist from Pandora
+				UI.reportInfo("retrieving.playlist");
+				state.setPlaylist(pandoraClient.getPlaylist(state.getStation()));
+
+				// update extra information
+				UI.reportInfo("retrieving.song.extra.information");
+				for (Song song : state.getPlaylist())
+					song.setFocusTraits(pandoraClient.retrieveFocusTraits(song));
+
+				// retrieve covers
+				UI.reportInfo("retrieving.album.covers");
+				for (Song song : state.getPlaylist())
+					song.setAlbumArtBase64(pandoraClient.retrieveAlbumArt(song));
+			}
+
+			// check song
+			if (state.getSong() == null || command.equals(Command.NEXT))
+			{
+				state.setSong(state.getPlaylist().get(0));
+				state.getPlaylist().remove(state.getSong());
+				new Notification(HTMLUtil.getPageHTML(Page.NOTIFICATION));
+				updateAudioUI();
+			}
+		}
+
 		switch (command)
 		{
 		case LOGIN:
-			pandoraClient.login();
-			pandoraClient.updateStationList(null);
-			if (state.getStationList().isEmpty())
-			{
-				updateUI(Page.STATION_ADD);
-				break;
-			}
-			nextSong();
-			updateUI(Page.SONG);
-			break;
+			pandoraClient.partnerLogin();
+			pandoraClient.userLogin();
+			state.reset();
+			updateUI(Page.WELCOME);
+			dispatch("goto/song");
+			return;
 
 		case NEXT:
-			displayLoader();
-			if (state.getStationList().isEmpty())
-			{
-				updateUI(Page.STATION_ADD);
-				break;
-			}
-			nextSong();
-			if (state.getPage().equals(Page.SONG))
-				updateUI(Page.SONG);
-			else
-				hideLoader();
 			break;
 
 		case LIKE:
-			displayLoader();
 			boolean positive = state.getSong().getSongRating() > 0 ? false : true;
 			if (positive)
 				pandoraClient.addFeedback(true);
 			else
 				log.error("TBD: deleteFeedback");
-			updateUI(Page.SONG);
 			break;
 
 		case BAN:
 			displayLoader();
 			pandoraClient.addFeedback(false);
-			nextSong();
-			updateUI(Page.SONG);
-			break;
+			state.setSong(null);
+			dispatch("next");
+			return;
 
 		case SLEEP:
 			displayLoader();
 			pandoraClient.sleepSong();
-			nextSong();
-			updateUI(Page.SONG);
-			break;
+			state.setSong(null);
+			dispatch("next");
+			return;
 
 		case EXIT:
 			System.exit(0);
 			break;
 
 		case GOTO:
-			displayLoader();
 			Page page = Page.fromString(parameters[0]);
 			if (page == null)
 			{
 				log.error("Unknow page " + page);
-				hideLoader();
 				break;
 			}
 			if (page.equals(Page.AUDIO))
 			{
 				updateAudioUI();
-				hideLoader();
 			} else
 				updateUI(page);
 			break;
@@ -274,17 +328,15 @@ public class UI
 			BelugaHTTPClient.reset();
 			log.debug("Redirect to login");
 			dispatch("login");
-			break;
+			return;
 
 		case SELECT_STATION:
 			displayLoader();
-			String stationId = null;
-			if(parameters.length > 0)
-				stationId =	parameters[0];
-			log.debug("Select station with id: " + stationId);
-			pandoraClient.updateStationList(stationId);
+			log.debug("Select station with id: " + parameters[0]);
+			configuration.setDefaultStationId(parameters[0]);
+			state.setStation(null);
 			dispatch("next");
-			break;
+			return;
 
 		case SEARCH:
 			if (postParameters.length != 1)
@@ -301,11 +353,9 @@ public class UI
 				resultsHTML = StringEscapeUtils.escapeJavaScript(HTMLUtil.getSearchResultsHTML(pandoraClient.search(query)));
 			}
 			webBrowser.executeJavascript("document.getElementById('results').innerHTML = \"" + resultsHTML + "\"");
-			hideLoader();
 			break;
 
 		case ADD_STATION:
-			displayLoader();
 			String type = parameters[0];
 			String token = parameters[1];
 			if (type.equals("search"))
@@ -317,22 +367,13 @@ public class UI
 				log.debug("Add station from " + type + ", token: " + token);
 				pandoraClient.addStation(type, token);
 			}
-			pandoraClient.updateStationList(null);
-			if (state.getStationList().isEmpty())
-			{
-				updateUI(Page.STATION_ADD);
-				break;
-			}
-			if (state.getSong() == null)
-				nextSong();
-			updateUI(Page.SONG);
-			break;
+			dispatch("goto/song");
+			return;
 
 		case DELETE_STATION:
-			displayLoader();
 			pandoraClient.deleteStation();
-			dispatch("select-station");
-			break;
+			dispatch("next");
+			return;
 
 		case CREATE_USER:
 			displayLoader();
@@ -340,20 +381,31 @@ public class UI
 			pandoraClient.createUser((String) postParameters[0], (String) postParameters[1], (String) postParameters[2], (String) postParameters[3], (String) postParameters[4],
 					(String) postParameters[5]);
 			dispatch("configuration");
-			break;
+			return;
+
 		case STORE_VOLUME:
 			log.debug("Store volume=" + parameters[0] + ", muted=" + parameters[1]);
 			state.setVolume(Float.parseFloat(parameters[0]));
 			state.setMutedVolume(Float.parseFloat(parameters[1]));
-			break;
+			return;
+
 		default:
 			log.info("Unknown command received: " + fullCommand);
 		}
+
+		// we are done, hide loader
+		hideLoader();
+
+		// always update song page
+		if (state.getPage().equals(Page.SONG))
+			updateUI(Page.SONG);
+
+		// display errors
 		for (String errorKey : state.getErrors())
 			showError(errorKey);
 		state.clearErrors();
 	}
-	
+
 	public static void showError(String messageKey)
 	{
 		webBrowser.executeJavascript("showError('" + StringEscapeUtils.escapeJavaScript(_(messageKey)) + "')");
@@ -368,7 +420,7 @@ public class UI
 	{
 		reportError(messageKey, false, true, false, null);
 	}
-	
+
 	public static void reportError(String messageKey, boolean now)
 	{
 		reportError(messageKey, false, true, now, null);

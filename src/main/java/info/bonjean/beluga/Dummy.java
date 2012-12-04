@@ -19,7 +19,6 @@
 package info.bonjean.beluga;
 
 import info.bonjean.beluga.client.BelugaState;
-import info.bonjean.beluga.client.PandoraClient;
 import info.bonjean.beluga.gui.Page;
 import info.bonjean.beluga.response.Song;
 import info.bonjean.beluga.response.Station;
@@ -63,8 +62,8 @@ public class Dummy
 		song.setSongRating(1);
 		song.setStationId("2");
 		song.setTrackToken("abc");
-		song.setAlbumArtBase64(PandoraClient.retrieveAlbumArt(song));
-		song.setFocusTraits(PandoraClient.retrieveFocusTraits(song));
+//		song.setAlbumArtBase64(PandoraClient.retrieveAlbumArt(song));
+//		song.setFocusTraits(PandoraClient.retrieveFocusTraits(song));
 		
 		List<Song> playlist = new ArrayList<Song>();
 		playlist.add(song);
