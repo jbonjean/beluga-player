@@ -467,7 +467,7 @@ public class UI
 		retryCount++;
 		try
 		{
-			if (retryCount == MAX_RETRIES)
+			if (retryCount >= MAX_RETRIES)
 			{
 				reportFatalError("too.many.errrors", e);
 			} else if (e instanceof CryptoException)
