@@ -33,6 +33,7 @@ public class PandoraException extends BelugaException
 	private long code;
 	
 	public PandoraException(Method method, String message, long code){
+		super(message);
 		this.method = method;
 		this.message = message;
 		this.code = code;

@@ -157,7 +157,6 @@ public class UI
 		try
 		{
 			doDispatch(command, parameters);
-			retryCount = 0;
 		} catch (BelugaException e)
 		{
 			handleException(e, command, parameters);
@@ -404,6 +403,9 @@ public class UI
 		for (String errorKey : state.getErrors())
 			showError(errorKey);
 		state.clearErrors();
+		
+		// reset loop protection
+		retryCount = 0;
 	}
 
 	public static void showError(String messageKey)
@@ -428,7 +430,7 @@ public class UI
 
 	public static void reportFatalError(String messageKey, Exception e)
 	{
-		reportError(messageKey, true, true, false, e);
+		reportError(messageKey, true, true, true, e);
 	}
 
 	public static void reportError(String messageKey, boolean fatal, boolean reportUI, boolean now, Exception e)
@@ -442,60 +444,77 @@ public class UI
 				BelugaState.getInstance().addError(messageKey);
 		}
 		if (fatal)
+		{
+			for (String errorKey : BelugaState.getInstance().getErrors())
+				showError(errorKey);
+			showError("shutdown.fatal.error");
+			try
+			{
+				Thread.sleep(5000);
+			} catch (InterruptedException e1)
+			{
+			}
 			System.exit(-1);
+		}
 	}
 
 	private void handleException(BelugaException e, String command, Object[] parameters)
 	{
-		if (retryCount == MAX_RETRIES)
+		retryCount++;
+		try
 		{
-			reportFatalError("too.many.errrors", e);
-		} else if (e instanceof CryptoException)
-		{
-			reportFatalError("crypto.related.problem", e);
-		} else if (e instanceof CommunicationException)
-		{
-			if (state.getUserId() == null)
+			if (retryCount == MAX_RETRIES)
 			{
-				reportError("connection.to.pandora.failed.check.proxy");
-				dispatch("configuration");
+				reportFatalError("too.many.errrors", e);
+			} else if (e instanceof CryptoException)
+			{
+				reportFatalError("crypto.related.problem", e);
+			} else if (e instanceof CommunicationException)
+			{
+				if (state.getUserId() == null)
+				{
+					reportError("connection.to.pandora.failed.check.proxy");
+					dispatch("configuration");
+					return;
+				}
+				reportError("communication.problem");
+				dispatch(command, parameters);
 				return;
-			}
-			reportError("communication.problem");
-			retryCount++;
-			dispatch(command, parameters);
-			return;
-		} else if (e instanceof PandoraException)
-		{
-			PandoraException pe = (PandoraException) e;
-			if (pe.getError() == PandoraError.INVALID_CREDENTIALS || pe.getError() == PandoraError.LICENSING_RESTRICTIONS)
+			} else if (e instanceof PandoraException)
 			{
-				reportError(pe.getError().getMessageKey());
-				dispatch("configuration");
-				return;
-			}
-			if (pe.getError() == PandoraError.INVALID_AUTH_TOKEN)
-			{
-				retryCount++;
-				dispatch("login");
-				reportError(pe.getError().getMessageKey(), false, false, false, null);
-				return;
-			}
-			if (pe.getError() == PandoraError.INVALID_STATION)
-			{
-				reportError(pe.getError().getMessageKey());
-				dispatch("select-station");
-				return;
-			}
-			if (state.getPage().equals(Page.USER_CREATE))
-			{
+				PandoraException pe = (PandoraException) e;
+				if (pe.getError() == PandoraError.INVALID_CREDENTIALS || pe.getError() == PandoraError.LICENSING_RESTRICTIONS)
+				{
+					reportError(pe.getError().getMessageKey());
+					dispatch("configuration");
+					return;
+				}
+				if (pe.getError() == PandoraError.INVALID_AUTH_TOKEN)
+				{
+					reportError(pe.getError().getMessageKey());
+					pandoraClient.userLogin();
+					dispatch("next");
+					return;
+				}
+				if (pe.getError() == PandoraError.INVALID_STATION)
+				{
+					reportError(pe.getError().getMessageKey());
+					dispatch("next");
+					return;
+				}
+				if (state.getPage().equals(Page.USER_CREATE))
+				{
+					hideLoader();
+					reportError(pe.getError().getMessageKey(), true);
+					return;
+				}
 				hideLoader();
-				reportError(pe.getError().getMessageKey(), true);
+				reportFatalError(pe.getError().getMessageKey(), pe);
 				return;
 			}
-			hideLoader();
-			reportError(pe.getError().getMessageKey(), true);
-			return;
+		}
+		catch(Exception e1)
+		{
 		}
 		reportFatalError("a.bug.occured", e);
 	}
