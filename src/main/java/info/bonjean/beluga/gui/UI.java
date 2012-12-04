@@ -179,7 +179,7 @@ public class UI
 		// this is a big exclusion list, not very pretty but it ensure that
 		// default behaviour is safety check
 		if (state.isLoggedIn() && !command.equals(Command.SEARCH) && !command.equals(Command.STORE_VOLUME) && !command.equals(Command.ADD_STATION) && !command.equals(Command.EXIT)
-				&& !(command.equals(Command.GOTO) && parameters[0].equals("configuration")) && !(command.equals(Command.GOTO) && parameters[0].equals("about")))
+				&& !(command.equals(Command.GOTO) && !parameters[0].equals("song")))
 		{
 			displayLoader();
 
