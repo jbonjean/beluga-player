@@ -2,7 +2,7 @@ div > .tooltip, li > .tooltip, a > .tooltip, span > .tooltip {
 	opacity: 0;
 	visibility: hidden;
 	margin-top: 30px;
-	margin-left: -40px;
+	margin-left: -60px;
 
 	-webkit-transition-property:opacity, visibility;
 	-webkit-transition-duration:0.5s, 0.5s;  
@@ -46,10 +46,13 @@ a .tooltip:hover, span .tooltip:hover, li .tooltip:hover, div .tooltip:hover {
 
 .tooltip ul {
 	list-style-type: none;
-	padding: 0 5px 0 5px;
+	padding: 0 5px 5px 5px;
+	margin:0;
+	width:350px;
 }
 
 .tooltip ul li {
+	margin-top: 5px;
 }
 
 .tooltip span { /* Triangle */
@@ -61,8 +64,8 @@ a .tooltip:hover, span .tooltip:hover, li .tooltip:hover, div .tooltip:hover {
 
 	width: 10px;
 	height: 10px;
-	margin-left: 15px;
-	margin-top: -16px;
+	margin-left: 35px;
+	margin-top: -9px;
 	
 	display: block;
 	position: absolute;
