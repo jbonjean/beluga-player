@@ -29,6 +29,10 @@ import java.awt.Toolkit;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 
+import org.slf4j.LoggerFactory;
+
+import ch.qos.logback.classic.Level;
+import ch.qos.logback.classic.Logger;
 import chrriis.common.UIUtils;
 import chrriis.dj.nativeswing.swtimpl.NativeInterface;
 
@@ -45,6 +49,12 @@ public class Main
 		{
 			System.out.println("Beluga Player 0.3");
 			System.exit(0);
+		}
+		
+		if(System.getProperty("debug") != null)
+		{
+				Logger root = (Logger)LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
+				root.setLevel(Level.ALL);
 		}
 
 		BelugaConfiguration.getInstance().load();
