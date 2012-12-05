@@ -18,6 +18,9 @@
  */
 package info.bonjean.beluga.response;
 
+import java.util.Date;
+import java.util.List;
+
 /**
  * 
  * @author Julien Bonjean <julien@bonjean.info>
@@ -30,6 +33,18 @@ public class Station
 	private String stationDetailUrl;
 	private String stationToken;
 	private String stationName;
+	
+	// getStation attributes
+	private boolean allowAddMusic;
+	private Date dateCreated;
+	private String artUrl;
+	//private StationMusic music
+	private boolean isShared;
+	private boolean allowDelete;
+	private List<String> genre;
+	private boolean allowRename;
+	private String stationSharingUrl;
+	//private StationFeedback feedback; 
 
 	public boolean isQuickMix()
 	{
