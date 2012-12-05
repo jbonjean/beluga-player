@@ -7,16 +7,23 @@
                       __/ |      
                      |___/       
 
-Beluga Player is a simple Pandora (pandora.com) client developed for personal
-use but other people may find it interesting so I decided to publish it.
+Beluga Player is a cross-platform Pandora (pandora.com) player developed
+using Java programming language, and released under GPL3.
 This is still a work in progress, many features are missing, but it seems to be
-pretty stable. It has only been tested on Linux 64 bits, that's why this is the
-only package I release.
+pretty stable.
 
-To start: java -jar beluga-VERSION-linux-x86_64.jar
+Supported features:
+ - Proxy and DNS proxy
+ - Play / Pause / Next Song
+ - Switching stations
+ - Cover Art
+ - Thumbs Up / Thumbs Down / Tired of this song
+ - Creating / Deleting stations
 
-Special thanks to:
- - Pandoroid project (http://aregner.com/android/pandoroid/), I reuse the
-encryption part.
- - User Opals-On-Black.com on flickr
-(http://www.flickr.com/photos/opals-on-black/) for his Beluga picture.
+Follow the instructions on the wiki to install the required dependencies:
+http://github.com/jbonjean/beluga/wiki/Installation
+
+Starting Beluga Player:
+ - Windows: unzip and run the executable
+ - Linux: java -jar beluga-VERSION-linux-x86_64.jar
+
