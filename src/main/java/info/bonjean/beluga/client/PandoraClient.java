@@ -150,12 +150,13 @@ public class PandoraClient
 		stationRequest.setStationToken(station.getStationToken());
 		stationRequest.setIncludeExtendedAttributes(true);
 		
-		return HTTPUtil.<Station>request(Method.GET_STATION, params, stationRequest, true, new TypeToken<Response<Station>>(){});
+		Station stationFull = HTTPUtil.<Station>request(Method.GET_STATION, params, stationRequest, true, new TypeToken<Response<Station>>(){});
+		stationFull.setArtBase64(retrieveCover(stationFull.getArtUrl()));
+		return stationFull;
 	}
 
-	public String retrieveAlbumArt(Song song)
+	public String retrieveCover(String coverUrl)
 	{
-		String coverUrl = song.getAlbumArtUrl();
 		log.debug("Retrieve cover from: " + coverUrl);
 		String cover = null;
 		if (coverUrl != null && !coverUrl.isEmpty())

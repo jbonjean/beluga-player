@@ -211,14 +211,14 @@ public class UI
 				if (state.getStation() == null)
 					state.setStation(state.getStationList().get(0));
 			}
+			
+			// retrieve station full information
+			UI.reportInfo("retrieving.station.data");
+			state.setStation(pandoraClient.getStation(state.getStation()));
 
 			// station changed
 			if (!state.getStation().getStationId().equals(currentStationId))
 			{
-				// retrieve complete information
-				UI.reportInfo("retrieving.station.data");
-				state.setStation(pandoraClient.getStation(state.getStation()));
-				
 				// if station changed, reset playlist
 				state.setPlaylist(null);
 
@@ -245,7 +245,7 @@ public class UI
 				// retrieve covers
 				UI.reportInfo("retrieving.album.covers");
 				for (Song song : state.getPlaylist())
-					song.setAlbumArtBase64(pandoraClient.retrieveAlbumArt(song));
+					song.setAlbumArtBase64(pandoraClient.retrieveCover(song.getAlbumArtUrl()));
 			}
 
 			// check song

@@ -1,0 +1,21 @@
+#parse("vm/header.vm")
+
+<h1>$station.getStationName()</h1>
+
+<h2>$text['loved.songs']</h2>
+
+#foreach( $feedback in $station.getFeedback().getThumbsUp() )
+	<div class="loved-song">
+		$feedback.getSongName() $text['by'] $feedback.getArtistName()
+	</div>
+#end
+
+<h2>$text['banned.songs']</h2>
+
+#foreach( $feedback in $station.getFeedback().getThumbsDown() )
+	<div class="loved-song">
+		$feedback.getSongName() $text['by'] $feedback.getArtistName()
+	</div>
+#end
+
+#parse("vm/footer.vm")

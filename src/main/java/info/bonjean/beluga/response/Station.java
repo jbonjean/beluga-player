@@ -44,7 +44,9 @@ public class Station
 	private List<String> genre;
 	private boolean allowRename;
 	private String stationSharingUrl;
-	private StationFeedback feedback; 
+	private StationFeedback feedback;
+	
+	private String artBase64;
 
 	public boolean isQuickMix()
 	{
@@ -194,5 +196,15 @@ public class Station
 	public void setFeedback(StationFeedback feedback)
 	{
 		this.feedback = feedback;
+	}
+
+	public String getArtBase64()
+	{
+		return artBase64;
+	}
+
+	public void setArtBase64(String artBase64)
+	{
+		this.artBase64 = artBase64;
 	}
 }

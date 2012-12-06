@@ -25,7 +25,7 @@ package info.bonjean.beluga.gui;
  */
 public enum Page
 {
-	AUDIO, WELCOME, CONFIGURATION, SONG, NOTIFICATION, STATION_ADD, USER_CREATE, ABOUT;
+	AUDIO, WELCOME, CONFIGURATION, SONG, NOTIFICATION, STATION_ADD, USER_CREATE, ABOUT, STATION_DETAILS;
 	
 	public static final String TEMPLATE_PATH = "/vm/pages/";
 	public static final String HTML_PATH = "/html/";
