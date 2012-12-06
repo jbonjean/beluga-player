@@ -496,6 +496,7 @@ public class UI
 				if (pe.getError() == PandoraError.INVALID_AUTH_TOKEN)
 				{
 					reportError(pe.getError().getMessageKey());
+					pandoraClient.partnerLogin();
 					pandoraClient.userLogin();
 					dispatch("next");
 					return;
