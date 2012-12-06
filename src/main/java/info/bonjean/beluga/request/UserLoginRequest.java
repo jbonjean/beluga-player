@@ -23,25 +23,61 @@ package info.bonjean.beluga.request;
  * @author Julien Bonjean <julien@bonjean.info>
  *
  */
-public class Station extends AuthentifiedJsonData
+public class UserLoginRequest extends JsonRequest
 {
-	private String stationToken;
-	private boolean includeExtendedAttributes;
+	private String username;
+	private String password;
+	private long syncTime;
+	private String loginType = "user";
+	private String partnerAuthToken;
 
-	public String getStationToken()
+	public String getUsername()
 	{
-		return stationToken;
+		return username;
 	}
-	public void setStationToken(String stationToken)
+
+	public void setUsername(String username)
 	{
-		this.stationToken = stationToken;
+		this.username = username;
 	}
-	public boolean isIncludeExtendedAttributes()
+
+	public String getPassword()
 	{
-		return includeExtendedAttributes;
+		return password;
 	}
-	public void setIncludeExtendedAttributes(boolean includeExtendedAttributes)
+
+	public void setPassword(String password)
 	{
-		this.includeExtendedAttributes = includeExtendedAttributes;
+		this.password = password;
+	}
+
+	public String getLoginType()
+	{
+		return loginType;
+	}
+
+	public void setLoginType(String loginType)
+	{
+		this.loginType = loginType;
+	}
+
+	public String getPartnerAuthToken()
+	{
+		return partnerAuthToken;
+	}
+
+	public void setPartnerAuthToken(String partnerAuthToken)
+	{
+		this.partnerAuthToken = partnerAuthToken;
+	}
+
+	public long getSyncTime()
+	{
+		return syncTime;
+	}
+
+	public void setSyncTime(long syncTime)
+	{
+		this.syncTime = syncTime;
 	}
 }

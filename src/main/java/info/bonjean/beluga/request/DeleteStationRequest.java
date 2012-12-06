@@ -21,8 +21,19 @@ package info.bonjean.beluga.request;
 /**
  * 
  * @author Julien Bonjean <julien@bonjean.info>
- *
+ * 
  */
-public abstract class JsonData
+public class DeleteStationRequest extends AuthentifiedJsonRequest
 {
+	private String stationToken;
+
+	public String getStationToken()
+	{
+		return stationToken;
+	}
+
+	public void setStationToken(String stationToken)
+	{
+		this.stationToken = stationToken;
+	}
 }

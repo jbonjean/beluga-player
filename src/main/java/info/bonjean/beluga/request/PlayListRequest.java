@@ -16,57 +16,35 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
-package info.bonjean.beluga.response;
+package info.bonjean.beluga.request;
 
 /**
  * 
  * @author Julien Bonjean <julien@bonjean.info>
  *
  */
-public class Response<T>
+public class PlayListRequest extends AuthentifiedJsonRequest
 {
-	private String stat;
-	private String message;
-	private long code;
-	private T result;
+	private String stationToken;
+	private String additionalAudioUrl;
 
-	public String getStat()
+	public String getStationToken()
 	{
-		return stat;
+		return stationToken;
 	}
 
-	public void setStat(String stat)
+	public void setStationToken(String stationToken)
 	{
-		this.stat = stat;
+		this.stationToken = stationToken;
 	}
 
-	public T getResult()
+	public String getAdditionalAudioUrl()
 	{
-		return result;
+		return additionalAudioUrl;
 	}
 
-	public void setResult(T result)
+	public void setAdditionalAudioUrl(String additionalAudioUrl)
 	{
-		this.result = result;
-	}
-
-	public String getMessage()
-	{
-		return message;
-	}
-
-	public void setMessage(String message)
-	{
-		this.message = message;
-	}
-
-	public long getCode()
-	{
-		return code;
-	}
-
-	public void setCode(long code)
-	{
-		this.code = code;
+		this.additionalAudioUrl = additionalAudioUrl;
 	}
 }

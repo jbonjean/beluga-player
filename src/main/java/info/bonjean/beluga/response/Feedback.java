@@ -16,17 +16,50 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
-package info.bonjean.beluga.request;
+package info.bonjean.beluga.response;
 
 /**
  * 
  * @author Julien Bonjean <julien@bonjean.info>
- *
+ * 
  */
-public class Feedback extends AuthentifiedJsonData
+public class Feedback
 {
+	private String artistName;
+	private Date dateCreated;
+	private String feedbackId;
 	private boolean isPositive;
-	private String trackToken;
+	private String songName;
+
+	public String getArtistName()
+	{
+		return artistName;
+	}
+
+	public void setArtistName(String artistName)
+	{
+		this.artistName = artistName;
+	}
+
+	public Date getDateCreated()
+	{
+		return dateCreated;
+	}
+
+	public void setDateCreated(Date dateCreated)
+	{
+		this.dateCreated = dateCreated;
+	}
+
+	public String getFeedbackId()
+	{
+		return feedbackId;
+	}
+
+	public void setFeedbackId(String feedbackId)
+	{
+		this.feedbackId = feedbackId;
+	}
 
 	public boolean isPositive()
 	{
@@ -38,13 +71,13 @@ public class Feedback extends AuthentifiedJsonData
 		this.isPositive = isPositive;
 	}
 
-	public String getTrackToken()
+	public String getSongName()
 	{
-		return trackToken;
+		return songName;
 	}
 
-	public void setTrackToken(String trackToken)
+	public void setSongName(String songName)
 	{
-		this.trackToken = trackToken;
+		this.songName = songName;
 	}
 }

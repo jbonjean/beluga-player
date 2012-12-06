@@ -22,11 +22,10 @@ import info.bonjean.beluga.connection.BelugaHTTPClient;
 import info.bonjean.beluga.exception.BelugaException;
 import info.bonjean.beluga.exception.CommunicationException;
 import info.bonjean.beluga.exception.PandoraException;
-import info.bonjean.beluga.request.JsonData;
+import info.bonjean.beluga.request.JsonRequest;
 import info.bonjean.beluga.request.Method;
 import info.bonjean.beluga.request.ParameterMap;
 import info.bonjean.beluga.response.Response;
-import info.bonjean.beluga.response.Result;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -43,6 +42,7 @@ import org.slf4j.LoggerFactory;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
+import com.google.gson.reflect.TypeToken;
 
 /**
  * 
@@ -56,7 +56,7 @@ public class HTTPUtil
 	private static final Gson gson = GsonUtil.getGsonInstance();
 	private static final String SERVICE_URL = "http://tuner.pandora.com/services/json/?";
 
-	public static Result request(Method method, ParameterMap params, JsonData jsonData, boolean encrypt) throws BelugaException
+	public static <E> E request(Method method, ParameterMap params, JsonRequest jsonData, boolean encrypt, TypeToken<Response<E>> typeToken) throws BelugaException
 	{
 		String urlStr = createRequestUrl(method, params);
 		String data = gson.toJson(jsonData);
@@ -67,13 +67,15 @@ public class HTTPUtil
 
 		if (encrypt)
 			data = CryptoUtil.pandoraEncrypt(data);
-		Response response;
+		
 		String requestResponse = HTTPUtil.jsonRequest(urlStr, data);
 		log.debug("Response: " + requestResponse);
 
+		
+		Response<E> response;
 		try
 		{
-			response = gson.fromJson(requestResponse, Response.class);
+			response = gson.fromJson(requestResponse, typeToken.getType());
 		} catch (JsonSyntaxException e)
 		{
 			throw new CommunicationException("Response is not valid");

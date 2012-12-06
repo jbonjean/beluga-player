@@ -23,61 +23,17 @@ package info.bonjean.beluga.request;
  * @author Julien Bonjean <julien@bonjean.info>
  *
  */
-public class UserLogin extends JsonData
+public class SongSleepRequest extends AuthentifiedJsonRequest
 {
-	private String username;
-	private String password;
-	private long syncTime;
-	private String loginType = "user";
-	private String partnerAuthToken;
+	private String trackToken;
 
-	public String getUsername()
+	public String getTrackToken()
 	{
-		return username;
+		return trackToken;
 	}
 
-	public void setUsername(String username)
+	public void setTrackToken(String trackToken)
 	{
-		this.username = username;
-	}
-
-	public String getPassword()
-	{
-		return password;
-	}
-
-	public void setPassword(String password)
-	{
-		this.password = password;
-	}
-
-	public String getLoginType()
-	{
-		return loginType;
-	}
-
-	public void setLoginType(String loginType)
-	{
-		this.loginType = loginType;
-	}
-
-	public String getPartnerAuthToken()
-	{
-		return partnerAuthToken;
-	}
-
-	public void setPartnerAuthToken(String partnerAuthToken)
-	{
-		this.partnerAuthToken = partnerAuthToken;
-	}
-
-	public long getSyncTime()
-	{
-		return syncTime;
-	}
-
-	public void setSyncTime(long syncTime)
-	{
-		this.syncTime = syncTime;
+		this.trackToken = trackToken;
 	}
 }

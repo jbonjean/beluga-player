@@ -16,24 +16,37 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
-package info.bonjean.beluga.request;
+package info.bonjean.beluga.response;
+
+import java.util.List;
 
 /**
  * 
  * @author Julien Bonjean <julien@bonjean.info>
- *
+ * 
  */
-public class SongBookmark extends AuthentifiedJsonData
+public class StationFeedback
 {
-	private String trackToken;
+	private List<Feedback> thumbsDown;
+	private List<Feedback> thumbsUp;
 
-	public String getTrackToken()
+	public List<Feedback> getThumbsDown()
 	{
-		return trackToken;
+		return thumbsDown;
 	}
 
-	public void setTrackToken(String trackToken)
+	public void setThumbsDown(List<Feedback> thumbsDown)
 	{
-		this.trackToken = trackToken;
+		this.thumbsDown = thumbsDown;
+	}
+
+	public List<Feedback> getThumbsUp()
+	{
+		return thumbsUp;
+	}
+
+	public void setThumbsUp(List<Feedback> thumbsUp)
+	{
+		this.thumbsUp = thumbsUp;
 	}
 }

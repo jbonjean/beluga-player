@@ -16,35 +16,37 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
-package info.bonjean.beluga.request;
+package info.bonjean.beluga.response;
+
+import java.util.List;
 
 /**
  * 
  * @author Julien Bonjean <julien@bonjean.info>
- *
+ * 
  */
-public class PlayList extends AuthentifiedJsonData
+public class StationMusic
 {
-	private String stationToken;
-	private String additionalAudioUrl;
+	private List<Song> songs;
+	private List<Song> artists;
 
-	public String getStationToken()
+	public List<Song> getSongs()
 	{
-		return stationToken;
+		return songs;
 	}
 
-	public void setStationToken(String stationToken)
+	public void setSongs(List<Song> songs)
 	{
-		this.stationToken = stationToken;
+		this.songs = songs;
 	}
 
-	public String getAdditionalAudioUrl()
+	public List<Song> getArtists()
 	{
-		return additionalAudioUrl;
+		return artists;
 	}
 
-	public void setAdditionalAudioUrl(String additionalAudioUrl)
+	public void setArtists(List<Song> artists)
 	{
-		this.additionalAudioUrl = additionalAudioUrl;
+		this.artists = artists;
 	}
 }

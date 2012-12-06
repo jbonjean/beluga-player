@@ -16,57 +16,18 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
-package info.bonjean.beluga.response;
+package info.bonjean.beluga.request;
 
 /**
  * 
  * @author Julien Bonjean <julien@bonjean.info>
  *
  */
-public class Response<T>
+@SuppressWarnings("unused")
+public class PartnerAuthRequest extends JsonRequest
 {
-	private String stat;
-	private String message;
-	private long code;
-	private T result;
-
-	public String getStat()
-	{
-		return stat;
-	}
-
-	public void setStat(String stat)
-	{
-		this.stat = stat;
-	}
-
-	public T getResult()
-	{
-		return result;
-	}
-
-	public void setResult(T result)
-	{
-		this.result = result;
-	}
-
-	public String getMessage()
-	{
-		return message;
-	}
-
-	public void setMessage(String message)
-	{
-		this.message = message;
-	}
-
-	public long getCode()
-	{
-		return code;
-	}
-
-	public void setCode(long code)
-	{
-		this.code = code;
-	}
+	private String username = "android";
+	private String password = "AC7IBG09A3DTSYM4R41UJWL07VLN8JI7";
+	private String version = "5";
+	private String deviceModel = "android-generic";
 }

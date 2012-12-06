@@ -23,7 +23,7 @@ package info.bonjean.beluga.request;
  * @author Julien Bonjean <julien@bonjean.info>
  * 
  */
-public class CreateUser extends JsonData
+public class CreateUserRequest extends JsonRequest
 {
 	private String accountType = "registered";
 	private String countryCode = "US";

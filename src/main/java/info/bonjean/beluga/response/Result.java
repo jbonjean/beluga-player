@@ -38,6 +38,7 @@ public class Result
 	private List<SearchArtist> artists;
 	private boolean nearMatchesAvailable;
 	private String explanation;
+	
 
 	public String getPartnerId()
 	{

@@ -23,11 +23,25 @@ package info.bonjean.beluga.request;
  * @author Julien Bonjean <julien@bonjean.info>
  *
  */
-@SuppressWarnings("unused")
-public class PartnerAuth extends JsonData
+public class StationRequest extends AuthentifiedJsonRequest
 {
-	private String username = "android";
-	private String password = "AC7IBG09A3DTSYM4R41UJWL07VLN8JI7";
-	private String version = "5";
-	private String deviceModel = "android-generic";
+	private String stationToken;
+	private boolean includeExtendedAttributes;
+
+	public String getStationToken()
+	{
+		return stationToken;
+	}
+	public void setStationToken(String stationToken)
+	{
+		this.stationToken = stationToken;
+	}
+	public boolean isIncludeExtendedAttributes()
+	{
+		return includeExtendedAttributes;
+	}
+	public void setIncludeExtendedAttributes(boolean includeExtendedAttributes)
+	{
+		this.includeExtendedAttributes = includeExtendedAttributes;
+	}
 }

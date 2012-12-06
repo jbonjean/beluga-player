@@ -212,9 +212,13 @@ public class UI
 					state.setStation(state.getStationList().get(0));
 			}
 
-			// update playlist if station changed
+			// station changed
 			if (!state.getStation().getStationId().equals(currentStationId))
 			{
+				// retrieve complete information
+				UI.reportInfo("retrieving.station.data");
+				state.setStation(pandoraClient.getStation(state.getStation()));
+				
 				// if station changed, reset playlist
 				state.setPlaylist(null);
 

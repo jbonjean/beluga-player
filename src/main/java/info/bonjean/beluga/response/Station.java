@@ -18,7 +18,7 @@
  */
 package info.bonjean.beluga.response;
 
-import java.util.Date;
+
 import java.util.List;
 
 /**
@@ -38,13 +38,13 @@ public class Station
 	private boolean allowAddMusic;
 	private Date dateCreated;
 	private String artUrl;
-	//private StationMusic music
+	private StationMusic music;
 	private boolean isShared;
 	private boolean allowDelete;
 	private List<String> genre;
 	private boolean allowRename;
 	private String stationSharingUrl;
-	//private StationFeedback feedback; 
+	private StationFeedback feedback; 
 
 	public boolean isQuickMix()
 	{
@@ -94,5 +94,105 @@ public class Station
 	public void setStationId(String stationId)
 	{
 		this.stationId = stationId;
+	}
+
+	public boolean isAllowAddMusic()
+	{
+		return allowAddMusic;
+	}
+
+	public void setAllowAddMusic(boolean allowAddMusic)
+	{
+		this.allowAddMusic = allowAddMusic;
+	}
+
+	public Date getDateCreated()
+	{
+		return dateCreated;
+	}
+
+	public void setDateCreated(Date dateCreated)
+	{
+		this.dateCreated = dateCreated;
+	}
+
+	public String getArtUrl()
+	{
+		return artUrl;
+	}
+
+	public void setArtUrl(String artUrl)
+	{
+		this.artUrl = artUrl;
+	}
+
+	public StationMusic getMusic()
+	{
+		return music;
+	}
+
+	public void setMusic(StationMusic music)
+	{
+		this.music = music;
+	}
+
+	public boolean isShared()
+	{
+		return isShared;
+	}
+
+	public void setShared(boolean isShared)
+	{
+		this.isShared = isShared;
+	}
+
+	public boolean isAllowDelete()
+	{
+		return allowDelete;
+	}
+
+	public void setAllowDelete(boolean allowDelete)
+	{
+		this.allowDelete = allowDelete;
+	}
+
+	public List<String> getGenre()
+	{
+		return genre;
+	}
+
+	public void setGenre(List<String> genre)
+	{
+		this.genre = genre;
+	}
+
+	public boolean isAllowRename()
+	{
+		return allowRename;
+	}
+
+	public void setAllowRename(boolean allowRename)
+	{
+		this.allowRename = allowRename;
+	}
+
+	public String getStationSharingUrl()
+	{
+		return stationSharingUrl;
+	}
+
+	public void setStationSharingUrl(String stationSharingUrl)
+	{
+		this.stationSharingUrl = stationSharingUrl;
+	}
+
+	public StationFeedback getFeedback()
+	{
+		return feedback;
+	}
+
+	public void setFeedback(StationFeedback feedback)
+	{
+		this.feedback = feedback;
 	}
 }
