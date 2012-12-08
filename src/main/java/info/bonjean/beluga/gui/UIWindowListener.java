@@ -20,6 +20,8 @@ package info.bonjean.beluga.gui;
 
 import info.bonjean.beluga.exception.InternalException;
 
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 
@@ -33,7 +35,7 @@ import org.slf4j.LoggerFactory;
  * @author Julien Bonjean <julien@bonjean.info>
  * 
  */
-public class UIWindowListener implements WindowListener
+public class UIWindowListener implements WindowListener, MouseListener
 {
 	private static final Logger log = LoggerFactory.getLogger(UIWindowListener.class);
 	private UI ui;
@@ -82,8 +84,9 @@ public class UIWindowListener implements WindowListener
 			// ui.updateAudioUI();
 			ui.updateAudioUI();
 			ui.updateUI(Page.WELCOME);
-			
-			SwingUtilities.invokeLater(new Runnable() {
+
+			SwingUtilities.invokeLater(new Runnable()
+			{
 				@Override
 				public void run()
 				{
@@ -95,5 +98,31 @@ public class UIWindowListener implements WindowListener
 			log.error("A bug occured, please report this: ", e1);
 			System.exit(-1);
 		}
+	}
+
+	@Override
+	public void mouseClicked(MouseEvent e)
+	{
+	}
+
+	@Override
+	public void mousePressed(MouseEvent e)
+	{
+	}
+
+	@Override
+	public void mouseReleased(MouseEvent e)
+	{
+	}
+
+	@Override
+	public void mouseEntered(MouseEvent e)
+	{
+	}
+
+	@Override
+	public void mouseExited(MouseEvent e)
+	{
+		ui.lostFocus();
 	}
 }

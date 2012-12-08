@@ -140,17 +140,12 @@
 	-webkit-transition: .3s ease-in-out;
 }
 
+.drop-menu .plus.hover {
+	-webkit-transform: rotate(45deg);
+}
+
 .drop-menu .title {
 	padding: 10px 10px;
-}
-
-.drop-menu .title:hover ~ .sub-menu,
-.sub-menu:hover {
-	display: inline-block;
-}
-
-.drop-menu:hover .plus {
-	-webkit-transform: rotate(45deg);
 }
 
 .sub-menu {
@@ -185,8 +180,4 @@
 
 .sub-menu li img.empty {
 	visibility: hidden;
-}
-
-.quickmix .hide-if-quickmix {
-	display: none;
 }

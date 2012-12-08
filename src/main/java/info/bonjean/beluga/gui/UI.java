@@ -530,4 +530,9 @@ public class UI
 		}
 		reportFatalError("a.bug.occured", e);
 	}
+
+	public void lostFocus()
+	{
+		webBrowser.executeJavascript("hideMenu()");
+	}
 }

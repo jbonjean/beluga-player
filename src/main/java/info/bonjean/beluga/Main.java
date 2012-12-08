@@ -87,6 +87,7 @@ public class Main
 				final UI ui = new UI(frame);
 				UIWindowListener windowListener = new UIWindowListener(ui);
 				frame.addWindowListener(windowListener);
+				ui.getWebBrowser().getNativeComponent().addMouseListener(windowListener);
 			}
 		});
 		NativeInterface.runEventPump();
