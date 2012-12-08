@@ -25,6 +25,7 @@ import info.bonjean.beluga.exception.CommunicationException;
 import info.bonjean.beluga.exception.InternalException;
 import info.bonjean.beluga.gui.Page;
 import info.bonjean.beluga.gui.RenderingEngine;
+import info.bonjean.beluga.response.Date;
 import info.bonjean.beluga.response.Result;
 import info.bonjean.beluga.response.SearchArtist;
 import info.bonjean.beluga.response.SearchItem;
@@ -32,6 +33,7 @@ import info.bonjean.beluga.response.SearchSong;
 
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 import org.apache.commons.codec.binary.Base64;
@@ -100,6 +102,11 @@ public class HTMLUtil
 	public static String getPageHTML(Page page) throws InternalException
 	{
 		return getPageHTML(page, null);
+	}
+
+	public static String getFormattedPandoraDate(Date date)
+	{
+		return new SimpleDateFormat("yyyy-MM-dd").format(new java.util.Date(date.getTime()));
 	}
 
 	public static String getPageHTML(Page page, Page pageBack) throws InternalException

@@ -2,20 +2,41 @@
 
 <h1>$station.getStationName()</h1>
 
-<h2>$text['loved.songs']</h2>
+<ul class="tabrow">
+    <li id="details" class="selected"><a href="#">$text['details']</a></li>
+    <li id="loved-songs"><a href="#">$text['loved.songs']</a></li>
+    <li id="banned-songs"><a href="#">$text['banned.songs']</a></li>
+</ul>
 
-#foreach( $feedback in $station.getFeedback().getThumbsUp() )
-	<div class="loved-song">
-		$feedback.getSongName() $text['by'] $feedback.getArtistName()
+<div class="section details">
+	<div class="album-cover">
+		<img id="cover" class="cover" src="data:image/png;base64,$station.getArtBase64()"/>
 	</div>
-#end
-
-<h2>$text['banned.songs']</h2>
-
-#foreach( $feedback in $station.getFeedback().getThumbsDown() )
-	<div class="loved-song">
-		$feedback.getSongName() $text['by'] $feedback.getArtistName()
+	<div class="station-info">
+		<div><span class="label">$text["name"]:</span> $station.getStationName()</div>
+		<div><span class="label">$text["creation"]:</span> $HTMLUtil.getFormattedPandoraDate($station.getDateCreated())</div>
+		<div><span class="label">$text["genre"]:</span>
+			#foreach( $genre in $station.getGenre() )
+				$genre#if ($velocityCount != $station.getGenre().size()), #end
+			#end		
+		</div>
 	</div>
-#end
+</div>
+
+<div class="section loved-songs">
+	#foreach( $feedback in $station.getFeedback().getThumbsUp() )
+		<div class="loved-song">
+			$feedback.getSongName() $text['by'] $feedback.getArtistName()
+		</div>
+	#end
+</div>
+
+<div class="section banned-songs">
+	#foreach( $feedback in $station.getFeedback().getThumbsDown() )
+		<div class="loved-song">
+			$feedback.getSongName() $text['by'] $feedback.getArtistName()
+		</div>
+	#end
+</div>
 
 #parse("vm/footer.vm")
