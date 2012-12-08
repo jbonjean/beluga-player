@@ -36,11 +36,6 @@ public class BelugaState
 {
 	private static BelugaState instance;
 
-	private String userId;
-	private String userAuthToken;
-	private String partnerId;
-	private String partnerAuthToken;
-
 	private List<Station> stationList = new ArrayList<Station>();
 
 	private Station station;
@@ -67,56 +62,6 @@ public class BelugaState
 			instance = new BelugaState();
 
 		return instance;
-	}
-
-	public boolean isPandoraReachable()
-	{
-		return partnerAuthToken != null && partnerAuthToken.length() > 0;
-	}
-
-	public boolean isLoggedIn()
-	{
-		return userAuthToken != null && userAuthToken.length() > 0;
-	}
-
-	public String getUserId()
-	{
-		return userId;
-	}
-
-	public void setUserId(String userId)
-	{
-		this.userId = userId;
-	}
-
-	public String getUserAuthToken()
-	{
-		return userAuthToken;
-	}
-
-	public void setUserAuthToken(String userAuthToken)
-	{
-		this.userAuthToken = userAuthToken;
-	}
-
-	public String getPartnerId()
-	{
-		return partnerId;
-	}
-
-	public void setPartnerId(String partnerId)
-	{
-		this.partnerId = partnerId;
-	}
-
-	public String getPartnerAuthToken()
-	{
-		return partnerAuthToken;
-	}
-
-	public void setPartnerAuthToken(String partnerAuthToken)
-	{
-		this.partnerAuthToken = partnerAuthToken;
 	}
 
 	public List<Station> getStationList()

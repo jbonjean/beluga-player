@@ -19,6 +19,7 @@
 package info.bonjean.beluga.util;
 
 import info.bonjean.beluga.client.BelugaState;
+import info.bonjean.beluga.client.PandoraClient;
 import info.bonjean.beluga.configuration.BelugaConfiguration;
 import info.bonjean.beluga.exception.CommunicationException;
 import info.bonjean.beluga.exception.InternalException;
@@ -108,8 +109,8 @@ public class HTMLUtil
 		context.put("station", BelugaState.getInstance().getStation());
 		context.put("song", BelugaState.getInstance().getSong());
 		context.put("configuration", BelugaConfiguration.getInstance());
-		context.put("isLoggedIn", BelugaState.getInstance().isLoggedIn());
-		context.put("isPandoraReachable", BelugaState.getInstance().isPandoraReachable());
+		context.put("isLoggedIn", PandoraClient.getInstance().isLoggedIn());
+		context.put("isPandoraReachable", PandoraClient.getInstance().isPandoraReachable());
 		context.put("HTMLUtil", HTMLUtil.class);
 		context.put("text", I18NUtil.class);
 		context.put("volume", BelugaState.getInstance().getVolume());

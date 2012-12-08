@@ -19,10 +19,6 @@
 package info.bonjean.beluga.gui;
 
 import static info.bonjean.beluga.util.I18NUtil._;
-
-import java.awt.BorderLayout;
-import java.awt.Dimension;
-
 import info.bonjean.beluga.client.BelugaState;
 import info.bonjean.beluga.client.PandoraClient;
 import info.bonjean.beluga.configuration.BelugaConfiguration;
@@ -36,6 +32,9 @@ import info.bonjean.beluga.gui.notification.Notification;
 import info.bonjean.beluga.response.Song;
 import info.bonjean.beluga.response.Station;
 import info.bonjean.beluga.util.HTMLUtil;
+
+import java.awt.BorderLayout;
+import java.awt.Dimension;
 
 import javax.swing.JFrame;
 
@@ -131,7 +130,7 @@ public class UI
 		Page pageBack = null;
 		if (page.equals(Page.CONFIGURATION))
 		{
-			if (state.isLoggedIn())
+			if (pandoraClient.isLoggedIn())
 				pageBack = Page.SONG;
 		} else if (!page.equals(Page.SONG))
 		{
@@ -180,7 +179,7 @@ public class UI
 		// safety check
 		// this is a big exclusion list, not very pretty but it ensure that
 		// default behaviour is safety check
-		if (state.isLoggedIn() && !command.equals(Command.AUDIO_ERROR) && !command.equals(Command.SEARCH) && !command.equals(Command.STORE_VOLUME) && !command.equals(Command.ADD_STATION)
+		if (pandoraClient.isLoggedIn() && !command.equals(Command.AUDIO_ERROR) && !command.equals(Command.SEARCH) && !command.equals(Command.STORE_VOLUME) && !command.equals(Command.ADD_STATION)
 				&& !command.equals(Command.EXIT) && !command.equals(Command.SELECT_STATION) && !(command.equals(Command.GOTO) && !parameters[0].equals("song")))
 		{
 			displayLoader();
@@ -215,7 +214,7 @@ public class UI
 				if (state.getStation() == null)
 					state.setStation(state.getStationList().get(0));
 			}
-			
+
 			// retrieve station full information
 			UI.reportInfo("retrieving.station.data");
 			state.setStation(pandoraClient.getStation(state.getStation()));
@@ -278,21 +277,21 @@ public class UI
 		case LIKE:
 			boolean positive = state.getSong().getSongRating() > 0 ? false : true;
 			if (positive)
-				pandoraClient.addFeedback(true);
+				pandoraClient.addFeedback(state.getSong(), true);
 			else
 				log.error("TBD: deleteFeedback");
 			break;
 
 		case BAN:
 			displayLoader();
-			pandoraClient.addFeedback(false);
+			pandoraClient.addFeedback(state.getSong(), false);
 			state.setSong(null);
 			dispatch("next");
 			return;
 
 		case SLEEP:
 			displayLoader();
-			pandoraClient.sleepSong();
+			pandoraClient.sleepSong(state.getSong());
 			state.setSong(null);
 			dispatch("next");
 			return;
@@ -377,7 +376,7 @@ public class UI
 			return;
 
 		case DELETE_STATION:
-			pandoraClient.deleteStation();
+			pandoraClient.deleteStation(state.getStation());
 			dispatch("next");
 			return;
 
@@ -483,7 +482,7 @@ public class UI
 				reportFatalError("crypto.related.problem", e);
 			} else if (e instanceof CommunicationException)
 			{
-				if (state.getUserId() == null)
+				if (!pandoraClient.isLoggedIn())
 				{
 					reportError("connection.to.pandora.failed.check.proxy");
 					dispatch("configuration");
