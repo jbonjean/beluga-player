@@ -275,12 +275,10 @@ public class UI
 			break;
 
 		case LIKE:
-			boolean positive = state.getSong().getSongRating() > 0 ? false : true;
-			if (positive)
+			if (state.getSong().getSongRating() < 1)
 				pandoraClient.addFeedback(state.getSong(), true);
-			else
-				log.error("TBD: deleteFeedback");
-			break;
+			dispatch("goto/song");
+			return;
 
 		case BAN:
 			displayLoader();

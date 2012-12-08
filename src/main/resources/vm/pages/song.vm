@@ -39,7 +39,11 @@
 	</div>
 	
 	<div class="songControls">
-		<a class="like #if ($song.getSongRating() > 0) liked #end" href="command://like">$text['like']</a>
+		#if ($song.getSongRating() > 0)
+			<a class="like liked" href="#">$text['like']</a>
+		#else
+			<a class="like" href="command://like">$text['like']</a>
+		#end
 		<a class="ban" href="command://ban">$text['ban']</a>
 		<a class="sleep" href="command://sleep">$text['sleep']</a>
 	</div>
