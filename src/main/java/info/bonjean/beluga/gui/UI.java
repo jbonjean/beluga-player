@@ -19,6 +19,10 @@
 package info.bonjean.beluga.gui;
 
 import static info.bonjean.beluga.util.I18NUtil._;
+
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+
 import info.bonjean.beluga.client.BelugaState;
 import info.bonjean.beluga.client.PandoraClient;
 import info.bonjean.beluga.configuration.BelugaConfiguration;
@@ -96,13 +100,13 @@ public class UI
 			}
 		});
 
-		int playerWebBrowserHeight = 60;
-		int webBrowserHeight = frame.getHeight() - playerWebBrowserHeight - 25;
-		webBrowser.setBounds(0, 0, frame.getWidth(), webBrowserHeight);
-		playerWebBrowser.setBounds(0, webBrowserHeight, frame.getWidth(), playerWebBrowserHeight);
+		webBrowser.setPreferredSize(new Dimension(600, 325));
+		playerWebBrowser.setPreferredSize(new Dimension(600, 60));
 
-		frame.add(webBrowser);
-		frame.add(playerWebBrowser);
+		frame.add(webBrowser, BorderLayout.CENTER);
+		frame.add(playerWebBrowser, BorderLayout.SOUTH);
+
+		frame.pack();
 	}
 
 	public void displayLoader()
@@ -176,8 +180,8 @@ public class UI
 		// safety check
 		// this is a big exclusion list, not very pretty but it ensure that
 		// default behaviour is safety check
-		if (state.isLoggedIn() && !command.equals(Command.AUDIO_ERROR) && !command.equals(Command.SEARCH) && !command.equals(Command.STORE_VOLUME) && !command.equals(Command.ADD_STATION) && !command.equals(Command.EXIT)
-				&& !command.equals(Command.SELECT_STATION) && !(command.equals(Command.GOTO) && !parameters[0].equals("song")))
+		if (state.isLoggedIn() && !command.equals(Command.AUDIO_ERROR) && !command.equals(Command.SEARCH) && !command.equals(Command.STORE_VOLUME) && !command.equals(Command.ADD_STATION)
+				&& !command.equals(Command.EXIT) && !command.equals(Command.SELECT_STATION) && !(command.equals(Command.GOTO) && !parameters[0].equals("song")))
 		{
 			displayLoader();
 
@@ -386,7 +390,7 @@ public class UI
 			state.setVolume(Float.parseFloat(parameters[0]));
 			state.setMutedVolume(Float.parseFloat(parameters[1]));
 			return;
-			
+
 		case AUDIO_ERROR:
 			reportError("audio.player.error");
 			dispatch("next");
@@ -407,7 +411,7 @@ public class UI
 		for (String errorKey : state.getErrors())
 			showError(errorKey);
 		state.clearErrors();
-		
+
 		// reset loop protection
 		retryCount = 0;
 	}
@@ -517,8 +521,7 @@ public class UI
 				reportFatalError(pe.getError().getMessageKey(), pe);
 				return;
 			}
-		}
-		catch(Exception e1)
+		} catch (Exception e1)
 		{
 		}
 		reportFatalError("a.bug.occured", e);

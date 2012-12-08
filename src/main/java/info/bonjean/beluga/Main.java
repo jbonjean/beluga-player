@@ -23,6 +23,8 @@ import info.bonjean.beluga.gui.Page;
 import info.bonjean.beluga.gui.UI;
 import info.bonjean.beluga.gui.UIWindowListener;
 
+import java.awt.BorderLayout;
+import java.awt.Container;
 import java.awt.Image;
 import java.awt.Toolkit;
 
@@ -50,11 +52,11 @@ public class Main
 			System.out.println("Beluga Player 0.3");
 			System.exit(0);
 		}
-		
-		if(System.getProperty("debug") != null)
+
+		if (System.getProperty("debug") != null)
 		{
-				Logger root = (Logger)LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
-				root.setLevel(Level.ALL);
+			Logger root = (Logger) LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
+			root.setLevel(Level.ALL);
 		}
 
 		BelugaConfiguration.getInstance().load();
@@ -72,14 +74,15 @@ public class Main
 			public void run()
 			{
 				JFrame frame = new JFrame("Beluga Player");
-				frame.setLayout(null);
 				frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-				frame.setSize(600, 410);
+				Image image = Toolkit.getDefaultToolkit().getImage(Main.class.getResource(Page.IMG_PATH + "beluga.40x40.png"));
+				frame.setIconImage(image);
 				frame.setResizable(false);
 				frame.setLocationByPlatform(true);
 				frame.setVisible(true);
-				Image image = Toolkit.getDefaultToolkit().getImage(Main.class.getResource(Page.IMG_PATH + "beluga.40x40.png"));
-				frame.setIconImage(image);
+
+				Container contentPane = frame.getContentPane();
+				contentPane.setLayout(new BorderLayout());
 
 				final UI ui = new UI(frame);
 				UIWindowListener windowListener = new UIWindowListener(ui);
