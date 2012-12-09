@@ -27,14 +27,24 @@
 	#foreach( $feedback in $station.getFeedback().getThumbsUp() )
 		<div class="loved-song">
 			$feedback.getSongName() $text['by'] $feedback.getArtistName()
+			<span class="delete-feedback">
+				<a href="command://delete-feedback/$feedback.getFeedbackId()" title="$text['unlike']">
+					<img src="$HTMLUtil.getImage("Cancel-32.png")"/>
+				</a>
+			<span>
 		</div>
 	#end
 </div>
 
 <div class="section banned-songs">
 	#foreach( $feedback in $station.getFeedback().getThumbsDown() )
-		<div class="loved-song">
+		<div class="banned-song">
 			$feedback.getSongName() $text['by'] $feedback.getArtistName()
+			<span class="delete-feedback">
+				<a href="command://delete-feedback/$feedback.getFeedbackId()" title="$text['unban']">
+					<img src="$HTMLUtil.getImage("Cancel-32.png")"/>
+				</a>
+			<span>
 		</div>
 	#end
 </div>

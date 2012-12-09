@@ -16,19 +16,24 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
-package info.bonjean.beluga.gui;
+package info.bonjean.beluga.request;
 
 /**
  * 
  * @author Julien Bonjean <julien@bonjean.info>
- * 
+ *
  */
-public enum Command
+public class FeedbackDeleteRequest extends AuthentifiedJsonRequest
 {
-	LOGIN, NEXT, LIKE, BAN, DELETE_FEEDBACK, SLEEP, PAUSE, EXIT, GOTO, CONFIGURATION, SAVE_CONFIGURATION, SELECT_STATION, SEARCH, ADD_STATION, DELETE_STATION, CREATE_USER, STORE_VOLUME, AUDIO_ERROR;
+	private String feedbackId;
 
-	public static Command fromString(String name)
+	public String getFeedbackId()
 	{
-		return valueOf(name.toUpperCase().replace("-", "_"));
+		return feedbackId;
+	}
+
+	public void setFeedbackId(String feedbackId)
+	{
+		this.feedbackId = feedbackId;
 	}
 }

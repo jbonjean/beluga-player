@@ -279,6 +279,11 @@ public class UI
 				pandoraClient.addFeedback(state.getSong(), true);
 			dispatch("goto/song");
 			return;
+			
+		case DELETE_FEEDBACK:
+			pandoraClient.deleteFeedback(parameters[0]);
+			dispatch("goto/song");
+			return;
 
 		case BAN:
 			displayLoader();

@@ -26,6 +26,7 @@ import info.bonjean.beluga.request.ArtistBookmarkRequest;
 import info.bonjean.beluga.request.CreateStationRequest;
 import info.bonjean.beluga.request.CreateUserRequest;
 import info.bonjean.beluga.request.DeleteStationRequest;
+import info.bonjean.beluga.request.FeedbackDeleteRequest;
 import info.bonjean.beluga.request.FeedbackRequest;
 import info.bonjean.beluga.request.Method;
 import info.bonjean.beluga.request.ParameterMap;
@@ -248,8 +249,22 @@ public class PandoraClient
 
 		if (isPositive)
 			song.setSongRating(1);
-		
+
 		return feedback;
+	}
+
+	public void deleteFeedback(String feedbackId) throws BelugaException
+	{
+		ParameterMap params = getDefaultParameterMap();
+
+		FeedbackDeleteRequest feedbackDeleteRequest = new FeedbackDeleteRequest();
+		feedbackDeleteRequest.setSyncTime(PandoraUtil.getSyncTime());
+		feedbackDeleteRequest.setUserAuthToken(userAuthToken);
+		feedbackDeleteRequest.setFeedbackId(feedbackId);
+
+		HTTPUtil.<Feedback> request(Method.DELETE_FEEDBACK, params, feedbackDeleteRequest, true, new TypeToken<Response<Feedback>>()
+		{
+		});
 	}
 
 	public void sleepSong(Song song) throws BelugaException
