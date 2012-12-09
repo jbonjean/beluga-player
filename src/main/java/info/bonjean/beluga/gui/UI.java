@@ -176,11 +176,11 @@ public class UI
 		for (int i = 1; i < fullCommandSplit.length; i++)
 			parameters[i - 1] = fullCommandSplit[i];
 
-		// safety check
 		// this is a big exclusion list, not very pretty but it ensure that
 		// default behaviour is safety check
-		if (pandoraClient.isLoggedIn() && !command.equals(Command.AUDIO_ERROR) && !command.equals(Command.SEARCH) && !command.equals(Command.STORE_VOLUME) && !command.equals(Command.ADD_STATION)
-				&& !command.equals(Command.EXIT) && !command.equals(Command.SELECT_STATION) && !(command.equals(Command.GOTO) && !parameters[0].equals("song")))
+		if (pandoraClient.isLoggedIn() && !command.equals(Command.DELETE_FEEDBACK) && !command.equals(Command.AUDIO_ERROR) && !command.equals(Command.SEARCH) && !command.equals(Command.STORE_VOLUME)
+				&& !command.equals(Command.ADD_STATION) && !command.equals(Command.EXIT) && !command.equals(Command.SELECT_STATION)
+				&& !(command.equals(Command.GOTO) && !(parameters[0].equals("song") || parameters[0].equals("station-details"))))
 		{
 			displayLoader();
 
@@ -279,10 +279,10 @@ public class UI
 				pandoraClient.addFeedback(state.getSong(), true);
 			dispatch("goto/song");
 			return;
-			
+
 		case DELETE_FEEDBACK:
 			pandoraClient.deleteFeedback(parameters[0]);
-			dispatch("goto/song");
+			dispatch("goto/station-details");
 			return;
 
 		case BAN:
@@ -315,11 +315,6 @@ public class UI
 				updateAudioUI();
 			} else
 				updateUI(page);
-			break;
-
-		case CONFIGURATION:
-			displayLoader();
-			updateUI(Page.CONFIGURATION);
 			break;
 
 		case SAVE_CONFIGURATION:
