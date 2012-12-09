@@ -21,11 +21,7 @@ function initGlobal()
 {
 	disableDragAndDrop(document.getElementsByTagName("a"));
 	disableDragAndDrop(document.getElementsByTagName("img"));
-	/*
-	document.getElementById("errors").addEventListener("webkitAnimationEnd", function(event, element) {
-    	document.getElementById("errors").style.display = "none";
-	}, false );
-	*/
+
 	// call spage specific init
 	init();
 }

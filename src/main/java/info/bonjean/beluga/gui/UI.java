@@ -178,8 +178,8 @@ public class UI
 
 		// this is a big exclusion list, not very pretty but it ensure that
 		// default behaviour is safety check
-		if (pandoraClient.isLoggedIn() && !command.equals(Command.DELETE_FEEDBACK) && !command.equals(Command.AUDIO_ERROR) && !command.equals(Command.SEARCH) && !command.equals(Command.STORE_VOLUME)
-				&& !command.equals(Command.ADD_STATION) && !command.equals(Command.EXIT) && !command.equals(Command.SELECT_STATION)
+		if (pandoraClient.isLoggedIn() && !command.equals(Command.BOOKMARK) && !command.equals(Command.DELETE_FEEDBACK) && !command.equals(Command.AUDIO_ERROR) && !command.equals(Command.SEARCH)
+				&& !command.equals(Command.STORE_VOLUME) && !command.equals(Command.ADD_STATION) && !command.equals(Command.EXIT) && !command.equals(Command.SELECT_STATION)
 				&& !(command.equals(Command.GOTO) && !(parameters[0].equals("song") || parameters[0].equals("station-details"))))
 		{
 			displayLoader();
@@ -216,7 +216,7 @@ public class UI
 			}
 
 			// retrieve station full information
-			UI.reportInfo("retrieving.station.data");
+			reportInfo("retrieving.station.data");
 			state.setStation(pandoraClient.getStation(state.getStation()));
 
 			// station changed
@@ -237,16 +237,16 @@ public class UI
 			if (state.getPlaylist() == null || state.getPlaylist().isEmpty())
 			{
 				// retrieve playlist from Pandora
-				UI.reportInfo("retrieving.playlist");
+				reportInfo("retrieving.playlist");
 				state.setPlaylist(pandoraClient.getPlaylist(state.getStation()));
 
 				// update extra information
-				UI.reportInfo("retrieving.song.extra.information");
+				reportInfo("retrieving.song.extra.information");
 				for (Song song : state.getPlaylist())
 					song.setFocusTraits(pandoraClient.retrieveFocusTraits(song));
 
 				// retrieve covers
-				UI.reportInfo("retrieving.album.covers");
+				reportInfo("retrieving.album.covers");
 				for (Song song : state.getPlaylist())
 					song.setAlbumArtBase64(pandoraClient.retrieveCover(song.getAlbumArtUrl()));
 			}
@@ -262,7 +262,7 @@ public class UI
 		} else if (command.equals(Command.GOTO) && parameters[0].equals("bookmarks"))
 		{
 			displayLoader();
-			UI.reportInfo("retrieving.bookmarks");
+			reportInfo("retrieving.bookmarks");
 			state.setBookmarks(pandoraClient.getBookmarks());
 		}
 
@@ -283,11 +283,13 @@ public class UI
 			if (state.getSong().getSongRating() < 1)
 				pandoraClient.addFeedback(state.getSong(), true);
 			dispatch("goto/song");
+			reportSuccess("feedback.sent");
 			return;
 
 		case DELETE_FEEDBACK:
 			pandoraClient.deleteFeedback(parameters[0]);
 			dispatch("goto/station-details");
+			reportSuccess("feedback.deleted");
 			return;
 
 		case BAN:
@@ -302,6 +304,17 @@ public class UI
 			pandoraClient.sleepSong(state.getSong());
 			state.setSong(null);
 			dispatch("next");
+			return;
+
+		case BOOKMARK:
+			displayLoader();
+			String bookmarkType = parameters[0];
+			if (bookmarkType.equals("artist"))
+				pandoraClient.addArtistBookmark(state.getSong().getTrackToken());
+			else
+				pandoraClient.addSongBookmark(state.getSong().getTrackToken());
+			hideLoader();
+			reportSuccess("bookmark.created");
 			return;
 
 		case EXIT:
@@ -376,11 +389,13 @@ public class UI
 				pandoraClient.addStation(type, token);
 			}
 			dispatch("goto/song");
+			reportSuccess("station.created");
 			return;
 
 		case DELETE_STATION:
 			pandoraClient.deleteStation(state.getStation());
 			dispatch("next");
+			reportSuccess("station.deleted");
 			return;
 
 		case CREATE_USER:
@@ -425,6 +440,11 @@ public class UI
 	public static void showError(String messageKey)
 	{
 		webBrowser.executeJavascript("showError('" + StringEscapeUtils.escapeJavaScript(_(messageKey)) + "')");
+	}
+
+	public static void reportSuccess(String infoKey)
+	{
+		webBrowser.executeJavascript("showSuccess('" + StringEscapeUtils.escapeJavaScript(_(infoKey)) + "')");
 	}
 
 	public static void reportInfo(String infoKey)

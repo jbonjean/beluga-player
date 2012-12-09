@@ -41,3 +41,8 @@ function showInfo(message)
 	$.noty.closeAll();
     noty({dismissQueue: false, type: 'alert', timeout: 0, animation: infoAnimation, layout: 'top', text: message});
 }
+
+function showSuccess(message)
+{
+    noty({dismissQueue: true, type: 'success', timeout: 2000, text: message});
+}

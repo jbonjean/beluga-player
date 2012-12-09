@@ -234,7 +234,7 @@ public class PandoraClient
 
 		return currentPlaylist;
 	}
-	
+
 	public Bookmarks getBookmarks() throws BelugaException
 	{
 		ParameterMap params = getDefaultParameterMap();
@@ -296,28 +296,28 @@ public class PandoraClient
 		});
 	}
 
-	public void addSongBookmark(Song song) throws BelugaException
+	public void addSongBookmark(String trackToken) throws BelugaException
 	{
 		ParameterMap params = getDefaultParameterMap();
 
 		SongBookmarkRequest songBookmark = new SongBookmarkRequest();
 		songBookmark.setSyncTime(PandoraUtil.getSyncTime());
 		songBookmark.setUserAuthToken(userAuthToken);
-		songBookmark.setTrackToken(song.getTrackToken());
+		songBookmark.setTrackToken(trackToken);
 
 		HTTPUtil.<Result> request(Method.ADD_SONG_BOOKMARK, params, songBookmark, true, new TypeToken<Response<Result>>()
 		{
 		});
 	}
 
-	public void addArtistBookmark(Song song) throws BelugaException
+	public void addArtistBookmark(String trackToken) throws BelugaException
 	{
 		ParameterMap params = getDefaultParameterMap();
 
 		ArtistBookmarkRequest artistBookmark = new ArtistBookmarkRequest();
 		artistBookmark.setSyncTime(PandoraUtil.getSyncTime());
 		artistBookmark.setUserAuthToken(userAuthToken);
-		artistBookmark.setTrackToken(song.getTrackToken());
+		artistBookmark.setTrackToken(trackToken);
 
 		HTTPUtil.<Result> request(Method.ADD_ARTIST_BOOKMARK, params, artistBookmark, true, new TypeToken<Response<Result>>()
 		{

@@ -23,6 +23,10 @@
 	margin-top: 20px;
 }
 
+.songInfos a:hover {
+	text-decoration: underline;
+}
+
 .controls a,
 .songControls a {
 	display:block;
@@ -72,18 +76,6 @@
 .songControls a.sleep {
 	color: #555555;
 }
-.controls a {
-	width: 245px;
-	position: fixed;
-	bottom: 10px;
-}
-.controls a.next {
-	left: 10px;
-}
-.controls a.pause {
-	right: 10px;
-}
-
 .stationInfos {
 	text-align: center;
 	padding: 10px;

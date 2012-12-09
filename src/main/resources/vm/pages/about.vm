@@ -2,9 +2,9 @@
 
 <h1>$text['about']</h1>
 
-<h2>$text['licence']</h2>
+<h2>$text['license']</h2>
 
-<div id="licence">
+<div id="license">
 Copyright (C) 2012 Julien Bonjean <julien@bonjean.info><br/>
 <br/>
 This program is free software; you can redistribute it and/or
