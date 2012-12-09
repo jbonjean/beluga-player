@@ -19,6 +19,7 @@
 package info.bonjean.beluga.client;
 
 import info.bonjean.beluga.gui.Page;
+import info.bonjean.beluga.response.Bookmarks;
 import info.bonjean.beluga.response.Song;
 import info.bonjean.beluga.response.Station;
 
@@ -41,6 +42,7 @@ public class BelugaState
 	private Station station;
 	private List<Song> playlist;
 	private Song song;
+	private Bookmarks bookmarks;
 
 	private Page page;
 	private Page pageBack;
@@ -165,5 +167,15 @@ public class BelugaState
 		station = null;
 		playlist = null;
 		song = null;
+	}
+
+	public Bookmarks getBookmarks()
+	{
+		return bookmarks;
+	}
+
+	public void setBookmarks(Bookmarks bookmarks)
+	{
+		this.bookmarks = bookmarks;
 	}
 }

@@ -259,6 +259,11 @@ public class UI
 				new Notification(HTMLUtil.getPageHTML(Page.NOTIFICATION));
 				updateAudioUI();
 			}
+		} else if (command.equals(Command.GOTO) && parameters[0].equals("bookmarks"))
+		{
+			displayLoader();
+			UI.reportInfo("retrieving.bookmarks");
+			state.setBookmarks(pandoraClient.getBookmarks());
 		}
 
 		switch (command)
@@ -483,7 +488,7 @@ public class UI
 				if (!pandoraClient.isLoggedIn())
 				{
 					reportError("connection.to.pandora.failed.check.proxy");
-					dispatch("configuration");
+					dispatch("goto/configuration");
 					return;
 				}
 				reportError("communication.problem");
@@ -495,7 +500,7 @@ public class UI
 				if (pe.getError() == PandoraError.INVALID_CREDENTIALS || pe.getError() == PandoraError.LICENSING_RESTRICTIONS)
 				{
 					reportError(pe.getError().getMessageKey());
-					dispatch("configuration");
+					dispatch("goto/configuration");
 					return;
 				}
 				if (pe.getError() == PandoraError.INVALID_AUTH_TOKEN)

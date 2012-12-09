@@ -14,10 +14,10 @@
 		<h2>$text['currently.playing']</h2>
 		<div class='result-entries'>
 			<div class='result'>
-				Artist: <a href='command://add-station/artist/$song.getTrackToken()' />$song.getArtistName()</a>
+				$text['artist']: <a href='command://add-station/artist/$song.getTrackToken()' />$song.getArtistName()</a>
 			</div>
 			<div class='result'>
-				Track: <a href='command://add-station/song/$song.getTrackToken()' />$song.getSongName()</a>
+				$text['song']: <a href='command://add-station/song/$song.getTrackToken()' />$song.getSongName()</a>
 			</div>
 		</div>
 	#end

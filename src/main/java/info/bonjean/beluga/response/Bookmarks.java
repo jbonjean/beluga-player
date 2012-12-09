@@ -16,19 +16,37 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
-package info.bonjean.beluga.gui;
+package info.bonjean.beluga.response;
+
+import java.util.List;
 
 /**
  * 
  * @author Julien Bonjean <julien@bonjean.info>
  * 
  */
-public enum Command
+public class Bookmarks
 {
-	LOGIN, NEXT, LIKE, BAN, DELETE_FEEDBACK, SLEEP, PAUSE, EXIT, GOTO, SAVE_CONFIGURATION, SELECT_STATION, SEARCH, ADD_STATION, DELETE_STATION, CREATE_USER, STORE_VOLUME, AUDIO_ERROR;
+	private List<ArtistBookmark> artists;
+	private List<SongBookmark> songs;
 
-	public static Command fromString(String name)
+	public List<ArtistBookmark> getArtists()
 	{
-		return valueOf(name.toUpperCase().replace("-", "_"));
+		return artists;
+	}
+
+	public void setArtists(List<ArtistBookmark> artists)
+	{
+		this.artists = artists;
+	}
+
+	public List<SongBookmark> getSongs()
+	{
+		return songs;
+	}
+
+	public void setSongs(List<SongBookmark> songs)
+	{
+		this.songs = songs;
 	}
 }

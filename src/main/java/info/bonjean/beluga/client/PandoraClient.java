@@ -23,6 +23,7 @@ import info.bonjean.beluga.exception.BelugaException;
 import info.bonjean.beluga.exception.CommunicationException;
 import info.bonjean.beluga.gui.Page;
 import info.bonjean.beluga.request.ArtistBookmarkRequest;
+import info.bonjean.beluga.request.BookmarksRequest;
 import info.bonjean.beluga.request.CreateStationRequest;
 import info.bonjean.beluga.request.CreateUserRequest;
 import info.bonjean.beluga.request.DeleteStationRequest;
@@ -38,6 +39,7 @@ import info.bonjean.beluga.request.SongSleepRequest;
 import info.bonjean.beluga.request.StationListRequest;
 import info.bonjean.beluga.request.StationRequest;
 import info.bonjean.beluga.request.UserLoginRequest;
+import info.bonjean.beluga.response.Bookmarks;
 import info.bonjean.beluga.response.Feedback;
 import info.bonjean.beluga.response.Response;
 import info.bonjean.beluga.response.Result;
@@ -231,6 +233,19 @@ public class PandoraClient
 		log.info("Retrieved playlist (" + currentPlaylist.size() + " songs) for station " + station.getStationName());
 
 		return currentPlaylist;
+	}
+	
+	public Bookmarks getBookmarks() throws BelugaException
+	{
+		ParameterMap params = getDefaultParameterMap();
+
+		BookmarksRequest playlist = new BookmarksRequest();
+		playlist.setSyncTime(PandoraUtil.getSyncTime());
+		playlist.setUserAuthToken(userAuthToken);
+
+		return HTTPUtil.<Bookmarks> request(Method.GET_BOOKMARKS, params, playlist, true, new TypeToken<Response<Bookmarks>>()
+		{
+		});
 	}
 
 	public Feedback addFeedback(Song song, boolean isPositive) throws BelugaException

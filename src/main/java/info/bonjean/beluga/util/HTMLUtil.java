@@ -115,6 +115,7 @@ public class HTMLUtil
 		context.put("stations", BelugaState.getInstance().getStationList());
 		context.put("station", BelugaState.getInstance().getStation());
 		context.put("song", BelugaState.getInstance().getSong());
+		context.put("bookmarks", BelugaState.getInstance().getBookmarks());
 		context.put("configuration", BelugaConfiguration.getInstance());
 		context.put("isLoggedIn", PandoraClient.getInstance().isLoggedIn());
 		context.put("isPandoraReachable", PandoraClient.getInstance().isPandoraReachable());

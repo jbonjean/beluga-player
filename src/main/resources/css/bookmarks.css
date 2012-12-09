@@ -5,10 +5,12 @@
 	border: 1px solid rgba(200,200,200,0.2);
 	line-height: 20px;
 }
-.section.details {
+.section.artists {
 	display: block;
-	border: none;
-	padding-top: 15px;
+}
+
+.song-name {
+	font-weight: bold;
 }
 
 .album-cover {
@@ -22,22 +24,13 @@
 	box-shadow: 1px 1px 5px 2px #000;
 }
 
-.station-info {
-	float: left;
-	width: 350px;
-	margin-left: 20px;
-}
-.station-info div {
-	margin-top: 5px;
-}
-.station-info .label {
-	font-weight: bold;
-	color: #444;
-}
-
-.delete-feedback img {
+.create-station img {
 	height: 10px;
 	width: 10px;
+}
+
+.created {
+	color: #bbb;
 }
 
 .tabrow {

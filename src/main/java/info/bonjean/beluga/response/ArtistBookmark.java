@@ -16,40 +16,68 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
-package info.bonjean.beluga.gui;
+package info.bonjean.beluga.response;
 
 /**
  * 
  * @author Julien Bonjean <julien@bonjean.info>
  * 
  */
-public enum Page
+public class ArtistBookmark
 {
-	AUDIO, WELCOME, CONFIGURATION, SONG, NOTIFICATION, STATION_ADD, USER_CREATE, ABOUT, STATION_DETAILS, BOOKMARKS;
+	private String musicToken;
+	private String artistName;
+	private String artUrl;
+	private String bookmarkToken;
+	private Date dateCreated;
 
-	public static final String TEMPLATE_PATH = "/vm/pages/";
-	public static final String HTML_PATH = "/html/";
-	public static final String CSS_PATH = "/css/";
-	public static final String JS_PATH = "/js/";
-	public static final String IMG_PATH = "/img/";
-
-	public String getTemplate()
+	public String getMusicToken()
 	{
-		return TEMPLATE_PATH + name().toLowerCase() + ".vm";
+		return musicToken;
 	}
 
-	public String getCss()
+	public void setMusicToken(String musicToken)
 	{
-		return CSS_PATH + name().toLowerCase() + ".css";
+		this.musicToken = musicToken;
 	}
 
-	public String getJs()
+	public String getArtistName()
 	{
-		return JS_PATH + name().toLowerCase() + ".js";
+		return artistName;
 	}
 
-	public static Page fromString(String page)
+	public void setArtistName(String artistName)
 	{
-		return valueOf(page.toUpperCase().replace("-", "_"));
+		this.artistName = artistName;
+	}
+
+	public String getArtUrl()
+	{
+		return artUrl;
+	}
+
+	public void setArtUrl(String artUrl)
+	{
+		this.artUrl = artUrl;
+	}
+
+	public String getBookmarkToken()
+	{
+		return bookmarkToken;
+	}
+
+	public void setBookmarkToken(String bookmarkToken)
+	{
+		this.bookmarkToken = bookmarkToken;
+	}
+
+	public Date getDateCreated()
+	{
+		return dateCreated;
+	}
+
+	public void setDateCreated(Date dateCreated)
+	{
+		this.dateCreated = dateCreated;
 	}
 }
