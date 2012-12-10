@@ -183,7 +183,7 @@ public class PandoraClient
 		{
 			try
 			{
-				cover = HTMLUtil.getURLContentAsBase64String(coverUrl);
+				cover = HTMLUtil.getRemoteResourceBase64(coverUrl);
 			} catch (CommunicationException e)
 			{
 				log.error("Cannot retrieve cover: " + coverUrl);
@@ -191,7 +191,7 @@ public class PandoraClient
 		}
 		if (cover == null)
 		{
-			cover = HTMLUtil.getResourceAsBase64String(Page.IMG_PATH + "beluga.200x200.png");
+			cover = HTMLUtil.getResourceBase64(Page.IMG_PATH + "beluga.200x200.png");
 		}
 		return cover;
 	}

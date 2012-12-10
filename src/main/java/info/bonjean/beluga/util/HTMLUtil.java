@@ -25,6 +25,7 @@ import info.bonjean.beluga.exception.CommunicationException;
 import info.bonjean.beluga.exception.InternalException;
 import info.bonjean.beluga.gui.Page;
 import info.bonjean.beluga.gui.RenderingEngine;
+import info.bonjean.beluga.gui.Theme;
 import info.bonjean.beluga.response.Date;
 import info.bonjean.beluga.response.Result;
 import info.bonjean.beluga.response.SearchArtist;
@@ -33,6 +34,7 @@ import info.bonjean.beluga.response.SearchSong;
 
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
+import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.List;
 
@@ -57,7 +59,7 @@ public class HTMLUtil
 		return str;
 	}
 
-	public static byte[] getResourceAsByteArray(String resource)
+	private static byte[] getResourceAsByteArray(String resource)
 	{
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		InputStream bais;
@@ -79,22 +81,47 @@ public class HTMLUtil
 		return baos.toByteArray();
 	}
 
-	public static String getResourceAsBase64String(String resource)
+	public static String getResourceBase64(String resource)
 	{
 		return Base64.encodeBase64String(getResourceAsByteArray(resource));
 	}
-
-	public static String getImageAbsPath(String path)
+	
+	public static String getThemeResourceBase64(String resource)
 	{
-		return "data:image/png;base64," + Base64.encodeBase64String(getResourceAsByteArray(path));
+		return Base64.encodeBase64String(getResourceAsByteArray(getThemeResourcePath(resource)));
+	}
+	
+	public static String getThemeResourcePath(String path)
+	{
+		// first, try with current theme
+		String themePath = "/themes/" + BelugaState.getInstance().getTheme().getId() + "/" + path;
+		String newPath = themePath;
+		URL resource = HTMLUtil.class.getResource(themePath);
+		
+		if(resource == null)
+		{
+			newPath = "/themes/" + Theme.CLASSIC.getId() + "/" + path;
+			// fallback to classic theme
+			resource = HTMLUtil.class.getResource(newPath);
+		}
+		
+		if(resource == null)
+		{
+			newPath = path;
+			// second fallback to built-in resources
+			resource = HTMLUtil.class.getResource(path);
+		}
+		
+		if(resource == null)
+		{
+			// it's over, return the theme path to have a clean error message
+			return themePath;
+		}
+		
+		return newPath;
 	}
 
-	public static String getImage(String name)
-	{
-		return getImageAbsPath(Page.IMG_PATH + name);
-	}
-
-	public static String getURLContentAsBase64String(String url) throws CommunicationException
+	public static String getRemoteResourceBase64(String url) throws CommunicationException
 	{
 		return Base64.encodeBase64String(HTTPUtil.request(url));
 	}
@@ -125,7 +152,6 @@ public class HTMLUtil
 		context.put("mutedVolume", BelugaState.getInstance().getMutedVolume());
 		context.put("pageBack", pageBack != null ? pageBack.name().toLowerCase() : null);
 		context.put("page", page.name().toLowerCase());
-		context.put("font", getResourceAsBase64String("/font/Roboto-Regular-webfont.ttf"));
 		context.put("debug", System.getProperty("debug") != null);
 		return RenderingEngine.getInstance().render(context, page.getTemplate());
 	}

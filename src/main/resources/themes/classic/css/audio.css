@@ -6,11 +6,7 @@
 body {
 -webkit-touch-callout: none;
 -webkit-user-select: none;
--khtml-user-select: none;
--moz-user-select: none;
--ms-user-select: none;
-user-select: none;
-	}
+}
 
 #jp_container_1 {
 }
@@ -63,7 +59,7 @@ a.next {
 	display: block;
     overflow: hidden;
     text-indent: -9999px;
-	background: url($HTMLUtil.getImageAbsPath("/jplayer/jplayer.blue.monday.jpg")) 0 -141px no-repeat;
+	background: url("data:image/jpg;base64,$HTMLUtil.getResourceBase64('/jplayer/jplayer.blue.monday.jpg')") 0 -141px no-repeat;
     height: 28px;
     width: 28px;
     position: absolute;
@@ -72,5 +68,5 @@ a.next {
     z-index: 1;
 }
 a.next:hover {
-	background: url($HTMLUtil.getImageAbsPath("/jplayer/jplayer.blue.monday.jpg")) -29px -141px no-repeat;
+	background: url("data:image/jpg;base64,$HTMLUtil.getResourceBase64('/jplayer/jplayer.blue.monday.jpg')") -29px -141px no-repeat;
 }

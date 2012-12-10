@@ -29,7 +29,7 @@
 			$feedback.getSongName() $text['by'] $feedback.getArtistName()
 			<span class="delete-feedback">
 				<a href="command://delete-feedback/$feedback.getFeedbackId()" title="$text['unlike']">
-					<img src="$HTMLUtil.getImage("Cancel-32.png")"/>
+					<img src="$themeImageFeedbackDelete"/>
 				</a>
 			<span>
 		</div>
@@ -42,7 +42,7 @@
 			$feedback.getSongName() $text['by'] $feedback.getArtistName()
 			<span class="delete-feedback">
 				<a href="command://delete-feedback/$feedback.getFeedbackId()" title="$text['unban']">
-					<img src="$HTMLUtil.getImage("Cancel-32.png")"/>
+					<img src="$themeImageFeedbackDelete"/>
 				</a>
 			<span>
 		</div>

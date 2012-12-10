@@ -8,13 +8,13 @@
 	#else
 		<div class="text">$text['connecting.to.pandora']</div>
 		<div id="welcome-loader">
-			<img src="$HTMLUtil.getImage("ajax-loader.gif")"/>
+			<img src="$themeImageWelcomeLoader"/>
 		</div>
 	#end
 	<div class="spacer"></div>
 	<!--
 	<div id="goto-configuration">
-		<a href="command://goto/configuration"><img src="$HTMLUtil.getImage("Settings-32.png")" border="0">$text['settings']</a>
+		<a href="command://goto/configuration"><img src="$themeImageSettings" border="0">$text['settings']</a>
 	</div>
 	-->
 </div>

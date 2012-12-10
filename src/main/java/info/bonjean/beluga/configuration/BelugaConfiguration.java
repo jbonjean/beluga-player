@@ -18,6 +18,8 @@
  */
 package info.bonjean.beluga.configuration;
 
+import info.bonjean.beluga.gui.Theme;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -222,5 +224,15 @@ public class BelugaConfiguration
 	public void setDNSProxy(String proxyDNS)
 	{
 		set(Property.PROXY_DNS, proxyDNS);
+	}
+	
+	public String getTheme()
+	{
+		return getString(Property.THEME, Theme.CLASSIC.getId());
+	}
+	
+	public void setTheme(String theme)
+	{
+		set(Property.THEME, theme);
 	}
 }

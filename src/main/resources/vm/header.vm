@@ -1,9 +1,9 @@
+#parse( $HTMLUtil.getThemeResourcePath("init.vm") )
 <html>
 	<head>
 		<style type="text/css">
-			#parse( "css/common.css" )
-			#include( "css/tooltip.css" )
-			#parse( "css/${page}.css" )
+			#parse( $HTMLUtil.getThemeResourcePath("css/common.css") )
+			#parse( $HTMLUtil.getThemeResourcePath("css/${page}.css") )
 		</style>
 		<script type="text/javascript">
 			#include( "jquery/jquery-1.8.3.min.js" )
@@ -11,9 +11,10 @@
 			#include( "noty/themes/default.js" )
 			#include( "noty/layouts/bottomRight.js" )
 			#include( "noty/layouts/top.js" )
-			#include( "js/common.js" )
+			
 			#include( "js/noty.js" )
-			#parse( "js/${page}.js" )
+			#parse( $HTMLUtil.getThemeResourcePath("js/common.js") )
+			#parse( $HTMLUtil.getThemeResourcePath("js/${page}.js") )
 		</script>
 	</head>
 	<body onselectstart="return false;">
@@ -26,13 +27,13 @@
 		    #end
 			
 			<div id="loader">
-				<img src="$HTMLUtil.getImage("ajax-loader-2.gif")"/>
+				<img src="$themeImageLoader"/>
 			</div>
 			
 			#if( $pageBack )
 				<div id="back">
 					<a href="command://goto/$pageBack">
-						<img src="$HTMLUtil.getImage("Previous-32.png")" title="Back to $pageBack"/>
+						<img src="$themeImageBack" title="$text['back.to'] $pageBack"/>
 					</a>
 				</div>
 			#end

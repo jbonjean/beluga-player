@@ -106,6 +106,13 @@ public class UI
 		frame.add(playerWebBrowser, BorderLayout.SOUTH);
 
 		frame.pack();
+
+		if (configuration.getTheme() == null || configuration.getTheme().length() == 0 || Theme.get(configuration.getTheme()) == null)
+		{
+			configuration.setTheme(Theme.CLASSIC.getId());
+			configuration.store();
+		}
+		state.setTheme(Theme.get(configuration.getTheme()));
 	}
 
 	public void displayLoader()

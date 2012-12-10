@@ -35,7 +35,7 @@
 			<label for="proxyDNS">$text['dns.proxy']</label>
 			<input name="proxyDNS" id="proxyDNS" type="text" value="$configuration.getDNSProxy()"/>
 			<span class="info">
-				<img src="$HTMLUtil.getImage("info-20.png")"/>
+				<img src="$themeImageInfo"/>
 				<span class="tooltip"> 
 					<span></span>
 					<ul>$text['dns.proxy.tooltip']</ul>

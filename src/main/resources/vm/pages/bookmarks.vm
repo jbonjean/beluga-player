@@ -16,7 +16,7 @@
 			</span>
 			<span class="create-station">
 				<a href='command://add-station/search/$artistBookmark.getMusicToken()' title="$text['create.station']"/>
-					<img src="$HTMLUtil.getImage("Add-32.png")"/>
+					<img src="$themeImageStationAdd"/>
 				</a>
 			<span>
 		</div>
@@ -35,7 +35,7 @@
 			</span>
 			<span class="create-station">
 				<a href='command://add-station/search/$songBookmark.getMusicToken()' title="$text['create.station']"/>
-					<img src="$HTMLUtil.getImage("Add-32.png")"/>
+					<img src="$themeImageStationAdd"/>
 				</a>
 			<span>
 		</div>

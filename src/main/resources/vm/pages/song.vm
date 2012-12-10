@@ -11,15 +11,15 @@
 	<div class="drop-menu">
 		<div class="title"><span class="plus">+</span>$text['menu']</div>
 		<ul class="sub-menu">
-			<li><a href="command://goto/station-add"><img src="$HTMLUtil.getImage("Add-32.png")" border="0">$text['add.station']</a></li>
+			<li><a href="command://goto/station-add"><img src="$themeImageStationAdd" border="0">$text['add.station']</a></li>
 			#if (! $station.isQuickMix())
-				<li><a href="javascript:deleteStation();"><img src="$HTMLUtil.getImage("Delete-32.png")" border="0">$text['delete.station']</a></li>
-				<li><a href="command://goto/station-details"><img class="empty" src="" border="0">$text['station.details']</a></li>
+				<li><a href="javascript:deleteStation();"><img src="$themeImageStationDelete" border="0">$text['delete.station']</a></li>
+				<li><a href="command://goto/station-details"><img src="$themeImageStationDetails" border="0">$text['station.details']</a></li>
 			#end
-			<li><a href="command://goto/bookmarks"><img class="empty" src="" border="0">$text['bookmarks']</a></li>
-			<li><a href="command://goto/configuration"><img src="$HTMLUtil.getImage("Settings-32.png")" border="0">$text['settings']</a></li>
-			<li><a href="command://goto/about"><img class="empty" src="" border="0">$text['about']</a></li>
-			<li><a href="command://exit"><img class="empty" src="" border="0">$text['exit']</a></li>
+			<li><a href="command://goto/bookmarks"><img src="$themeImageBookmarks" border="0">$text['bookmarks']</a></li>
+			<li><a href="command://goto/configuration"><img src="$themeImageSettings" border="0">$text['settings']</a></li>
+			<li><a href="command://goto/about"><img src="$themeImageAbout" border="0">$text['about']</a></li>
+			<li><a href="command://exit"><img src="$themeImageExit" border="0">$text['exit']</a></li>
 		</ul>
 	</div>
 	<div class="clear"></div>

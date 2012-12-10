@@ -16,26 +16,48 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
-package info.bonjean.beluga.configuration;
+package info.bonjean.beluga.gui;
+
+import java.util.EnumSet;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 
  * @author Julien Bonjean <julien@bonjean.info>
- *
+ * 
  */
-public enum Property
+public enum Theme
 {
-	USER("user"), PASSWORD("password"), PROXY_HOST("proxy.host"), PROXY_PORT("proxy.port"), PROXY_DNS("proxy.dns"), DEFAULT_STATION("default.station"), THEME("theme");
+	CLASSIC("classic"), BLACK_AND_WHITE("black.and.white");
 
-	private final String key;
+	private static final Map<String, Theme> lookup = new HashMap<String, Theme>();
 
-	private Property(String key)
+	static
 	{
-		this.key = key;
+		for (Theme s : EnumSet.allOf(Theme.class))
+			lookup.put(s.getId(), s);
 	}
 
-	public String getKey()
+	public static Theme get(String id)
 	{
-		return key;
+		return lookup.get(id);
+	}
+
+	private final String id;
+
+	private Theme(String id)
+	{
+		this.id = id;
+	}
+
+	public String getId()
+	{
+		return id;
+	}
+
+	public String getName()
+	{
+		return this.name().toLowerCase();
 	}
 }

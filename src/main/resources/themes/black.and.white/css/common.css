@@ -1,3 +1,108 @@
+@font-face {
+    font-family: 'FontFace';
+    src: url("data:font/opentype;base64,$HTMLUtil.getThemeResourceBase64( 'font/Roboto-Regular-webfont.ttf')");
+    font-weight: normal;
+    font-style: normal;
+}
+
+body {
+	background-color: #333;
+	font-size: 14px;
+	cursor: default;
+	font-family: FontFace;
+	margin: 0px;
+	overflow: hidden;
+	-webkit-user-drag: none;
+	-webkit-user-select: none;
+	color: #eee;
+}
+
+:focus {
+	outline: 0;
+}
+
+a {
+	color: #eee;
+	text-decoration: none;
+}
+
+a:hover {
+	cursor: hand;
+}
+
+img[src=""] {
+  visibility: hidden;
+}
+
+#debug {
+	display: block;
+	position: fixed;
+	right: 10px;
+	bottom: 40px;
+	z-index: 2000;
+}
+#debug a {
+	color: rgba(0,0,0,0.1);
+}
+
+#loader {
+	position: fixed;
+	width:100%;
+	height:100%;
+	background: #ffffff ;
+	opacity: 0.6;
+	padding: 0;
+	margin:0;
+	display: none;
+	z-index: 10;
+}
+
+#loader img {
+	margin-left: 250px;
+	margin-top: 150px;
+}
+
+.clear {
+	clear: both;
+}
+
+h1 {
+	font-size: 18px;
+}
+h2 {
+	font-size: 16px;
+}
+h3 {
+	font-size: 15px;
+}
+
+#back {
+	position: absolute;
+	top:10px;
+	right: 10px;
+}
+#back a {
+	display: block;
+}
+#back img {
+	width: 20px;
+	height: 20px;
+}
+
+#container {
+	height: 100%;
+	width: 100%;
+	margin: 0px;
+	padding: 0px;
+	overflow: hidden;
+}
+
+#content {
+	margin: 10px;
+}
+
+/* ********** Tooltips ********** */
+
 div > .tooltip, li > .tooltip, a > .tooltip, span > .tooltip {
 	opacity: 0;
 	visibility: hidden;
@@ -71,7 +176,6 @@ a .tooltip:hover, span .tooltip:hover, li .tooltip:hover, div .tooltip:hover {
 	position: absolute;
 
 	-webkit-transform: rotate(-45deg);
-	
 	-webkit-box-shadow: inset -1px 1px 0 #fff;
 	
 	display /*\**/: none\9;

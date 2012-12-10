@@ -2,14 +2,14 @@
 	<head>
 		<style type="text/css">
 			#parse( "jplayer/jplayer.blue.monday.css" )
-			#include( "css/common.css" )
-			#parse( "css/${page}.css" )
+			#parse( $HTMLUtil.getThemeResourcePath("css/common.css") )
+			#parse( $HTMLUtil.getThemeResourcePath("css/${page}.css") )
 		</style>
 		<script type="text/javascript">
 			#include( "jquery/jquery-1.8.3.min.js" )
 			#include( "jplayer/jquery.jplayer.min.js" )
-			#include( "js/common.js" )
-			#parse( "js/${page}.js" )
+			#parse( $HTMLUtil.getThemeResourcePath("js/common.js") )
+			#parse( $HTMLUtil.getThemeResourcePath("js/${page}.js") )
 		</script>
 	</head>
 	<body onselectstart="return false;">
