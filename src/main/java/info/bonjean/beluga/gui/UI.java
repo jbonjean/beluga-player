@@ -413,8 +413,7 @@ public class UI
 			return;
 
 		case AUDIO_ERROR:
-			reportError("audio.player.error");
-			dispatch("next");
+			reportFatalError("audio.player.error", null);
 			return;
 
 		default:

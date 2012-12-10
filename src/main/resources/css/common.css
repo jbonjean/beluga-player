@@ -1,5 +1,5 @@
 @font-face {
-    font-family: 'CrimsonRoman';
+    font-family: 'FontFace';
     src: url("data:font/opentype;base64,$font");
     font-weight: normal;
     font-style: normal;
@@ -9,7 +9,7 @@ body {
 	background-color: #f2f1f0;
 	font-size: 14px;
 	cursor: default;
-	font-family: CrimsonRoman;
+	font-family: FontFace;
 	margin: 0px;
 	overflow: hidden;
 	-webkit-user-drag: none;
