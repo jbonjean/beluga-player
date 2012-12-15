@@ -35,9 +35,33 @@
 	color: #444;
 }
 
+.loved-song,
+.banned-song {
+	padding: 1px;
+}
+.song-name {
+	font-weight: bold;
+}
+.created {
+	color: #bbb;
+}
+.loved-song:hover,
+.banned-song:hover {
+	background-color: #ddd;
+}
+.delete-feedback {
+	display: none;
+	float: right;
+	margin-right: 10px;
+	margin-top: 5px;
+}
 .delete-feedback img {
 	height: 10px;
 	width: 10px;
+}
+.loved-song:hover .delete-feedback,
+.banned-song:hover .delete-feedback {
+	display: inline-block;
 }
 
 .tabrow {

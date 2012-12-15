@@ -81,7 +81,6 @@ public class UIWindowListener implements WindowListener, MouseListener
 		try
 		{
 			// Dummy.setup();
-			// ui.updateAudioUI();
 			ui.updateAudioUI();
 			ui.updateUI(Page.WELCOME);
 
@@ -93,7 +92,8 @@ public class UIWindowListener implements WindowListener, MouseListener
 					ui.dispatch("login");
 				}
 			});
-		} catch (InternalException e1)
+		}
+		catch (InternalException e1)
 		{
 			log.error("A bug occured, please report this: ", e1);
 			System.exit(-1);

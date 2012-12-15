@@ -26,7 +26,13 @@
 <div class="section loved-songs">
 	#foreach( $feedback in $station.getFeedback().getThumbsUp() )
 		<div class="loved-song">
-			$feedback.getSongName() $text['by'] $feedback.getArtistName()
+			<span class="song-name">
+				$feedback.getSongName()
+			</span>
+			$text['by'] $feedback.getArtistName()
+			<span class="created">
+				($HTMLUtil.getFormattedPandoraDate($feedback.getDateCreated()))
+			</span>
 			<span class="delete-feedback">
 				<a href="command://delete-feedback/$feedback.getFeedbackId()" title="$text['unlike']">
 					<img src="$themeImageFeedbackDelete"/>
@@ -40,6 +46,9 @@
 	#foreach( $feedback in $station.getFeedback().getThumbsDown() )
 		<div class="banned-song">
 			$feedback.getSongName() $text['by'] $feedback.getArtistName()
+			<span class="created">
+				($HTMLUtil.getFormattedPandoraDate($feedback.getDateCreated()))
+			</span>
 			<span class="delete-feedback">
 				<a href="command://delete-feedback/$feedback.getFeedbackId()" title="$text['unban']">
 					<img src="$themeImageFeedbackDelete"/>

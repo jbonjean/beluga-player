@@ -9,29 +9,33 @@
 	display: block;
 }
 
+.bookmark {
+	padding: 1px;
+}
 .song-name {
 	font-weight: bold;
 }
-
-.album-cover {
-	float: left;
-	width: 200px;
-	height: 220px;
+.created {
+	color: #bbb;
 }
-.album-cover .cover {
-	width: 200px;
-	max-height: 200px;
-	box-shadow: 1px 1px 5px 2px #000;
+.bookmark:hover {
+	background-color: #ddd;
 }
-
+.create-station {
+	display: none;
+	float: right;
+	margin-right: 10px;
+	margin-top: 5px;
+}
 .create-station img {
 	height: 10px;
 	width: 10px;
 }
-
-.created {
-	color: #bbb;
+.bookmark:hover .create-station {
+	display: inline-block;
 }
+
+/* ***** tabs ***** */
 
 .tabrow {
     text-align: center;
