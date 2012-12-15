@@ -1,10 +1,12 @@
 function init()
 {
-	$('.drop-menu .title,.drop-menu .sub-menu').hover(
+	$('.drop-menu .title').click(
 		function() {
 			$('.plus').addClass('hover');
 			$('.sub-menu').show();
-		},
+		}
+	);
+	$('.drop-menu').mouseleave(
 		function() {
 			$('.plus').removeClass('hover');
 			$('.sub-menu').hide();
