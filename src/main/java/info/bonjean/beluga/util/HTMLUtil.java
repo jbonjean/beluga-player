@@ -157,6 +157,7 @@ public class HTMLUtil
 		context.put("page", page.name().toLowerCase());
 		context.put("themes", Theme.values());
 		context.put("debug", System.getProperty("debug") != null);
+		context.put("version", BelugaState.getInstance().getVersion());
 		return RenderingEngine.getInstance().render(context, page.getTemplate());
 	}
 

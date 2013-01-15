@@ -51,6 +51,8 @@ public class BelugaState
 	// workaround for missing feature in webkit
 	// we store the volume value before mute to be able to restore it later
 	private float mutedVolume = 0f;
+	
+	private String version;
 
 	Set<String> errors = new HashSet<String>();
 
@@ -177,5 +179,15 @@ public class BelugaState
 	public void setBookmarks(Bookmarks bookmarks)
 	{
 		this.bookmarks = bookmarks;
+	}
+
+	public String getVersion()
+	{
+		return version;
+	}
+
+	public void setVersion(String version)
+	{
+		this.version = version;
 	}
 }

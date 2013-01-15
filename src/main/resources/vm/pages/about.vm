@@ -1,6 +1,6 @@
 #parse("vm/header.vm")
 
-<h1>$text['about']</h1>
+<h1>$text['beluga.player'] $version</h1>
 
 <h2>$text['license']</h2>
 

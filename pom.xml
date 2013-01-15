@@ -36,6 +36,7 @@
 		<maven-surefire-plugin.version>2.12.4</maven-surefire-plugin.version>
 		<launch4j-maven-plugin.version>1.5.2</launch4j-maven-plugin.version>
 		<maven-assembly-plugin.version>2.3</maven-assembly-plugin.version>
+		<maven-jar-plugin.version>2.4</maven-jar-plugin.version>
 	</properties>
 
 	<build>
@@ -77,6 +78,20 @@
 				<version>${maven-surefire-plugin.version}</version>
 				<configuration>
 					<skipTests>true</skipTests>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<version>${maven-jar-plugin.version}</version>
+				<inherited>true</inherited>
+				<configuration>
+					<archive>
+						<manifest>
+							<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+							<addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
+						</manifest>
+					</archive>
 				</configuration>
 			</plugin>
 		</plugins>

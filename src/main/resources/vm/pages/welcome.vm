@@ -1,6 +1,6 @@
 #parse("vm/header.vm")
 
-<h1>$text['beluga.player']</h1>
+<h1>$text['beluga.player'] $version</h1>
 
 <div class="connecting">
 	#if ($isLoggedIn)

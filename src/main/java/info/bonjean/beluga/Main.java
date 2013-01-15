@@ -18,6 +18,7 @@
  */
 package info.bonjean.beluga;
 
+import info.bonjean.beluga.client.BelugaState;
 import info.bonjean.beluga.configuration.BelugaConfiguration;
 import info.bonjean.beluga.gui.Page;
 import info.bonjean.beluga.gui.UI;
@@ -47,9 +48,13 @@ public class Main
 {
 	public static void main(String[] args)
 	{
+		String version = Main.class.getPackage().getImplementationVersion();
+		if(version == null)
+			version = "(dev)";
+
+		System.out.println("Beluga Player " + version);
 		if (args.length == 1 && args[0].equals("-version"))
 		{
-			System.out.println("Beluga Player 0.3");
 			System.exit(0);
 		}
 
@@ -60,6 +65,7 @@ public class Main
 		}
 
 		BelugaConfiguration.getInstance().load();
+		BelugaState.getInstance().setVersion(version);
 		startUI();
 	}
 
