@@ -4,7 +4,11 @@ label {
 }
 
 fieldset {
+	display:none;
 	margin-top: 5px;
+}
+.section.pandora {
+	display: block;
 }
 
 legend {
@@ -13,6 +17,12 @@ legend {
 
 .info {
 	vertical-align: -35%;
+}
+
+#submit {
+	position: absolute;
+	bottom: 10px;
+	left: 10px;
 }
 
 #new-user a {

@@ -19,7 +19,6 @@
 package info.bonjean.beluga.client;
 
 import info.bonjean.beluga.gui.Page;
-import info.bonjean.beluga.gui.Theme;
 import info.bonjean.beluga.response.Bookmarks;
 import info.bonjean.beluga.response.Song;
 import info.bonjean.beluga.response.Station;
@@ -47,8 +46,6 @@ public class BelugaState
 
 	private Page page;
 	private Page pageBack;
-
-	private Theme theme;
 
 	private float volume = 1f;
 	// workaround for missing feature in webkit
@@ -180,15 +177,5 @@ public class BelugaState
 	public void setBookmarks(Bookmarks bookmarks)
 	{
 		this.bookmarks = bookmarks;
-	}
-
-	public Theme getTheme()
-	{
-		return theme;
-	}
-
-	public void setTheme(Theme theme)
-	{
-		this.theme = theme;
 	}
 }

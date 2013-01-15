@@ -2,9 +2,15 @@
 
 <h1>$text['settings']</h1>
 
-<form name="configuration" onsubmit="sendNSCommand('save-configuration', configuration.username.value, configuration.password.value, configuration.proxyHost.value, configuration.proxyPort.value, configuration.proxyDNS.value); return false;">
+<form name="configuration" onsubmit="sendNSCommand('save-configuration', configuration.username.value, configuration.password.value, configuration.proxyHost.value, configuration.proxyPort.value, configuration.proxyDNS.value, configuration.theme.options[configuration.theme.selectedIndex].value); return false;">
 
-	<fieldset>
+	<ul class="tabrow">
+	    <li id="pandora" class="selected"><a href="#">$text['pandora']</a></li>
+	    <li id="connection"><a href="#">$text['connection']</a></li>
+	    <li id="ui"><a href="#">$text['ui']</a></li>
+	</ul>
+
+	<fieldset class="section pandora">
 		<legend>$text['pandora']</legend>
 		<div>
 			<label for="username">$text['username']</label>
@@ -20,8 +26,9 @@
 			</div>
 		#end
 	</fieldset>
-	<fieldset>
-		<legend>Connection</legend>
+	
+	<fieldset class="section connection">
+		<legend>$text['connection']</legend>
 		<div>
 			<label for="proxyHost">$text['proxy.host']</label>
 			<input name="proxyHost" id="proxyHost" type="text" value="$configuration.getProxyHost()"/>
@@ -43,8 +50,20 @@
 			</span>
 		</div>
 	</fieldset>
+	
+	<fieldset class="section ui">
+		<legend>$text['ui']</legend>
+		<div>
+			<label for="theme">$text['theme']</label>
+			<select name="theme">
+			#foreach( $themeLocal in $themes )
+				<option value="$themeLocal.getId()" #if ($themeLocal.getId() == $configuration.getThemeId()) selected #end>$text[$themeLocal.getId()]</option>
+			#end
+			</select>
+		</div>
+	</fieldset>
 		
-	<div>
+	<div id="submit">
 		<input type="submit" value="$text['save']"/>
 	</div>
 </form>

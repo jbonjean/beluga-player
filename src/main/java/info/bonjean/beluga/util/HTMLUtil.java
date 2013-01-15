@@ -94,12 +94,13 @@ public class HTMLUtil
 	public static String getThemeResourcePath(String path)
 	{
 		// first, try with current theme
-		String themePath = "/themes/" + BelugaState.getInstance().getTheme().getId() + "/" + path;
+		String themePath = "/themes/" + BelugaConfiguration.getInstance().getThemeId() + "/" + path;
 		String newPath = themePath;
 		URL resource = HTMLUtil.class.getResource(themePath);
 		
 		if(resource == null)
 		{
+			log.info("Resource " + path + " not found for theme " + BelugaConfiguration.getInstance().getThemeId());
 			newPath = "/themes/" + Theme.CLASSIC.getId() + "/" + path;
 			// fallback to classic theme
 			resource = HTMLUtil.class.getResource(newPath);
@@ -107,6 +108,7 @@ public class HTMLUtil
 		
 		if(resource == null)
 		{
+			log.info("Resource " + path + " not found for default theme");
 			newPath = path;
 			// second fallback to built-in resources
 			resource = HTMLUtil.class.getResource(path);
@@ -114,6 +116,7 @@ public class HTMLUtil
 		
 		if(resource == null)
 		{
+			log.error("Resource " + path + " not found");
 			// it's over, return the theme path to have a clean error message
 			return themePath;
 		}
@@ -152,6 +155,7 @@ public class HTMLUtil
 		context.put("mutedVolume", BelugaState.getInstance().getMutedVolume());
 		context.put("pageBack", pageBack != null ? pageBack.name().toLowerCase() : null);
 		context.put("page", page.name().toLowerCase());
+		context.put("themes", Theme.values());
 		context.put("debug", System.getProperty("debug") != null);
 		return RenderingEngine.getInstance().render(context, page.getTemplate());
 	}

@@ -6,6 +6,8 @@
 		</encoder>
 	</appender>
 
+	<logger name="info.bonjean.beluga.util.HTTPUtil" level="WARN"/>
+	
 	<root>
 		<level value="WARN" />
 		<appender-ref ref="STDOUT" />

@@ -106,13 +106,6 @@ public class UI
 		frame.add(playerWebBrowser, BorderLayout.SOUTH);
 
 		frame.pack();
-
-		if (configuration.getTheme() == null || configuration.getTheme().length() == 0 || Theme.get(configuration.getTheme()) == null)
-		{
-			configuration.setTheme(Theme.CLASSIC.getId());
-			configuration.store();
-		}
-		state.setTheme(Theme.get(configuration.getTheme()));
 	}
 
 	public void displayLoader()
@@ -350,6 +343,7 @@ public class UI
 			configuration.setProxyHost((String) postParameters[2]);
 			configuration.setProxyPort((String) postParameters[3]);
 			configuration.setDNSProxy((String) postParameters[4]);
+			configuration.setThemeId((String) postParameters[5]);
 			configuration.store();
 
 			// reset the HTTP client to apply proxy changes

@@ -55,9 +55,4 @@ public enum Theme
 	{
 		return id;
 	}
-
-	public String getName()
-	{
-		return this.name().toLowerCase();
-	}
 }

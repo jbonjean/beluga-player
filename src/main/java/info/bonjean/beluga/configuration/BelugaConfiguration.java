@@ -226,13 +226,13 @@ public class BelugaConfiguration
 		set(Property.PROXY_DNS, proxyDNS);
 	}
 	
-	public String getTheme()
+	public String getThemeId()
 	{
 		return getString(Property.THEME, Theme.CLASSIC.getId());
 	}
 	
-	public void setTheme(String theme)
+	public void setThemeId(String themeId)
 	{
-		set(Property.THEME, theme);
+		set(Property.THEME, themeId);
 	}
 }
