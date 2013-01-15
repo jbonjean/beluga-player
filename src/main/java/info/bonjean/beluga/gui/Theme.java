@@ -29,7 +29,7 @@ import java.util.Map;
  */
 public enum Theme
 {
-	CLASSIC("classic"), BLACK_AND_WHITE("black.and.white");
+	CLASSIC("classic")/*, BLACK_AND_WHITE("black.and.white")*/;
 
 	private static final Map<String, Theme> lookup = new HashMap<String, Theme>();
 
