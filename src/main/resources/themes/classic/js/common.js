@@ -5,6 +5,12 @@ function displayLoader()
 	document.getElementById('loader').style.display = 'block';
 }
 
+function disableUI()
+{
+	document.getElementById('loader-img').style.display = 'none';
+	document.getElementById('loader').style.display = 'block';
+}
+
 function hideLoader()
 {
 	document.getElementById('loader').style.display = 'none';

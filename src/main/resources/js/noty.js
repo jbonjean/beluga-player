@@ -46,3 +46,28 @@ function showSuccess(message)
 {
     noty({dismissQueue: true, type: 'success', timeout: 2000, text: message});
 }
+
+function showFatal()
+{
+	noty({
+		dismissQueue: false,
+		type: 'error',
+		timeout: 0,
+		text: '$text["fatal.error"]', 
+		buttons:
+		[
+			{
+				addClass: 'btn btn-primary', text: '$text["exit"]', onClick: function()
+				{
+					sendNSCommand('exit');
+				}
+		    },
+		    {
+		    	addClass: 'btn btn-danger', text: '$text["retry"]', onClick: function()
+		    	{
+		    		sendNSCommand('login');
+				}
+			}
+		]
+	});
+}

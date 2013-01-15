@@ -55,7 +55,7 @@ public class UI
 {
 	private static final Logger log = LoggerFactory.getLogger(UI.class);
 	private static JWebBrowser webBrowser;
-	private final JWebBrowser playerWebBrowser;
+	private static JWebBrowser playerWebBrowser;
 	private final BelugaState state = BelugaState.getInstance();
 	private final PandoraClient pandoraClient = PandoraClient.getInstance();
 	private final BelugaConfiguration configuration = BelugaConfiguration.getInstance();
@@ -132,7 +132,8 @@ public class UI
 		{
 			if (pandoraClient.isLoggedIn())
 				pageBack = Page.SONG;
-		} else if (!page.equals(Page.SONG))
+		}
+		else if (!page.equals(Page.SONG))
 		{
 			if (state.getPage() == page)
 				pageBack = state.getPageBack();
@@ -159,7 +160,8 @@ public class UI
 		try
 		{
 			doDispatch(command, parameters);
-		} catch (Exception e)
+		}
+		catch (Exception e)
 		{
 			handleException(e, command, parameters);
 		}
@@ -178,8 +180,10 @@ public class UI
 
 		// this is a big exclusion list, not very pretty but it ensure that
 		// default behaviour is safety check
-		if (pandoraClient.isLoggedIn() && !command.equals(Command.BOOKMARK) && !command.equals(Command.DELETE_FEEDBACK) && !command.equals(Command.AUDIO_ERROR) && !command.equals(Command.SEARCH)
-				&& !command.equals(Command.STORE_VOLUME) && !command.equals(Command.ADD_STATION) && !command.equals(Command.EXIT) && !command.equals(Command.SELECT_STATION)
+		if (pandoraClient.isLoggedIn() && !command.equals(Command.LOGIN) && !command.equals(Command.BOOKMARK)
+				&& !command.equals(Command.DELETE_FEEDBACK) && !command.equals(Command.AUDIO_ERROR) && !command.equals(Command.SEARCH)
+				&& !command.equals(Command.STORE_VOLUME) && !command.equals(Command.ADD_STATION) && !command.equals(Command.EXIT)
+				&& !command.equals(Command.SELECT_STATION)
 				&& !(command.equals(Command.GOTO) && !(parameters[0].equals("song") || parameters[0].equals("station-details"))))
 		{
 			displayLoader();
@@ -259,7 +263,8 @@ public class UI
 				new Notification(HTMLUtil.getPageHTML(Page.NOTIFICATION));
 				updateAudioUI();
 			}
-		} else if (command.equals(Command.GOTO) && parameters[0].equals("bookmarks"))
+		}
+		else if (command.equals(Command.GOTO) && parameters[0].equals("bookmarks"))
 		{
 			displayLoader();
 			reportInfo("retrieving.bookmarks");
@@ -268,157 +273,160 @@ public class UI
 
 		switch (command)
 		{
-		case LOGIN:
-			pandoraClient.partnerLogin();
-			pandoraClient.userLogin();
-			state.reset();
-			updateUI(Page.WELCOME);
-			dispatch("goto/song");
-			return;
+			case LOGIN:
+				updateUI(Page.WELCOME);
+				pandoraClient.partnerLogin();
+				pandoraClient.userLogin();
+				state.reset();
+				updateUI(Page.WELCOME);
+				dispatch("goto/song");
+				return;
 
-		case NEXT:
-			break;
-
-		case LIKE:
-			if (state.getSong().getSongRating() < 1)
-				pandoraClient.addFeedback(state.getSong(), true);
-			dispatch("goto/song");
-			reportSuccess("feedback.sent");
-			return;
-
-		case DELETE_FEEDBACK:
-			pandoraClient.deleteFeedback(parameters[0]);
-			dispatch("goto/station-details");
-			reportSuccess("feedback.deleted");
-			return;
-
-		case BAN:
-			displayLoader();
-			pandoraClient.addFeedback(state.getSong(), false);
-			state.setSong(null);
-			dispatch("next");
-			return;
-
-		case SLEEP:
-			displayLoader();
-			pandoraClient.sleepSong(state.getSong());
-			state.setSong(null);
-			dispatch("next");
-			return;
-
-		case BOOKMARK:
-			displayLoader();
-			String bookmarkType = parameters[0];
-			if (bookmarkType.equals("artist"))
-				pandoraClient.addArtistBookmark(state.getSong().getTrackToken());
-			else
-				pandoraClient.addSongBookmark(state.getSong().getTrackToken());
-			hideLoader();
-			reportSuccess("bookmark.created");
-			return;
-
-		case EXIT:
-			System.exit(0);
-			break;
-
-		case GOTO:
-			Page page = Page.fromString(parameters[0]);
-			if (page == null)
-			{
-				log.error("Unknow page " + page);
+			case NEXT:
 				break;
-			}
-			if (page.equals(Page.AUDIO))
-			{
-				updateAudioUI();
-			} else
-				updateUI(page);
-			break;
 
-		case SAVE_CONFIGURATION:
-			displayLoader();
-			log.debug("Update configuration");
-			configuration.setUserName((String) postParameters[0]);
-			configuration.setPassword((String) postParameters[1]);
-			configuration.setProxyHost((String) postParameters[2]);
-			configuration.setProxyPort((String) postParameters[3]);
-			configuration.setDNSProxy((String) postParameters[4]);
-			configuration.setThemeId((String) postParameters[5]);
-			configuration.store();
+			case LIKE:
+				if (state.getSong().getSongRating() < 1)
+					pandoraClient.addFeedback(state.getSong(), true);
+				dispatch("goto/song");
+				reportSuccess("feedback.sent");
+				return;
 
-			// reset the HTTP client to apply proxy changes
-			BelugaHTTPClient.reset();
-			log.debug("Redirect to login");
-			dispatch("login");
-			return;
+			case DELETE_FEEDBACK:
+				pandoraClient.deleteFeedback(parameters[0]);
+				dispatch("goto/station-details");
+				reportSuccess("feedback.deleted");
+				return;
 
-		case SELECT_STATION:
-			displayLoader();
-			log.debug("Select station with id: " + parameters[0]);
-			configuration.setDefaultStationId(parameters[0]);
-			state.setStation(null);
-			dispatch("next");
-			return;
+			case BAN:
+				displayLoader();
+				pandoraClient.addFeedback(state.getSong(), false);
+				state.setSong(null);
+				dispatch("next");
+				return;
 
-		case SEARCH:
-			if (postParameters.length != 1)
-			{
-				log.error("Invalid parameters received");
+			case SLEEP:
+				displayLoader();
+				pandoraClient.sleepSong(state.getSong());
+				state.setSong(null);
+				dispatch("next");
+				return;
+
+			case BOOKMARK:
+				displayLoader();
+				String bookmarkType = parameters[0];
+				if (bookmarkType.equals("artist"))
+					pandoraClient.addArtistBookmark(state.getSong().getTrackToken());
+				else
+					pandoraClient.addSongBookmark(state.getSong().getTrackToken());
+				hideLoader();
+				reportSuccess("bookmark.created");
+				return;
+
+			case EXIT:
+				System.exit(0);
+				return;
+
+			case GOTO:
+				Page page = Page.fromString(parameters[0]);
+				if (page == null)
+				{
+					log.error("Unknow page " + page);
+					break;
+				}
+				if (page.equals(Page.AUDIO))
+				{
+					updateAudioUI();
+				}
+				else
+					updateUI(page);
 				break;
-			}
-			String resultsHTML = "";
-			String query = (String) postParameters[0];
-			log.debug("query: " + query);
-			if (query.length() > 0)
-			{
-				pandoraClient.search(query);
-				resultsHTML = StringEscapeUtils.escapeJavaScript(HTMLUtil.getSearchResultsHTML(pandoraClient.search(query)));
-			}
-			webBrowser.executeJavascript("document.getElementById('results').innerHTML = \"" + resultsHTML + "\"");
-			break;
 
-		case ADD_STATION:
-			String type = parameters[0];
-			String token = parameters[1];
-			if (type.equals("search"))
-			{
-				log.debug("Add station from search results, token: " + token);
-				pandoraClient.addStation(token);
-			} else
-			{
-				log.debug("Add station from " + type + ", token: " + token);
-				pandoraClient.addStation(type, token);
-			}
-			dispatch("goto/song");
-			reportSuccess("station.created");
-			return;
+			case SAVE_CONFIGURATION:
+				displayLoader();
+				log.debug("Update configuration");
+				configuration.setUserName((String) postParameters[0]);
+				configuration.setPassword((String) postParameters[1]);
+				configuration.setProxyHost((String) postParameters[2]);
+				configuration.setProxyPort((String) postParameters[3]);
+				configuration.setDNSProxy((String) postParameters[4]);
+				configuration.setThemeId((String) postParameters[5]);
+				configuration.store();
 
-		case DELETE_STATION:
-			pandoraClient.deleteStation(state.getStation());
-			dispatch("next");
-			reportSuccess("station.deleted");
-			return;
+				// reset the HTTP client to apply proxy changes
+				BelugaHTTPClient.reset();
+				log.debug("Redirect to login");
+				dispatch("login");
+				return;
 
-		case CREATE_USER:
-			displayLoader();
-			log.info("Create user");
-			pandoraClient.createUser((String) postParameters[0], (String) postParameters[1], (String) postParameters[2], (String) postParameters[3], (String) postParameters[4],
-					(String) postParameters[5]);
-			dispatch("configuration");
-			return;
+			case SELECT_STATION:
+				displayLoader();
+				log.debug("Select station with id: " + parameters[0]);
+				configuration.setDefaultStationId(parameters[0]);
+				state.setStation(null);
+				dispatch("next");
+				return;
 
-		case STORE_VOLUME:
-			log.debug("Store volume=" + parameters[0] + ", muted=" + parameters[1]);
-			state.setVolume(Float.parseFloat(parameters[0]));
-			state.setMutedVolume(Float.parseFloat(parameters[1]));
-			return;
+			case SEARCH:
+				if (postParameters.length != 1)
+				{
+					log.error("Invalid parameters received");
+					break;
+				}
+				String resultsHTML = "";
+				String query = (String) postParameters[0];
+				log.debug("query: " + query);
+				if (query.length() > 0)
+				{
+					pandoraClient.search(query);
+					resultsHTML = StringEscapeUtils.escapeJavaScript(HTMLUtil.getSearchResultsHTML(pandoraClient.search(query)));
+				}
+				webBrowser.executeJavascript("document.getElementById('results').innerHTML = \"" + resultsHTML + "\"");
+				break;
 
-		case AUDIO_ERROR:
-			reportFatalError("audio.player.error", null);
-			return;
+			case ADD_STATION:
+				String type = parameters[0];
+				String token = parameters[1];
+				if (type.equals("search"))
+				{
+					log.debug("Add station from search results, token: " + token);
+					pandoraClient.addStation(token);
+				}
+				else
+				{
+					log.debug("Add station from " + type + ", token: " + token);
+					pandoraClient.addStation(type, token);
+				}
+				dispatch("goto/song");
+				reportSuccess("station.created");
+				return;
 
-		default:
-			log.info("Unknown command received: " + fullCommand);
+			case DELETE_STATION:
+				pandoraClient.deleteStation(state.getStation());
+				dispatch("next");
+				reportSuccess("station.deleted");
+				return;
+
+			case CREATE_USER:
+				displayLoader();
+				log.info("Create user");
+				pandoraClient.createUser((String) postParameters[0], (String) postParameters[1], (String) postParameters[2],
+						(String) postParameters[3], (String) postParameters[4], (String) postParameters[5]);
+				dispatch("configuration");
+				return;
+
+			case STORE_VOLUME:
+				log.debug("Store volume=" + parameters[0] + ", muted=" + parameters[1]);
+				state.setVolume(Float.parseFloat(parameters[0]));
+				state.setMutedVolume(Float.parseFloat(parameters[1]));
+				return;
+
+			case AUDIO_ERROR:
+				reportFatalError("audio.player.error", null);
+				return;
+
+			default:
+				log.info("Unknown command received: " + fullCommand);
 		}
 
 		// we are done, hide loader
@@ -479,16 +487,26 @@ public class UI
 		}
 		if (fatal)
 		{
+			// display all message we have in the queue
 			for (String errorKey : BelugaState.getInstance().getErrors())
 				showError(errorKey);
-			showError("shutdown.fatal.error");
+
+			// reset everything
+			BelugaState.getInstance().reset();
+			PandoraClient.getInstance().reset();
 			try
 			{
-				Thread.sleep(5000);
-			} catch (InterruptedException e1)
-			{
+				// update the player (this will disable it to prevent more errors to happen)
+				playerWebBrowser.setHTMLContent(HTMLUtil.getPageHTML(Page.AUDIO));
 			}
-			System.exit(-1);
+			catch (InternalException e1)
+			{
+				log.error(e1.getMessage());
+				System.exit(-1);
+			}
+
+			webBrowser.executeJavascript("disableUI()");
+			webBrowser.executeJavascript("showFatal()");
 		}
 	}
 
@@ -500,10 +518,12 @@ public class UI
 			if (retryCount >= MAX_RETRIES)
 			{
 				reportFatalError("too.many.errrors", e);
-			} else if (e instanceof CryptoException)
+			}
+			else if (e instanceof CryptoException)
 			{
 				reportFatalError("crypto.related.problem", e);
-			} else if (e instanceof CommunicationException)
+			}
+			else if (e instanceof CommunicationException)
 			{
 				if (!pandoraClient.isLoggedIn())
 				{
@@ -514,7 +534,8 @@ public class UI
 				reportError("communication.problem");
 				dispatch(command, parameters);
 				return;
-			} else if (e instanceof PandoraException)
+			}
+			else if (e instanceof PandoraException)
 			{
 				PandoraException pe = (PandoraException) e;
 				if (pe.getError() == PandoraError.INVALID_CREDENTIALS || pe.getError() == PandoraError.LICENSING_RESTRICTIONS)
@@ -547,7 +568,8 @@ public class UI
 				reportFatalError(pe.getError().getMessageKey(), pe);
 				return;
 			}
-		} catch (Exception e1)
+		}
+		catch (Exception e1)
 		{
 		}
 		reportFatalError("a.bug.occured", e);

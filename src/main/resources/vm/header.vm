@@ -12,7 +12,7 @@
 			#include( "noty/layouts/bottomRight.js" )
 			#include( "noty/layouts/top.js" )
 			
-			#include( "js/noty.js" )
+			#parse( "js/noty.js" )
 			#parse( $HTMLUtil.getThemeResourcePath("js/common.js") )
 			#parse( $HTMLUtil.getThemeResourcePath("js/${page}.js") )
 		</script>
@@ -27,7 +27,7 @@
 		    #end
 			
 			<div id="loader">
-				<img src="$themeImageLoader"/>
+				<img id="loader-img" src="$themeImageLoader"/>
 			</div>
 			
 			#if( $pageBack )

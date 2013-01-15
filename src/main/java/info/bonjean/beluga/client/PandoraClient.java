@@ -88,6 +88,14 @@ public class PandoraClient
 		return instance;
 	}
 
+	public void reset()
+	{
+		partnerId = null;
+		userId = null;
+		partnerAuthToken = null;
+		userAuthToken = null;
+	}
+
 	public boolean isPandoraReachable()
 	{
 		return partnerAuthToken != null && partnerAuthToken.length() > 0;
@@ -184,7 +192,8 @@ public class PandoraClient
 			try
 			{
 				cover = HTMLUtil.getRemoteResourceBase64(coverUrl);
-			} catch (CommunicationException e)
+			}
+			catch (CommunicationException e)
 			{
 				log.error("Cannot retrieve cover: " + coverUrl);
 			}
@@ -207,7 +216,8 @@ public class PandoraClient
 			{
 				traits.add(nodes.item(i).getTextContent());
 			}
-		} catch (Exception ex)
+		}
+		catch (Exception ex)
 		{
 			log.error("Cannot retrieve focus traits for song " + song.getSongName());
 		}
@@ -381,13 +391,15 @@ public class PandoraClient
 		});
 	}
 
-	public void createUser(String username, String password, String birthYearStr, String zipCode, String gender, String emailOptInStr) throws BelugaException
+	public void createUser(String username, String password, String birthYearStr, String zipCode, String gender, String emailOptInStr)
+			throws BelugaException
 	{
 		Integer birthYear = 0;
 		try
 		{
 			birthYear = Integer.valueOf(birthYearStr);
-		} catch (NumberFormatException e)
+		}
+		catch (NumberFormatException e)
 		{
 			// we don't care, Pandora is going to reject it anyway
 		}
