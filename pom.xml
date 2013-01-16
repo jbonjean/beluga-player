@@ -20,6 +20,7 @@
 		<swt.version>3.8</swt.version>
 		<slf4j.version>1.6.4</slf4j.version>
 		<logback.version>1.0.1</logback.version>
+		<janino.version>2.6.1</janino.version>
 		<dnsjava.version>2.1.1</dnsjava.version>
 		<twinkle.version>1.0.0</twinkle.version>
 		<sax.version>2.0.1</sax.version>
@@ -127,6 +128,11 @@
 			<groupId>ch.qos.logback</groupId>
 			<artifactId>logback-core</artifactId>
 			<version>${logback.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.codehaus.janino</groupId>
+			<artifactId>janino</artifactId>
+			<version>${janino.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>dnsjava</groupId>

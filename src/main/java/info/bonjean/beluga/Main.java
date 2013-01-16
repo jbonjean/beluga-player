@@ -32,10 +32,6 @@ import java.awt.Toolkit;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 
-import org.slf4j.LoggerFactory;
-
-import ch.qos.logback.classic.Level;
-import ch.qos.logback.classic.Logger;
 import chrriis.common.UIUtils;
 import chrriis.dj.nativeswing.swtimpl.NativeInterface;
 
@@ -43,25 +39,21 @@ import chrriis.dj.nativeswing.swtimpl.NativeInterface;
  * 
  * @author Julien Bonjean <julien@bonjean.info>
  * 
+ * Use the option -Ddebug=1 to run in debug mode.
+ * 
  */
 public class Main
 {
 	public static void main(String[] args)
 	{
 		String version = Main.class.getPackage().getImplementationVersion();
-		if(version == null)
+		if (version == null)
 			version = "(dev)";
 
 		System.out.println("Beluga Player " + version);
 		if (args.length == 1 && args[0].equals("-version"))
 		{
 			System.exit(0);
-		}
-
-		if (System.getProperty("debug") != null)
-		{
-			Logger root = (Logger) LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
-			root.setLevel(Level.ALL);
 		}
 
 		BelugaConfiguration.getInstance().load();
