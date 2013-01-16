@@ -29,6 +29,7 @@ import info.bonjean.beluga.exception.InternalException;
 import info.bonjean.beluga.exception.PandoraError;
 import info.bonjean.beluga.exception.PandoraException;
 import info.bonjean.beluga.gui.notification.Notification;
+import info.bonjean.beluga.response.Feedback;
 import info.bonjean.beluga.response.Song;
 import info.bonjean.beluga.response.Station;
 import info.bonjean.beluga.util.HTMLUtil;
@@ -294,6 +295,7 @@ public class UI
 
 			case DELETE_FEEDBACK:
 				pandoraClient.deleteFeedback(parameters[0]);
+				updateSongFeedback(parameters[0]);
 				dispatch("goto/station-details");
 				reportSuccess("feedback.deleted");
 				return;
@@ -443,6 +445,31 @@ public class UI
 
 		// reset loop protection
 		retryCount = 0;
+	}
+
+	/**
+	 * 
+	 * If a feedback has been deleted, we check if it is the song currently playing
+	 * 
+	 */
+	private void updateSongFeedback(String feedbackId)
+	{
+		if (state.getSong() == null)
+			return;
+
+		for (Feedback feedback : state.getStation().getFeedback().getThumbsUp())
+		{
+			if (feedback.getFeedbackId().equals(feedbackId))
+			{
+				// this is not bulletproof but should be good enough for 99% of cases.
+				if (state.getSong().getArtistName().equals(feedback.getArtistName()) && state.getSong().getSongName().equals(feedback.getSongName()))
+				{
+					state.getSong().setSongRating(0);
+					log.info("Current song feedback updated");
+				}
+				return;
+			}
+		}
 	}
 
 	public static void showError(String messageKey)
