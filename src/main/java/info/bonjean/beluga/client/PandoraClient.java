@@ -22,6 +22,7 @@ import info.bonjean.beluga.configuration.BelugaConfiguration;
 import info.bonjean.beluga.exception.BelugaException;
 import info.bonjean.beluga.exception.CommunicationException;
 import info.bonjean.beluga.gui.Page;
+import info.bonjean.beluga.request.ArtistBookmarkDeleteRequest;
 import info.bonjean.beluga.request.ArtistBookmarkRequest;
 import info.bonjean.beluga.request.BookmarksRequest;
 import info.bonjean.beluga.request.CreateStationRequest;
@@ -34,6 +35,7 @@ import info.bonjean.beluga.request.ParameterMap;
 import info.bonjean.beluga.request.PartnerAuthRequest;
 import info.bonjean.beluga.request.PlayListRequest;
 import info.bonjean.beluga.request.SearchRequest;
+import info.bonjean.beluga.request.SongBookmarkDeleteRequest;
 import info.bonjean.beluga.request.SongBookmarkRequest;
 import info.bonjean.beluga.request.SongSleepRequest;
 import info.bonjean.beluga.request.StationListRequest;
@@ -278,6 +280,34 @@ public class PandoraClient
 		return feedback;
 	}
 
+	public void deleteSongBookmark(String bookmarkToken) throws BelugaException
+	{
+		ParameterMap params = getDefaultParameterMap();
+
+		SongBookmarkDeleteRequest songBookmarkDeleteRequest = new SongBookmarkDeleteRequest();
+		songBookmarkDeleteRequest.setSyncTime(PandoraUtil.getSyncTime());
+		songBookmarkDeleteRequest.setUserAuthToken(userAuthToken);
+		songBookmarkDeleteRequest.setBookmarkToken(bookmarkToken);
+
+		HTTPUtil.<Result> request(Method.DELETE_SONG_BOOKMARK, params, songBookmarkDeleteRequest, true, new TypeToken<Response<Result>>()
+		{
+		});
+	}
+	
+	public void deleteArtistBookmark(String bookmarkToken) throws BelugaException
+	{
+		ParameterMap params = getDefaultParameterMap();
+
+		ArtistBookmarkDeleteRequest artistBookmarkDeleteRequest = new ArtistBookmarkDeleteRequest();
+		artistBookmarkDeleteRequest.setSyncTime(PandoraUtil.getSyncTime());
+		artistBookmarkDeleteRequest.setUserAuthToken(userAuthToken);
+		artistBookmarkDeleteRequest.setBookmarkToken(bookmarkToken);
+
+		HTTPUtil.<Result> request(Method.DELETE_ARTIST_BOOKMARK, params, artistBookmarkDeleteRequest, true, new TypeToken<Response<Result>>()
+		{
+		});
+	}
+
 	public void deleteFeedback(String feedbackId) throws BelugaException
 	{
 		ParameterMap params = getDefaultParameterMap();
@@ -287,7 +317,7 @@ public class PandoraClient
 		feedbackDeleteRequest.setUserAuthToken(userAuthToken);
 		feedbackDeleteRequest.setFeedbackId(feedbackId);
 
-		HTTPUtil.<Feedback> request(Method.DELETE_FEEDBACK, params, feedbackDeleteRequest, true, new TypeToken<Response<Feedback>>()
+		HTTPUtil.<Result> request(Method.DELETE_FEEDBACK, params, feedbackDeleteRequest, true, new TypeToken<Response<Result>>()
 		{
 		});
 	}

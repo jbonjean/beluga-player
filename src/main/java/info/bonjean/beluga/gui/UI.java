@@ -299,7 +299,19 @@ public class UI
 				dispatch("goto/station-details");
 				reportSuccess("feedback.deleted");
 				return;
-
+			
+			case DELETE_BOOKMARK:
+				displayLoader();
+				String deleteBookmarkType = parameters[0];
+				String deleteBookmarkToken = parameters[1];
+				if (deleteBookmarkType.equals("artist"))
+					pandoraClient.deleteArtistBookmark(deleteBookmarkToken);
+				else
+					pandoraClient.deleteSongBookmark(deleteBookmarkToken);
+				hideLoader();
+				reportSuccess("bookmark.deleted");
+				return;
+			
 			case BAN:
 				displayLoader();
 				pandoraClient.addFeedback(state.getSong(), false);
