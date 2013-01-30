@@ -1,0 +1,6 @@
+#parse( "/themes/classic/css/common.css" )
+
+body {
+	background-color: #ffe118;
+	color: #fff;
+}
