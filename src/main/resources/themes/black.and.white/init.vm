@@ -1,7 +1,7 @@
 #set ( $themeImageStationAdd		= "data:image/png;base64,$HTMLUtil.getThemeResourceBase64( 'img/visualpharm/Add-32.png') " )
 #set ( $themeImageInfo				= "data:image/png;base64,$HTMLUtil.getThemeResourceBase64( 'img/info-20.png')" )
 #set ( $themeImageStationDelete		= "data:image/png;base64,$HTMLUtil.getThemeResourceBase64( 'img/visualpharm/Delete-32.png')" )
-#set ( $themeImageStationDetails	= "" )
+#set ( $themeImageStationDetails	= "data:image/png;base64,$HTMLUtil.getThemeResourceBase64( 'img/visualpharm/Details-32.png')" )
 #set ( $themeImageBookmarks			= "data:image/png;base64,$HTMLUtil.getThemeResourceBase64( 'img/visualpharm/Favorites-32.png')" )
 #set ( $themeImageSettings			= "data:image/png;base64,$HTMLUtil.getThemeResourceBase64( 'img/visualpharm/Settings-32.png')" )
 #set ( $themeImageAbout				= "data:image/png;base64,$HTMLUtil.getThemeResourceBase64( 'img/visualpharm/About-32.png')" )
