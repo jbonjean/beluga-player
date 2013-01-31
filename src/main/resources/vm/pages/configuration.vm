@@ -2,7 +2,7 @@
 
 <h1>$text['settings']</h1>
 
-<form name="configuration" onsubmit="sendNSCommand('save-configuration', configuration.username.value, configuration.password.value, configuration.proxyHost.value, configuration.proxyPort.value, configuration.proxyDNS.value, configuration.theme.options[configuration.theme.selectedIndex].value); return false;">
+<form name="configuration" onsubmit="sendNSCommand('save-configuration', configuration.username.value, configuration.password.value, configuration.proxyHost.value, configuration.proxyPort.value, configuration.proxyDNS.value, configuration.proxyDNSWebkit.checked, configuration.theme.options[configuration.theme.selectedIndex].value); return false;">
 
 	<ul class="tabrow">
 	    <li id="pandora" class="selected"><a href="#">$text['pandora']</a></li>
@@ -37,7 +37,7 @@
 			<label for="proxyPort">$text['proxy.port']</label>
 			<input name="proxyPort" id="proxyPort" type="text" value="$configuration.getProxyPortStr()"/>
 		</div>
-		<i>or</i>
+		<i>$text['or']</i>
 		<div>
 			<label for="proxyDNS">$text['dns.proxy']</label>
 			<input name="proxyDNS" id="proxyDNS" type="text" value="$configuration.getDNSProxy()"/>
@@ -48,6 +48,11 @@
 					<ul>$text['dns.proxy.tooltip']</ul>
 				</span>
 			</span>
+		</div>
+		<div>
+			<label for="proxyDNSWebkit">$text['use.for.audio']</label>
+			<input name="proxyDNSWebkit" id="proxyDNSWebkit" type="checkbox" #if ($configuration.getDNSProxyWebkit()) checked #end"/>
+			($text['restart.needed'])
 		</div>
 	</fieldset>
 	

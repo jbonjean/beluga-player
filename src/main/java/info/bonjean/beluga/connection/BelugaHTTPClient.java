@@ -46,7 +46,7 @@ public class BelugaHTTPClient
 	private static final int CONNECTION_TIMEOUT = 4000;
 	private static final int SOCKET_TIMEOUT = 4000;
 	private static final int MAX_RETRIES = 3;
-	
+
 	private HttpClient client;
 	private static BelugaHTTPClient instance;
 
@@ -57,14 +57,14 @@ public class BelugaHTTPClient
 		HttpParams httpParameters = new BasicHttpParams();
 		HttpConnectionParams.setConnectionTimeout(httpParameters, CONNECTION_TIMEOUT);
 		HttpConnectionParams.setSoTimeout(httpParameters, SOCKET_TIMEOUT);
-		
+
 		client = new DefaultHttpClient(httpParameters);
 		if (!configuration.getDNSProxy().isEmpty())
 		{
 			BelugaDNSResolver dnsOverrider = new BelugaDNSResolver("tuner.pandora.com", configuration.getDNSProxy());
 			client = new DefaultHttpClient(new PoolingClientConnectionManager(SchemeRegistryFactory.createDefault(), dnsOverrider), httpParameters);
-			
-		} else if (!configuration.getProxyHost().isEmpty())
+		}
+		else if (!configuration.getProxyHost().isEmpty())
 			ConnRouteParams.setDefaultProxy(client.getParams(), new HttpHost(configuration.getProxyHost(), configuration.getProxyPort(), "http"));
 	}
 
@@ -83,13 +83,14 @@ public class BelugaHTTPClient
 	public InputStream httpRequest(HttpUriRequest request) throws CommunicationException
 	{
 		Exception e = null;
-		for(int i = 0 ; i < MAX_RETRIES ; i++)
+		for (int i = 0; i < MAX_RETRIES; i++)
 		{
 			try
 			{
 				HttpResponse httpResponse = client.execute(request);
 				return httpResponse.getEntity().getContent();
-			} catch (Exception e1)
+			}
+			catch (Exception e1)
 			{
 				e = e1;
 				UI.reportError("connection.problem", true);

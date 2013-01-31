@@ -32,7 +32,7 @@ import org.slf4j.LoggerFactory;
 /**
  * 
  * @author Julien Bonjean <julien@bonjean.info>
- *
+ * 
  */
 public class BelugaConfiguration
 {
@@ -61,7 +61,8 @@ public class BelugaConfiguration
 		{
 			// TODO: check proxy port is valid (number)
 			properties.store(new FileOutputStream(CONFIGURATION_FILE), null);
-		} catch (Exception e)
+		}
+		catch (Exception e)
 		{
 			log.error("Cannot write configuration file");
 			System.exit(-1);
@@ -87,7 +88,8 @@ public class BelugaConfiguration
 			try
 			{
 				configurationFile.createNewFile();
-			} catch (IOException e)
+			}
+			catch (IOException e)
 			{
 				log.error("Error creating configuration file");
 				System.exit(-1);
@@ -99,7 +101,8 @@ public class BelugaConfiguration
 		try
 		{
 			properties.load(new FileInputStream(CONFIGURATION_FILE));
-		} catch (Exception e)
+		}
+		catch (Exception e)
 		{
 			log.error("Cannot load configuration file");
 			System.exit(-1);
@@ -116,12 +119,12 @@ public class BelugaConfiguration
 		store();
 	}
 
-	public void set(Property property, String value)
+	private void set(Property property, String value)
 	{
 		properties.setProperty(property.getKey(), value);
 	}
 
-	public String getString(Property property, String defaultValue)
+	private String getString(Property property, String defaultValue)
 	{
 		if (properties.get(property.getKey()) == null)
 			return defaultValue;
@@ -129,36 +132,27 @@ public class BelugaConfiguration
 		return (String) properties.get(property.getKey());
 	}
 
-	public String getString(Property property)
+	private String getString(Property property)
 	{
 		return getString(property, null);
 	}
 
-	public Integer getInteger(Property property, Integer defaultValue)
+	private Integer getInteger(Property property, Integer defaultValue)
 	{
 		String stringValue = (String) properties.get(property.getKey());
-		if ( stringValue == null || stringValue.isEmpty())
+		if (stringValue == null || stringValue.isEmpty())
 			return defaultValue;
 
 		return new Integer(stringValue);
 	}
 
-	public Integer getInteger(Property property)
+	private Boolean getBoolean(Property property, Boolean defaultValue)
 	{
-		return getInteger(property, null);
-	}
-
-	public Long getLong(Property property)
-	{
-		return getLong(property, null);
-	}
-
-	private Long getLong(Property property, Long defaultValue)
-	{
-		if (properties.get(property.getKey()) == null)
+		String stringValue = (String) properties.get(property.getKey());
+		if (stringValue == null || stringValue.isEmpty())
 			return defaultValue;
 
-		return new Long((String) properties.get(property.getKey()));
+		return new Boolean(stringValue);
 	}
 
 	public String getUserName()
@@ -195,7 +189,7 @@ public class BelugaConfiguration
 	{
 		return getProxyPort() == null ? "" : String.valueOf(getProxyPort());
 	}
-	
+
 	public Integer getProxyPort()
 	{
 		return getInteger(Property.PROXY_PORT, null);
@@ -215,24 +209,34 @@ public class BelugaConfiguration
 	{
 		set(Property.DEFAULT_STATION, defaultStationId);
 	}
-	
+
 	public String getDNSProxy()
 	{
 		return getString(Property.PROXY_DNS);
 	}
-	
+
 	public void setDNSProxy(String proxyDNS)
 	{
 		set(Property.PROXY_DNS, proxyDNS);
 	}
-	
+
 	public String getThemeId()
 	{
 		return getString(Property.THEME, Theme.CLASSIC.getId());
 	}
-	
+
 	public void setThemeId(String themeId)
 	{
 		set(Property.THEME, themeId);
+	}
+
+	public Boolean getDNSProxyWebkit()
+	{
+		return getBoolean(Property.PROXY_DNS_WEBKIT, false);
+	}
+
+	public void setDNSProxyWebkit(Boolean dnsProxyWebkit)
+	{
+		set(Property.PROXY_DNS_WEBKIT, dnsProxyWebkit.toString());
 	}
 }

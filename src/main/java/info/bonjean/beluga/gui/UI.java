@@ -299,7 +299,7 @@ public class UI
 				dispatch("goto/station-details");
 				reportSuccess("feedback.deleted");
 				return;
-			
+
 			case DELETE_BOOKMARK:
 				displayLoader();
 				String deleteBookmarkType = parameters[0];
@@ -311,7 +311,7 @@ public class UI
 				hideLoader();
 				reportSuccess("bookmark.deleted");
 				return;
-			
+
 			case BAN:
 				displayLoader();
 				pandoraClient.addFeedback(state.getSong(), false);
@@ -364,7 +364,8 @@ public class UI
 				configuration.setProxyHost((String) postParameters[2]);
 				configuration.setProxyPort((String) postParameters[3]);
 				configuration.setDNSProxy((String) postParameters[4]);
-				configuration.setThemeId((String) postParameters[5]);
+				configuration.setDNSProxyWebkit((Boolean) postParameters[5]);
+				configuration.setThemeId((String) postParameters[6]);
 				configuration.store();
 
 				// reset the HTTP client to apply proxy changes

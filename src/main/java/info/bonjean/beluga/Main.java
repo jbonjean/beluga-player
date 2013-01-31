@@ -58,6 +58,14 @@ public class Main
 
 		BelugaConfiguration.getInstance().load();
 		BelugaState.getInstance().setVersion(version);
+		
+		// set the proxy parameters for webkit before it is instanciated
+		if (BelugaConfiguration.getInstance().getDNSProxyWebkit())
+		{
+			System.setProperty("network.proxy_host", BelugaConfiguration.getInstance().getDNSProxy());
+			System.setProperty("network.proxy_port", "80");
+		}
+		
 		startUI();
 	}
 
