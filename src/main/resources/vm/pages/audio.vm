@@ -39,10 +39,7 @@
 						<li><a href="javascript:;" class="jp-volume-max" tabindex="1" title="$text['max.volume']"></a></li>
 					</ul>
 					<div class="jp-progress">
-						<div class="jp-seek-bar">
 							<div class="jp-play-bar"></div>
-
-						</div>
 					</div>
 					<div class="jp-volume-bar">
 						<div class="jp-volume-bar-value"></div>
