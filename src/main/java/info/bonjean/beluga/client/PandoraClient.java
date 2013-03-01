@@ -234,6 +234,7 @@ public class PandoraClient
 		playlist.setSyncTime(PandoraUtil.getSyncTime());
 		playlist.setUserAuthToken(userAuthToken);
 		playlist.setStationToken(station.getStationToken());
+		playlist.setAdditionalAudioUrl("HTTP_128_MP3");
 
 		Result result = HTTPUtil.<Result> request(Method.GET_PLAYLIST, params, playlist, true, new TypeToken<Response<Result>>()
 		{
