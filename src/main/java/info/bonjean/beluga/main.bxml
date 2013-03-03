@@ -1,4 +1,4 @@
-<local:HelloWindow title="Beluga Player" maximized="true" xmlns:bxml="http://pivot.apache.org/bxml"
+<local:PivotWindow title="Beluga Player" maximized="true" xmlns:bxml="http://pivot.apache.org/bxml"
 	xmlns:local="info.bonjean.beluga" xmlns="org.apache.pivot.wtk" xmlns:content="org.apache.pivot.wtk.content">
 	<actionMappings>
 		<Window.ActionMapping action="fileNew" keyStroke="CMD-N" />
@@ -54,7 +54,7 @@
 					</Menu>
 				</MenuBar.Item>
 			</MenuBar>
-			<PushButton buttonData="Exit" styles="{toolbar:true,font:{bold:true}}"/>
+			<PushButton bxml:id="exitButton" buttonData="Exit" styles="{toolbar:true,font:{bold:true}}"/>
 		</TablePane.Row>
 
 		<TablePane.Row height="1*">
@@ -62,34 +62,7 @@
 		</TablePane.Row>
 
 		<TablePane.Row height="60">
-			<Label TablePane.columnSpan="2" text="Player" />
+			<bxml:include TablePane.columnSpan="2" inline="true" src="player.bxml" />
 		</TablePane.Row>
 	</TablePane>
-
-
-
-
-	<!-- <BoxPane orientation="vertical" styles="{verticalAlignment:'top',fill:true,backgroundColor:'#115599'}"> -->
-
-	<!-- <BoxPane orientation="horizontal" -->
-	<!-- styles="{horizontalAlignment:'left',verticalAlignment:'top',padding:'10',backgroundColor:'#00ffff',fill:true}"> -->
-	<!-- <BoxPane orientation="vertical" -->
-	<!-- styles="{horizontalAlignment:'center',verticalAlignment:'bottom',backgroundColor:'#0000ff',fill:true}"> -->
-
-	<!-- <Label text="Super Album" styles="{horizontalAlignment:'center'}" /> -->
-	<!-- </BoxPane> -->
-	<!-- <BoxPane orientation="vertical" -->
-	<!-- styles="{horizontalAlignment:'left',verticalAlignment:'bottom',backgroundColor:'#ff00ff',fill:true}"> -->
-	<!-- <Label bxml:id="songTitle" /> -->
-	<!-- <Label bxml:id="artistName" /> -->
-
-	<!-- <ScrollPane styles="{backgroundColor:'#ffff00',fill:true}" horizontalScrollBarPolicy="fill" -->
-	<!-- verticalScrollBarPolicy="fill_to_capacity" preferredHeight="200" preferredWidth="260"> -->
-	<!-- <Label bxml:id="songTraits" styles="{wrapText:true}" /> -->
-	<!-- </ScrollPane> -->
-	<!-- </BoxPane> -->
-	<!-- </BoxPane> -->
-
-	<!-- </BoxPane> -->
-
-</local:HelloWindow>
+</local:PivotWindow>

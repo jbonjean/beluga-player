@@ -1,0 +1,34 @@
+<TablePane styles="{verticalSpacing:1,horizontalSpacing:1}" xmlns:bxml="http://pivot.apache.org/bxml"
+	xmlns:local="info.bonjean.beluga" xmlns="org.apache.pivot.wtk" xmlns:content="org.apache.pivot.wtk.content">
+	<columns>
+		<TablePane.Column width="-1" />
+		<TablePane.Column width="1*" />
+	</columns>
+
+	<TablePane.Row height="-1">
+		<PushButton buttonData="Next >>" styles="{font:{bold:true},toolbar:true,padding:5}" />
+		
+		<TablePane styles="{verticalSpacing:1,horizontalSpacing:1}">
+			<columns>
+				<TablePane.Column width="-1" />
+				<TablePane.Column width="1*" />
+				<TablePane.Column width="-1" />
+			</columns>
+			<TablePane.Row height="32">
+				<Label TablePane.columnSpan="3" bxml:id="stationName" styles="{font:{bold:true},horizontalAlignment:'center',verticalAlignment:'center'}" />
+			</TablePane.Row>
+			<TablePane.Row height="1*">
+				<Label bxml:id="currentTime" styles="{padding:{left:5,right:5}}"/>
+				<Meter bxml:id="progress" styles="{gridFrequency:1}"/>
+				<Label bxml:id="totalTime" styles="{padding:{left:5,right:5}}"/>
+			</TablePane.Row>
+			<TablePane.Row height="10">
+				<TablePane.Filler />
+				<TablePane.Filler />
+				<TablePane.Filler />
+			</TablePane.Row>
+		</TablePane>
+	</TablePane.Row>
+</TablePane>
+
+<!-- TablePane.columnSpan="5" -->
