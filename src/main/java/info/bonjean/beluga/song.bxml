@@ -1,0 +1,31 @@
+<TablePane styles="{verticalSpacing:1,showHorizontalGridLines:true,horizontalSpacing:1,showVerticalGridLines:true}"
+	xmlns:bxml="http://pivot.apache.org/bxml" xmlns:local="info.bonjean.beluga" xmlns="org.apache.pivot.wtk" xmlns:content="org.apache.pivot.wtk.content">
+	<columns>
+		<TablePane.Column width="252" />
+		<TablePane.Column width="1*" />
+	</columns>
+
+	<TablePane.Row height="-1">
+		<BoxPane orientation="vertical" styles="{horizontalAlignment:'center',padding: 10}">
+			<Border>
+				<ImageView image="@http://i.huffpost.com/gen/983098/thumbs/o-KATE-UPTON-SPORTS-ILLUSTRATED-COVER-570.jpg"
+					preferredHeight="230" preferredWidth="230" styles="{fill: 'true'}" />
+			</Border>
+			<Label bxml:id="albumTitle" styles="{font:{bold:true}}" />
+		</BoxPane>
+		<BoxPane orientation="vertical" styles="{fill:true,horizontalAlignment:'left',padding: 10}">
+			<Label bxml:id="songTitle" styles="{font:{bold:true, size:14}}" />
+			<Label bxml:id="artistName" styles="{font:{bold:true, size:13}}" />
+			<FillPane styles="{padding:10}">
+				<PushButton buttonData="Like" />
+				<PushButton buttonData="Ban" />
+				<PushButton buttonData="Sleep" />
+			</FillPane>
+			<ScrollPane horizontalScrollBarPolicy="fill" verticalScrollBarPolicy="fill_to_capacity" preferredHeight="180">
+				<Label bxml:id="songTraits" styles="{wrapText:true}" />
+			</ScrollPane>
+		</BoxPane>
+	</TablePane.Row>
+</TablePane>
+
+<!-- TablePane.columnSpan="5" -->

@@ -1,0 +1,95 @@
+<local:HelloWindow title="Beluga Player" maximized="true" xmlns:bxml="http://pivot.apache.org/bxml"
+	xmlns:local="info.bonjean.beluga" xmlns="org.apache.pivot.wtk" xmlns:content="org.apache.pivot.wtk.content">
+	<actionMappings>
+		<Window.ActionMapping action="fileNew" keyStroke="CMD-N" />
+		<Window.ActionMapping action="refresh" keyStroke="CMD-R" />
+	</actionMappings>
+
+	<TablePane styles="{verticalSpacing:1,showHorizontalGridLines:true,horizontalSpacing:1}">
+		<columns>
+			<TablePane.Column width="1*" />
+			<TablePane.Column width="-1" />
+		</columns>
+
+		<TablePane.Row height="-1">
+			<MenuBar>
+				<MenuBar.Item buttonData="Stations">
+				</MenuBar.Item>
+				<MenuBar.Item buttonData="Manage">
+					<Menu>
+						<Menu.Section>
+							<Menu.Item action="refresh">
+								<buttonData>
+									<content:MenuItemData text="Search" keyboardShortcut="CMD-S" />
+								</buttonData>
+							</Menu.Item>
+							<Menu.Item action="refresh">
+								<buttonData>
+									<content:MenuItemData text="Station Details" keyboardShortcut="CMD-S" />
+								</buttonData>
+							</Menu.Item>
+						</Menu.Section>
+					</Menu>
+				</MenuBar.Item>
+				<MenuBar.Item buttonData="Help">
+					<Menu>
+						<Menu.Section>
+							<Menu.Item action="refresh">
+								<buttonData>
+									<content:MenuItemData text="About"/>
+								</buttonData>
+							</Menu.Item>
+						</Menu.Section>
+					</Menu>
+				</MenuBar.Item>
+				<MenuBar.Item buttonData="Debug">
+					<Menu>
+						<Menu.Section>
+							<Menu.Item action="refresh">
+								<buttonData>
+									<content:MenuItemData text="Refresh" keyboardShortcut="CMD-R" />
+								</buttonData>
+							</Menu.Item>
+						</Menu.Section>
+					</Menu>
+				</MenuBar.Item>
+			</MenuBar>
+			<PushButton buttonData="Exit" styles="{toolbar:true,font:{bold:true}}"/>
+		</TablePane.Row>
+
+		<TablePane.Row height="1*">
+			<bxml:include TablePane.columnSpan="2" inline="true" src="song.bxml" />
+		</TablePane.Row>
+
+		<TablePane.Row height="60">
+			<Label TablePane.columnSpan="2" text="Player" />
+		</TablePane.Row>
+	</TablePane>
+
+
+
+
+	<!-- <BoxPane orientation="vertical" styles="{verticalAlignment:'top',fill:true,backgroundColor:'#115599'}"> -->
+
+	<!-- <BoxPane orientation="horizontal" -->
+	<!-- styles="{horizontalAlignment:'left',verticalAlignment:'top',padding:'10',backgroundColor:'#00ffff',fill:true}"> -->
+	<!-- <BoxPane orientation="vertical" -->
+	<!-- styles="{horizontalAlignment:'center',verticalAlignment:'bottom',backgroundColor:'#0000ff',fill:true}"> -->
+
+	<!-- <Label text="Super Album" styles="{horizontalAlignment:'center'}" /> -->
+	<!-- </BoxPane> -->
+	<!-- <BoxPane orientation="vertical" -->
+	<!-- styles="{horizontalAlignment:'left',verticalAlignment:'bottom',backgroundColor:'#ff00ff',fill:true}"> -->
+	<!-- <Label bxml:id="songTitle" /> -->
+	<!-- <Label bxml:id="artistName" /> -->
+
+	<!-- <ScrollPane styles="{backgroundColor:'#ffff00',fill:true}" horizontalScrollBarPolicy="fill" -->
+	<!-- verticalScrollBarPolicy="fill_to_capacity" preferredHeight="200" preferredWidth="260"> -->
+	<!-- <Label bxml:id="songTraits" styles="{wrapText:true}" /> -->
+	<!-- </ScrollPane> -->
+	<!-- </BoxPane> -->
+	<!-- </BoxPane> -->
+
+	<!-- </BoxPane> -->
+
+</local:HelloWindow>
