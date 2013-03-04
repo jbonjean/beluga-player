@@ -21,7 +21,7 @@ package info.bonjean.beluga.client;
 import info.bonjean.beluga.configuration.BelugaConfiguration;
 import info.bonjean.beluga.exception.BelugaException;
 import info.bonjean.beluga.exception.CommunicationException;
-import info.bonjean.beluga.gui.Page;
+import info.bonjean.beluga.gui.webkit.Page;
 import info.bonjean.beluga.request.ArtistBookmarkDeleteRequest;
 import info.bonjean.beluga.request.ArtistBookmarkRequest;
 import info.bonjean.beluga.request.BookmarksRequest;
@@ -181,7 +181,7 @@ public class PandoraClient
 		Station stationFull = HTTPUtil.<Station> request(Method.GET_STATION, params, stationRequest, true, new TypeToken<Response<Station>>()
 		{
 		});
-		stationFull.setArtBase64(retrieveCover(stationFull.getArtUrl()));
+		//stationFull.setArtBase64(retrieveCover(stationFull.getArtUrl()));
 		return stationFull;
 	}
 

@@ -1,0 +1,45 @@
+<TablePane styles="{verticalSpacing:1,horizontalSpacing:1}" xmlns:bxml="http://pivot.apache.org/bxml" xmlns="org.apache.pivot.wtk"
+	xmlns:content="org.apache.pivot.wtk.content">
+	<columns>
+		<TablePane.Column width="1*" />
+		<TablePane.Column width="-1" />
+		<TablePane.Column width="-1" />
+	</columns>
+
+	<TablePane.Row height="-1">
+		<MenuBar>
+			<MenuBar.Item buttonData="Stations">
+			</MenuBar.Item>
+			<MenuBar.Item buttonData="Manage">
+				<Menu>
+					<Menu.Section>
+						<Menu.Item action="refresh">
+							<buttonData>
+								<content:MenuItemData text="Search" keyboardShortcut="CMD-S" />
+							</buttonData>
+						</Menu.Item>
+						<Menu.Item action="refresh">
+							<buttonData>
+								<content:MenuItemData text="Station Details" keyboardShortcut="CMD-S" />
+							</buttonData>
+						</Menu.Item>
+					</Menu.Section>
+				</Menu>
+			</MenuBar.Item>
+			<MenuBar.Item buttonData="Help">
+				<Menu>
+					<Menu.Section>
+						<Menu.Item action="refresh">
+							<buttonData>
+								<content:MenuItemData text="About" />
+							</buttonData>
+						</Menu.Item>
+					</Menu.Section>
+				</Menu>
+			</MenuBar.Item>
+		</MenuBar>
+		<PushButton buttonData="Refresh" action="refresh" styles="{toolbar:true}" />
+		<PushButton buttonData="Exit" action="exit" styles="{toolbar:true,font:{bold:true}}" />
+	</TablePane.Row>
+
+</TablePane>

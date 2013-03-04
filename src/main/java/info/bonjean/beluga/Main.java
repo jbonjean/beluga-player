@@ -20,9 +20,10 @@ package info.bonjean.beluga;
 
 import info.bonjean.beluga.client.BelugaState;
 import info.bonjean.beluga.configuration.BelugaConfiguration;
-import info.bonjean.beluga.gui.Page;
-import info.bonjean.beluga.gui.UI;
-import info.bonjean.beluga.gui.UIWindowListener;
+import info.bonjean.beluga.gui.PivotUI;
+import info.bonjean.beluga.gui.WebkitUI;
+import info.bonjean.beluga.gui.webkit.Page;
+import info.bonjean.beluga.gui.webkit.UIWindowListener;
 
 import java.awt.BorderLayout;
 import java.awt.Container;
@@ -66,10 +67,16 @@ public class Main
 			System.setProperty("network.proxy_port", "80");
 		}
 		
-		startUI();
+		//startWebkitUI();
+		startPivotUI();
+	}
+	
+	public static void startPivotUI()
+	{
+		PivotUI.startDesktopUI();
 	}
 
-	public static void startUI()
+	public static void startWebkitUI()
 	{
 		UIUtils.setPreferredLookAndFeel();
 		NativeInterface.open();
@@ -90,7 +97,7 @@ public class Main
 				Container contentPane = frame.getContentPane();
 				contentPane.setLayout(new BorderLayout());
 
-				final UI ui = new UI(frame);
+				final WebkitUI ui = new WebkitUI(frame);
 				UIWindowListener windowListener = new UIWindowListener(ui);
 				frame.addWindowListener(windowListener);
 				ui.getWebBrowser().getNativeComponent().addMouseListener(windowListener);

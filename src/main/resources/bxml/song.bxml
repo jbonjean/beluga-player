@@ -1,5 +1,5 @@
-<TablePane styles="{verticalSpacing:1,showHorizontalGridLines:true,horizontalSpacing:1}"
-	xmlns:bxml="http://pivot.apache.org/bxml" xmlns:local="info.bonjean.beluga" xmlns="org.apache.pivot.wtk" xmlns:content="org.apache.pivot.wtk.content">
+<local:Song styles="{verticalSpacing:1,showHorizontalGridLines:true,horizontalSpacing:1}" xmlns:bxml="http://pivot.apache.org/bxml"
+	xmlns:local="info.bonjean.beluga.gui.pivot" xmlns="org.apache.pivot.wtk" xmlns:content="org.apache.pivot.wtk.content">
 	<columns>
 		<TablePane.Column width="252" />
 		<TablePane.Column width="1*" />
@@ -8,8 +8,7 @@
 	<TablePane.Row height="-1">
 		<BoxPane orientation="vertical" styles="{horizontalAlignment:'center',padding: 10}">
 			<Border styles="{cornerRadii:5,color:'#dddddd',backgroundColor:'#eeeeda',padding:5}">
-				<ImageView image="@http://i.huffpost.com/gen/983098/thumbs/o-KATE-UPTON-SPORTS-ILLUSTRATED-COVER-570.jpg"
-					preferredHeight="225" preferredWidth="225" styles="{fill: 'true'}" />
+				<ImageView bxml:id="albumCover" preferredHeight="225" preferredWidth="225" styles="{fill: 'true'}" />
 			</Border>
 			<Label bxml:id="albumTitle" styles="{font:{bold:true}}" />
 		</BoxPane>
@@ -26,6 +25,6 @@
 			</ScrollPane>
 		</BoxPane>
 	</TablePane.Row>
-</TablePane>
+</local:Song>
 
 <!-- TablePane.columnSpan="5" -->

@@ -20,7 +20,7 @@ package info.bonjean.beluga.connection;
 
 import info.bonjean.beluga.configuration.BelugaConfiguration;
 import info.bonjean.beluga.exception.CommunicationException;
-import info.bonjean.beluga.gui.UI;
+import info.bonjean.beluga.gui.WebkitUI;
 
 import java.io.InputStream;
 
@@ -93,7 +93,7 @@ public class BelugaHTTPClient
 			catch (Exception e1)
 			{
 				e = e1;
-				UI.reportError("connection.problem", true);
+				WebkitUI.reportError("connection.problem", true);
 			}
 		}
 		throw new CommunicationException(e);

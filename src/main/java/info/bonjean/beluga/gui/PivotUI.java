@@ -1,4 +1,6 @@
-package info.bonjean.beluga;
+package info.bonjean.beluga.gui;
+
+import info.bonjean.beluga.gui.pivot.MainWindow;
 
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
@@ -13,27 +15,41 @@ import org.apache.pivot.wtk.Window;
 public class PivotUI implements Application
 {
 	private Window window = null;
+	public static final String BXML_PATH = "/bxml/";
 
-	public static void main(String[] args) throws BackingStoreException
+	public static void startDesktopUI()
 	{
-		Preferences preferences = Preferences.userNodeForPackage(DesktopApplicationContext.class);
-		preferences = preferences.node(PivotUI.class.getName());
-		preferences.clear();
-		preferences.putInt("width", 600);
-		preferences.putInt("height", 400);
-		preferences.putBoolean("resizable", false);
-		preferences.flush();
+		try
+		{
+			Preferences preferences = Preferences.userNodeForPackage(DesktopApplicationContext.class);
+			preferences = preferences.node(PivotUI.class.getName());
+			preferences.clear();
+			preferences.putInt("width", 600);
+			preferences.putInt("height", 400);
+			preferences.putBoolean("resizable", false);
+			preferences.flush();
+		}
+		catch (BackingStoreException e)
+		{
+		}
 
-		DesktopApplicationContext.main(PivotUI.class, new String[]{});
+		DesktopApplicationContext.main(PivotUI.class, new String[] {});
 	}
-	
+
+	public static void main(String[] args)
+	{
+		startDesktopUI();
+	}
+
 	@Override
 	public void startup(Display display, Map<String, String> properties) throws Exception
 	{
 		BXMLSerializer bxmlSerializer = new BXMLSerializer();
-		window = (Window) bxmlSerializer.readObject(PivotUI.class, "main.bxml");
+		window = (Window) bxmlSerializer.readObject(MainWindow.class, BXML_PATH + "main.bxml");
 		window.open(display);
 	}
+	
+
 
 	@Override
 	public boolean shutdown(boolean optional)

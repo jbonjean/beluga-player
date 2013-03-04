@@ -29,11 +29,12 @@ import info.bonjean.beluga.exception.InternalException;
 import info.bonjean.beluga.exception.PandoraError;
 import info.bonjean.beluga.exception.PandoraException;
 import info.bonjean.beluga.gui.notification.Notification;
+import info.bonjean.beluga.gui.webkit.Command;
+import info.bonjean.beluga.gui.webkit.Page;
 import info.bonjean.beluga.response.Feedback;
 import info.bonjean.beluga.response.Song;
 import info.bonjean.beluga.response.Station;
 import info.bonjean.beluga.util.HTMLUtil;
-import info.bonjean.beluga.util.HTTPUtil;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -56,9 +57,9 @@ import chrriis.dj.nativeswing.swtimpl.components.WebBrowserCommandEvent;
  * @author Julien Bonjean <julien@bonjean.info>
  * 
  */
-public class UI
+public class WebkitUI
 {
-	private static final Logger log = LoggerFactory.getLogger(UI.class);
+	private static final Logger log = LoggerFactory.getLogger(WebkitUI.class);
 	private static JWebBrowser webBrowser;
 	private static JWebBrowser playerWebBrowser;
 	private final BelugaState state = BelugaState.getInstance();
@@ -72,7 +73,7 @@ public class UI
 		return webBrowser;
 	}
 
-	public UI(JFrame frame)
+	public WebkitUI(JFrame frame)
 	{
 		webBrowser = new JWebBrowser(JWebBrowser.useWebkitRuntime());
 		webBrowser.setVisible(true);

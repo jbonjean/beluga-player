@@ -16,40 +16,19 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
-package info.bonjean.beluga.gui;
+package info.bonjean.beluga.gui.webkit;
 
 /**
  * 
  * @author Julien Bonjean <julien@bonjean.info>
  * 
  */
-public enum Page
+public enum Command
 {
-	AUDIO, WELCOME, CONFIGURATION, SONG, NOTIFICATION, STATION_ADD, USER_CREATE, ABOUT, STATION_DETAILS, BOOKMARKS;
+	LOGIN, NEXT, LIKE, BAN, DELETE_FEEDBACK, SLEEP, PAUSE, EXIT, GOTO, SAVE_CONFIGURATION, SELECT_STATION, SEARCH, ADD_STATION, DELETE_STATION, CREATE_USER, STORE_VOLUME, AUDIO_ERROR, BOOKMARK, DELETE_BOOKMARK;
 
-	public static final String TEMPLATE_PATH = "/vm/pages/";
-	public static final String HTML_PATH = "/html/";
-	public static final String CSS_PATH = "/css/";
-	public static final String JS_PATH = "/js/";
-	public static final String IMG_PATH = "/img/";
-
-	public String getTemplate()
+	public static Command fromString(String name)
 	{
-		return TEMPLATE_PATH + name().toLowerCase() + ".vm";
-	}
-
-	public String getCss()
-	{
-		return CSS_PATH + name().toLowerCase() + ".css";
-	}
-
-	public String getJs()
-	{
-		return JS_PATH + name().toLowerCase() + ".js";
-	}
-
-	public static Page fromString(String page)
-	{
-		return valueOf(page.toUpperCase().replace("-", "_"));
+		return valueOf(name.toUpperCase().replace("-", "_"));
 	}
 }

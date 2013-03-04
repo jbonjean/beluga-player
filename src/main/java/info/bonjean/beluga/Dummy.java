@@ -19,7 +19,7 @@
 package info.bonjean.beluga;
 
 import info.bonjean.beluga.client.BelugaState;
-import info.bonjean.beluga.gui.Page;
+import info.bonjean.beluga.gui.webkit.Page;
 import info.bonjean.beluga.response.Song;
 import info.bonjean.beluga.response.Station;
 

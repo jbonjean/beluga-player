@@ -18,7 +18,7 @@
  */
 package info.bonjean.beluga.connection;
 
-import info.bonjean.beluga.gui.UI;
+import info.bonjean.beluga.gui.WebkitUI;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -65,7 +65,7 @@ public class BelugaDNSResolver implements DnsResolver
 		}
 		catch (Exception e)
 		{
-			UI.reportError("cannot.configure.proxy");
+			WebkitUI.reportError("cannot.configure.proxy");
 			dnsProxyLookup = null;
 		}
 	}

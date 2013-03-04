@@ -1,0 +1,25 @@
+<local:MainWindow title="Beluga Player" maximized="true" xmlns:bxml="http://pivot.apache.org/bxml"
+	xmlns:local="info.bonjean.beluga.gui.pivot" xmlns="org.apache.pivot.wtk" xmlns:content="org.apache.pivot.wtk.content">
+	<actionMappings>
+		<Window.ActionMapping action="fileNew" keyStroke="CMD-N" />
+		<Window.ActionMapping action="refresh" keyStroke="CMD-R" />
+	</actionMappings>
+
+	<TablePane styles="{verticalSpacing:1,showHorizontalGridLines:true,horizontalSpacing:1}">
+		<columns>
+			<TablePane.Column width="1*" />
+		</columns>
+
+		<TablePane.Row height="-1">
+			<bxml:include inline="true" src="menu.bxml" />
+		</TablePane.Row>
+
+		<TablePane.Row bxml:id="content" height="1*">
+			<Label text=""/>
+		</TablePane.Row>
+
+		<TablePane.Row height="60">
+			<bxml:include inline="true" src="player.bxml" />
+		</TablePane.Row>
+	</TablePane>
+</local:MainWindow>

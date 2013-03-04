@@ -16,19 +16,43 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
-package info.bonjean.beluga.gui;
+package info.bonjean.beluga.gui.webkit;
+
+import java.util.EnumSet;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 
  * @author Julien Bonjean <julien@bonjean.info>
  * 
  */
-public enum Command
+public enum Theme
 {
-	LOGIN, NEXT, LIKE, BAN, DELETE_FEEDBACK, SLEEP, PAUSE, EXIT, GOTO, SAVE_CONFIGURATION, SELECT_STATION, SEARCH, ADD_STATION, DELETE_STATION, CREATE_USER, STORE_VOLUME, AUDIO_ERROR, BOOKMARK, DELETE_BOOKMARK;
+	CLASSIC("classic"), BLACK_AND_WHITE("black.and.white"), MUSTARD("mustard");
 
-	public static Command fromString(String name)
+	private static final Map<String, Theme> lookup = new HashMap<String, Theme>();
+
+	static
 	{
-		return valueOf(name.toUpperCase().replace("-", "_"));
+		for (Theme s : EnumSet.allOf(Theme.class))
+			lookup.put(s.getId(), s);
+	}
+
+	public static Theme get(String id)
+	{
+		return lookup.get(id);
+	}
+
+	private final String id;
+
+	private Theme(String id)
+	{
+		this.id = id;
+	}
+
+	public String getId()
+	{
+		return id;
 	}
 }

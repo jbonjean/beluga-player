@@ -16,9 +16,10 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
-package info.bonjean.beluga.gui;
+package info.bonjean.beluga.gui.webkit;
 
 import info.bonjean.beluga.exception.InternalException;
+import info.bonjean.beluga.gui.WebkitUI;
 
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -38,9 +39,9 @@ import org.slf4j.LoggerFactory;
 public class UIWindowListener implements WindowListener, MouseListener
 {
 	private static final Logger log = LoggerFactory.getLogger(UIWindowListener.class);
-	private UI ui;
+	private WebkitUI ui;
 
-	public UIWindowListener(UI ui)
+	public UIWindowListener(WebkitUI ui)
 	{
 		this.ui = ui;
 	}

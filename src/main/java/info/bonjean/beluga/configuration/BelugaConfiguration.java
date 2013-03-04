@@ -18,7 +18,7 @@
  */
 package info.bonjean.beluga.configuration;
 
-import info.bonjean.beluga.gui.Theme;
+import info.bonjean.beluga.gui.webkit.Theme;
 
 import java.io.File;
 import java.io.FileInputStream;

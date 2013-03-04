@@ -36,7 +36,7 @@ public class Song
 	private String albumArtUrl;
 	private String artistDetailUrl;
 	private Map<String, Audio> audioUrlMap;
-	private List<String> additionalAudioUrl;
+	private String additionalAudioUrl;
 	private String adToken;
 	private String songName;
 	private int songRating;
@@ -217,12 +217,12 @@ public class Song
 		this.focusTraits = focusTraits;
 	}
 
-	public List<String> getAdditionalAudioUrl()
+	public String getAdditionalAudioUrl()
 	{
 		return additionalAudioUrl;
 	}
 
-	public void setAdditionalAudioUrl(List<String> additionalAudioUrl)
+	public void setAdditionalAudioUrl(String additionalAudioUrl)
 	{
 		this.additionalAudioUrl = additionalAudioUrl;
 	}

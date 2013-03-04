@@ -16,43 +16,40 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
-package info.bonjean.beluga.gui;
-
-import java.util.EnumSet;
-import java.util.HashMap;
-import java.util.Map;
+package info.bonjean.beluga.gui.webkit;
 
 /**
  * 
  * @author Julien Bonjean <julien@bonjean.info>
  * 
  */
-public enum Theme
+public enum Page
 {
-	CLASSIC("classic"), BLACK_AND_WHITE("black.and.white"), MUSTARD("mustard");
+	AUDIO, WELCOME, CONFIGURATION, SONG, NOTIFICATION, STATION_ADD, USER_CREATE, ABOUT, STATION_DETAILS, BOOKMARKS;
 
-	private static final Map<String, Theme> lookup = new HashMap<String, Theme>();
+	public static final String TEMPLATE_PATH = "/vm/pages/";
+	public static final String HTML_PATH = "/html/";
+	public static final String CSS_PATH = "/css/";
+	public static final String JS_PATH = "/js/";
+	public static final String IMG_PATH = "/img/";
 
-	static
+	public String getTemplate()
 	{
-		for (Theme s : EnumSet.allOf(Theme.class))
-			lookup.put(s.getId(), s);
+		return TEMPLATE_PATH + name().toLowerCase() + ".vm";
 	}
 
-	public static Theme get(String id)
+	public String getCss()
 	{
-		return lookup.get(id);
+		return CSS_PATH + name().toLowerCase() + ".css";
 	}
 
-	private final String id;
-
-	private Theme(String id)
+	public String getJs()
 	{
-		this.id = id;
+		return JS_PATH + name().toLowerCase() + ".js";
 	}
 
-	public String getId()
+	public static Page fromString(String page)
 	{
-		return id;
+		return valueOf(page.toUpperCase().replace("-", "_"));
 	}
 }
