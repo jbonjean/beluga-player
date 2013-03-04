@@ -93,7 +93,7 @@ public class BelugaHTTPClient
 			catch (Exception e1)
 			{
 				e = e1;
-				WebkitUI.reportError("connection.problem", true);
+				//WebkitUI.reportError("connection.problem", true);
 			}
 		}
 		throw new CommunicationException(e);

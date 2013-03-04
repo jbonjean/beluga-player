@@ -5,10 +5,18 @@ import info.bonjean.beluga.client.PandoraClient;
 import info.bonjean.beluga.configuration.BelugaConfiguration;
 import info.bonjean.beluga.exception.BelugaException;
 import info.bonjean.beluga.gui.PivotUI;
+import info.bonjean.beluga.player.MusicPlayer;
 import info.bonjean.beluga.response.Song;
 import info.bonjean.beluga.response.Station;
 
+import java.io.BufferedInputStream;
 import java.net.URL;
+import java.net.URLConnection;
+import java.util.concurrent.TimeUnit;
+
+import javazoom.jl.decoder.Bitstream;
+import javazoom.jl.decoder.Header;
+import javazoom.jl.player.Player;
 
 import org.apache.pivot.beans.BXML;
 import org.apache.pivot.beans.BXMLSerializer;
@@ -19,6 +27,7 @@ import org.apache.pivot.util.concurrent.Task;
 import org.apache.pivot.util.concurrent.TaskExecutionException;
 import org.apache.pivot.util.concurrent.TaskListener;
 import org.apache.pivot.wtk.Action;
+import org.apache.pivot.wtk.ApplicationContext;
 import org.apache.pivot.wtk.Component;
 import org.apache.pivot.wtk.Label;
 import org.apache.pivot.wtk.Meter;
@@ -34,7 +43,7 @@ public class MainWindow extends Window implements Bindable
 	private final BelugaState state = BelugaState.getInstance();
 	private final PandoraClient pandoraClient = PandoraClient.getInstance();
 	private final BelugaConfiguration configuration = BelugaConfiguration.getInstance();
-	
+
 	@BXML
 	TablePane.Row content;
 	@BXML
@@ -56,7 +65,7 @@ public class MainWindow extends Window implements Bindable
 				System.exit(0);
 			}
 		});
-		
+
 		Action.getNamedActions().put("fileNew", new Action()
 		{
 			@Override
@@ -95,9 +104,9 @@ public class MainWindow extends Window implements Bindable
 		currentTime.setText("00:00");
 		totalTime.setText("00:00");
 		progress.setPercentage(0);
-		
+
 		updateContent("loader.bxml");
-		
+
 		startPandora();
 	}
 
@@ -115,40 +124,136 @@ public class MainWindow extends Window implements Bindable
 			e.printStackTrace();
 		}
 	}
-	
+
 	private void gotoSong()
 	{
 		stationName.setText(state.getStation().getStationName());
 		currentTime.setText("00:00");
 		totalTime.setText("00:00");
 		progress.setPercentage(0);
-		
+
 		updateContent("song.bxml");
-		
+
 		log.info(state.getSong().getAdditionalAudioUrl());
+
+		final TaskListener<String> taskListener = new TaskListener<String>(){
+			@Override
+			public void taskExecuted(Task<String> task)
+			{
+			}
+			@Override
+			public void executeFailed(Task<String> task)
+			{
+			}
+		};
+		
+		try
+		{
+			new Task<String>()
+			{
+				@Override
+				public String execute() throws TaskExecutionException
+				{
+					try
+					{
+						URL url = new URL(state.getSong().getAdditionalAudioUrl());
+						URLConnection uc = url.openConnection();
+
+						Bitstream bs = new Bitstream(uc.getInputStream());
+						final Header header = bs.readFrame();
+
+						final long duration = (long) header.total_ms(Integer.parseInt(uc.getHeaderField("Content-Length")));
+
+						final String durationStr = String.format("%02d:%02d", TimeUnit.MILLISECONDS.toMinutes(duration), TimeUnit.MILLISECONDS.toSeconds(duration)
+								- TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(duration)));
+
+						ApplicationContext.queueCallback(new Runnable() {
+	                        @Override
+	                        public void run() {
+	                        	totalTime.setText(durationStr);
+	                        }
+	                    });
+
+						final Player player = new Player(uc.getInputStream());
+
+						new Task<String>()
+						{
+							@Override
+							public String execute() throws TaskExecutionException
+							{
+								while (true)
+								{
+									final long position = player.getPosition();
+									final String positionStr = String.format(
+											"%02d:%02d",
+											TimeUnit.MILLISECONDS.toMinutes(position),
+											TimeUnit.MILLISECONDS.toSeconds(position)
+													- TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(position)));
+									
+									final float progressValue = position/(float)duration;
+
+									ApplicationContext.queueCallback(new Runnable() {
+				                        @Override
+				                        public void run() {
+				                        	currentTime.setText(positionStr);
+				                        	progress.setPercentage(progressValue);
+				                        }
+				                    });
+									
+									try
+									{
+										Thread.sleep(100);
+									}
+									catch (InterruptedException e)
+									{
+										e.printStackTrace();
+									}
+								}
+							};
+						}.execute(new TaskAdapter<String>(taskListener));
+
+						player.play();
+					}
+					catch (Exception e)
+					{
+						e.printStackTrace();
+					}
+					return "";
+				}
+			}.execute(new TaskAdapter<String>(taskListener));
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+
 	}
-	
-	private void startPandora() {
-        TaskListener<String> taskListener = new TaskListener<String>() {
-            @Override
-            public void taskExecuted(Task<String> task) {
+
+	private void startPandora()
+	{
+		TaskListener<String> taskListener = new TaskListener<String>()
+		{
+			@Override
+			public void taskExecuted(Task<String> task)
+			{
 //                activityIndicator.setActive(false);
 //                setEnabled(true);
-                System.out.println("Synchronous task execution complete: \""
-                    + task.getResult() + "\"");
-                if(state.getSong() != null)
-                	gotoSong();
-            }
+				System.out.println("Synchronous task execution complete: \"" + task.getResult() + "\"");
+				if (state.getSong() != null)
+					gotoSong();
+			}
 
-            @Override
-            public void executeFailed(Task<String> task) {
+			@Override
+			public void executeFailed(Task<String> task)
+			{
 //                activityIndicator.setActive(false);
 //                setEnabled(true);
-                System.err.println(task.getFault());
-            }
-        };
+				System.err.println(task.getFault());
+			}
+		};
 
-        new Task<String>(){
+		new Task<String>()
+		{
 			@Override
 			public String execute() throws TaskExecutionException
 			{
@@ -157,21 +262,22 @@ public class MainWindow extends Window implements Bindable
 					pandoraClient.partnerLogin();
 					pandoraClient.userLogin();
 					state.reset();
-					
+
 					updatePandoraData();
 				}
-				catch(BelugaException e)
+				catch (BelugaException e)
 				{
 					e.printStackTrace();
 					return ":'(";
 				}
-				
+
 				return "Rock'n'roll!!!";
 			}
-        }.execute(new TaskAdapter<String>(taskListener));
+		}.execute(new TaskAdapter<String>(taskListener));
 	}
-	
-	private void updatePandoraData() throws BelugaException {
+
+	private void updatePandoraData() throws BelugaException
+	{
 		String currentStationId = state.getStation() == null ? null : state.getStation().getStationId();
 		String selectedStationId = currentStationId == null ? configuration.getDefaultStationId() : currentStationId;
 
@@ -244,7 +350,7 @@ public class MainWindow extends Window implements Bindable
 		{
 			state.setSong(state.getPlaylist().get(0));
 			state.getPlaylist().remove(state.getSong());
-			//new Notification(HTMLUtil.getPageHTML(Page.NOTIFICATION));
+			// new Notification(HTMLUtil.getPageHTML(Page.NOTIFICATION));
 		}
 	}
 }
