@@ -20,7 +20,6 @@ import org.apache.pivot.wtk.Action;
 import org.apache.pivot.wtk.ApplicationContext;
 import org.apache.pivot.wtk.Component;
 import org.apache.pivot.wtk.Menu;
-import org.apache.pivot.wtk.MenuBar;
 import org.apache.pivot.wtk.TablePane;
 import org.apache.pivot.wtk.Window;
 import org.slf4j.Logger;
@@ -41,89 +40,24 @@ public class MainWindow extends Window implements Bindable
 
 	@BXML
 	Menu.Section stations;
-	
+
 	@BXML
 	MenuUI menuUI;
-	
+
 	Component content;
+	
+	private int disableLockCount;
 
 	public MainWindow()
 	{
+		final MainWindow mainWindow = this;
+
 		Action.getNamedActions().put("exit", new Action()
 		{
 			@Override
 			public void perform(Component source)
 			{
 				System.exit(0);
-			}
-		});
-
-		Action.getNamedActions().put("pandoraStart", new AsyncAction()
-		{
-			@Override
-			public void asyncPerform(Component source)
-			{
-				try
-				{
-					pandoraClient.partnerLogin();
-					pandoraClient.userLogin();
-					state.reset();
-
-					selectStation(null);
-				}
-				catch (BelugaException e)
-				{
-					e.printStackTrace();
-				}
-			}
-		});
-		
-		Action.getNamedActions().put("nextSong", new AsyncAction()
-		{
-			@Override
-			public void asyncPerform(Component source)
-			{
-				playerUI.stopPlayer();
-			}
-		});
-
-		Action.getNamedActions().put("stationSelect", new AsyncAction()
-		{
-			@Override
-			public void asyncPerform(Component source)
-			{
-				ApplicationContext.queueCallback(new Runnable()
-				{
-					@Override
-					public void run()
-					{
-						menuUI.setEnabled(false);
-						content.setEnabled(false);
-						playerUI.setEnabled(false);
-					}
-				},true);
-				
-				Station station = (Station) source.getUserData().get("station");
-				try
-				{
-					selectStation(station);
-					playerUI.stopPlayer();
-				}
-				catch (BelugaException e)
-				{
-					e.printStackTrace();
-				}
-				
-				ApplicationContext.queueCallback(new Runnable()
-				{
-					@Override
-					public void run()
-					{
-						menuUI.setEnabled(true);
-						content.setEnabled(true);
-						playerUI.setEnabled(true);
-					}
-				},false);
 			}
 		});
 
@@ -147,13 +81,88 @@ public class MainWindow extends Window implements Bindable
 				}
 			}
 		});
+
+		Action.getNamedActions().put("pandoraStart", new AsyncAction(mainWindow)
+		{
+			@Override
+			public void asyncPerform(Component source)
+			{
+				try
+				{
+					pandoraClient.partnerLogin();
+					pandoraClient.userLogin();
+					state.reset();
+
+					selectStation(null);
+				}
+				catch (BelugaException e)
+				{
+					e.printStackTrace();
+				}
+			}
+		});
+
+		Action.getNamedActions().put("nextSong", new AsyncAction(mainWindow)
+		{
+			@Override
+			public void asyncPerform(Component source)
+			{
+				playerUI.stopPlayer();
+			}
+		});
+
+		Action.getNamedActions().put("stationSelect", new AsyncAction(mainWindow)
+		{
+			@Override
+			public void asyncPerform(Component source)
+			{
+				Station station = (Station) source.getUserData().get("station");
+				try
+				{
+					selectStation(station);
+					playerUI.stopPlayer();
+				}
+				catch (BelugaException e)
+				{
+					e.printStackTrace();
+				}
+			}
+		});
 	}
 
 	@Override
 	public void initialize(Map<String, Object> namespace, URL location, Resources resources)
 	{
+		// load temporary screen
 		updateContent("loader.bxml");
+		
+		// (paired with the one from PlayerUI (first call))
+		setEnabled(false);
+		
+		// start Pandora backend
 		Action.getNamedActions().get("pandoraStart").perform(this);
+	}
+
+
+	/**
+	 * Be careful with that method, setEnable must be paired to keep consistent lock count
+	 * TODO: better solutions are welcome
+	 */
+	@Override
+	public synchronized void setEnabled(boolean enabled)
+	{
+		if(enabled)
+			disableLockCount--;
+		else
+			disableLockCount++;
+		
+		// we don't enable the display if somebody has still a lock
+		if(enabled && disableLockCount > 0)
+			return;
+		
+		menuUI.setEnabled(enabled);
+		content.setEnabled(enabled);
+		playerUI.setEnabled(enabled);
 	}
 
 	public void songChanged(Song song)
@@ -202,7 +211,7 @@ public class MainWindow extends Window implements Bindable
 					stations.add(item);
 				}
 			}
-		},true);
+		}, true);
 
 		// if no station requested, select configuration one
 		if (newStation == null)
@@ -236,7 +245,7 @@ public class MainWindow extends Window implements Bindable
 		}
 
 		// at this point, if no station has been selected, there has been a problem, select first one
-		if(newStation == null)
+		if (newStation == null)
 			newStation = state.getStationList().get(0);
 
 		// check if station changed

@@ -27,7 +27,7 @@ public class PlayerUI extends TablePane implements Bindable
 	private final BelugaState state = BelugaState.getInstance();
 
 	@BXML
-	MainWindow main;
+	MainWindow mainWindow;
 	@BXML
 	Label stationName;
 	@BXML
@@ -107,7 +107,7 @@ public class PlayerUI extends TablePane implements Bindable
 
 					// initialize the player
 					mp3Player = new Player(song.getAdditionalAudioUrl());
-					
+
 					duration = mp3Player.getDuration();
 
 					// update UI
@@ -123,21 +123,33 @@ public class PlayerUI extends TablePane implements Bindable
 							stationName.setText(state.getStation().getStationName());
 
 							// notify main window
-							main.songChanged(song);
+							mainWindow.songChanged(song);
 						}
 					}, true);
 
-					// start playback
-					mp3Player.play();
-
-					log.info("Playback finished");
-
-					// make things clean in the UI
 					ApplicationContext.queueCallback(new Runnable()
 					{
 						@Override
 						public void run()
 						{
+							// (first enabled paired with the one from MainWindow.initialize)
+							mainWindow.setEnabled(true);
+						}
+					}, true);
+					
+					// start playback
+					mp3Player.play();
+					
+					log.info("Playback finished");
+
+					ApplicationContext.queueCallback(new Runnable()
+					{
+						@Override
+						public void run()
+						{
+							mainWindow.setEnabled(false);
+
+							// make things clean in the UI
 							currentTime.setText(formatTime(duration));
 							progress.setPercentage(1);
 						}

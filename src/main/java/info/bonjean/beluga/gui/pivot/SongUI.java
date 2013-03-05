@@ -11,6 +11,7 @@ import org.apache.pivot.collections.Map;
 import org.apache.pivot.util.Resources;
 import org.apache.pivot.wtk.ImageView;
 import org.apache.pivot.wtk.Label;
+import org.apache.pivot.wtk.PushButton;
 import org.apache.pivot.wtk.TablePane;
 
 public class SongUI extends TablePane implements Bindable
@@ -27,6 +28,12 @@ public class SongUI extends TablePane implements Bindable
 	Label songTraits;
 	@BXML
 	ImageView albumCover;
+	@BXML
+	PushButton likeButton;
+	@BXML
+	PushButton banButton;
+	@BXML
+	PushButton sleepButton;
 
 	@Override
 	public void initialize(Map<String, Object> namespace, URL location, Resources resources)
@@ -54,5 +61,13 @@ public class SongUI extends TablePane implements Bindable
 		{
 			e.printStackTrace();
 		}
+	}
+	
+	@Override
+	public void setEnabled(boolean enabled)
+	{
+		likeButton.setEnabled(enabled);
+		banButton.setEnabled(enabled);
+		sleepButton.setEnabled(enabled);
 	}
 }

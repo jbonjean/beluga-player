@@ -17,9 +17,9 @@
 			<Label bxml:id="songTitle" styles="{font:{bold:true, size:14}}" />
 			<Label bxml:id="artistName" styles="{font:{bold:true, size:13}}" />
 			<FillPane styles="{padding:10}">
-				<PushButton buttonData="Like" />
-				<PushButton buttonData="Ban" />
-				<PushButton buttonData="Sleep" />
+				<PushButton bxml:id="likeButton" buttonData="Like" />
+				<PushButton bxml:id="banButton" buttonData="Ban" />
+				<PushButton bxml:id="sleepButton" buttonData="Sleep" />
 			</FillPane>
 			<ScrollPane horizontalScrollBarPolicy="fill" verticalScrollBarPolicy="fill_to_capacity" preferredHeight="180">
 				<Label bxml:id="songTraits" styles="{wrapText:true}" />
