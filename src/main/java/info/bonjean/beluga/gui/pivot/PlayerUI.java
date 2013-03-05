@@ -1,16 +1,12 @@
 package info.bonjean.beluga.gui.pivot;
 
+import info.bonjean.beluga.Player;
 import info.bonjean.beluga.client.BelugaState;
 import info.bonjean.beluga.client.PandoraPlaylist;
 import info.bonjean.beluga.response.Song;
 
-import java.io.InputStream;
 import java.net.URL;
-import java.net.URLConnection;
 import java.util.concurrent.TimeUnit;
-
-import javazoom.jl.decoder.Bitstream;
-import javazoom.jl.decoder.Header;
 
 import org.apache.pivot.beans.BXML;
 import org.apache.pivot.beans.Bindable;
@@ -27,7 +23,7 @@ import org.slf4j.LoggerFactory;
 public class PlayerUI extends TablePane implements Bindable
 {
 	private static final Logger log = LoggerFactory.getLogger(MainWindow.class);
-	
+
 	private final BelugaState state = BelugaState.getInstance();
 
 	@BXML
@@ -43,7 +39,7 @@ public class PlayerUI extends TablePane implements Bindable
 	@BXML
 	PushButton nextButton;
 
-	javazoom.jl.player.Player mp3Player;
+	Player mp3Player;
 	long duration;
 
 	@Override
@@ -55,18 +51,18 @@ public class PlayerUI extends TablePane implements Bindable
 		progress.setPercentage(0);
 
 		// start the UI sync thread
-		new SyncUI().start();
+		UIPools.playerUISyncPool.execute(new SyncUI());
 
 		// start the playback thread
-		new Playback().start();
+		UIPools.playbackPool.execute(new Playback());
 	}
-	
+
 	@Override
 	public void setEnabled(boolean enabled)
 	{
 		nextButton.getAction().setEnabled(enabled);
 		nextButton.setEnabled(enabled);
-		
+
 		super.setEnabled(enabled);
 	}
 
@@ -81,7 +77,7 @@ public class PlayerUI extends TablePane implements Bindable
 		mp3Player.close();
 	}
 
-	private class Playback extends Thread
+	private class Playback implements Runnable
 	{
 		@Override
 		public void run()
@@ -108,21 +104,11 @@ public class PlayerUI extends TablePane implements Bindable
 					}
 
 					log.info("New song: " + song.getAdditionalAudioUrl());
+
+					// initialize the player
+					mp3Player = new Player(song.getAdditionalAudioUrl());
 					
-					URL songURL = new URL(song.getAdditionalAudioUrl());
-					URLConnection songURLConnection = songURL.openConnection();
-					InputStream inputStream = songURLConnection.getInputStream();
-
-					// get the first frame header to get bitrate
-					Bitstream bitstream = new Bitstream(inputStream);
-					Header header = bitstream.readFrame();
-					bitstream.unreadFrame();
-
-					// get file size from HTTP headers
-					long songSize = Long.parseLong(songURLConnection.getHeaderField("Content-Length"));
-
-					// calculate the duration
-					duration = (long) header.total_ms((int) songSize);
+					duration = mp3Player.getDuration();
 
 					// update UI
 					ApplicationContext.queueCallback(new Runnable()
@@ -132,23 +118,20 @@ public class PlayerUI extends TablePane implements Bindable
 						{
 							// update song duration
 							totalTime.setText(formatTime(duration));
-							
+
 							// update station name
 							stationName.setText(state.getStation().getStationName());
-							
+
 							// notify main window
 							main.songChanged(song);
 						}
-					});
-
-					// initialize the player
-					mp3Player = new javazoom.jl.player.Player(songURLConnection.getInputStream());
+					}, true);
 
 					// start playback
 					mp3Player.play();
-					
+
 					log.info("Playback finished");
-					
+
 					// make things clean in the UI
 					ApplicationContext.queueCallback(new Runnable()
 					{
@@ -158,10 +141,7 @@ public class PlayerUI extends TablePane implements Bindable
 							currentTime.setText(formatTime(duration));
 							progress.setPercentage(1);
 						}
-					});
-
-					// playback done, close the stream
-					inputStream.close();
+					}, true);
 				}
 				catch (Exception e)
 				{
@@ -170,7 +150,7 @@ public class PlayerUI extends TablePane implements Bindable
 				finally
 				{
 					// always stop the player when done
-					if(mp3Player != null)
+					if (mp3Player != null)
 						mp3Player.close();
 					mp3Player = null;
 				}
@@ -178,7 +158,7 @@ public class PlayerUI extends TablePane implements Bindable
 		}
 	}
 
-	private class SyncUI extends Thread
+	private class SyncUI implements Runnable
 	{
 		@Override
 		public void run()
@@ -199,7 +179,7 @@ public class PlayerUI extends TablePane implements Bindable
 
 				final float progressValue = mp3Player.getPosition() / (float) duration;
 				final long position = mp3Player.getPosition();
-				
+
 				ApplicationContext.queueCallback(new Runnable()
 				{
 					@Override

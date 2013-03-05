@@ -58,6 +58,26 @@ public class MainWindow extends Window implements Bindable
 			}
 		});
 
+		Action.getNamedActions().put("pandoraStart", new AsyncAction()
+		{
+			@Override
+			public void asyncPerform(Component source)
+			{
+				try
+				{
+					pandoraClient.partnerLogin();
+					pandoraClient.userLogin();
+					state.reset();
+
+					selectStation(null);
+				}
+				catch (BelugaException e)
+				{
+					e.printStackTrace();
+				}
+			}
+		});
+		
 		Action.getNamedActions().put("nextSong", new AsyncAction()
 		{
 			@Override
@@ -133,7 +153,7 @@ public class MainWindow extends Window implements Bindable
 	public void initialize(Map<String, Object> namespace, URL location, Resources resources)
 	{
 		updateContent("loader.bxml");
-		startPandora();
+		Action.getNamedActions().get("pandoraStart").perform(this);
 	}
 
 	public void songChanged(Song song)
@@ -162,29 +182,6 @@ public class MainWindow extends Window implements Bindable
 		updateContent("song.bxml");
 	}
 
-	private void startPandora()
-	{
-		new Thread()
-		{
-			@Override
-			public void run()
-			{
-				try
-				{
-					pandoraClient.partnerLogin();
-					pandoraClient.userLogin();
-					state.reset();
-
-					selectStation(null);
-				}
-				catch (BelugaException e)
-				{
-					e.printStackTrace();
-				}
-			}
-		}.start();
-	}
-
 	private void selectStation(Station newStation) throws BelugaException
 	{
 		// update station list
@@ -205,7 +202,7 @@ public class MainWindow extends Window implements Bindable
 					stations.add(item);
 				}
 			}
-		});
+		},true);
 
 		// if no station requested, select configuration one
 		if (newStation == null)

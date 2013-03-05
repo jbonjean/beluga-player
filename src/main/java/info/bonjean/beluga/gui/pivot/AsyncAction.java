@@ -8,13 +8,14 @@ public abstract class AsyncAction extends Action
 	@Override
 	public final void perform(final Component source)
 	{
-		new Thread(){
+		UIPools.actionPool.execute(new Runnable()
+		{
 			@Override
 			public void run()
 			{
 				asyncPerform(source);
 			}
-		}.start();
+		});
 
 	}
 
