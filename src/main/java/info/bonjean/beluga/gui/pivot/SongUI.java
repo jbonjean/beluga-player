@@ -1,6 +1,7 @@
 package info.bonjean.beluga.gui.pivot;
 
 import info.bonjean.beluga.client.BelugaState;
+import info.bonjean.beluga.util.HTMLUtil;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -17,7 +18,7 @@ import org.apache.pivot.wtk.TablePane;
 public class SongUI extends TablePane implements Bindable
 {
 	private final BelugaState state = BelugaState.getInstance();
-	
+
 	@BXML
 	Label songTitle;
 	@BXML
@@ -41,28 +42,27 @@ public class SongUI extends TablePane implements Bindable
 		songTitle.setText(state.getSong().getSongName());
 		albumTitle.setText(state.getSong().getAlbumName());
 		artistName.setText("by " + state.getSong().getArtistName());
-		
+
 		StringBuffer focusTraits = new StringBuffer();
-		for(String focusTrait : state.getSong().getFocusTraits())
+		for (String focusTrait : state.getSong().getFocusTraits())
 		{
-			if(focusTraits.length() > 0)
+			if (focusTraits.length() > 0)
 				focusTraits.append(", ");
 			focusTraits.append(focusTrait);
 		}
 		songTraits.setText(focusTraits.toString());
 		try
 		{
-			String imageSrc = state.getSong().getAlbumArtUrl();
-			if(imageSrc == null || imageSrc.isEmpty())
-				imageSrc = "/img/beluga.200x200.png";
-			albumCover.setImage(new URL(imageSrc));
+			URL imageURL = state.getSong().getAlbumArtUrl().isEmpty() ? SongUI.class.getResource("/img/beluga.200x200.png") : new URL(state.getSong()
+					.getAlbumArtUrl());
+			albumCover.setImage(imageURL);
 		}
 		catch (MalformedURLException e)
 		{
 			e.printStackTrace();
 		}
 	}
-	
+
 	@Override
 	public void setEnabled(boolean enabled)
 	{
