@@ -1,4 +1,4 @@
-<local:Song styles="{verticalSpacing:1,showHorizontalGridLines:true,horizontalSpacing:1}" xmlns:bxml="http://pivot.apache.org/bxml"
+<local:SongUI styles="{verticalSpacing:1,showHorizontalGridLines:true,horizontalSpacing:1}" xmlns:bxml="http://pivot.apache.org/bxml"
 	xmlns:local="info.bonjean.beluga.gui.pivot" xmlns="org.apache.pivot.wtk" xmlns:content="org.apache.pivot.wtk.content">
 	<columns>
 		<TablePane.Column width="252" />
@@ -10,7 +10,8 @@
 			<Border styles="{cornerRadii:5,color:'#dddddd',backgroundColor:'#eeeeda',padding:5}">
 				<ImageView bxml:id="albumCover" preferredHeight="225" preferredWidth="225" styles="{fill: 'true'}" />
 			</Border>
-			<Label bxml:id="albumTitle" styles="{font:{bold:true}}" />
+			<Label bxml:id="albumTitle" preferredWidth="220"
+				styles="{horizontalAlignment:'center', font:{bold:true},wrapText:true, padding:{left:15}}" />
 		</BoxPane>
 		<BoxPane orientation="vertical" styles="{fill:true,horizontalAlignment:'left',padding: 10}">
 			<Label bxml:id="songTitle" styles="{font:{bold:true, size:14}}" />
@@ -25,6 +26,6 @@
 			</ScrollPane>
 		</BoxPane>
 	</TablePane.Row>
-</local:Song>
+</local:SongUI>
 
 <!-- TablePane.columnSpan="5" -->

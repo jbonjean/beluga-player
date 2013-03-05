@@ -2,37 +2,26 @@ package info.bonjean.beluga.gui.pivot;
 
 import info.bonjean.beluga.client.BelugaState;
 import info.bonjean.beluga.client.PandoraClient;
+import info.bonjean.beluga.client.PandoraPlaylist;
 import info.bonjean.beluga.configuration.BelugaConfiguration;
 import info.bonjean.beluga.exception.BelugaException;
 import info.bonjean.beluga.gui.PivotUI;
-import info.bonjean.beluga.player.MusicPlayer;
 import info.bonjean.beluga.response.Song;
 import info.bonjean.beluga.response.Station;
 
-import java.io.BufferedInputStream;
 import java.net.URL;
-import java.net.URLConnection;
-import java.util.concurrent.TimeUnit;
-
-import javazoom.jl.decoder.Bitstream;
-import javazoom.jl.decoder.Header;
-import javazoom.jl.player.Player;
 
 import org.apache.pivot.beans.BXML;
 import org.apache.pivot.beans.BXMLSerializer;
 import org.apache.pivot.beans.Bindable;
 import org.apache.pivot.collections.Map;
 import org.apache.pivot.util.Resources;
-import org.apache.pivot.util.concurrent.Task;
-import org.apache.pivot.util.concurrent.TaskExecutionException;
-import org.apache.pivot.util.concurrent.TaskListener;
 import org.apache.pivot.wtk.Action;
 import org.apache.pivot.wtk.ApplicationContext;
 import org.apache.pivot.wtk.Component;
-import org.apache.pivot.wtk.Label;
-import org.apache.pivot.wtk.Meter;
+import org.apache.pivot.wtk.Menu;
+import org.apache.pivot.wtk.MenuBar;
 import org.apache.pivot.wtk.TablePane;
-import org.apache.pivot.wtk.TaskAdapter;
 import org.apache.pivot.wtk.Window;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,15 +34,18 @@ public class MainWindow extends Window implements Bindable
 	private final BelugaConfiguration configuration = BelugaConfiguration.getInstance();
 
 	@BXML
-	TablePane.Row content;
+	TablePane.Row contentWrapper;
+
 	@BXML
-	Label stationName;
+	PlayerUI playerUI;
+
 	@BXML
-	Label currentTime;
+	Menu.Section stations;
+	
 	@BXML
-	Label totalTime;
-	@BXML
-	Meter progress;
+	MenuUI menuUI;
+	
+	Component content;
 
 	public MainWindow()
 	{
@@ -66,12 +58,52 @@ public class MainWindow extends Window implements Bindable
 			}
 		});
 
-		Action.getNamedActions().put("fileNew", new Action()
+		Action.getNamedActions().put("nextSong", new AsyncAction()
 		{
 			@Override
-			public void perform(Component source)
+			public void asyncPerform(Component source)
 			{
-				System.out.println("fileNew");
+				playerUI.stopPlayer();
+			}
+		});
+
+		Action.getNamedActions().put("stationSelect", new AsyncAction()
+		{
+			@Override
+			public void asyncPerform(Component source)
+			{
+				ApplicationContext.queueCallback(new Runnable()
+				{
+					@Override
+					public void run()
+					{
+						menuUI.setEnabled(false);
+						content.setEnabled(false);
+						playerUI.setEnabled(false);
+					}
+				},true);
+				
+				Station station = (Station) source.getUserData().get("station");
+				try
+				{
+					selectStation(station);
+					playerUI.stopPlayer();
+				}
+				catch (BelugaException e)
+				{
+					e.printStackTrace();
+				}
+				
+				ApplicationContext.queueCallback(new Runnable()
+				{
+					@Override
+					public void run()
+					{
+						menuUI.setEnabled(true);
+						content.setEnabled(true);
+						playerUI.setEnabled(true);
+					}
+				},false);
 			}
 		});
 
@@ -100,14 +132,14 @@ public class MainWindow extends Window implements Bindable
 	@Override
 	public void initialize(Map<String, Object> namespace, URL location, Resources resources)
 	{
-		stationName.setText("Pandora");
-		currentTime.setText("00:00");
-		totalTime.setText("00:00");
-		progress.setPercentage(0);
-
 		updateContent("loader.bxml");
-
 		startPandora();
+	}
+
+	public void songChanged(Song song)
+	{
+		log.info("Received song changed notification");
+		gotoSong();
 	}
 
 	private void updateContent(String bxmlFile)
@@ -115,9 +147,9 @@ public class MainWindow extends Window implements Bindable
 		try
 		{
 			BXMLSerializer bxmlSerializer = new BXMLSerializer();
-			Component contentPane = (Component) bxmlSerializer.readObject(MainWindow.class, PivotUI.BXML_PATH + bxmlFile);
-			content.remove(0, content.getLength());
-			content.add(contentPane);
+			content = (Component) bxmlSerializer.readObject(MainWindow.class, PivotUI.BXML_PATH + bxmlFile);
+			contentWrapper.remove(0, contentWrapper.getLength());
+			contentWrapper.add(content);
 		}
 		catch (Exception e)
 		{
@@ -127,135 +159,15 @@ public class MainWindow extends Window implements Bindable
 
 	private void gotoSong()
 	{
-		stationName.setText(state.getStation().getStationName());
-		currentTime.setText("00:00");
-		totalTime.setText("00:00");
-		progress.setPercentage(0);
-
 		updateContent("song.bxml");
-
-		log.info(state.getSong().getAdditionalAudioUrl());
-
-		final TaskListener<String> taskListener = new TaskListener<String>(){
-			@Override
-			public void taskExecuted(Task<String> task)
-			{
-			}
-			@Override
-			public void executeFailed(Task<String> task)
-			{
-			}
-		};
-		
-		try
-		{
-			new Task<String>()
-			{
-				@Override
-				public String execute() throws TaskExecutionException
-				{
-					try
-					{
-						URL url = new URL(state.getSong().getAdditionalAudioUrl());
-						URLConnection uc = url.openConnection();
-
-						Bitstream bs = new Bitstream(uc.getInputStream());
-						final Header header = bs.readFrame();
-
-						final long duration = (long) header.total_ms(Integer.parseInt(uc.getHeaderField("Content-Length")));
-
-						final String durationStr = String.format("%02d:%02d", TimeUnit.MILLISECONDS.toMinutes(duration), TimeUnit.MILLISECONDS.toSeconds(duration)
-								- TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(duration)));
-
-						ApplicationContext.queueCallback(new Runnable() {
-	                        @Override
-	                        public void run() {
-	                        	totalTime.setText(durationStr);
-	                        }
-	                    });
-
-						final Player player = new Player(uc.getInputStream());
-
-						new Task<String>()
-						{
-							@Override
-							public String execute() throws TaskExecutionException
-							{
-								while (true)
-								{
-									final long position = player.getPosition();
-									final String positionStr = String.format(
-											"%02d:%02d",
-											TimeUnit.MILLISECONDS.toMinutes(position),
-											TimeUnit.MILLISECONDS.toSeconds(position)
-													- TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(position)));
-									
-									final float progressValue = position/(float)duration;
-
-									ApplicationContext.queueCallback(new Runnable() {
-				                        @Override
-				                        public void run() {
-				                        	currentTime.setText(positionStr);
-				                        	progress.setPercentage(progressValue);
-				                        }
-				                    });
-									
-									try
-									{
-										Thread.sleep(100);
-									}
-									catch (InterruptedException e)
-									{
-										e.printStackTrace();
-									}
-								}
-							};
-						}.execute(new TaskAdapter<String>(taskListener));
-
-						player.play();
-					}
-					catch (Exception e)
-					{
-						e.printStackTrace();
-					}
-					return "";
-				}
-			}.execute(new TaskAdapter<String>(taskListener));
-		}
-		catch(Exception e)
-		{
-			e.printStackTrace();
-		}
-
 	}
 
 	private void startPandora()
 	{
-		TaskListener<String> taskListener = new TaskListener<String>()
+		new Thread()
 		{
 			@Override
-			public void taskExecuted(Task<String> task)
-			{
-//                activityIndicator.setActive(false);
-//                setEnabled(true);
-				System.out.println("Synchronous task execution complete: \"" + task.getResult() + "\"");
-				if (state.getSong() != null)
-					gotoSong();
-			}
-
-			@Override
-			public void executeFailed(Task<String> task)
-			{
-//                activityIndicator.setActive(false);
-//                setEnabled(true);
-				System.err.println(task.getFault());
-			}
-		};
-
-		new Task<String>()
-		{
-			@Override
-			public String execute() throws TaskExecutionException
+			public void run()
 			{
 				try
 				{
@@ -263,94 +175,85 @@ public class MainWindow extends Window implements Bindable
 					pandoraClient.userLogin();
 					state.reset();
 
-					updatePandoraData();
+					selectStation(null);
 				}
 				catch (BelugaException e)
 				{
 					e.printStackTrace();
-					return ":'(";
 				}
-
-				return "Rock'n'roll!!!";
 			}
-		}.execute(new TaskAdapter<String>(taskListener));
+		}.start();
 	}
 
-	private void updatePandoraData() throws BelugaException
+	private void selectStation(Station newStation) throws BelugaException
 	{
-		String currentStationId = state.getStation() == null ? null : state.getStation().getStationId();
-		String selectedStationId = currentStationId == null ? configuration.getDefaultStationId() : currentStationId;
-
 		// update station list
 		state.setStationList(pandoraClient.getStationList());
 
-		// if no station, go to station creation page
-//		if (state.getStationList().isEmpty())
-//		{
-//			updateUI(Page.STATION_ADD);
-//			return;
-//		}
+		// rebuild menu entry
+		ApplicationContext.queueCallback(new Runnable()
+		{
+			@Override
+			public void run()
+			{
+				stations.remove(0, stations.getLength());
+				for (Station station : state.getStationList())
+				{
+					Menu.Item item = new Menu.Item(station.getStationName());
+					item.getUserData().put("station", station);
+					item.setAction(Action.getNamedActions().get("stationSelect"));
+					stations.add(item);
+				}
+			}
+		});
 
-		// select station
-		state.setStation(null);
-		if (selectedStationId == null)
-			state.setStation(state.getStationList().get(0));
-		else
+		// if no station requested, select configuration one
+		if (newStation == null)
 		{
 			for (Station station : state.getStationList())
 			{
-				if (station.getStationId().equals(selectedStationId))
+				if (station.getStationId().equals(configuration.getDefaultStationId()))
 				{
-					state.setStation(station);
+					newStation = station;
 					break;
 				}
 			}
-			if (state.getStation() == null)
-				state.setStation(state.getStationList().get(0));
+		}
+		// else check if station requested is valid
+		else
+		{
+			boolean found = false;
+			for (Station station : state.getStationList())
+			{
+				if (station.getStationId().equals(newStation.getStationId()))
+				{
+					found = true;
+					break;
+				}
+			}
+			if (!found)
+			{
+				log.warn("Requested station does not exist anymore");
+				newStation = null;
+			}
 		}
 
-		// retrieve station full information
-//		reportInfo("retrieving.station.data");
-		state.setStation(pandoraClient.getStation(state.getStation()));
+		// at this point, if no station has been selected, there has been a problem, select first one
+		if(newStation == null)
+			newStation = state.getStationList().get(0);
 
-		// station changed
-		if (!state.getStation().getStationId().equals(currentStationId))
+		// check if station changed
+		if (state.getStation() == null || !newStation.getStationId().equals(state.getStation().getStationId()))
 		{
-			// if station changed, reset playlist
-			state.setPlaylist(null);
+			// invalidate playlist
+			PandoraPlaylist.getInstance().clear();
 
 			// update the configuration
-			configuration.setDefaultStationId(state.getStation().getStationId());
+			configuration.setDefaultStationId(newStation.getStationId());
 			configuration.store();
-
-			// and prevent delete, the station does not exist anymore!
-//			if (command.equals(Command.DELETE_STATION))
-//				command = Command.NEXT;
-
-		}
-		if (state.getPlaylist() == null || state.getPlaylist().isEmpty())
-		{
-			// retrieve playlist from Pandora
-//			reportInfo("retrieving.playlist");
-			state.setPlaylist(pandoraClient.getPlaylist(state.getStation()));
-
-			// update extra information
-//			reportInfo("retrieving.song.extra.information");
-			for (Song song : state.getPlaylist())
-				song.setFocusTraits(pandoraClient.retrieveFocusTraits(song));
-
-			// retrieve covers
-//			reportInfo("retrieving.album.covers");
-//			for (Song song : state.getPlaylist())
-//				song.setAlbumArtBase64(pandoraClient.retrieveCover(song.getAlbumArtUrl()));
 		}
 
-		// check song
-		if (state.getSong() == null)
-		{
-			state.setSong(state.getPlaylist().get(0));
-			state.getPlaylist().remove(state.getSong());
-			// new Notification(HTMLUtil.getPageHTML(Page.NOTIFICATION));
-		}
+		state.setStation(newStation);
+		log.info("New station selected: " + state.getStation().getStationName());
 	}
 }

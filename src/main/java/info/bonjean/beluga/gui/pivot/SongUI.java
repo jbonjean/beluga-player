@@ -13,7 +13,7 @@ import org.apache.pivot.wtk.ImageView;
 import org.apache.pivot.wtk.Label;
 import org.apache.pivot.wtk.TablePane;
 
-public class Song extends TablePane implements Bindable
+public class SongUI extends TablePane implements Bindable
 {
 	private final BelugaState state = BelugaState.getInstance();
 	
@@ -45,7 +45,10 @@ public class Song extends TablePane implements Bindable
 		songTraits.setText(focusTraits.toString());
 		try
 		{
-			albumCover.setImage(new URL(state.getSong().getAlbumArtUrl()));
+			String imageSrc = state.getSong().getAlbumArtUrl();
+			if(imageSrc == null || imageSrc.isEmpty())
+				imageSrc = "/img/beluga.200x200.png";
+			albumCover.setImage(new URL(imageSrc));
 		}
 		catch (MalformedURLException e)
 		{

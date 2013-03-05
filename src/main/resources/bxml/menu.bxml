@@ -1,5 +1,5 @@
-<TablePane styles="{verticalSpacing:1,horizontalSpacing:1}" xmlns:bxml="http://pivot.apache.org/bxml" xmlns="org.apache.pivot.wtk"
-	xmlns:content="org.apache.pivot.wtk.content">
+<local:MenuUI bxml:id="menuUI" styles="{verticalSpacing:1,horizontalSpacing:1}" xmlns:bxml="http://pivot.apache.org/bxml"
+	xmlns:local="info.bonjean.beluga.gui.pivot" xmlns="org.apache.pivot.wtk" xmlns:content="org.apache.pivot.wtk.content">
 	<columns>
 		<TablePane.Column width="1*" />
 		<TablePane.Column width="-1" />
@@ -7,8 +7,12 @@
 	</columns>
 
 	<TablePane.Row height="-1">
-		<MenuBar>
+		<MenuBar bxml:id="menubar">
 			<MenuBar.Item buttonData="Stations">
+				<Menu>
+					<Menu.Section bxml:id="stations">
+					</Menu.Section>
+				</Menu>
 			</MenuBar.Item>
 			<MenuBar.Item buttonData="Manage">
 				<Menu>
@@ -42,4 +46,4 @@
 		<PushButton buttonData="Exit" action="exit" styles="{toolbar:true,font:{bold:true}}" />
 	</TablePane.Row>
 
-</TablePane>
+</local:MenuUI>
