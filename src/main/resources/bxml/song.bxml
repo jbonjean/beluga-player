@@ -10,14 +10,13 @@
 			<Border styles="{cornerRadii:5,color:'#dddddd',backgroundColor:'#eeeeda',padding:5}">
 				<ImageView bxml:id="albumCover" preferredHeight="225" preferredWidth="225" styles="{fill: 'true'}" />
 			</Border>
-			<Label bxml:id="albumTitle" preferredWidth="230"
-				styles="{horizontalAlignment:'center', font:{bold:true},wrapText:true, padding:{left:15}}" />
+			<Label bxml:id="albumTitle" preferredWidth="230" styles="{horizontalAlignment:'center', font:{bold:true},wrapText:true, padding:{left:15}}" />
 		</BoxPane>
 		<BoxPane orientation="vertical" styles="{fill:true,horizontalAlignment:'left',padding: 10}">
 			<Label bxml:id="songTitle" styles="{font:{bold:true, size:14},wrapText:true}" />
 			<Label bxml:id="artistName" styles="{font:{bold:true, size:13},wrapText:true}" />
 			<FillPane styles="{padding:10}">
-				<PushButton bxml:id="likeButton" buttonData="Like" styles="{buttonCornerRadius:5}"/>
+				<PushButton bxml:id="likeButton" buttonData="Like" />
 				<PushButton bxml:id="banButton" buttonData="Ban" />
 				<PushButton bxml:id="sleepButton" buttonData="Sleep" />
 			</FillPane>

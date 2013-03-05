@@ -27,7 +27,7 @@
 				<TablePane.Filler />
 			</TablePane.Row>
 		</TablePane>
-		<LinkButton bxml:id="nextButton" action="nextSong" styles="{horizontalAlignment:'center'}" tooltipText="Skip this song">
+		<LinkButton bxml:id="nextButton" action="nextSong" tooltipText="Skip this song">
 			<dataRenderer>
 				<content:ButtonDataRenderer orientation="vertical" iconWidth="30" iconHeight="30" fillIcon="true" />
 			</dataRenderer>

@@ -51,10 +51,7 @@ public class PandoraPlaylist
 	{
 		// check if Pandora client is ready
 		if (!pandoraClient.isLoggedIn() || state.getStation() == null)
-		{
-			log.info("Not ready, cannot feed the beast");
 			return;
-		}
 
 		// check if the feed is empty, we do not want to reach Pandora limit
 		if (!queue.isEmpty())

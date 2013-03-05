@@ -12,13 +12,19 @@
 		<TablePane.Row height="-1">
 			<bxml:include inline="true" src="menu.bxml" />
 		</TablePane.Row>
-		
+
 		<TablePane.Row bxml:id="contentWrapper" height="1*">
 			<Label text="" />
 		</TablePane.Row>
-		
+
 		<TablePane.Row height="45">
 			<bxml:include inline="true" src="player.bxml" />
+		</TablePane.Row>
+
+		<TablePane.Row height="15">
+			<FillPane styles="{backgroundColor:'#eeeeee',padding:{left:4,top:1}}">
+				<Label bxml:id="statusBar" text="Status" />
+			</FillPane>
 		</TablePane.Row>
 	</TablePane>
 </local:MainWindow>

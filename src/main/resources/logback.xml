@@ -12,6 +12,8 @@
 			<pattern>%d{HH:mm:ss} %-5level %logger{0} - %msg%n</pattern>
 		</encoder>
 	</appender>
+	<appender name="STATUS" class="info.bonjean.beluga.log.StatusBarAppender">
+	</appender>
 
 	<logger name="info.bonjean.beluga.util.HTTPUtil" level="WARN" />
 
@@ -30,4 +32,13 @@
 			</root>
 		</else>
 	</if>
+
+
+	<logger name="info.bonjean.beluga" level="WARN">
+		<appender-ref ref="STATUS" />
+	</logger>
+	<logger name="info.bonjean.beluga.gui.pivot.MainWindow" level="INFO">
+		<appender-ref ref="STATUS" />
+	</logger>
+
 </configuration>

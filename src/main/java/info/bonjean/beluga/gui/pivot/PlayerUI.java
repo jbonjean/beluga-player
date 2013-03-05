@@ -22,7 +22,7 @@ import org.slf4j.LoggerFactory;
 
 public class PlayerUI extends TablePane implements Bindable
 {
-	private static final Logger log = LoggerFactory.getLogger(MainWindow.class);
+	private static final Logger log = LoggerFactory.getLogger(PlayerUI.class);
 
 	private final BelugaState state = BelugaState.getInstance();
 
@@ -98,10 +98,7 @@ public class PlayerUI extends TablePane implements Bindable
 					final Song song = PandoraPlaylist.getInstance().getNext();
 
 					if (song == null)
-					{
-						log.warn("Playlist returned nothing :'(");
 						continue;
-					}
 
 					log.info("New song: " + song.getAdditionalAudioUrl());
 

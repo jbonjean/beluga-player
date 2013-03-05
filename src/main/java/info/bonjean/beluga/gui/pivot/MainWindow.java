@@ -6,6 +6,7 @@ import info.bonjean.beluga.client.PandoraPlaylist;
 import info.bonjean.beluga.configuration.BelugaConfiguration;
 import info.bonjean.beluga.exception.BelugaException;
 import info.bonjean.beluga.gui.PivotUI;
+import info.bonjean.beluga.log.StatusBarAppender;
 import info.bonjean.beluga.response.Song;
 import info.bonjean.beluga.response.Station;
 
@@ -17,8 +18,10 @@ import org.apache.pivot.beans.Bindable;
 import org.apache.pivot.collections.Map;
 import org.apache.pivot.util.Resources;
 import org.apache.pivot.wtk.Action;
+import org.apache.pivot.wtk.Alert;
 import org.apache.pivot.wtk.ApplicationContext;
 import org.apache.pivot.wtk.Component;
+import org.apache.pivot.wtk.Label;
 import org.apache.pivot.wtk.Menu;
 import org.apache.pivot.wtk.Menu.Section;
 import org.apache.pivot.wtk.MenuButton;
@@ -45,6 +48,9 @@ public class MainWindow extends Window implements Bindable
 
 	@BXML
 	MenuUI menuUI;
+	
+	@BXML
+	Label statusBar;
 
 	Component content;
 
@@ -70,7 +76,7 @@ public class MainWindow extends Window implements Bindable
 			{
 				try
 				{
-					updateContent("song.bxml");
+					 updateContent("song.bxml");
 				}
 				catch (Exception e)
 				{
@@ -130,6 +136,9 @@ public class MainWindow extends Window implements Bindable
 	@Override
 	public void initialize(Map<String, Object> namespace, URL location, Resources resources)
 	{
+		// give a reference of the status bar to the logger
+		StatusBarAppender.setStatusBar(statusBar);
+		
 		// load temporary screen
 		updateContent("loader.bxml");
 

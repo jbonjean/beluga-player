@@ -25,7 +25,7 @@ public class PivotUI implements Application
 			preferences = preferences.node(PivotUI.class.getName());
 			preferences.clear();
 			preferences.putInt("width", 600);
-			preferences.putInt("height", 400);
+			preferences.putInt("height", 415);
 			preferences.putBoolean("resizable", false);
 			preferences.flush();
 		}
@@ -34,11 +34,6 @@ public class PivotUI implements Application
 		}
 
 		DesktopApplicationContext.main(PivotUI.class, new String[] {});
-	}
-
-	public static void main(String[] args)
-	{
-		startDesktopUI();
 	}
 
 	@Override
