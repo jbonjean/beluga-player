@@ -1,7 +1,6 @@
 package info.bonjean.beluga.gui.pivot;
 
 import info.bonjean.beluga.client.BelugaState;
-import info.bonjean.beluga.util.HTMLUtil;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -49,6 +48,17 @@ public class SongUI extends TablePane implements Bindable
 			if (focusTraits.length() > 0)
 				focusTraits.append(", ");
 			focusTraits.append(focusTrait);
+		}
+		if(focusTraits.length() > 0)
+		{
+			// capitalize first letter
+			focusTraits.setCharAt(0, Character.toUpperCase(focusTraits.charAt(0)));
+
+			// add a small padding
+			focusTraits.insert(0, "   ");
+			
+			// finish with a period
+			focusTraits.append(".");
 		}
 		songTraits.setText(focusTraits.toString());
 		try

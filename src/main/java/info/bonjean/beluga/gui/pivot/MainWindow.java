@@ -70,12 +70,7 @@ public class MainWindow extends Window implements Bindable
 			{
 				try
 				{
-					System.out.println("Refresh");
-					BXMLSerializer bxmlSerializer = new BXMLSerializer();
-					Window oldWindow = (Window) source.getAncestor(MainWindow.class);
-					Window newWindow = (Window) bxmlSerializer.readObject(MainWindow.class, PivotUI.BXML_PATH + "main.bxml");
-					newWindow.open(getDisplay());
-					oldWindow.close();
+					updateContent("song.bxml");
 				}
 				catch (Exception e)
 				{

@@ -1,6 +1,5 @@
 package info.bonjean.beluga.client;
 
-import info.bonjean.beluga.configuration.BelugaConfiguration;
 import info.bonjean.beluga.exception.BelugaException;
 import info.bonjean.beluga.response.Song;
 
@@ -15,7 +14,6 @@ public class PandoraPlaylist
 	private static final Logger log = LoggerFactory.getLogger(PandoraPlaylist.class);
 	private final BelugaState state = BelugaState.getInstance();
 	private final PandoraClient pandoraClient = PandoraClient.getInstance();
-	private final BelugaConfiguration configuration = BelugaConfiguration.getInstance();
 
 	private static PandoraPlaylist instance;
 	private LinkedList<Song> queue = new LinkedList<Song>();
@@ -34,37 +32,37 @@ public class PandoraPlaylist
 	public Song getNext()
 	{
 		// queue empty, feed with pandora data
-		if(queue.isEmpty())
+		if (queue.isEmpty())
 			feedQueue();
-		
+
 		// queue still empty, there was a problem, return null
-		if(queue.isEmpty())
+		if (queue.isEmpty())
 			return null;
-		
+
 		Song song = queue.removeFirst();
-		
+
 		// update global state
 		state.setSong(song);
-		
+
 		return song;
 	}
 
 	private void feedQueue()
 	{
 		// check if Pandora client is ready
-		if(!pandoraClient.isLoggedIn() || state.getStation() == null)
+		if (!pandoraClient.isLoggedIn() || state.getStation() == null)
 		{
 			log.info("Not ready, cannot feed the beast");
 			return;
 		}
-		
+
 		// check if the feed is empty, we do not want to reach Pandora limit
-		if(!queue.isEmpty())
+		if (!queue.isEmpty())
 		{
 			log.warn("We should not be there!");
 			return;
 		}
-		
+
 		try
 		{
 			List<Song> playlist = pandoraClient.getPlaylist(state.getStation());

@@ -139,8 +139,11 @@
 			<artifactId>pivot-charts</artifactId>
 			<version>${pivot.version}</version>
 		</dependency>
-
-
+		<dependency>
+			<groupId>com.kitfox.svg</groupId>
+			<artifactId>svg-salamander</artifactId>
+			<version>1.0</version>
+		</dependency>
 		<dependency>
 			<groupId>com.sun.jna</groupId>
 			<artifactId>jna</artifactId>

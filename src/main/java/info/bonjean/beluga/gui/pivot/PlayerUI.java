@@ -14,8 +14,8 @@ import org.apache.pivot.collections.Map;
 import org.apache.pivot.util.Resources;
 import org.apache.pivot.wtk.ApplicationContext;
 import org.apache.pivot.wtk.Label;
+import org.apache.pivot.wtk.LinkButton;
 import org.apache.pivot.wtk.Meter;
-import org.apache.pivot.wtk.PushButton;
 import org.apache.pivot.wtk.TablePane;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,7 +37,7 @@ public class PlayerUI extends TablePane implements Bindable
 	@BXML
 	Meter progress;
 	@BXML
-	PushButton nextButton;
+	LinkButton nextButton;
 
 	Player mp3Player;
 	long duration;
@@ -136,10 +136,10 @@ public class PlayerUI extends TablePane implements Bindable
 							mainWindow.setEnabled(true);
 						}
 					}, true);
-					
+
 					// start playback
 					mp3Player.play();
-					
+
 					log.info("Playback finished");
 
 					ApplicationContext.queueCallback(new Runnable()
@@ -147,11 +147,14 @@ public class PlayerUI extends TablePane implements Bindable
 						@Override
 						public void run()
 						{
-							mainWindow.setEnabled(false);
+							if(mp3Player.isComplete())
+							{
+								// make things clean in the UI
+								progress.setPercentage(1);
+								currentTime.setText(formatTime(duration));
+							}
 
-							// make things clean in the UI
-							currentTime.setText(formatTime(duration));
-							progress.setPercentage(1);
+							mainWindow.setEnabled(false);
 						}
 					}, true);
 				}
