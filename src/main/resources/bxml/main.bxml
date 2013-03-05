@@ -12,11 +12,11 @@
 		<TablePane.Row height="-1">
 			<bxml:include inline="true" src="menu.bxml" />
 		</TablePane.Row>
-
+		
 		<TablePane.Row bxml:id="contentWrapper" height="1*">
-			<Label text=""/>
+			<Label text="" />
 		</TablePane.Row>
-
+		
 		<TablePane.Row height="45">
 			<bxml:include inline="true" src="player.bxml" />
 		</TablePane.Row>

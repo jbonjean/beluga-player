@@ -20,6 +20,8 @@ import org.apache.pivot.wtk.Action;
 import org.apache.pivot.wtk.ApplicationContext;
 import org.apache.pivot.wtk.Component;
 import org.apache.pivot.wtk.Menu;
+import org.apache.pivot.wtk.Menu.Section;
+import org.apache.pivot.wtk.MenuButton;
 import org.apache.pivot.wtk.TablePane;
 import org.apache.pivot.wtk.Window;
 import org.slf4j.Logger;
@@ -39,13 +41,13 @@ public class MainWindow extends Window implements Bindable
 	PlayerUI playerUI;
 
 	@BXML
-	Menu.Section stations;
+	MenuButton stations;
 
 	@BXML
 	MenuUI menuUI;
 
 	Component content;
-	
+
 	private int disableLockCount;
 
 	public MainWindow()
@@ -135,31 +137,29 @@ public class MainWindow extends Window implements Bindable
 	{
 		// load temporary screen
 		updateContent("loader.bxml");
-		
+
 		// (paired with the one from PlayerUI (first call))
 		setEnabled(false);
-		
+
 		// start Pandora backend
 		Action.getNamedActions().get("pandoraStart").perform(this);
 	}
 
-
 	/**
-	 * Be careful with that method, setEnable must be paired to keep consistent lock count
-	 * TODO: better solutions are welcome
+	 * Be careful with that method, setEnable must be paired to keep consistent lock count TODO: better solutions are welcome
 	 */
 	@Override
 	public synchronized void setEnabled(boolean enabled)
 	{
-		if(enabled)
+		if (enabled)
 			disableLockCount--;
 		else
 			disableLockCount++;
-		
+
 		// we don't enable the display if somebody has still a lock
-		if(enabled && disableLockCount > 0)
+		if (enabled && disableLockCount > 0)
 			return;
-		
+
 		menuUI.setEnabled(enabled);
 		content.setEnabled(enabled);
 		playerUI.setEnabled(enabled);
@@ -202,13 +202,14 @@ public class MainWindow extends Window implements Bindable
 			@Override
 			public void run()
 			{
-				stations.remove(0, stations.getLength());
+				Section section = stations.getMenu().getSections().get(0);
+				section.remove(0, section.getLength());
 				for (Station station : state.getStationList())
 				{
 					Menu.Item item = new Menu.Item(station.getStationName());
 					item.getUserData().put("station", station);
 					item.setAction(Action.getNamedActions().get("stationSelect"));
-					stations.add(item);
+					section.add(item);
 				}
 			}
 		}, true);
