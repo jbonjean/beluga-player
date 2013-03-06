@@ -74,7 +74,8 @@ public class PlayerUI extends TablePane implements Bindable
 
 	public void stopPlayer()
 	{
-		mp3Player.close();
+		if (mp3Player != null)
+			mp3Player.close();
 	}
 
 	private class Playback implements Runnable
@@ -144,7 +145,7 @@ public class PlayerUI extends TablePane implements Bindable
 						@Override
 						public void run()
 						{
-							if(mp3Player.isComplete())
+							if (mp3Player.isComplete())
 							{
 								// make things clean in the UI
 								progress.setPercentage(1);

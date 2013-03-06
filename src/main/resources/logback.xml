@@ -13,7 +13,11 @@
 		</encoder>
 	</appender>
 	<appender name="STATUS" class="info.bonjean.beluga.log.StatusBarAppender">
+		<filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+			<level>INFO</level>
+		</filter>
 	</appender>
+
 
 	<logger name="info.bonjean.beluga.util.HTTPUtil" level="WARN" />
 
@@ -23,22 +27,23 @@
 			<root>
 				<level value="DEBUG" />
 				<appender-ref ref="STDOUT" />
+				<appender-ref ref="STATUS" />
 			</root>
 		</then>
 		<else>
 			<root>
 				<level value="WARN" />
 				<appender-ref ref="FILE" />
+				<appender-ref ref="STATUS" />
 			</root>
 		</else>
 	</if>
 
-
-	<logger name="info.bonjean.beluga" level="WARN">
-		<appender-ref ref="STATUS" />
-	</logger>
-	<logger name="info.bonjean.beluga.gui.pivot.MainWindow" level="INFO">
-		<appender-ref ref="STATUS" />
-	</logger>
+	<!-- <logger name="info.bonjean.beluga" level="WARN"> -->
+	<!-- <appender-ref ref="STATUS" /> -->
+	<!-- </logger> -->
+	<!-- <logger name="info.bonjean.beluga.gui.pivot.MainWindow" level="INFO"> -->
+	<!-- <appender-ref ref="STATUS" /> -->
+	<!-- </logger> -->
 
 </configuration>

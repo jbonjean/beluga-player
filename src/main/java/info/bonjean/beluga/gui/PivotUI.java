@@ -7,6 +7,7 @@ import java.util.prefs.Preferences;
 
 import org.apache.pivot.beans.BXMLSerializer;
 import org.apache.pivot.collections.Map;
+import org.apache.pivot.util.Resources;
 import org.apache.pivot.wtk.Application;
 import org.apache.pivot.wtk.DesktopApplicationContext;
 import org.apache.pivot.wtk.Display;
@@ -40,7 +41,7 @@ public class PivotUI implements Application
 	public void startup(Display display, Map<String, String> properties) throws Exception
 	{
 		BXMLSerializer bxmlSerializer = new BXMLSerializer();
-		window = (Window) bxmlSerializer.readObject(MainWindow.class, BXML_PATH + "main.bxml");
+		window = (Window) bxmlSerializer.readObject(MainWindow.class.getResource(BXML_PATH + "main.bxml"),new Resources("i18n.messages"));
 		window.open(display);
 	}
 	

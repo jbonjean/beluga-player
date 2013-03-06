@@ -1,8 +1,5 @@
 <local:MainWindow title="Beluga Player" bxml:id="mainWindow" maximized="true" xmlns:bxml="http://pivot.apache.org/bxml"
 	xmlns:local="info.bonjean.beluga.gui.pivot" xmlns="org.apache.pivot.wtk" xmlns:content="org.apache.pivot.wtk.content">
-	<actionMappings>
-		<Window.ActionMapping action="refresh" keyStroke="CMD-R" />
-	</actionMappings>
 
 	<TablePane styles="{verticalSpacing:1,showHorizontalGridLines:true,horizontalSpacing:1}">
 		<columns>

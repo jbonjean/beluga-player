@@ -5,6 +5,7 @@ import info.bonjean.beluga.client.PandoraClient;
 import info.bonjean.beluga.client.PandoraPlaylist;
 import info.bonjean.beluga.configuration.BelugaConfiguration;
 import info.bonjean.beluga.exception.BelugaException;
+import info.bonjean.beluga.exception.InternalException;
 import info.bonjean.beluga.gui.PivotUI;
 import info.bonjean.beluga.log.StatusBarAppender;
 import info.bonjean.beluga.response.Song;
@@ -18,7 +19,6 @@ import org.apache.pivot.beans.Bindable;
 import org.apache.pivot.collections.Map;
 import org.apache.pivot.util.Resources;
 import org.apache.pivot.wtk.Action;
-import org.apache.pivot.wtk.Alert;
 import org.apache.pivot.wtk.ApplicationContext;
 import org.apache.pivot.wtk.Component;
 import org.apache.pivot.wtk.Label;
@@ -47,18 +47,25 @@ public class MainWindow extends Window implements Bindable
 	MenuButton stations;
 
 	@BXML
+	Menu.Item gotoSongButton;
+
+	@BXML
 	MenuUI menuUI;
-	
+
 	@BXML
 	Label statusBar;
 
 	Component content;
+	String page = "loader";
+	Resources resources;
 
-	private int disableLockCount;
+	private static MainWindow instance;
+
+	private int disableLockCount = 0;
 
 	public MainWindow()
 	{
-		final MainWindow mainWindow = this;
+		instance = this;
 
 		Action.getNamedActions().put("exit", new Action()
 		{
@@ -69,34 +76,54 @@ public class MainWindow extends Window implements Bindable
 			}
 		});
 
-		Action.getNamedActions().put("refresh", new Action()
+		Action.getNamedActions().put("load", new AsyncAction(getInstance())
 		{
 			@Override
-			public void perform(Component source)
+			public void asyncPerform(final Component source)
 			{
-				try
+				final String newPage = source.getUserData().get("bxml") != null ? (String) source.getUserData().get("bxml") : page;
+				ApplicationContext.queueCallback(new Runnable()
 				{
-					 updateContent("song.bxml");
-				}
-				catch (Exception e)
-				{
-					e.printStackTrace();
-				}
+					@Override
+					public void run()
+					{
+						load(newPage);
+					}
+				}, false);
 			}
 		});
 
-		Action.getNamedActions().put("pandoraStart", new AsyncAction(mainWindow)
+		Action.getNamedActions().put("pandoraStart", new AsyncAction(getInstance())
 		{
 			@Override
 			public void asyncPerform(Component source)
 			{
 				try
 				{
+					pandoraClient.reset();
+					state.reset();
+					PandoraPlaylist.getInstance().clear();
+					playerUI.stopPlayer();
 					pandoraClient.partnerLogin();
 					pandoraClient.userLogin();
-					state.reset();
 
 					selectStation(null);
+
+					gotoSongButton.setAction("load");
+					gotoSongButton.setEnabled(true);
+
+					// set the page to song, this means the page will be loaded
+					// as soon as songChanged is invoked (by the player)
+					page = "song";
+
+					// increase count because the player will decrease on first song
+					disableLockCount++;
+
+					// TODO: we could wait here that playback starts, this would prevent
+					// the short time where UI is inconsistent. Another possibility is to create
+					// a dummy song entry to set the state, this way nothing is broken
+					// but be careful to synchronize the state, because it can also be updated
+					// by the player thread.
 				}
 				catch (BelugaException e)
 				{
@@ -105,7 +132,7 @@ public class MainWindow extends Window implements Bindable
 			}
 		});
 
-		Action.getNamedActions().put("nextSong", new AsyncAction(mainWindow)
+		Action.getNamedActions().put("nextSong", new AsyncAction(getInstance())
 		{
 			@Override
 			public void asyncPerform(Component source)
@@ -114,7 +141,7 @@ public class MainWindow extends Window implements Bindable
 			}
 		});
 
-		Action.getNamedActions().put("stationSelect", new AsyncAction(mainWindow)
+		Action.getNamedActions().put("stationSelect", new AsyncAction(getInstance())
 		{
 			@Override
 			public void asyncPerform(Component source)
@@ -136,17 +163,16 @@ public class MainWindow extends Window implements Bindable
 	@Override
 	public void initialize(Map<String, Object> namespace, URL location, Resources resources)
 	{
+		this.resources = resources;
+
 		// give a reference of the status bar to the logger
 		StatusBarAppender.setStatusBar(statusBar);
-		
-		// load temporary screen
-		updateContent("loader.bxml");
 
-		// (paired with the one from PlayerUI (first call))
-		setEnabled(false);
+		// load temporary screen
+		load("loader");
 
 		// start Pandora backend
-		Action.getNamedActions().get("pandoraStart").perform(this);
+		// Action.getNamedActions().get("pandoraStart").perform(this);
 	}
 
 	/**
@@ -171,28 +197,25 @@ public class MainWindow extends Window implements Bindable
 
 	public void songChanged(Song song)
 	{
-		log.info("Received song changed notification");
-		gotoSong();
+		// reload song page only if currently displayed
+		if (page.equals("song"))
+			load("song");
 	}
 
-	private void updateContent(String bxmlFile)
+	private void load(String bxml)
 	{
 		try
 		{
 			BXMLSerializer bxmlSerializer = new BXMLSerializer();
-			content = (Component) bxmlSerializer.readObject(MainWindow.class, PivotUI.BXML_PATH + bxmlFile);
+			content = (Component) bxmlSerializer.readObject(MainWindow.class.getResource(PivotUI.BXML_PATH + bxml + ".bxml"), resources);
 			contentWrapper.remove(0, contentWrapper.getLength());
 			contentWrapper.add(content);
+			page = bxml;
 		}
 		catch (Exception e)
 		{
 			e.printStackTrace();
 		}
-	}
-
-	private void gotoSong()
-	{
-		updateContent("song.bxml");
 	}
 
 	private void selectStation(Station newStation) throws BelugaException
@@ -251,7 +274,15 @@ public class MainWindow extends Window implements Bindable
 
 		// at this point, if no station has been selected, there has been a problem, select first one
 		if (newStation == null)
+		{
+			if (state.getStationList().isEmpty())
+			{
+				// TODO: not yet implemented
+				log.error("This account has no station");
+				throw new InternalException(null);
+			}
 			newStation = state.getStationList().get(0);
+		}
 
 		// check if station changed
 		if (state.getStation() == null || !newStation.getStationId().equals(state.getStation().getStationId()))
@@ -265,6 +296,11 @@ public class MainWindow extends Window implements Bindable
 		}
 
 		state.setStation(newStation);
-		log.info("New station selected: " + state.getStation().getStationName());
+		log.info("Station selected: " + state.getStation().getStationName());
+	}
+
+	public static MainWindow getInstance()
+	{
+		return instance;
 	}
 }
