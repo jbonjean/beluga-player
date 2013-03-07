@@ -24,9 +24,12 @@ import info.bonjean.beluga.log.Log;
 import java.io.FilterInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 
 import org.slf4j.Logger;
 
+import com.Ostermiller.util.BufferOverflowException;
 import com.Ostermiller.util.CircularByteBuffer;
 
 /**
@@ -41,37 +44,102 @@ public class CachedInputStream extends FilterInputStream
 	private static final int CACHE_SIZE = 512 * 1024;
 	private CircularByteBuffer circularByteBuffer;
 	private int read;
+	private InputStream input;
+	private Future<?> future;
 
-	public CachedInputStream(final InputStream input)
+	public CachedInputStream(InputStream in)
 	{
 		super(null);
-		circularByteBuffer = new CircularByteBuffer(CACHE_SIZE, true);
+		this.input = in;
+		circularByteBuffer = new CircularByteBuffer(CACHE_SIZE, false);
 		super.in = circularByteBuffer.getInputStream();
 
-		UIPools.streamPool.execute(new Runnable()
+		future = UIPools.streamPool.submit(new Runnable()
 		{
 			public void run()
 			{
 				// For network the optimal buffer size can be 2 KB to 8 KB (The underlying packet size is typically up to ~1.5 KB)
 				byte[] buffer = new byte[8192];
-				try
+				int length;
+				while (true)
 				{
-					int length;
-					while ((length = input.read(buffer)) != -1)
+					try
 					{
-						circularByteBuffer.getOutputStream().write(buffer, 0, length);
-						read += length;
+						length = input.read(buffer);
+						if (length == -1)
+							throw new IOException();
 					}
-					input.close();
-					circularByteBuffer.getOutputStream().close();
-					log.debug("Cached stream succesfully closed");
-				}
-				catch (IOException e)
-				{
-					log.error(e.getMessage(), e);
+					catch (IOException e)
+					{
+						// no more data to read
+						try
+						{
+							circularByteBuffer.getInputStream().close();
+						}
+						catch (IOException e1)
+						{
+							// never happen (circularByteBuffer inputstream close method never throw exception)
+						}
+						return;
+					}
+					try
+					{
+						boolean done = false;
+						while(!done)
+						{
+							try
+							{
+								circularByteBuffer.getOutputStream().write(buffer, 0, length);
+								done = true;
+							}
+							catch(BufferOverflowException boe)
+							{
+								log.warn("Buffer overflow");
+								try
+								{
+									Thread.sleep(500);
+								}
+								catch (InterruptedException e)
+								{
+									// TODO Auto-generated catch block
+									e.printStackTrace();
+								}
+							}
+						}
+					}
+					catch (IOException e)
+					{
+						// reader has closed circularByteBuffer inputstream
+						return;
+					}
+					read += length;
 				}
 			}
 		});
+	}
+
+	@Override
+	public void close()
+	{
+		// close circularByteBuffer outputstream, will not be feed anymore
+		try
+		{
+			circularByteBuffer.getOutputStream().close();
+		}
+		catch (IOException e1)
+		{
+		}
+		
+		// block until thread is finished
+		try
+		{
+			future.get();
+		}
+		catch (InterruptedException | ExecutionException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	public int getPosition()

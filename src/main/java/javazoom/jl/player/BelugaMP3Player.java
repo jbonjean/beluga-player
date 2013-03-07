@@ -27,6 +27,7 @@ import java.io.InputStream;
 import java.net.MalformedURLException;
 
 import javazoom.jl.decoder.Bitstream;
+import javazoom.jl.decoder.BitstreamException;
 import javazoom.jl.decoder.Decoder;
 import javazoom.jl.decoder.Header;
 import javazoom.jl.decoder.JavaLayerException;
@@ -53,10 +54,12 @@ public class BelugaMP3Player
 	private int lastPosition = 0;
 	private final float duration;
 	private Header header;
+	private HttpGet httpGet;
 
 	public BelugaMP3Player(String url) throws JavaLayerException, MalformedURLException, IOException
 	{
-		HttpResponse httpResponse = BelugaHTTPClient.getInstance().getClient().execute(new HttpGet(url));
+		httpGet = new HttpGet(url);
+		HttpResponse httpResponse = BelugaHTTPClient.getInstance().getClient().execute(httpGet);
 		InputStream inputStream = httpResponse.getEntity().getContent();
 
 		cachedInputStream = new CachedInputStream(inputStream);
@@ -95,6 +98,11 @@ public class BelugaMP3Player
 				close();
 			}
 		}
+
+		// if close called from outside, allow it to exit before us
+		synchronized (this)
+		{
+		}
 	}
 
 	public synchronized void close()
@@ -110,10 +118,12 @@ public class BelugaMP3Player
 			{
 				bitstream.close();
 			}
-			catch (Exception ex)
+			catch (BitstreamException e)
 			{
-				ex.printStackTrace();
+				e.printStackTrace();
 			}
+			// clean up http connection
+			httpGet.releaseConnection();
 		}
 	}
 

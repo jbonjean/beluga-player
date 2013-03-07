@@ -26,6 +26,8 @@ import info.bonjean.beluga.response.Song;
 import java.net.URL;
 import java.util.concurrent.TimeUnit;
 
+import javazoom.jl.decoder.BitstreamException;
+import javazoom.jl.decoder.JavaLayerException;
 import javazoom.jl.player.BelugaMP3Player;
 
 import org.apache.pivot.beans.BXML;
@@ -181,8 +183,24 @@ public class PlayerUI extends TablePane implements Bindable
 						}
 					}, true);
 
-					// start playback
-					mp3Player.play();
+					try
+					{
+						// start playback
+						mp3Player.play();
+					}
+					catch (BitstreamException e)
+					{
+						if(e.getErrorCode() == 258 && mp3Player.getDuration() == 42762.45f)
+						{
+							log.error("pandoraSkipProtection");
+							// prevent playlist to be filled again
+							state.setStation(null);
+							// clear playlist
+							PandoraPlaylist.getInstance().clear();
+							
+							continue;
+						}
+					}
 
 					log.debug("Playback finished");
 
@@ -191,7 +209,7 @@ public class PlayerUI extends TablePane implements Bindable
 						@Override
 						public void run()
 						{
-							if (mp3Player.isComplete())
+							if (mp3Player != null)
 							{
 								// make things clean in the UI
 								progress.setPercentage(1);
