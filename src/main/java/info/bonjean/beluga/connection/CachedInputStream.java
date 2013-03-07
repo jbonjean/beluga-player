@@ -18,10 +18,14 @@
  */
 package info.bonjean.beluga.connection;
 
-import java.io.BufferedInputStream;
+import info.bonjean.beluga.gui.pivot.UIPools;
+import info.bonjean.beluga.log.Log;
+
 import java.io.FilterInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+
+import org.slf4j.Logger;
 
 import com.Ostermiller.util.CircularByteBuffer;
 
@@ -31,36 +35,47 @@ import com.Ostermiller.util.CircularByteBuffer;
  */
 public class CachedInputStream extends FilterInputStream
 {
-	private static final int CACHE_SIZE = 4096;
+	@Log
+	private static Logger log;
 
-	public CachedInputStream(final InputStream in)
+	private static final int CACHE_SIZE = 512 * 1024;
+	private CircularByteBuffer circularByteBuffer;
+	private int read;
+
+	public CachedInputStream(final InputStream input)
 	{
 		super(null);
+		circularByteBuffer = new CircularByteBuffer(CACHE_SIZE, true);
+		super.in = circularByteBuffer.getInputStream();
 
-		final CircularByteBuffer cbb = new CircularByteBuffer(CACHE_SIZE, true);
-		
-		super.in = cbb.getInputStream();
-
-		new Thread(new Runnable()
+		UIPools.streamPool.execute(new Runnable()
 		{
 			public void run()
 			{
-				BufferedInputStream bufferedIn = new BufferedInputStream(in);
-				byte[] buffer = new byte[1024];
+				// For network the optimal buffer size can be 2 KB to 8 KB (The underlying packet size is typically up to ~1.5 KB)
+				byte[] buffer = new byte[8192];
 				try
 				{
-					while (true)
+					int length;
+					while ((length = input.read(buffer)) != -1)
 					{
-						int read = bufferedIn.read(buffer);
-						cbb.getOutputStream().write(buffer, 0, read);
-						System.out.println("cached: " + (CACHE_SIZE - cbb.getSpaceLeft()));
+						circularByteBuffer.getOutputStream().write(buffer, 0, length);
+						read += length;
 					}
+					input.close();
+					circularByteBuffer.getOutputStream().close();
+					log.debug("Cached stream succesfully closed");
 				}
 				catch (IOException e)
 				{
-					e.printStackTrace();
+					log.error(e.getMessage(), e);
 				}
 			}
-		}).start();
+		});
+	}
+
+	public int getPosition()
+	{
+		return read;
 	}
 }

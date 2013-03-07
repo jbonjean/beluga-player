@@ -18,7 +18,10 @@
 			</TablePane.Row>
 			<TablePane.Row height="1*">
 				<Label bxml:id="currentTime" styles="{padding:{left:5,right:5}}" />
-				<Meter bxml:id="progress" styles="{gridFrequency:1}" />
+				<StackPane>
+					<Meter bxml:id="progressCache" styles="{gridFrequency:1,color:'#dddddd'}"/>
+					<Meter bxml:id="progress" styles="{gridFrequency:1}" />
+				</StackPane>
 				<Label bxml:id="totalTime" styles="{padding:{left:5,right:5}}" />
 			</TablePane.Row>
 			<TablePane.Row height="10">
@@ -37,5 +40,3 @@
 		</LinkButton>
 	</TablePane.Row>
 </local:PlayerUI>
-
-<!-- TablePane.columnSpan="5" -->

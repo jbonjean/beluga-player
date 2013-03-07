@@ -42,7 +42,7 @@ import org.slf4j.Logger;
 /**
  * 
  * @author Julien Bonjean <julien@bonjean.info>
- *
+ * 
  */
 public class PlayerUI extends TablePane implements Bindable
 {
@@ -62,10 +62,12 @@ public class PlayerUI extends TablePane implements Bindable
 	@BXML
 	Meter progress;
 	@BXML
+	Meter progressCache;
+	@BXML
 	LinkButton nextButton;
 
 	BelugaMP3Player mp3Player;
-	long duration;
+	float duration;
 
 	@Override
 	public void initialize(Map<String, Object> namespace, URL location, Resources resources)
@@ -74,6 +76,7 @@ public class PlayerUI extends TablePane implements Bindable
 		currentTime.setText("00:00");
 		totalTime.setText("00:00");
 		progress.setPercentage(0);
+		progressCache.setPercentage(0);
 
 		// start the UI sync thread
 		UIPools.playerUISyncPool.execute(new SyncUI());
@@ -100,7 +103,10 @@ public class PlayerUI extends TablePane implements Bindable
 	public void stopPlayer()
 	{
 		if (mp3Player != null)
+		{
 			mp3Player.close();
+			mp3Player = null;
+		}
 	}
 
 	private class Playback implements Runnable
@@ -155,7 +161,7 @@ public class PlayerUI extends TablePane implements Bindable
 						public void run()
 						{
 							// update song duration
-							totalTime.setText(formatTime(duration));
+							totalTime.setText(formatTime((long) duration));
 
 							// update station name
 							stationName.setText(state.getStation().getStationName());
@@ -189,7 +195,7 @@ public class PlayerUI extends TablePane implements Bindable
 							{
 								// make things clean in the UI
 								progress.setPercentage(1);
-								currentTime.setText(formatTime(duration));
+								currentTime.setText(formatTime((long) duration));
 							}
 
 							mainWindow.setEnabled(false);
@@ -227,11 +233,12 @@ public class PlayerUI extends TablePane implements Bindable
 					e.printStackTrace();
 				}
 
-				if (mp3Player == null || mp3Player.isComplete())
+				if (mp3Player == null)
 					continue;
 
-				final float progressValue = mp3Player.getPosition() / (float) duration;
-				final long position = mp3Player.getPosition();
+				final int position = mp3Player.getPosition();
+				final float progressValue = position / duration;
+				final float cacheProgressValue = mp3Player.getCachePosition() / duration;
 
 				ApplicationContext.queueCallback(new Runnable()
 				{
@@ -240,8 +247,9 @@ public class PlayerUI extends TablePane implements Bindable
 					{
 						currentTime.setText(formatTime(position));
 						progress.setPercentage(progressValue);
+						progressCache.setPercentage(cacheProgressValue);
 					}
-				});
+				}, true);
 			}
 		}
 	}

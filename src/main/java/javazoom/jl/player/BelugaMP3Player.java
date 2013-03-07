@@ -45,20 +45,23 @@ import org.apache.http.client.methods.HttpGet;
 public class BelugaMP3Player
 {
 	private Bitstream bitstream;
-	private InputStream inputStream;
+	private CachedInputStream cachedInputStream;
 	private Decoder decoder;
 	private AudioDevice audio;
 	private boolean closed = false;
 	private boolean complete = false;
 	private int lastPosition = 0;
-	private final long duration;
+	private final float duration;
+	private Header header;
 
 	public BelugaMP3Player(String url) throws JavaLayerException, MalformedURLException, IOException
 	{
 		HttpResponse httpResponse = BelugaHTTPClient.getInstance().getClient().execute(new HttpGet(url));
-		inputStream = httpResponse.getEntity().getContent();
+		InputStream inputStream = httpResponse.getEntity().getContent();
 
-		bitstream = new Bitstream(new CachedInputStream(inputStream));
+		cachedInputStream = new CachedInputStream(inputStream);
+
+		bitstream = new Bitstream(cachedInputStream);
 		decoder = new Decoder();
 
 		FactoryRegistry r = FactoryRegistry.systemRegistry();
@@ -67,14 +70,14 @@ public class BelugaMP3Player
 		audio.open(decoder);
 
 		// get the first frame header to get bitrate
-		Header header = bitstream.readFrame();
+		header = bitstream.readFrame();
 		bitstream.unreadFrame();
 
 		// get file size from HTTP headers
-		long songSize = Long.parseLong(httpResponse.getFirstHeader("Content-Length").getValue());
+		int songSize = Integer.parseInt(httpResponse.getFirstHeader("Content-Length").getValue());
 
 		// calculate the duration
-		duration = (long) header.total_ms((int) songSize);
+		duration = header.total_ms(songSize);
 	}
 
 	public void play() throws JavaLayerException
@@ -117,6 +120,11 @@ public class BelugaMP3Player
 	public synchronized boolean isComplete()
 	{
 		return complete;
+	}
+
+	public float getCachePosition()
+	{
+		return header.total_ms(cachedInputStream.getPosition());
 	}
 
 	public int getPosition()
@@ -165,7 +173,7 @@ public class BelugaMP3Player
 		return true;
 	}
 
-	public long getDuration()
+	public float getDuration()
 	{
 		return duration;
 	}
