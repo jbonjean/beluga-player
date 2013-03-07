@@ -20,6 +20,7 @@
 package javazoom.jl.player;
 
 import info.bonjean.beluga.connection.BelugaHTTPClient;
+import info.bonjean.beluga.connection.CachedInputStream;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -57,9 +58,7 @@ public class BelugaMP3Player
 		HttpResponse httpResponse = BelugaHTTPClient.getInstance().getClient().execute(new HttpGet(url));
 		inputStream = httpResponse.getEntity().getContent();
 
-		// BufferedInputStream bis = new BufferedInputStream(inputStream, 4096);
-
-		bitstream = new Bitstream(inputStream);
+		bitstream = new Bitstream(new CachedInputStream(inputStream));
 		decoder = new Decoder();
 
 		FactoryRegistry r = FactoryRegistry.systemRegistry();
