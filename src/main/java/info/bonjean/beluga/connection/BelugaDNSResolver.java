@@ -18,7 +18,7 @@
  */
 package info.bonjean.beluga.connection;
 
-import info.bonjean.beluga.gui.WebkitUI;
+import info.bonjean.beluga.configuration.DNSProxy;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -26,82 +26,77 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.http.conn.DnsResolver;
-import org.apache.http.impl.conn.SystemDefaultDnsResolver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xbill.DNS.ARecord;
+import org.xbill.DNS.ExtendedResolver;
 import org.xbill.DNS.Lookup;
+import org.xbill.DNS.Options;
 import org.xbill.DNS.Record;
-import org.xbill.DNS.SimpleResolver;
+import org.xbill.DNS.TextParseException;
 import org.xbill.DNS.Type;
 
 /**
  * 
  * @author Julien Bonjean <julien@bonjean.info>
  * 
- *         Hybrid DNS resolver
+ *         Custom DNS resolver
  * 
  */
 public class BelugaDNSResolver implements DnsResolver
 {
 	private static final Logger log = LoggerFactory.getLogger(BelugaDNSResolver.class);
-	private static final int DNS_PROXY_MAX_RETRY = 2;
-	private static final int DNS_TIMEOUT_SECONDS = 5;
-	private Lookup dnsProxyLookup;
-	private DnsResolver fallbackDNSResolver;
-	private String pandoraURL;
+	private static final int MAX_RETRIES = 1;
+	private static final int TIMEOUT_SECONDS = 2;
+	private ExtendedResolver resolver;
 
-	public BelugaDNSResolver(String pandoraURL, String proxyDNS)
+	public BelugaDNSResolver(DNSProxy dnsProxy)
 	{
-		fallbackDNSResolver = new SystemDefaultDnsResolver();
-		this.pandoraURL = pandoraURL;
-
+		if (System.getProperty("debug") != null)
+			Options.set("verbose", "true");
 		try
 		{
-			SimpleResolver resolver = new SimpleResolver(proxyDNS);
-			resolver.setTimeout(DNS_TIMEOUT_SECONDS);
-			dnsProxyLookup = new Lookup(pandoraURL, Type.A);
-			dnsProxyLookup.setResolver(resolver);
+			resolver = new ExtendedResolver(new String[] { dnsProxy.getPrimaryServer(), dnsProxy.getSecondaryServer() });
+			resolver.setTimeout(TIMEOUT_SECONDS);
+			resolver.setRetries(MAX_RETRIES);
 		}
-		catch (Exception e)
+		catch (UnknownHostException e)
 		{
-			WebkitUI.reportError("cannot.configure.proxy");
-			dnsProxyLookup = null;
+			// XXX
+			// throw new InternalException(e);
 		}
 	}
 
 	@Override
 	public InetAddress[] resolve(String host) throws UnknownHostException
 	{
-		if (dnsProxyLookup != null && pandoraURL.equalsIgnoreCase(host))
+		try
 		{
+			Lookup dnsProxyLookup = new Lookup(host, Type.A);
+			dnsProxyLookup.setResolver(resolver);
+
 			List<InetAddress> addresses = new ArrayList<InetAddress>();
 
-			for (int i = 0; i < DNS_PROXY_MAX_RETRY; i++)
-			{
-				Record[] records = dnsProxyLookup.run();
+			Record[] records = dnsProxyLookup.run();
 
-				if (records != null)
+			if (records != null)
+			{
+				for (Record record : records)
 				{
-					for (Record record : records)
-					{
-						if (record instanceof ARecord)
-							addresses.add(((ARecord) record).getAddress());
-					}
+					if (record instanceof ARecord)
+						addresses.add(((ARecord) record).getAddress());
 				}
-				if (!addresses.isEmpty())
-					break;
-				else
-					log.warn("DNS proxy problem");
 			}
 			if (addresses.isEmpty())
-			{
-				log.error("Cannot resolve pandora address using DNS proxy");
 				throw new UnknownHostException("dns.proxy.error");
-			}
+
 			log.debug("Resolved Pandora address using DNS proxy");
+
 			return addresses.toArray(new InetAddress[addresses.size()]);
 		}
-		return fallbackDNSResolver.resolve(host);
+		catch (TextParseException e)
+		{
+			throw new UnknownHostException("dns.proxy.error");
+		}
 	}
 }

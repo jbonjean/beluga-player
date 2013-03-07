@@ -18,32 +18,25 @@
 		</filter>
 	</appender>
 
-
 	<logger name="info.bonjean.beluga.util.HTTPUtil" level="WARN" />
 
+	<logger name="info.bonjean.beluga">
+		<appender-ref ref="STATUS" />
+	</logger>
 
 	<if condition='isDefined("debug")'>
 		<then>
 			<root>
 				<level value="DEBUG" />
 				<appender-ref ref="STDOUT" />
-				<appender-ref ref="STATUS" />
 			</root>
+
 		</then>
 		<else>
 			<root>
 				<level value="WARN" />
 				<appender-ref ref="FILE" />
-				<appender-ref ref="STATUS" />
 			</root>
 		</else>
 	</if>
-
-	<!-- <logger name="info.bonjean.beluga" level="WARN"> -->
-	<!-- <appender-ref ref="STATUS" /> -->
-	<!-- </logger> -->
-	<!-- <logger name="info.bonjean.beluga.gui.pivot.MainWindow" level="INFO"> -->
-	<!-- <appender-ref ref="STATUS" /> -->
-	<!-- </logger> -->
-
 </configuration>

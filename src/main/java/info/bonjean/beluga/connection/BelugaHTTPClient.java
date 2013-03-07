@@ -19,8 +19,8 @@
 package info.bonjean.beluga.connection;
 
 import info.bonjean.beluga.configuration.BelugaConfiguration;
+import info.bonjean.beluga.configuration.DNSProxy;
 import info.bonjean.beluga.exception.CommunicationException;
-import info.bonjean.beluga.gui.WebkitUI;
 
 import java.io.InputStream;
 
@@ -35,6 +35,8 @@ import org.apache.http.impl.conn.SchemeRegistryFactory;
 import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 
@@ -43,9 +45,10 @@ import org.apache.http.params.HttpParams;
  */
 public class BelugaHTTPClient
 {
+	private static final Logger log = LoggerFactory.getLogger(BelugaHTTPClient.class);
 	private static final int CONNECTION_TIMEOUT = 4000;
 	private static final int SOCKET_TIMEOUT = 4000;
-	private static final int MAX_RETRIES = 3;
+	private static final int MAX_RETRIES = 2;
 
 	private HttpClient client;
 	private static BelugaHTTPClient instance;
@@ -61,7 +64,8 @@ public class BelugaHTTPClient
 		client = new DefaultHttpClient(httpParameters);
 		if (!configuration.getDNSProxy().isEmpty())
 		{
-			BelugaDNSResolver dnsOverrider = new BelugaDNSResolver("tuner.pandora.com", configuration.getDNSProxy());
+			DNSProxy dnsProxy = DNSProxy.get(configuration.getDNSProxy());
+			BelugaDNSResolver dnsOverrider = new BelugaDNSResolver(dnsProxy);
 			client = new DefaultHttpClient(new PoolingClientConnectionManager(SchemeRegistryFactory.createDefault(), dnsOverrider), httpParameters);
 		}
 		else if (!configuration.getProxyHost().isEmpty())
@@ -73,6 +77,11 @@ public class BelugaHTTPClient
 		if (instance == null)
 			instance = new BelugaHTTPClient();
 		return instance;
+	}
+
+	public HttpClient getClient()
+	{
+		return client;
 	}
 
 	public static void reset()
@@ -93,7 +102,7 @@ public class BelugaHTTPClient
 			catch (Exception e1)
 			{
 				e = e1;
-				//WebkitUI.reportError("connection.problem", true);
+				log.error("connectionProblem");
 			}
 		}
 		throw new CommunicationException(e);

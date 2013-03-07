@@ -1,30 +1,41 @@
+/* Copyright (C) 2012, 2013 Julien Bonjean <julien@bonjean.info>
+ * 
+ * This file is part of Beluga.
+ * 
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 3
+ * of the License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ */
 package info.bonjean.beluga.log;
 
-import info.bonjean.beluga.gui.pivot.AccountCreationUI;
-import info.bonjean.beluga.gui.pivot.MainWindow;
-import info.bonjean.beluga.gui.pivot.PreferencesUI;
+import info.bonjean.beluga.exception.PandoraException;
 
+import org.apache.pivot.util.Resources;
 import org.apache.pivot.wtk.ApplicationContext;
 import org.apache.pivot.wtk.Label;
 
-import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.core.AppenderBase;
 
+/**
+ * 
+ * @author Julien Bonjean <julien@bonjean.info>
+ *
+ */
 public class StatusBarAppender<E> extends AppenderBase<E>
 {
 	private static Label statusBar = null;
-	private static final String[] exceptions = { MainWindow.class.getName(), PreferencesUI.class.getName(), AccountCreationUI.class.getName() };
-
-	private boolean isException(String loggerName)
-	{
-		for (String exception : exceptions)
-		{
-			if (exception.equals(loggerName))
-				return true;
-		}
-		return false;
-	}
+	private static Resources resources = null;
 
 	@Override
 	protected void append(final E eventObject)
@@ -35,26 +46,47 @@ public class StatusBarAppender<E> extends AppenderBase<E>
 
 		LoggingEvent event = (LoggingEvent) eventObject;
 
-		// don't log if less than warn, except for a some exceptions
-		// (not easy to do in logback.xml)
-		if (!event.getLevel().isGreaterOrEqual(Level.WARN) && !isException(event.getLoggerName()))
+		if (statusBar == null)
 			return;
 
-		if (statusBar != null)
+		StringBuffer sb = new StringBuffer();
+
+		// if we received an exception
+		if (event.getThrowableProxy() != null && resources != null)
 		{
-			ApplicationContext.queueCallback(new Runnable()
+			// use PandoraException message as key and translate it
+			if (event.getThrowableProxy().getClassName().equals(PandoraException.class.getName()))
 			{
-				@Override
-				public void run()
-				{
-					statusBar.setText(eventObject.toString());
-				}
-			}, false);
+				String key = event.getThrowableProxy().getMessage();
+				sb.append('[');
+				sb.append(event.getLevel());
+				sb.append("] ");
+				sb.append(resources.get(key));
+			}
 		}
+
+		// if no message yet, use the default
+		if (sb.length() == 0)
+			sb.append(eventObject.toString());
+
+		final String finalMessage = sb.toString();
+		ApplicationContext.queueCallback(new Runnable()
+		{
+			@Override
+			public void run()
+			{
+				statusBar.setText(finalMessage);
+			}
+		}, false);
 	}
 
 	public static void setStatusBar(Label statusBar)
 	{
 		StatusBarAppender.statusBar = statusBar;
+	}
+
+	public static void setResources(Resources resources)
+	{
+		StatusBarAppender.resources = resources;
 	}
 }

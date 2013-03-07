@@ -16,39 +16,20 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
-package info.bonjean.beluga.exception;
+package info.bonjean.beluga.log;
 
-import info.bonjean.beluga.request.Method;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
  * 
  * @author Julien Bonjean <julien@bonjean.info>
- * 
+ *
  */
-public class PandoraException extends BelugaException
+@Target({ ElementType.FIELD })
+@Retention(RetentionPolicy.RUNTIME)
+public @interface Log
 {
-	private static final long serialVersionUID = -3262873433055296370L;
-	private Method method;
-	private String message;
-	private long code;
-	
-	public PandoraException(Method method, long code){
-		super(PandoraError.get(code).getMessageKey());
-		this.method = method;
-		this.code = code;
-	}
-	
-	@Override
-	public String toString() {
-		return "Pandora returned an error when calling " + method + ", code: " + code + ", message: " + message;
-	}
-	
-	public PandoraError getError()
-	{
-		return PandoraError.get(code);
-	}
-	
-	public Method getMethod() {
-		return method;
-	}
 }

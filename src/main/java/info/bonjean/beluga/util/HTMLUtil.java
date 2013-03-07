@@ -26,6 +26,7 @@ import info.bonjean.beluga.exception.InternalException;
 import info.bonjean.beluga.gui.webkit.Page;
 import info.bonjean.beluga.gui.webkit.RenderingEngine;
 import info.bonjean.beluga.gui.webkit.Theme;
+import info.bonjean.beluga.log.Log;
 import info.bonjean.beluga.response.Date;
 import info.bonjean.beluga.response.Result;
 import info.bonjean.beluga.response.SearchArtist;
@@ -41,7 +42,6 @@ import java.util.List;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.velocity.VelocityContext;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * 
@@ -50,7 +50,8 @@ import org.slf4j.LoggerFactory;
  */
 public class HTMLUtil
 {
-	private final static Logger log = LoggerFactory.getLogger(HTMLUtil.class);
+	@Log
+	private static Logger log;
 
 	public static String shorten(String str, int length)
 	{
@@ -73,7 +74,8 @@ public class HTMLUtil
 			}
 			bais.close();
 			baos.close();
-		} catch (Exception e)
+		}
+		catch (Exception e)
 		{
 			log.error("Cannot load resource " + resource);
 			System.exit(-1);
@@ -85,42 +87,42 @@ public class HTMLUtil
 	{
 		return Base64.encodeBase64String(getResourceAsByteArray(resource));
 	}
-	
+
 	public static String getThemeResourceBase64(String resource)
 	{
 		return Base64.encodeBase64String(getResourceAsByteArray(getThemeResourcePath(resource)));
 	}
-	
+
 	public static String getThemeResourcePath(String path)
 	{
 		// first, try with current theme
 		String themePath = "/themes/" + BelugaConfiguration.getInstance().getThemeId() + "/" + path;
 		String newPath = themePath;
 		URL resource = HTMLUtil.class.getResource(themePath);
-		
-		if(resource == null)
+
+		if (resource == null)
 		{
-			log.info("Resource " + path + " not found for theme " + BelugaConfiguration.getInstance().getThemeId());
+			log.debug("Resource " + path + " not found for theme " + BelugaConfiguration.getInstance().getThemeId());
 			newPath = "/themes/" + Theme.CLASSIC.getId() + "/" + path;
 			// fallback to classic theme
 			resource = HTMLUtil.class.getResource(newPath);
 		}
-		
-		if(resource == null)
+
+		if (resource == null)
 		{
-			log.info("Resource " + path + " not found for default theme");
+			log.debug("Resource " + path + " not found for default theme");
 			newPath = path;
 			// second fallback to built-in resources
 			resource = HTMLUtil.class.getResource(path);
 		}
-		
-		if(resource == null)
+
+		if (resource == null)
 		{
 			log.error("Resource " + path + " not found");
 			// it's over, return the theme path to have a clean error message
 			return themePath;
 		}
-		
+
 		return newPath;
 	}
 

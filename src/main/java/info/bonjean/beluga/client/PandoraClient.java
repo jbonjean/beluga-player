@@ -197,7 +197,7 @@ public class PandoraClient
 			}
 			catch (CommunicationException e)
 			{
-				log.error("Cannot retrieve cover: " + coverUrl);
+				log.debug("Cannot retrieve cover: " + coverUrl);
 			}
 		}
 		if (cover == null)
@@ -221,7 +221,7 @@ public class PandoraClient
 		}
 		catch (Exception ex)
 		{
-			log.error("Cannot retrieve focus traits for song " + song.getSongName());
+			log.debug("Cannot retrieve focus traits for song " + song.getSongName());
 		}
 		return traits;
 	}
@@ -243,7 +243,7 @@ public class PandoraClient
 		List<Song> currentPlaylist = result.getItems();
 		PandoraUtil.cleanItemList(currentPlaylist);
 
-		log.info("Retrieved playlist (" + currentPlaylist.size() + " songs) for station " + station.getStationName());
+		log.info("playlistUpdated");
 
 		return currentPlaylist;
 	}

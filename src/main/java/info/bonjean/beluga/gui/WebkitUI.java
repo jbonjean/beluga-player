@@ -266,7 +266,7 @@ public class WebkitUI
 			{
 				state.setSong(state.getPlaylist().get(0));
 				state.getPlaylist().remove(state.getSong());
-				log.info(state.getSong().getAudioUrlMap().get("lowQuality").getAudioUrl());
+				log.debug(state.getSong().getAudioUrlMap().get("lowQuality").getAudioUrl());
 				new Notification(HTMLUtil.getPageHTML(Page.NOTIFICATION));
 
 				new Thread()
@@ -278,15 +278,15 @@ public class WebkitUI
 						{
 							InputStream in = BelugaHTTPClient.getInstance().httpRequest(
 									new HttpGet(state.getSong().getAudioUrlMap().get("lowQuality").getAudioUrl()));
-							//String tDir = System.getProperty("java.io.tmpdir");
+							// String tDir = System.getProperty("java.io.tmpdir");
 							FileOutputStream out = new FileOutputStream("/tmp/beluga.aac");
 							int read = 0;
-							long total = 0;
+//							long total = 0;
 							byte[] bytes = new byte[1024];
 							while ((read = in.read(bytes)) != -1)
 							{
 								out.write(bytes, 0, read);
-								total += read;
+//								total += read;
 							}
 							in.close();
 							out.flush();
@@ -298,7 +298,7 @@ public class WebkitUI
 						}
 					}
 				}.start();
-				Thread.currentThread().sleep(5000);
+//				Thread.currentThread().sleep(5000);
 
 				updateAudioUI();
 			}
@@ -462,7 +462,7 @@ public class WebkitUI
 
 			case CREATE_USER:
 				displayLoader();
-				log.info("Create user");
+				log.debug("Create user");
 				pandoraClient.createUser((String) postParameters[0], (String) postParameters[1], (String) postParameters[2],
 						(String) postParameters[3], (String) postParameters[4], (String) postParameters[5]);
 				dispatch("configuration");
@@ -479,7 +479,7 @@ public class WebkitUI
 				return;
 
 			default:
-				log.info("Unknown command received: " + fullCommand);
+				log.debug("Unknown command received: " + fullCommand);
 		}
 
 		// we are done, hide loader
@@ -516,7 +516,7 @@ public class WebkitUI
 				if (state.getSong().getArtistName().equals(feedback.getArtistName()) && state.getSong().getSongName().equals(feedback.getSongName()))
 				{
 					state.getSong().setSongRating(0);
-					log.info("Current song feedback updated");
+					log.debug("Current song feedback updated");
 				}
 				return;
 			}

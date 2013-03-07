@@ -1,3 +1,21 @@
+/* Copyright (C) 2012, 2013 Julien Bonjean <julien@bonjean.info>
+ * 
+ * This file is part of Beluga.
+ * 
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 3
+ * of the License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ */
 package info.bonjean.beluga.gui.pivot;
 
 import info.bonjean.beluga.client.BelugaState;
@@ -7,6 +25,7 @@ import info.bonjean.beluga.configuration.BelugaConfiguration;
 import info.bonjean.beluga.exception.BelugaException;
 import info.bonjean.beluga.exception.InternalException;
 import info.bonjean.beluga.gui.PivotUI;
+import info.bonjean.beluga.log.Log;
 import info.bonjean.beluga.log.StatusBarAppender;
 import info.bonjean.beluga.response.Song;
 import info.bonjean.beluga.response.Station;
@@ -28,11 +47,17 @@ import org.apache.pivot.wtk.MenuButton;
 import org.apache.pivot.wtk.TablePane;
 import org.apache.pivot.wtk.Window;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
+/**
+ * 
+ * @author Julien Bonjean <julien@bonjean.info>
+ *
+ */
 public class MainWindow extends Window implements Bindable
 {
-	private static final Logger log = LoggerFactory.getLogger(MainWindow.class);
+	@Log
+	private static Logger log;
+
 	private final BelugaState state = BelugaState.getInstance();
 	private final PandoraClient pandoraClient = PandoraClient.getInstance();
 	private final BelugaConfiguration configuration = BelugaConfiguration.getInstance();
@@ -103,7 +128,7 @@ public class MainWindow extends Window implements Bindable
 					pandoraClient.reset();
 					state.reset();
 					PandoraPlaylist.getInstance().clear();
-					playerUI.stopPlayer();
+					stopPlayer();
 					pandoraClient.partnerLogin();
 					pandoraClient.userLogin();
 
@@ -127,7 +152,7 @@ public class MainWindow extends Window implements Bindable
 				}
 				catch (BelugaException e)
 				{
-					e.printStackTrace();
+					log.error(e.getMessage(), e);
 				}
 			}
 		});
@@ -137,7 +162,7 @@ public class MainWindow extends Window implements Bindable
 			@Override
 			public void asyncPerform(Component source)
 			{
-				playerUI.stopPlayer();
+				stopPlayer();
 			}
 		});
 
@@ -150,7 +175,7 @@ public class MainWindow extends Window implements Bindable
 				try
 				{
 					selectStation(station);
-					playerUI.stopPlayer();
+					stopPlayer();
 				}
 				catch (BelugaException e)
 				{
@@ -167,6 +192,8 @@ public class MainWindow extends Window implements Bindable
 
 		// give a reference of the status bar to the logger
 		StatusBarAppender.setStatusBar(statusBar);
+		// also resource for message translation
+		StatusBarAppender.setResources(resources);
 
 		// load temporary screen
 		load("loader");
@@ -200,6 +227,11 @@ public class MainWindow extends Window implements Bindable
 		// reload song page only if currently displayed
 		if (page.equals("song"))
 			load("song");
+	}
+
+	public void stopPlayer()
+	{
+		playerUI.stopPlayer();
 	}
 
 	private void load(String bxml)
@@ -267,7 +299,7 @@ public class MainWindow extends Window implements Bindable
 			}
 			if (!found)
 			{
-				log.warn("Requested station does not exist anymore");
+				log.warn("requestedStationDoesNotExist");
 				newStation = null;
 			}
 		}
@@ -296,7 +328,7 @@ public class MainWindow extends Window implements Bindable
 		}
 
 		state.setStation(newStation);
-		log.info("Station selected: " + state.getStation().getStationName());
+		log.debug("Station selected: " + state.getStation().getStationName());
 	}
 
 	public static MainWindow getInstance()

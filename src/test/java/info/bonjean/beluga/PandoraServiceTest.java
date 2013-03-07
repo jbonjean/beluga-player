@@ -21,9 +21,6 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import info.bonjean.beluga.client.BelugaState;
 import info.bonjean.beluga.client.PandoraClient;
-import info.bonjean.beluga.response.Station;
-
-import java.util.List;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -31,7 +28,7 @@ import org.junit.runner.RunWith;
 /**
  * 
  * @author Julien Bonjean <julien@bonjean.info>
- *
+ * 
  */
 @RunWith(OrderedRunner.class)
 public class PandoraServiceTest
@@ -54,7 +51,7 @@ public class PandoraServiceTest
 	@Test
 	public void _2_getStationList() throws Exception
 	{
-		//pandoraService.updateStationList();
+		// pandoraService.updateStationList();
 
 		assertNotNull(state.getStationList());
 		assertFalse(state.getStationList().isEmpty());
@@ -63,8 +60,8 @@ public class PandoraServiceTest
 	@Test
 	public void _3_testGetPlaylist() throws Exception
 	{
-		List<Station> stations = state.getStationList();
-		//pandoraService.selectStation(stations.get(0));
+//		List<Station> stations = state.getStationList();
+		// pandoraService.selectStation(stations.get(0));
 
 		assertNotNull(state.getPlaylist());
 		assertFalse(state.getPlaylist().isEmpty());
@@ -75,7 +72,7 @@ public class PandoraServiceTest
 	{
 		assertNull(state.getSong());
 
-		//pandoraService.nextSong();
+		// pandoraService.nextSong();
 
 		assertNotNull(state.getSong());
 	}

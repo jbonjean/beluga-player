@@ -16,7 +16,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
-package info.bonjean.beluga;
+package info.bonjean.beluga.misc;
 
 import info.bonjean.beluga.client.BelugaState;
 import info.bonjean.beluga.gui.webkit.Page;
@@ -31,7 +31,7 @@ import java.util.List;
  * @author Julien Bonjean <julien@bonjean.info>
  * 
  */
-public class Dummy
+public class Mock
 {
 	public static void setup() {
 		Station station1 = new Station();

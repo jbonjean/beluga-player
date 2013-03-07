@@ -19,6 +19,7 @@
 package info.bonjean.beluga.configuration;
 
 import info.bonjean.beluga.gui.webkit.Theme;
+import info.bonjean.beluga.log.Log;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -27,7 +28,6 @@ import java.io.IOException;
 import java.util.Properties;
 
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * 
@@ -36,7 +36,8 @@ import org.slf4j.LoggerFactory;
  */
 public class BelugaConfiguration
 {
-	private static final Logger log = LoggerFactory.getLogger(BelugaConfiguration.class);
+	@Log
+	private static Logger log;
 	private static final String CONFIGURATION_DIRECTORY = System.getProperty("user.home") + "/.config/beluga";
 	private static final String CONFIGURATION_FILE = CONFIGURATION_DIRECTORY + "/configuration.properties";
 	private Properties properties;
@@ -72,11 +73,11 @@ public class BelugaConfiguration
 	public void load()
 	{
 		// create configuration directory if necessary
-		log.info("Load configuration");
+		log.debug("Load configuration");
 		File directory = new File(CONFIGURATION_DIRECTORY);
 		if (!directory.exists())
 		{
-			log.info("Configuration directory does not exist, creating it");
+			log.debug("Configuration directory does not exist, creating it");
 			directory.mkdirs();
 		}
 
@@ -84,7 +85,7 @@ public class BelugaConfiguration
 		File configurationFile = new File(CONFIGURATION_FILE);
 		if (!configurationFile.exists())
 		{
-			log.info("Configuration file missing, creating it");
+			log.debug("Configuration file missing, creating it");
 			try
 			{
 				configurationFile.createNewFile();

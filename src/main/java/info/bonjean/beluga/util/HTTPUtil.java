@@ -82,7 +82,7 @@ public class HTTPUtil
 		}
 
 		if (response.getStat().equals("fail"))
-			throw new PandoraException(method, response.getMessage(), response.getCode());
+			throw new PandoraException(method, response.getCode());
 
 		return response.getResult();
 	}

@@ -81,7 +81,7 @@ public class UIWindowListener implements WindowListener, MouseListener
 	{
 		try
 		{
-			// Dummy.setup();
+			// Mock.setup();
 			ui.updateAudioUI();
 
 			SwingUtilities.invokeLater(new Runnable()

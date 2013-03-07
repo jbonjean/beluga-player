@@ -1,12 +1,32 @@
+/* Copyright (C) 2012, 2013 Julien Bonjean <julien@bonjean.info>
+ * 
+ * This file is part of Beluga.
+ * 
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 3
+ * of the License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ */
 package info.bonjean.beluga.gui.pivot;
 
-import info.bonjean.beluga.Player;
 import info.bonjean.beluga.client.BelugaState;
 import info.bonjean.beluga.client.PandoraPlaylist;
+import info.bonjean.beluga.log.Log;
 import info.bonjean.beluga.response.Song;
 
 import java.net.URL;
 import java.util.concurrent.TimeUnit;
+
+import javazoom.jl.player.BelugaMP3Player;
 
 import org.apache.pivot.beans.BXML;
 import org.apache.pivot.beans.Bindable;
@@ -18,11 +38,16 @@ import org.apache.pivot.wtk.LinkButton;
 import org.apache.pivot.wtk.Meter;
 import org.apache.pivot.wtk.TablePane;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
+/**
+ * 
+ * @author Julien Bonjean <julien@bonjean.info>
+ *
+ */
 public class PlayerUI extends TablePane implements Bindable
 {
-	private static final Logger log = LoggerFactory.getLogger(PlayerUI.class);
+	@Log
+	private static Logger log;
 
 	private final BelugaState state = BelugaState.getInstance();
 
@@ -39,7 +64,7 @@ public class PlayerUI extends TablePane implements Bindable
 	@BXML
 	LinkButton nextButton;
 
-	Player mp3Player;
+	BelugaMP3Player mp3Player;
 	long duration;
 
 	@Override
@@ -83,28 +108,43 @@ public class PlayerUI extends TablePane implements Bindable
 		@Override
 		public void run()
 		{
+			int successiveFailures = 0;
 			while (true)
 			{
 				try
 				{
-					try
-					{
-						Thread.sleep(500);
-					}
-					catch (InterruptedException e)
-					{
-						e.printStackTrace();
-					}
-
 					final Song song = PandoraPlaylist.getInstance().getNext();
 
 					if (song == null)
+					{
+						Thread.sleep(500);
 						continue;
+					}
 
-					log.info("New song: " + song.getAdditionalAudioUrl());
+					log.debug("New song: " + song.getAdditionalAudioUrl());
 
 					// initialize the player
-					mp3Player = new Player(song.getAdditionalAudioUrl());
+					try
+					{
+						mp3Player = new BelugaMP3Player(song.getAdditionalAudioUrl());
+						successiveFailures = 0;
+					}
+					catch (Exception e)
+					{
+						successiveFailures++;
+
+						if (successiveFailures >= 3)
+						{
+							log.error("tooManyPlayerSuccessiveFailures");
+							Thread.sleep(5 * 60 * 1000);
+						}
+						else
+						{
+							log.error(e.getMessage(), e);
+							Thread.sleep(2000);
+						}
+						continue;
+					}
 
 					duration = mp3Player.getDuration();
 
@@ -138,7 +178,7 @@ public class PlayerUI extends TablePane implements Bindable
 					// start playback
 					mp3Player.play();
 
-					log.info("Playback finished");
+					log.debug("Playback finished");
 
 					ApplicationContext.queueCallback(new Runnable()
 					{
@@ -158,7 +198,7 @@ public class PlayerUI extends TablePane implements Bindable
 				}
 				catch (Exception e)
 				{
-					e.printStackTrace();
+					log.error(e.getMessage(), e);
 				}
 				finally
 				{

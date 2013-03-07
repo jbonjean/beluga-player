@@ -21,20 +21,7 @@ package info.bonjean.beluga;
 import info.bonjean.beluga.client.BelugaState;
 import info.bonjean.beluga.configuration.BelugaConfiguration;
 import info.bonjean.beluga.gui.PivotUI;
-import info.bonjean.beluga.gui.WebkitUI;
-import info.bonjean.beluga.gui.webkit.Page;
-import info.bonjean.beluga.gui.webkit.UIWindowListener;
-
-import java.awt.BorderLayout;
-import java.awt.Container;
-import java.awt.Image;
-import java.awt.Toolkit;
-
-import javax.swing.JFrame;
-import javax.swing.SwingUtilities;
-
-import chrriis.common.UIUtils;
-import chrriis.dj.nativeswing.swtimpl.NativeInterface;
+import info.bonjean.beluga.util.AnnotationUtil;
 
 /**
  * 
@@ -47,11 +34,13 @@ public class Main
 {
 	public static void main(String[] args)
 	{
+		AnnotationUtil.parseAnnotations();
+
 		String version = Main.class.getPackage().getImplementationVersion();
 		if (version == null)
 			version = "(dev)";
 
-		System.out.println("Beluga Player " + version);
+		System.out.println("Beluga BelugaMP3Player " + version);
 		if (args.length == 1 && args[0].equals("-version"))
 		{
 			System.exit(0);
@@ -60,49 +49,6 @@ public class Main
 		BelugaConfiguration.getInstance().load();
 		BelugaState.getInstance().setVersion(version);
 
-		// set the proxy parameters for webkit before it is instanciated
-		if (BelugaConfiguration.getInstance().getDNSProxyWebkit())
-		{
-			System.setProperty("network.proxy_host", BelugaConfiguration.getInstance().getDNSProxy());
-			System.setProperty("network.proxy_port", "80");
-		}
-
-		// startWebkitUI();
-		startPivotUI();
-	}
-
-	public static void startPivotUI()
-	{
 		PivotUI.startDesktopUI();
-	}
-
-	public static void startWebkitUI()
-	{
-		UIUtils.setPreferredLookAndFeel();
-		NativeInterface.open();
-
-		SwingUtilities.invokeLater(new Runnable()
-		{
-			@Override
-			public void run()
-			{
-				JFrame frame = new JFrame("Beluga Player");
-				frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-				Image image = Toolkit.getDefaultToolkit().getImage(Main.class.getResource(Page.IMG_PATH + "beluga.40x40.png"));
-				frame.setIconImage(image);
-				frame.setResizable(false);
-				frame.setLocationByPlatform(true);
-				frame.setVisible(true);
-
-				Container contentPane = frame.getContentPane();
-				contentPane.setLayout(new BorderLayout());
-
-				final WebkitUI ui = new WebkitUI(frame);
-				UIWindowListener windowListener = new UIWindowListener(ui);
-				frame.addWindowListener(windowListener);
-				ui.getWebBrowser().getNativeComponent().addMouseListener(windowListener);
-			}
-		});
-		NativeInterface.runEventPump();
 	}
 }
