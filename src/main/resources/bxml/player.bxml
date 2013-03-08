@@ -3,9 +3,10 @@
 	<columns>
 		<TablePane.Column width="1*" />
 		<TablePane.Column width="50" />
+		<TablePane.Column width="35" />
 	</columns>
 
-	<TablePane.Row height="-1" >
+	<TablePane.Row height="-1">
 		<TablePane styles="{verticalSpacing:1,horizontalSpacing:1}">
 			<columns>
 				<TablePane.Column width="-1" />
@@ -13,13 +14,12 @@
 				<TablePane.Column width="-1" />
 			</columns>
 			<TablePane.Row height="22">
-				<Label TablePane.columnSpan="3" bxml:id="stationName"
-					styles="{font:{bold:true},horizontalAlignment:'center',verticalAlignment:'center'}" />
+				<Label TablePane.columnSpan="3" bxml:id="stationName" styles="{font:{bold:true},horizontalAlignment:'center',verticalAlignment:'center'}" />
 			</TablePane.Row>
 			<TablePane.Row height="1*">
 				<Label bxml:id="currentTime" styles="{padding:{left:5,right:5}}" />
 				<StackPane>
-					<Meter bxml:id="progressCache" styles="{gridFrequency:1,color:'#dddddd'}"/>
+					<Meter bxml:id="progressCache" styles="{gridFrequency:1,color:'#dddddd'}" />
 					<Meter bxml:id="progress" styles="{gridFrequency:1}" />
 				</StackPane>
 				<Label bxml:id="totalTime" styles="{padding:{left:5,right:5}}" />
@@ -38,5 +38,9 @@
 				<content:ButtonData icon="/img/skip.svg" />
 			</buttonData>
 		</LinkButton>
+		<Border styles="{padding:8, thickness:0}">
+			<Slider bxml:id="volumeControl" range="{start:0, end:0}" value="0" enabled="false" orientation="vertical"
+				styles="{buttonBackgroundColor:'#000000',buttonBorderColor:'#000000',trackColor:'#000000'}" />
+		</Border>
 	</TablePane.Row>
 </local:PlayerUI>

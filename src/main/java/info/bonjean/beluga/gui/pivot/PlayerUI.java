@@ -37,6 +37,8 @@ import org.apache.pivot.wtk.ApplicationContext;
 import org.apache.pivot.wtk.Label;
 import org.apache.pivot.wtk.LinkButton;
 import org.apache.pivot.wtk.Meter;
+import org.apache.pivot.wtk.Slider;
+import org.apache.pivot.wtk.SliderValueListener;
 import org.apache.pivot.wtk.TablePane;
 import org.slf4j.Logger;
 
@@ -66,6 +68,8 @@ public class PlayerUI extends TablePane implements Bindable
 	Meter progressCache;
 	@BXML
 	LinkButton nextButton;
+	@BXML
+	Slider volumeControl;
 
 	BelugaMP3Player mp3Player;
 	float duration;
@@ -78,6 +82,16 @@ public class PlayerUI extends TablePane implements Bindable
 		totalTime.setText("00:00");
 		progress.setPercentage(0);
 		progressCache.setPercentage(0);
+
+		volumeControl.getSliderValueListeners().add(new SliderValueListener()
+		{
+			@Override
+			public void valueChanged(Slider slider, int previousValue)
+			{
+				if (mp3Player != null && mp3Player.getFloatControl() != null)
+					mp3Player.getFloatControl().setValue(slider.getValue());
+			}
+		});
 
 		// start the UI sync thread
 		UIPools.playerUISyncPool.execute(new SyncUI());
@@ -262,6 +276,16 @@ public class PlayerUI extends TablePane implements Bindable
 					@Override
 					public void run()
 					{
+						if (mp3Player.getFloatControl() != null)
+						{
+							volumeControl.setEnabled(true);
+							volumeControl.setStart((int) mp3Player.getFloatControl().getMinimum());
+							volumeControl.setEnd((int) mp3Player.getFloatControl().getMaximum());
+							volumeControl.setValue((int) mp3Player.getFloatControl().getValue());
+						}
+						else
+							volumeControl.setEnabled(false);
+
 						currentTime.setText(formatTime(position));
 						progress.setPercentage(progressValue);
 						progressCache.setPercentage(cacheProgressValue);

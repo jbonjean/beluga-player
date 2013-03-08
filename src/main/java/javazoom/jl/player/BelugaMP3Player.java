@@ -26,6 +26,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 
+import javax.sound.sampled.FloatControl;
+
 import javazoom.jl.decoder.Bitstream;
 import javazoom.jl.decoder.BitstreamException;
 import javazoom.jl.decoder.Decoder;
@@ -81,6 +83,13 @@ public class BelugaMP3Player
 
 		// calculate the duration
 		duration = header.total_ms(songSize);
+	}
+
+	public FloatControl getFloatControl()
+	{
+		if (audio instanceof JavaSoundAudioDevice)
+			return ((JavaSoundAudioDevice) audio).getFloatControl();
+		return null;
 	}
 
 	public void play() throws JavaLayerException

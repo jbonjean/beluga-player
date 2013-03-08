@@ -18,12 +18,13 @@
  */
 package info.bonjean.beluga.gui;
 
-import info.bonjean.beluga.gui.pivot.BelugaMenuButtonSkin;
 import info.bonjean.beluga.gui.pivot.MainWindow;
 
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 
+import org.apache.pivot.BelugaMenuButtonSkin;
+import org.apache.pivot.BelugaSliderSkin;
 import org.apache.pivot.beans.BXMLSerializer;
 import org.apache.pivot.collections.Map;
 import org.apache.pivot.util.Resources;
@@ -32,6 +33,7 @@ import org.apache.pivot.wtk.Button;
 import org.apache.pivot.wtk.DesktopApplicationContext;
 import org.apache.pivot.wtk.Display;
 import org.apache.pivot.wtk.MenuButton;
+import org.apache.pivot.wtk.Slider;
 import org.apache.pivot.wtk.Theme;
 import org.apache.pivot.wtk.Window;
 
@@ -62,6 +64,7 @@ public class PivotUI implements Application
 		}
 
 		Theme.getTheme().set(MenuButton.class, BelugaMenuButtonSkin.class);
+		Theme.getTheme().set(Slider.class, BelugaSliderSkin.class);
 		DesktopApplicationContext.main(PivotUI.class, new String[] {});
 	}
 
@@ -70,9 +73,9 @@ public class PivotUI implements Application
 		// sync action to prevent the inconsistent exception
 		if (button.getAction() != null)
 			button.getAction().setEnabled(enabled);
-		
+
 		button.setEnabled(enabled);
-		
+
 		// re-enable the action, it could be used by other buttons!
 		if (button.getAction() != null)
 			button.getAction().setEnabled(true);
