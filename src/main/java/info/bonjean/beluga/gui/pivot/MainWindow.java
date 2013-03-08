@@ -155,6 +155,40 @@ public class MainWindow extends Window implements Bindable
 				log.info("noActionAssociated");
 			}
 		});
+		
+		Action.getNamedActions().put("bookmarkArtist", new AsyncAction(getInstance())
+		{
+			@Override
+			public void asyncPerform(Component source)
+			{
+				try
+				{
+					pandoraClient.addArtistBookmark(state.getSong().getTrackToken());
+					log.info("artistBookmarkCreated");
+				}
+				catch (BelugaException e)
+				{
+					log.error(e.getMessage(), e);
+				}
+			}
+		});
+
+		Action.getNamedActions().put("bookmarkSong", new AsyncAction(getInstance())
+		{
+			@Override
+			public void asyncPerform(Component source)
+			{
+				try
+				{
+					pandoraClient.addSongBookmark(state.getSong().getTrackToken());
+					log.info("songBookmarkCreated");
+				}
+				catch (BelugaException e)
+				{
+					log.error(e.getMessage(), e);
+				}
+			}
+		});
 
 		Action.getNamedActions().put("load", new AsyncAction(getInstance())
 		{

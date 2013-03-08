@@ -39,8 +39,8 @@
 						</Menu.Item>
 					</Menu.Section>
 					<Menu.Section>
-						<Menu.Item buttonData="%bookmarkSong" action="void" />
-						<Menu.Item buttonData="%bookmarkArtist" action="void" />
+						<Menu.Item buttonData="%bookmarkSong" action="bookmarkSong" />
+						<Menu.Item buttonData="%bookmarkArtist" action="bookmarkArtist" />
 						<Menu.Item buttonData="%showBookmarks" action="load">
 							<userData bxml="bookmarks" />
 						</Menu.Item>
