@@ -371,7 +371,6 @@ public class BelugaSliderSkin extends SliderSkin
 		int value = slider.getValue();
 
 		float ratio = 1-(float) (value - start) / (end - start);
-		System.out.println(ratio);
 
 		if (slider.getOrientation() == Orientation.HORIZONTAL)
 		{
@@ -381,8 +380,6 @@ public class BelugaSliderSkin extends SliderSkin
 		else
 		{
 			thumb.setSize(thumbHeight, thumbWidth);
-
-			System.out.println((width - thumbHeight) / 2 + "     "  + (int) ((height - thumbWidth) * ratio));
 			thumb.setLocation((width - thumbHeight) / 2, (int) ((height - thumbWidth) * ratio));
 		}
 	}
