@@ -42,7 +42,9 @@ import org.apache.pivot.wtk.ApplicationContext;
 import org.apache.pivot.wtk.Component;
 import org.apache.pivot.wtk.Label;
 import org.apache.pivot.wtk.Menu;
+import org.apache.pivot.wtk.Menu.Item;
 import org.apache.pivot.wtk.Menu.Section;
+import org.apache.pivot.wtk.MenuBar;
 import org.apache.pivot.wtk.MenuButton;
 import org.apache.pivot.wtk.TablePane;
 import org.apache.pivot.wtk.Window;
@@ -51,7 +53,7 @@ import org.slf4j.Logger;
 /**
  * 
  * @author Julien Bonjean <julien@bonjean.info>
- *
+ * 
  */
 public class MainWindow extends Window implements Bindable
 {
@@ -72,7 +74,7 @@ public class MainWindow extends Window implements Bindable
 	MenuButton stations;
 
 	@BXML
-	Menu.Item gotoSongButton;
+	MenuBar.Item pandoraMenu;
 
 	@BXML
 	MenuUI menuUI;
@@ -101,6 +103,15 @@ public class MainWindow extends Window implements Bindable
 			}
 		});
 
+		Action.getNamedActions().put("void", new AsyncAction(getInstance())
+		{
+			@Override
+			public void asyncPerform(Component source)
+			{
+				log.info("noActionAssociated");
+			}
+		});
+
 		Action.getNamedActions().put("load", new AsyncAction(getInstance())
 		{
 			@Override
@@ -114,7 +125,7 @@ public class MainWindow extends Window implements Bindable
 					{
 						load(newPage);
 					}
-				}, false);
+				}, true);
 			}
 		});
 
@@ -134,8 +145,15 @@ public class MainWindow extends Window implements Bindable
 
 					selectStation(null);
 
-					gotoSongButton.setAction("load");
-					gotoSongButton.setEnabled(true);
+					// enable pandora items :-)
+					ApplicationContext.queueCallback(new Runnable()
+					{
+						@Override
+						public void run()
+						{
+							setEnablePandoraMenu(true);
+						}
+					}, true);
 
 					// set the page to song, this means the page will be loaded
 					// as soon as songChanged is invoked (by the player)
@@ -198,6 +216,9 @@ public class MainWindow extends Window implements Bindable
 		// load temporary screen
 		load("loader");
 
+		// disable pandora stuff
+		setEnablePandoraMenu(false);
+
 		// start Pandora backend
 		// Action.getNamedActions().get("pandoraStart").perform(this);
 	}
@@ -234,6 +255,20 @@ public class MainWindow extends Window implements Bindable
 		playerUI.stopPlayer();
 	}
 
+	private void setEnablePandoraMenu(boolean enabled)
+	{
+		for (Section section : pandoraMenu.getMenu().getSections())
+		{
+			for (int i = 0; i < section.getLength(); i++)
+			{
+				Item item = section.get(i);
+				if (item.getName() == null || !item.getName().equals("pandoraConnectButton"))
+					PivotUI.setEnable(item, enabled);
+			}
+		}
+		PivotUI.setEnable(stations, enabled);
+	}
+
 	private void load(String bxml)
 	{
 		try
@@ -252,26 +287,7 @@ public class MainWindow extends Window implements Bindable
 
 	private void selectStation(Station newStation) throws BelugaException
 	{
-		// update station list
-		state.setStationList(pandoraClient.getStationList());
-
-		// rebuild menu entry
-		ApplicationContext.queueCallback(new Runnable()
-		{
-			@Override
-			public void run()
-			{
-				Section section = stations.getMenu().getSections().get(0);
-				section.remove(0, section.getLength());
-				for (Station station : state.getStationList())
-				{
-					Menu.Item item = new Menu.Item(station.getStationName());
-					item.getUserData().put("station", station);
-					item.setAction(Action.getNamedActions().get("stationSelect"));
-					section.add(item);
-				}
-			}
-		}, true);
+		updateStationsList();
 
 		// if no station requested, select configuration one
 		if (newStation == null)
@@ -331,8 +347,37 @@ public class MainWindow extends Window implements Bindable
 		log.debug("Station selected: " + state.getStation().getStationName());
 	}
 
+	public void updateStationsList() throws BelugaException
+	{
+		// update station list
+		state.setStationList(pandoraClient.getStationList());
+
+		// rebuild menu entry
+		ApplicationContext.queueCallback(new Runnable()
+		{
+			@Override
+			public void run()
+			{
+				Section section = stations.getMenu().getSections().get(0);
+				section.remove(0, section.getLength());
+				for (Station station : state.getStationList())
+				{
+					Menu.Item item = new Menu.Item(station.getStationName());
+					item.getUserData().put("station", station);
+					item.setAction(Action.getNamedActions().get("stationSelect"));
+					section.add(item);
+				}
+			}
+		}, true);
+	}
+
 	public static MainWindow getInstance()
 	{
 		return instance;
+	}
+
+	public String getPage()
+	{
+		return page;
 	}
 }

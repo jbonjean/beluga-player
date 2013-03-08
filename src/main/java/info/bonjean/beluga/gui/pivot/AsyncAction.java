@@ -25,12 +25,13 @@ import org.apache.pivot.wtk.Component;
 /**
  * 
  * @author Julien Bonjean <julien@bonjean.info>
- *
+ * 
  */
 public abstract class AsyncAction extends Action
 {
 	private MainWindow mainWindow;
 	private boolean disableUI;
+	private boolean enabled = true;
 
 	public AsyncAction(MainWindow mainWindow)
 	{
@@ -43,6 +44,20 @@ public abstract class AsyncAction extends Action
 		this.mainWindow = mainWindow;
 		this.disableUI = disableUI;
 	}
+	
+	@Override
+	public void setEnabled(boolean enabled) {
+		this.enabled = enabled;
+		// stop propagation to bypass the bug
+		// that prevent having button with different enabled state
+		// linked to the same action
+	}
+	
+	@Override
+	public boolean isEnabled()
+	{
+		return enabled;
+	}
 
 	@Override
 	public final void perform(final Component source)
@@ -52,29 +67,43 @@ public abstract class AsyncAction extends Action
 			@Override
 			public void run()
 			{
-				if (disableUI)
-					ApplicationContext.queueCallback(new Runnable()
-					{
-						@Override
-						public void run()
+				try
+				{
+					if (disableUI)
+						ApplicationContext.queueCallback(new Runnable()
 						{
-							mainWindow.setEnabled(false);
-						}
-					}, true);
+							@Override
+							public void run()
+							{
+								mainWindow.setEnabled(false);
+							}
+						}, true);
 
-				asyncPerform(source);
-
-				if (disableUI)
-					ApplicationContext.queueCallback(new Runnable()
-					{
-						@Override
-						public void run()
+					asyncPerform(source);
+				}
+				catch (Throwable e)
+				{
+					throw e;
+				}
+				finally
+				{
+					if (disableUI)
+						ApplicationContext.queueCallback(new Runnable()
 						{
-							mainWindow.setEnabled(true);
-						}
-					}, true);
+							@Override
+							public void run()
+							{
+								mainWindow.setEnabled(true);
+							}
+						}, true);
+					afterPerform();
+				}
 			}
 		});
+	}
+
+	public void afterPerform()
+	{
 	}
 
 	public abstract void asyncPerform(Component source);

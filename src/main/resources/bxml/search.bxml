@@ -1,0 +1,30 @@
+<local:SearchUI xmlns:bxml="http://pivot.apache.org/bxml" xmlns:local="info.bonjean.beluga.gui.pivot" xmlns:content="org.apache.pivot.wtk.content"
+	xmlns="org.apache.pivot.wtk" styles="{padding:15}">
+	<columns>
+		<TablePane.Column width="1*" />
+	</columns>
+
+	<TablePane.Row height="-1" >
+		<BoxPane styles="{padding:{bottom:10}}">
+			<TextInput bxml:id="searchInput" textSize="24" prompt="%songOrArtist" />
+			<PushButton bxml:id="submitButton" buttonData="%search" styles="{minimumAspectRatio:3}" action="submit" />
+		</BoxPane>
+	</TablePane.Row>
+
+	<TablePane.Row height="1*">
+		<TabPane bxml:id="searchTabPane">
+			<Border TabPane.tabData="%artists" bxml:id="artistsTabPane">
+				<ScrollPane horizontalScrollBarPolicy="fill_to_capacity">
+					<BoxPane bxml:id="artistsPane" orientation="vertical">
+					</BoxPane>
+				</ScrollPane>
+			</Border>
+			<Border TabPane.tabData="%tracks" bxml:id="songsTabPane">
+				<ScrollPane horizontalScrollBarPolicy="fill_to_capacity">
+					<BoxPane bxml:id="songsPane" orientation="vertical">
+					</BoxPane>
+				</ScrollPane>
+			</Border>
+		</TabPane>
+	</TablePane.Row>
+</local:SearchUI>

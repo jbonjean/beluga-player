@@ -34,7 +34,7 @@ import org.apache.pivot.wtk.TablePane;
 /**
  * 
  * @author Julien Bonjean <julien@bonjean.info>
- *
+ * 
  */
 public class MenuUI extends TablePane implements Bindable
 {
@@ -47,11 +47,11 @@ public class MenuUI extends TablePane implements Bindable
 	@Override
 	public void initialize(Map<String, Object> namespace, URL location, Resources resources)
 	{
-		if(System.getProperty("debug") != null)
+		if (System.getProperty("debug") != null)
 		{
 			Menu.Item debugEntry = new Menu.Item("Refresh");
 			debugEntry.setAction(Action.getNamedActions().get("load"));
-			menubar.getItems().get(0).getMenu().getSections().get(0).insert(debugEntry,0);
+			menubar.getItems().get(0).getMenu().getSections().get(0).insert(debugEntry, 0);
 		}
 	}
 

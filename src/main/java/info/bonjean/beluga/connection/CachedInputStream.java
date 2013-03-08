@@ -51,7 +51,7 @@ public class CachedInputStream extends FilterInputStream
 	{
 		super(null);
 		this.input = in;
-		circularByteBuffer = new CircularByteBuffer(CACHE_SIZE, false);
+		circularByteBuffer = new CircularByteBuffer(CACHE_SIZE, true);
 		super.in = circularByteBuffer.getInputStream();
 
 		future = UIPools.streamPool.submit(new Runnable()
@@ -74,7 +74,7 @@ public class CachedInputStream extends FilterInputStream
 						// no more data to read
 						try
 						{
-							circularByteBuffer.getInputStream().close();
+							circularByteBuffer.getOutputStream().close();
 						}
 						catch (IOException e1)
 						{
@@ -84,28 +84,7 @@ public class CachedInputStream extends FilterInputStream
 					}
 					try
 					{
-						boolean done = false;
-						while(!done)
-						{
-							try
-							{
-								circularByteBuffer.getOutputStream().write(buffer, 0, length);
-								done = true;
-							}
-							catch(BufferOverflowException boe)
-							{
-								log.warn("Buffer overflow");
-								try
-								{
-									Thread.sleep(500);
-								}
-								catch (InterruptedException e)
-								{
-									// TODO Auto-generated catch block
-									e.printStackTrace();
-								}
-							}
-						}
+						circularByteBuffer.getOutputStream().write(buffer, 0, length);
 					}
 					catch (IOException e)
 					{

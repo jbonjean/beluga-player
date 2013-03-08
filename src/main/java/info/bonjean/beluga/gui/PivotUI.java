@@ -18,6 +18,7 @@
  */
 package info.bonjean.beluga.gui;
 
+import info.bonjean.beluga.gui.pivot.BelugaMenuButtonSkin;
 import info.bonjean.beluga.gui.pivot.MainWindow;
 
 import java.util.prefs.BackingStoreException;
@@ -27,14 +28,17 @@ import org.apache.pivot.beans.BXMLSerializer;
 import org.apache.pivot.collections.Map;
 import org.apache.pivot.util.Resources;
 import org.apache.pivot.wtk.Application;
+import org.apache.pivot.wtk.Button;
 import org.apache.pivot.wtk.DesktopApplicationContext;
 import org.apache.pivot.wtk.Display;
+import org.apache.pivot.wtk.MenuButton;
+import org.apache.pivot.wtk.Theme;
 import org.apache.pivot.wtk.Window;
 
 /**
  * 
  * @author Julien Bonjean <julien@bonjean.info>
- *
+ * 
  */
 public class PivotUI implements Application
 {
@@ -57,18 +61,30 @@ public class PivotUI implements Application
 		{
 		}
 
+		Theme.getTheme().set(MenuButton.class, BelugaMenuButtonSkin.class);
 		DesktopApplicationContext.main(PivotUI.class, new String[] {});
+	}
+
+	public static void setEnable(Button button, boolean enabled)
+	{
+		// sync action to prevent the inconsistent exception
+		if (button.getAction() != null)
+			button.getAction().setEnabled(enabled);
+		
+		button.setEnabled(enabled);
+		
+		// re-enable the action, it could be used by other buttons!
+		if (button.getAction() != null)
+			button.getAction().setEnabled(true);
 	}
 
 	@Override
 	public void startup(Display display, Map<String, String> properties) throws Exception
 	{
 		BXMLSerializer bxmlSerializer = new BXMLSerializer();
-		window = (Window) bxmlSerializer.readObject(MainWindow.class.getResource(BXML_PATH + "main.bxml"),new Resources("i18n.messages"));
+		window = (Window) bxmlSerializer.readObject(MainWindow.class.getResource(BXML_PATH + "main.bxml"), new Resources("i18n.messages"));
 		window.open(display);
 	}
-	
-
 
 	@Override
 	public boolean shutdown(boolean optional)
