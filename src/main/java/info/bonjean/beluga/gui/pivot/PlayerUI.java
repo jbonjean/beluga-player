@@ -27,7 +27,6 @@ import java.net.URL;
 import java.util.concurrent.TimeUnit;
 
 import javazoom.jl.decoder.BitstreamException;
-import javazoom.jl.decoder.JavaLayerException;
 import javazoom.jl.player.BelugaMP3Player;
 
 import org.apache.pivot.beans.BXML;
@@ -190,14 +189,14 @@ public class PlayerUI extends TablePane implements Bindable
 					}
 					catch (BitstreamException e)
 					{
-						if(e.getErrorCode() == 258 && mp3Player.getDuration() == 42762.45f)
+						if (mp3Player != null && e.getErrorCode() == 258 && mp3Player.getDuration() == 42762.45f)
 						{
 							log.error("pandoraSkipProtection");
 							// prevent playlist to be filled again
 							state.setStation(null);
 							// clear playlist
 							PandoraPlaylist.getInstance().clear();
-							
+
 							continue;
 						}
 					}

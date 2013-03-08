@@ -24,4 +24,9 @@
 			</FillPane>
 		</TablePane.Row>
 	</TablePane>
+
+	<bxml:define>
+		<Prompt bxml:id="confirmStationDelete" title="%confirmStationDeleteTitle" message="%confirmStationDeleteMessage" options="%okCancel"
+			selectedOptionIndex="1" />
+	</bxml:define>
 </local:MainWindow>

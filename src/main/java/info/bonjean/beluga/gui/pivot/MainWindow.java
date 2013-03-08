@@ -46,8 +46,11 @@ import org.apache.pivot.wtk.Menu.Item;
 import org.apache.pivot.wtk.Menu.Section;
 import org.apache.pivot.wtk.MenuBar;
 import org.apache.pivot.wtk.MenuButton;
+import org.apache.pivot.wtk.Prompt;
+import org.apache.pivot.wtk.Sheet;
 import org.apache.pivot.wtk.TablePane;
 import org.apache.pivot.wtk.Window;
+import org.apache.pivot.wtk.SheetCloseListener;
 import org.slf4j.Logger;
 
 /**
@@ -82,6 +85,9 @@ public class MainWindow extends Window implements Bindable
 	@BXML
 	Label statusBar;
 
+	@BXML
+	Prompt confirmStationDelete;
+
 	Component content;
 	String page = "loader";
 	Resources resources;
@@ -100,6 +106,44 @@ public class MainWindow extends Window implements Bindable
 			public void perform(Component source)
 			{
 				System.exit(0);
+			}
+		});
+
+		Action.getNamedActions().put("deleteStation", new AsyncAction(getInstance())
+		{
+			@Override
+			public void asyncPerform(Component source)
+			{
+				ApplicationContext.queueCallback(new Runnable()
+				{
+					@Override
+					public void run()
+					{
+						confirmStationDelete.open(MainWindow.getInstance(), new SheetCloseListener()
+						{
+							@Override
+							public void sheetClosed(Sheet sheet)
+							{
+								if (confirmStationDelete.getResult() && confirmStationDelete.getSelectedOptionIndex() == 1)
+								{
+									try
+									{
+										pandoraClient.deleteStation(state.getStation());
+										log.info("stationDeleted");
+										updateStationsList();
+										updateStationsListMenu();
+										selectStation(null);
+										stopPlayer();
+									}
+									catch (BelugaException e)
+									{
+										log.error(e.getMessage(), e);
+									}
+								}
+							}
+						});
+					}
+				}, true);
 			}
 		});
 
@@ -143,14 +187,16 @@ public class MainWindow extends Window implements Bindable
 					pandoraClient.partnerLogin();
 					pandoraClient.userLogin();
 
+					updateStationsList();
 					selectStation(null);
 
-					// enable pandora items :-)
+					// enable/update Pandora menus
 					ApplicationContext.queueCallback(new Runnable()
 					{
 						@Override
 						public void run()
 						{
+							updateStationsListMenu();
 							setEnablePandoraMenu(true);
 						}
 					}, true);
@@ -287,8 +333,6 @@ public class MainWindow extends Window implements Bindable
 
 	private void selectStation(Station newStation) throws BelugaException
 	{
-		updateStationsList();
-
 		// if no station requested, select configuration one
 		if (newStation == null)
 		{
@@ -349,26 +393,21 @@ public class MainWindow extends Window implements Bindable
 
 	public void updateStationsList() throws BelugaException
 	{
-		// update station list
 		state.setStationList(pandoraClient.getStationList());
+	}
 
+	public void updateStationsListMenu()
+	{
 		// rebuild menu entry
-		ApplicationContext.queueCallback(new Runnable()
+		Section section = stations.getMenu().getSections().get(0);
+		section.remove(0, section.getLength());
+		for (Station station : state.getStationList())
 		{
-			@Override
-			public void run()
-			{
-				Section section = stations.getMenu().getSections().get(0);
-				section.remove(0, section.getLength());
-				for (Station station : state.getStationList())
-				{
-					Menu.Item item = new Menu.Item(station.getStationName());
-					item.getUserData().put("station", station);
-					item.setAction(Action.getNamedActions().get("stationSelect"));
-					section.add(item);
-				}
-			}
-		}, true);
+			Menu.Item item = new Menu.Item(station.getStationName());
+			item.getUserData().put("station", station);
+			item.setAction(Action.getNamedActions().get("stationSelect"));
+			section.add(item);
+		}
 	}
 
 	public static MainWindow getInstance()

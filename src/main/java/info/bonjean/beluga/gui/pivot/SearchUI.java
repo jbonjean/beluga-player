@@ -101,7 +101,19 @@ public class SearchUI extends TablePane implements Bindable
 						pandoraClient.addStation(type, token);
 					}
 					log.info("newStationCreated");
+
+					// update stations list
 					MainWindow.getInstance().updateStationsList();
+
+					// update stations list menu
+					ApplicationContext.queueCallback(new Runnable()
+					{
+						@Override
+						public void run()
+						{
+							MainWindow.getInstance().updateStationsListMenu();
+						}
+					}, true);
 				}
 				catch (BelugaException e)
 				{
