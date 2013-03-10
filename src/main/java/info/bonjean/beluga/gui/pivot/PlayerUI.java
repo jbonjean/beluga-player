@@ -105,6 +105,7 @@ public class PlayerUI extends TablePane implements Bindable
 	{
 		nextButton.getAction().setEnabled(enabled);
 		nextButton.setEnabled(enabled);
+		volumeControl.setEnabled(true);
 
 		super.setEnabled(enabled);
 	}
@@ -276,7 +277,7 @@ public class PlayerUI extends TablePane implements Bindable
 					@Override
 					public void run()
 					{
-						if (mp3Player.getFloatControl() != null)
+						if (mp3Player != null && mp3Player.getFloatControl() != null)
 						{
 							volumeControl.setEnabled(true);
 							volumeControl.setStart((int) mp3Player.getFloatControl().getMinimum());

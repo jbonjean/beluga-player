@@ -18,69 +18,52 @@
  */
 package info.bonjean.beluga.util;
 
-import info.bonjean.beluga.Main;
 import info.bonjean.beluga.log.Log;
 
 import java.lang.reflect.Field;
 
-import org.scannotation.AnnotationDB;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.impetus.annovention.ClasspathDiscoverer;
+import com.impetus.annovention.Discoverer;
+import com.impetus.annovention.listener.FieldAnnotationDiscoveryListener;
 
 public class AnnotationUtil
 {
 	private static Logger log = LoggerFactory.getLogger(AnnotationUtil.class);
-	
+
 	public static void parseAnnotations()
 	{
-		try
+		Discoverer discoverer = new ClasspathDiscoverer();
+
+		// Add class annotation listener (optional)
+		discoverer.addAnnotationListener(new FieldAnnotationDiscoveryListener()
 		{
-			AnnotationDB db = new AnnotationDB();
-			db.scanArchives(Main.class.getClassLoader().getResource(""));
-			for (String annotatedClassName : db.getAnnotationIndex().get(Log.class.getName()))
+			@Override
+			public String[] supportedAnnotations()
 			{
-				Field field = null;
-				@SuppressWarnings("rawtypes")
-				Class clazz =  Class.forName(annotatedClassName);
+				return new String[] { Log.class.getName() };
+			}
+
+			@Override
+			public void discovered(String clazz, String field, String annotation)
+			{
+				log.debug("Discovered Field(" + clazz + "." + field + ") with Annotation(" + annotation + ")");
 				try
 				{
-					field = clazz.getDeclaredField("log");
-					if (field.getType() != Logger.class)
-					{
-						log.debug("Field named 'log' found but not of type org.slf4j.Logger");
-						field = null;
-					}
+					Class c = Class.forName(clazz);
+					Field f = c.getDeclaredField(field);
+					f.setAccessible(true);
+					f.set(null, LoggerFactory.getLogger(c));
 				}
 				catch (Exception e)
 				{
-					log.debug("Field named 'log' not found for @Log, this slows down annotation processing");
+					log.error(e.getMessage(), e);
 				}
-
-				// go for the hard way
-				if(field == null)
-				{
-					for (Field f : clazz.getDeclaredFields())
-					{
-						if (f.getType() == Logger.class && f.getAnnotation(Log.class) != null)
-							field = f;
-					}
-				}
-
-				if (field == null)
-				{
-					log.error("Something bad happened during annotation parsing");
-					System.exit(-1);
-				}
-				
-				// do the injection
-				field.setAccessible(true);
-				field.set(null, LoggerFactory.getLogger(clazz));
 			}
-		}
-		catch (Exception e)
-		{
-			log.error(e.getMessage(),e);
-			System.exit(-1);
-		}
+		});
+
+		discoverer.discover(false, true, false, true, true);
 	}
 }

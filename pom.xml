@@ -115,9 +115,9 @@
 			<version>1.07.00</version>
 		</dependency>
 		<dependency>
-			<groupId>net.sf.scannotation</groupId>
-			<artifactId>scannotation</artifactId>
-			<version>1.0.2</version>
+			<groupId>tv.cntt</groupId>
+			<artifactId>annovention</artifactId>
+			<version>1.2</version>
 		</dependency>
 		<dependency>
 			<groupId>com.googlecode.soundlibs</groupId>

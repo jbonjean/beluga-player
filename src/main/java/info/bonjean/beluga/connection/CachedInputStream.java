@@ -114,7 +114,7 @@ public class CachedInputStream extends FilterInputStream
 		{
 			future.get();
 		}
-		catch (InterruptedException | ExecutionException e)
+		catch (Exception e)
 		{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
