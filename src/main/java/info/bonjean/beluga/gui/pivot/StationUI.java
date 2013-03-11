@@ -89,13 +89,12 @@ public class StationUI extends TablePane implements Bindable
 					if (feedback.isPositive())
 						updateSongFeedback(feedback.getFeedbackId());
 
-					// update stations list menu
+					// update UI
 					ApplicationContext.queueCallback(new Runnable()
 					{
 						@Override
 						public void run()
 						{
-							// update UI
 							if (feedback.isPositive())
 								lovedSongsPane.remove(item);
 							else
@@ -158,7 +157,12 @@ public class StationUI extends TablePane implements Bindable
 	{
 		MenuButton link = new MenuButton();
 		link.getStyles().put("padding", 0);
-		link.setButtonData(feedback.getSongName() + " " + (String) resources.get("by") + " " + feedback.getArtistName());
+		StringBuffer sb = new StringBuffer(feedback.getSongName());
+		sb.append(" ");
+		sb.append((String) resources.get("by"));
+		sb.append(" ");
+		sb.append(feedback.getArtistName());
+		link.setButtonData(sb.toString());
 		Menu menu = new Menu();
 		Menu.Section menuSection = new Menu.Section();
 		Menu.Item menuItem = new Menu.Item(feedback.isPositive() ? "unlike" : "unban");

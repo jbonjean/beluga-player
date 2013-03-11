@@ -15,7 +15,6 @@
 						<Menu.Item buttonData="%preferences" action="load">
 							<userData bxml="preferences" />
 						</Menu.Item>
-						<Menu.Item buttonData="%restart" />
 					</Menu.Section>
 					<Menu.Section>
 						<Menu.Item buttonData="%exit" action="exit" />

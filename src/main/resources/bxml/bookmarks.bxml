@@ -1,0 +1,18 @@
+<local:BookmarksUI styles="{verticalSpacing:1,horizontalSpacing:1,padding:10}" xmlns:bxml="http://pivot.apache.org/bxml"
+	xmlns:local="info.bonjean.beluga.gui.pivot" xmlns="org.apache.pivot.wtk" xmlns:content="org.apache.pivot.wtk.content">
+	<columns>
+		<TablePane.Column width="1*" />
+	</columns>
+	<TablePane.Row height="1*">
+		<TabPane>
+			<ScrollPane horizontalScrollBarPolicy="fill_to_capacity" TabPane.tabData="%artists">
+				<BoxPane bxml:id="artistBookmarksPane" orientation="vertical">
+				</BoxPane>
+			</ScrollPane>
+			<ScrollPane horizontalScrollBarPolicy="fill_to_capacity" TabPane.tabData="%tracks">
+				<BoxPane bxml:id="songBookmarksPane" orientation="vertical">
+				</BoxPane>
+			</ScrollPane>
+		</TabPane>
+	</TablePane.Row>
+</local:BookmarksUI>

@@ -200,10 +200,10 @@ public class MainWindow extends Window implements Bindable
 				{
 					// TODO: temporary workaround to load data outside of UI thread
 					if (newPage.equals("station"))
-					{
 						// retrieve station full information
 						state.setStation(pandoraClient.getStation(state.getStation()));
-					}
+					else if (newPage.equals("bookmarks"))
+						state.setBookmarks(pandoraClient.getBookmarks());
 
 					ApplicationContext.queueCallback(new Runnable()
 					{
