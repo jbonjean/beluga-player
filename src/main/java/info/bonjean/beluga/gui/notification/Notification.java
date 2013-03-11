@@ -18,6 +18,16 @@
  */
 package info.bonjean.beluga.gui.notification;
 
+import info.bonjean.beluga.exception.CommunicationException;
+import info.bonjean.beluga.log.Log;
+import info.bonjean.beluga.response.Song;
+import info.bonjean.beluga.util.HTMLUtil;
+
+import java.io.IOException;
+
+import org.apache.commons.io.FileUtils;
+import org.slf4j.Logger;
+
 import ch.swingfx.twinkle.NotificationBuilder;
 
 /**
@@ -27,12 +37,42 @@ import ch.swingfx.twinkle.NotificationBuilder;
  */
 public class Notification extends NotificationBuilder
 {
+	@Log
+	private static Logger log;
+
 	public final static int TIMEOUT = 5000;
-	
-	public Notification(String html) {
+
+	private String getMessage(Song song)
+	{
+		try
+		{
+			String message = FileUtils.readFileToString(FileUtils.toFile(this.getClass().getResource("/notification.html")));
+			message = message.replace("@SONG_NAME@", song.getSongName());
+			message = message.replace("@ARTIST_NAME@", song.getArtistName());
+			try
+			{
+				String coverArt = song.getAlbumArtUrl().isEmpty() ? HTMLUtil.getResourceBase64("/img/beluga.200x200.png") : HTMLUtil
+						.getRemoteResourceBase64(song.getAlbumArtUrl());
+				message = message.replace("@COVER_ART@", coverArt);
+			}
+			catch (CommunicationException e)
+			{
+				log.error(e.getMessage(), e);
+			}
+			return message;
+		}
+		catch (IOException e)
+		{
+			log.error(e.getMessage(), e);
+		}
+		return null;
+	}
+
+	public Notification(Song song)
+	{
 		super();
 		withStyle(new NotificationStyle());
-		withMessage(html);
+		withMessage(getMessage(song));
 		withFadeInAnimation(false);
 		withFadeOutAnimation(false);
 		withDisplayTime(TIMEOUT);

@@ -20,6 +20,7 @@ package info.bonjean.beluga.gui.pivot;
 
 import info.bonjean.beluga.client.BelugaState;
 import info.bonjean.beluga.client.PandoraPlaylist;
+import info.bonjean.beluga.gui.notification.Notification;
 import info.bonjean.beluga.log.Log;
 import info.bonjean.beluga.response.Song;
 
@@ -169,7 +170,7 @@ public class PlayerUI extends TablePane implements Bindable
 					}
 
 					duration = mp3Player.getDuration();
-					
+
 					// update UI
 					ApplicationContext.queueCallback(new Runnable()
 					{
@@ -199,6 +200,8 @@ public class PlayerUI extends TablePane implements Bindable
 
 					try
 					{
+						new Notification(state.getSong());
+
 						// start playback
 						mp3Player.play();
 					}
@@ -280,7 +283,7 @@ public class PlayerUI extends TablePane implements Bindable
 						if (mp3Player != null && mp3Player.getFloatControl() != null)
 						{
 							volumeControl.setEnabled(true);
-							if(volumeControl.getStart() == volumeControl.getEnd())
+							if (volumeControl.getStart() == volumeControl.getEnd())
 							{
 								volumeControl.setStart((int) mp3Player.getFloatControl().getMinimum());
 								volumeControl.setEnd((int) mp3Player.getFloatControl().getMaximum());

@@ -28,7 +28,6 @@ import info.bonjean.beluga.exception.CryptoException;
 import info.bonjean.beluga.exception.InternalException;
 import info.bonjean.beluga.exception.PandoraError;
 import info.bonjean.beluga.exception.PandoraException;
-import info.bonjean.beluga.gui.notification.Notification;
 import info.bonjean.beluga.gui.webkit.Command;
 import info.bonjean.beluga.gui.webkit.Page;
 import info.bonjean.beluga.response.Feedback;
@@ -267,7 +266,7 @@ public class WebkitUI
 				state.setSong(state.getPlaylist().get(0));
 				state.getPlaylist().remove(state.getSong());
 				log.debug(state.getSong().getAudioUrlMap().get("lowQuality").getAudioUrl());
-				new Notification(HTMLUtil.getPageHTML(Page.NOTIFICATION));
+//				new Notification(HTMLUtil.getPageHTML(Page.NOTIFICATION));
 
 				new Thread()
 				{
