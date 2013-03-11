@@ -18,9 +18,12 @@
  */
 package info.bonjean.beluga.gui.pivot;
 
+import info.bonjean.beluga.log.Log;
+
 import org.apache.pivot.wtk.Action;
 import org.apache.pivot.wtk.ApplicationContext;
 import org.apache.pivot.wtk.Component;
+import org.slf4j.Logger;
 
 /**
  * 
@@ -29,6 +32,9 @@ import org.apache.pivot.wtk.Component;
  */
 public abstract class AsyncAction extends Action
 {
+	@Log
+	private static Logger log;
+
 	private MainWindow mainWindow;
 	private boolean disableUI;
 	private boolean enabled = true;
@@ -44,15 +50,16 @@ public abstract class AsyncAction extends Action
 		this.mainWindow = mainWindow;
 		this.disableUI = disableUI;
 	}
-	
+
 	@Override
-	public void setEnabled(boolean enabled) {
+	public void setEnabled(boolean enabled)
+	{
 		this.enabled = enabled;
 		// stop propagation to bypass the bug
 		// that prevent having button with different enabled state
 		// linked to the same action
 	}
-	
+
 	@Override
 	public boolean isEnabled()
 	{
@@ -83,7 +90,7 @@ public abstract class AsyncAction extends Action
 				}
 				catch (Throwable e)
 				{
-					throw e;
+					log.error(e.getMessage(), e);
 				}
 				finally
 				{

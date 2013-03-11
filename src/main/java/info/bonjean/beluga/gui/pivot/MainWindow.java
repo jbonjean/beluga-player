@@ -155,7 +155,7 @@ public class MainWindow extends Window implements Bindable
 				log.info("noActionAssociated");
 			}
 		});
-		
+
 		Action.getNamedActions().put("bookmarkArtist", new AsyncAction(getInstance())
 		{
 			@Override
@@ -196,14 +196,28 @@ public class MainWindow extends Window implements Bindable
 			public void asyncPerform(final Component source)
 			{
 				final String newPage = source.getUserData().get("bxml") != null ? (String) source.getUserData().get("bxml") : page;
-				ApplicationContext.queueCallback(new Runnable()
+				try
 				{
-					@Override
-					public void run()
+					// TODO: temporary workaround to load data outside of UI thread
+					if (newPage.equals("station"))
 					{
-						load(newPage);
+						// retrieve station full information
+						state.setStation(pandoraClient.getStation(state.getStation()));
 					}
-				}, true);
+
+					ApplicationContext.queueCallback(new Runnable()
+					{
+						@Override
+						public void run()
+						{
+							load(newPage);
+						}
+					}, true);
+				}
+				catch (BelugaException e)
+				{
+					log.error(e.getMessage(), e);
+				}
 			}
 		});
 
@@ -361,7 +375,7 @@ public class MainWindow extends Window implements Bindable
 		}
 		catch (Exception e)
 		{
-			e.printStackTrace();
+			log.error(e.getMessage(), e);
 		}
 	}
 

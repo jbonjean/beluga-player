@@ -152,10 +152,6 @@ public class SongUI extends TablePane implements Bindable
 		{
 			// capitalize first letter
 			focusTraits.setCharAt(0, Character.toUpperCase(focusTraits.charAt(0)));
-
-			// add a small padding
-			focusTraits.insert(0, "   ");
-
 			// finish with a period
 			focusTraits.append(".");
 		}

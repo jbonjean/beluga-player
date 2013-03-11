@@ -22,7 +22,7 @@
 				<PushButton bxml:id="sleepButton" buttonData="Sleep" action="sleep" />
 			</FillPane>
 			<ScrollPane horizontalScrollBarPolicy="fill" verticalScrollBarPolicy="fill_to_capacity" preferredHeight="180">
-				<Label bxml:id="songTraits" styles="{wrapText:true}" />
+				<Label bxml:id="songTraits" textKey="%traits" />
 			</ScrollPane>
 		</BoxPane>
 	</TablePane.Row>
