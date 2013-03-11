@@ -89,6 +89,7 @@ public class BelugaMP3Player
 	{
 		if (audio instanceof JavaSoundAudioDevice)
 			return ((JavaSoundAudioDevice) audio).getFloatControl();
+
 		return null;
 	}
 

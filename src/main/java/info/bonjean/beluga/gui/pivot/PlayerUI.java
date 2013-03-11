@@ -169,7 +169,7 @@ public class PlayerUI extends TablePane implements Bindable
 					}
 
 					duration = mp3Player.getDuration();
-
+					
 					// update UI
 					ApplicationContext.queueCallback(new Runnable()
 					{
@@ -280,8 +280,11 @@ public class PlayerUI extends TablePane implements Bindable
 						if (mp3Player != null && mp3Player.getFloatControl() != null)
 						{
 							volumeControl.setEnabled(true);
-							volumeControl.setStart((int) mp3Player.getFloatControl().getMinimum());
-							volumeControl.setEnd((int) mp3Player.getFloatControl().getMaximum());
+							if(volumeControl.getStart() == volumeControl.getEnd())
+							{
+								volumeControl.setStart((int) mp3Player.getFloatControl().getMinimum());
+								volumeControl.setEnd((int) mp3Player.getFloatControl().getMaximum());
+							}
 							volumeControl.setValue((int) mp3Player.getFloatControl().getValue());
 						}
 						else

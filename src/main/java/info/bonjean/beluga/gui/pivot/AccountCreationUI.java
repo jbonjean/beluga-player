@@ -21,7 +21,6 @@ package info.bonjean.beluga.gui.pivot;
 import info.bonjean.beluga.client.PandoraClient;
 import info.bonjean.beluga.configuration.BelugaConfiguration;
 import info.bonjean.beluga.exception.BelugaException;
-import info.bonjean.beluga.exception.PandoraException;
 import info.bonjean.beluga.log.Log;
 
 import java.net.URL;
@@ -31,7 +30,6 @@ import org.apache.pivot.beans.Bindable;
 import org.apache.pivot.collections.Map;
 import org.apache.pivot.util.Resources;
 import org.apache.pivot.wtk.Action;
-import org.apache.pivot.wtk.ApplicationContext;
 import org.apache.pivot.wtk.ButtonGroup;
 import org.apache.pivot.wtk.Checkbox;
 import org.apache.pivot.wtk.Component;

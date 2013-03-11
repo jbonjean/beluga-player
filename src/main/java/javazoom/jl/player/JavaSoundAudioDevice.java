@@ -24,6 +24,8 @@
 
 package javazoom.jl.player;
 
+import info.bonjean.beluga.log.Log;
+
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.DataLine;
@@ -35,6 +37,8 @@ import javax.sound.sampled.SourceDataLine;
 import javazoom.jl.decoder.Decoder;
 import javazoom.jl.decoder.JavaLayerException;
 
+import org.slf4j.Logger;
+
 /**
  * The <code>JavaSoundAudioDevice</code> implements an audio
  * device by using the JavaSound API.
@@ -44,6 +48,9 @@ import javazoom.jl.decoder.JavaLayerException;
  */
 public class JavaSoundAudioDevice extends AudioDeviceBase
 {
+	@Log
+	private static Logger log;
+	
 	private SourceDataLine	source = null;
 
 	private AudioFormat		fmt = null;
@@ -74,7 +81,6 @@ public class JavaSoundAudioDevice extends AudioDeviceBase
 	protected DataLine.Info getSourceLineInfo()
 	{
 		AudioFormat fmt = getAudioFormat();
-		//DataLine.Info info = new DataLine.Info(SourceDataLine.class, fmt, 4000);
 		DataLine.Info info = new DataLine.Info(SourceDataLine.class, fmt);
 		return info;
 	}
@@ -105,10 +111,21 @@ public class JavaSoundAudioDevice extends AudioDeviceBase
             if (line instanceof SourceDataLine)
             {
          		source = (SourceDataLine)line;
-                //source.open(fmt, millisecondsToBytes(fmt, 2000));
 				source.open(fmt);
-                if (source.isControlSupported(FloatControl.Type.VOLUME))
+
+				if (source.isControlSupported(FloatControl.Type.MASTER_GAIN))
+				{
+					log.debug("Control found: " + FloatControl.Type.MASTER_GAIN);
+					floatControl = (FloatControl)source.getControl(FloatControl.Type.MASTER_GAIN);
+				}
+				else if (source.isControlSupported(FloatControl.Type.VOLUME))
+                {
 					floatControl = (FloatControl)source.getControl(FloatControl.Type.VOLUME);
+					log.debug("Control found: " + FloatControl.Type.VOLUME);
+                }
+				else
+					log.info("noAudioControlFound");
+                
                 source.start();
 
             }

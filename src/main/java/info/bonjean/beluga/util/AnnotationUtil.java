@@ -52,6 +52,7 @@ public class AnnotationUtil
 				log.debug("Discovered Field(" + clazz + "." + field + ") with Annotation(" + annotation + ")");
 				try
 				{
+					@SuppressWarnings("rawtypes")
 					Class c = Class.forName(clazz);
 					Field f = c.getDeclaredField(field);
 					f.setAccessible(true);

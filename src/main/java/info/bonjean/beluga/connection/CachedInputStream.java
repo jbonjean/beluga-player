@@ -19,17 +19,12 @@
 package info.bonjean.beluga.connection;
 
 import info.bonjean.beluga.gui.pivot.UIPools;
-import info.bonjean.beluga.log.Log;
 
 import java.io.FilterInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
-import org.slf4j.Logger;
-
-import com.Ostermiller.util.BufferOverflowException;
 import com.Ostermiller.util.CircularByteBuffer;
 
 /**
@@ -38,9 +33,6 @@ import com.Ostermiller.util.CircularByteBuffer;
  */
 public class CachedInputStream extends FilterInputStream
 {
-	@Log
-	private static Logger log;
-
 	private static final int CACHE_SIZE = 512 * 1024;
 	private CircularByteBuffer circularByteBuffer;
 	private int read;
