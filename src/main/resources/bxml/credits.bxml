@@ -1,0 +1,16 @@
+<BoxPane styles="{fill:true,padding:10}" xmlns:bxml="http://pivot.apache.org/bxml" xmlns="org.apache.pivot.wtk" xmlns:content="org.apache.pivot.wtk.content"
+	orientation="vertical">
+	<BoxPane orientation="vertical" styles="{padding:10}">
+		<Label text="Pandora API Wiki" styles="{font:{bold:true}}"/>
+		<Label text="http://pan-do-ra-api.wikia.com/wiki/Pan-do-ra_API_Wiki" styles="{padding:{left:20}}"/>
+	</BoxPane>
+	<BoxPane orientation="vertical" styles="{padding:10}">
+		<Label text="Skip icon designed by Marc Antosch from the Noun Project " styles="{font:{bold:true}}"/>
+		<Label text="http://thenounproject.com/noun/skip/#icon-No5650" styles="{padding:{left:20}}"/>
+	</BoxPane>
+	<BoxPane orientation="vertical" styles="{padding:10}">
+		<Label text="Beluga picture by Opals-On-BlackCom" styles="{font:{bold:true}}"/>
+		<Label text="(Creative Commons Attribution 2.0 Generic license)" styles="{font:{bold:true}}"/>
+		<Label text="http://www.flickr.com/photos/opals-on-black" styles="{padding:{left:20}}"/>
+	</BoxPane>	
+</BoxPane>
