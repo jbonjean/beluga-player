@@ -44,6 +44,7 @@ import org.apache.pivot.wtk.Label;
 import org.apache.pivot.wtk.Menu;
 import org.apache.pivot.wtk.Menu.Item;
 import org.apache.pivot.wtk.Menu.Section;
+import org.apache.pivot.wtk.ImageView;
 import org.apache.pivot.wtk.MenuBar;
 import org.apache.pivot.wtk.MenuButton;
 import org.apache.pivot.wtk.Prompt;
@@ -83,7 +84,10 @@ public class MainWindow extends Window implements Bindable
 	MenuUI menuUI;
 
 	@BXML
-	Label statusBar;
+	Label statusBarText;
+	
+	@BXML
+	ImageView statusBarIcon;
 
 	@BXML
 	Prompt confirmStationDelete;
@@ -128,6 +132,7 @@ public class MainWindow extends Window implements Bindable
 								{
 									try
 									{
+										log.info("deletingStation");
 										pandoraClient.deleteStation(state.getStation());
 										log.info("stationDeleted");
 										updateStationsList();
@@ -161,6 +166,7 @@ public class MainWindow extends Window implements Bindable
 			@Override
 			public void asyncPerform(Component source)
 			{
+				log.info("creatingNewBookmark");
 				try
 				{
 					pandoraClient.addArtistBookmark(state.getSong().getTrackToken());
@@ -178,6 +184,7 @@ public class MainWindow extends Window implements Bindable
 			@Override
 			public void asyncPerform(Component source)
 			{
+				log.info("creatingNewBookmark");
 				try
 				{
 					pandoraClient.addSongBookmark(state.getSong().getTrackToken());
@@ -200,10 +207,16 @@ public class MainWindow extends Window implements Bindable
 				{
 					// TODO: temporary workaround to load data outside of UI thread
 					if (newPage.equals("station"))
+					{
+						log.info("retrievingStationDetails");
 						// retrieve station full information
 						state.setStation(pandoraClient.getStation(state.getStation()));
+					}
 					else if (newPage.equals("bookmarks"))
+					{
+						log.info("retrievingBookmarks");
 						state.setBookmarks(pandoraClient.getBookmarks());
+					}
 
 					ApplicationContext.queueCallback(new Runnable()
 					{
@@ -228,6 +241,8 @@ public class MainWindow extends Window implements Bindable
 			{
 				try
 				{
+					log.info("connectionToPandora");
+					
 					pandoraClient.reset();
 					state.reset();
 					PandoraPlaylist.getInstance().clear();
@@ -274,6 +289,7 @@ public class MainWindow extends Window implements Bindable
 			@Override
 			public void asyncPerform(Component source)
 			{
+				log.info("skippingSong");
 				stopPlayer();
 			}
 		});
@@ -283,6 +299,7 @@ public class MainWindow extends Window implements Bindable
 			@Override
 			public void asyncPerform(Component source)
 			{
+				log.info("changingStation");
 				Station station = (Station) source.getUserData().get("station");
 				try
 				{
@@ -303,13 +320,14 @@ public class MainWindow extends Window implements Bindable
 		this.resources = resources;
 
 		// give a reference of the status bar to the logger
-		StatusBarAppender.setStatusBar(statusBar);
+		StatusBarAppender.setLabel(statusBarText);
+		StatusBarAppender.setIcon(statusBarIcon);
 		// also resource for message translation
 		StatusBarAppender.setResources(resources);
 
 		// load temporary screen
 		load("loader");
-
+		
 		// disable pandora stuff
 		setEnablePandoraMenu(false);
 
@@ -441,6 +459,7 @@ public class MainWindow extends Window implements Bindable
 
 	public void updateStationsList() throws BelugaException
 	{
+		log.info("retrievingStations");
 		state.setStationList(pandoraClient.getStationList());
 	}
 

@@ -243,7 +243,7 @@ public class PandoraClient
 		List<Song> currentPlaylist = result.getItems();
 		PandoraUtil.cleanItemList(currentPlaylist);
 
-		log.info("playlistUpdated");
+		log.debug("Playlist updated");
 
 		return currentPlaylist;
 	}

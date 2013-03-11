@@ -84,6 +84,8 @@ public class PandoraPlaylist
 
 		try
 		{
+			log.info("retrievingPlaylist");
+			
 			List<Song> playlist = pandoraClient.getPlaylist(state.getStation());
 
 			// populate additional data

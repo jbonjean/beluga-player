@@ -44,13 +44,13 @@ import org.slf4j.Logger;
 /**
  * 
  * @author Julien Bonjean <julien@bonjean.info>
- *
+ * 
  */
 public class AccountCreationUI extends TablePane implements Bindable
 {
 	@Log
 	private static Logger log;
-	
+
 	private final BelugaConfiguration configuration = BelugaConfiguration.getInstance();
 	private final PandoraClient pandoraClient = PandoraClient.getInstance();
 
@@ -77,28 +77,17 @@ public class AccountCreationUI extends TablePane implements Bindable
 	{
 		Action.getNamedActions().put("submit", new AsyncAction(MainWindow.getInstance())
 		{
-			private void displayError(final String message)
-			{
-				ApplicationContext.queueCallback(new Runnable()
-				{
-					@Override
-					public void run()
-					{
-						errorArea.setText(message);
-					}
-				}, true);
-			}
-
 			@Override
 			public void asyncPerform(final Component source)
 			{
 				if (!termsOfUseInput.isSelected())
 				{
-					displayError("You must accept the Terms of Use");
+					log.error("youMustAgreeToTheTermsOfUse");
 					return;
 				}
 				try
 				{
+					log.info("creatingNewAccount");
 					pandoraClient.partnerLogin();
 					pandoraClient.createUser(emailAddressInput.getText(), passwordInput.getText(), birthYearInput.getText(), zipCodeInput.getText(),
 							(String) genderGroup.getSelection().getUserData().get("value"), String.valueOf(emailOptInInput.isSelected()));
@@ -109,13 +98,7 @@ public class AccountCreationUI extends TablePane implements Bindable
 				}
 				catch (BelugaException e)
 				{
-					if (e instanceof PandoraException)
-					{
-						PandoraException pe = (PandoraException) e;
-						displayError(pe.getError().getMessageKey());
-						return;
-					}
-					e.printStackTrace();
+					log.error(e.getMessage(), e);
 				}
 			}
 		});

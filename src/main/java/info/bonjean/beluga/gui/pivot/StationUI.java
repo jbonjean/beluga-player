@@ -78,6 +78,7 @@ public class StationUI extends TablePane implements Bindable
 			@Override
 			public void asyncPerform(final Component source)
 			{
+				log.info("deletingFeedback");
 				final Feedback feedback = (Feedback) source.getUserData().get("feedback");
 				final MenuButton item = (MenuButton) source.getUserData().get("item");
 

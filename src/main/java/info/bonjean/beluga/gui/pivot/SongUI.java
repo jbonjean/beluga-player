@@ -31,7 +31,6 @@ import org.apache.pivot.beans.Bindable;
 import org.apache.pivot.collections.Map;
 import org.apache.pivot.util.Resources;
 import org.apache.pivot.wtk.Action;
-import org.apache.pivot.wtk.ApplicationContext;
 import org.apache.pivot.wtk.Component;
 import org.apache.pivot.wtk.ImageView;
 import org.apache.pivot.wtk.Label;
@@ -42,7 +41,7 @@ import org.slf4j.Logger;
 /**
  * 
  * @author Julien Bonjean <julien@bonjean.info>
- *
+ * 
  */
 public class SongUI extends TablePane implements Bindable
 {
@@ -78,6 +77,7 @@ public class SongUI extends TablePane implements Bindable
 			@Override
 			public void asyncPerform(final Component source)
 			{
+				log.info("sendingFeedback");
 				try
 				{
 					pandoraClient.addFeedback(state.getSong(), true);
@@ -88,14 +88,6 @@ public class SongUI extends TablePane implements Bindable
 				{
 					log.error(e.getMessage(), e);
 				}
-				ApplicationContext.queueCallback(new Runnable()
-				{
-					@Override
-					public void run()
-					{
-						// load(newPage);
-					}
-				}, false);
 			}
 		});
 		Action.getNamedActions().put("ban", new AsyncAction(MainWindow.getInstance())
@@ -103,6 +95,7 @@ public class SongUI extends TablePane implements Bindable
 			@Override
 			public void asyncPerform(final Component source)
 			{
+				log.info("sendingFeedback");
 				try
 				{
 					pandoraClient.addFeedback(state.getSong(), false);
@@ -120,6 +113,7 @@ public class SongUI extends TablePane implements Bindable
 			@Override
 			public void asyncPerform(final Component source)
 			{
+				log.info("sendingFeedback");
 				try
 				{
 					pandoraClient.sleepSong(state.getSong());

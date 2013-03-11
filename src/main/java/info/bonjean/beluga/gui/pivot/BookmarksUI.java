@@ -67,6 +67,7 @@ public class BookmarksUI extends TablePane implements Bindable
 			@Override
 			public void asyncPerform(final Component source)
 			{
+				log.info("deletingBookmark");
 				final String bookmarkToken = (String) source.getUserData().get("bookmarkToken");
 				final MenuButton item = (MenuButton) source.getUserData().get("item");
 				final String type = (String) source.getUserData().get("type");

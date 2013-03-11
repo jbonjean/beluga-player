@@ -19,9 +19,10 @@
 		</TablePane.Row>
 
 		<TablePane.Row height="15">
-			<FillPane styles="{backgroundColor:'#eeeeee',padding:{left:4,top:1}}">
-				<Label bxml:id="statusBar" text="Status" />
-			</FillPane>
+			<BoxPane styles="{padding:5, backgroundColor:'#eeeeee',verticalAlignment:'center'}" >
+				<ImageView  bxml:id="statusBarIcon" preferredWidth="7" preferredHeight="7" styles="{fill:true}" visible="false"/>
+				<Label bxml:id="statusBarText"/>
+			</BoxPane>
 		</TablePane.Row>
 	</TablePane>
 

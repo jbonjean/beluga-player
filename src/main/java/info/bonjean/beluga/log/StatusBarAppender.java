@@ -22,19 +22,23 @@ import info.bonjean.beluga.exception.PandoraException;
 
 import org.apache.pivot.util.Resources;
 import org.apache.pivot.wtk.ApplicationContext;
+import org.apache.pivot.wtk.ImageView;
 import org.apache.pivot.wtk.Label;
 
+import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.core.AppenderBase;
 
 /**
  * 
  * @author Julien Bonjean <julien@bonjean.info>
- *
+ * 
  */
 public class StatusBarAppender<E> extends AppenderBase<E>
 {
-	private static Label statusBar = null;
+	private static Label label = null;
+	@SuppressWarnings("unused")
+	private static ImageView icon = null;
 	private static Resources resources = null;
 
 	@Override
@@ -44,49 +48,64 @@ public class StatusBarAppender<E> extends AppenderBase<E>
 		if (!(eventObject instanceof LoggingEvent))
 			return;
 
-		LoggingEvent event = (LoggingEvent) eventObject;
+		final LoggingEvent event = (LoggingEvent) eventObject;
 
-		if (statusBar == null)
+		if (label == null)
 			return;
 
-		StringBuffer sb = new StringBuffer();
+		String message = null;
 
-		// if we received an exception
-		if (event.getThrowableProxy() != null && resources != null)
+		if (resources != null)
 		{
-			// use PandoraException message as key and translate it
-			if (event.getThrowableProxy().getClassName().equals(PandoraException.class.getName()))
+			// if we received an exception
+			if (event.getThrowableProxy() != null)
 			{
-				String key = event.getThrowableProxy().getMessage();
-				sb.append('[');
-				sb.append(event.getLevel());
-				sb.append("] ");
-				sb.append(resources.get(key));
+				// use PandoraException message as key and translate it
+				if (event.getThrowableProxy().getClassName().equals(PandoraException.class.getName()))
+				{
+					String key = event.getThrowableProxy().getMessage();
+					message = (String) resources.get(key);
+				}
 			}
+			// no exception, this is a single text key and should be translatable
+			else
+				message = (String) resources.get(event.getMessage());
 		}
 
 		// if no message yet, use the default
-		if (sb.length() == 0)
-			sb.append(eventObject.toString());
+		if (message == null)
+			message = event.getMessage();
 
-		final String finalMessage = sb.toString();
+		final StringBuffer sb = new StringBuffer();
+		sb.append('[');
+		sb.append(event.getLevel());
+		sb.append("] ");
+		sb.append(message);
+
 		ApplicationContext.queueCallback(new Runnable()
 		{
 			@Override
 			public void run()
 			{
-				statusBar.setText(finalMessage);
+				label.setText(sb.toString());
+				if (event.getLevel().isGreaterOrEqual(Level.ERROR))
+					label.getStyles().put("color", "#ff0000");
 			}
 		}, false);
 	}
 
-	public static void setStatusBar(Label statusBar)
+	public static void setLabel(Label label)
 	{
-		StatusBarAppender.statusBar = statusBar;
+		StatusBarAppender.label = label;
 	}
 
 	public static void setResources(Resources resources)
 	{
 		StatusBarAppender.resources = resources;
+	}
+
+	public static void setIcon(ImageView icon)
+	{
+		StatusBarAppender.icon = icon;
 	}
 }

@@ -146,7 +146,7 @@ public class BelugaSliderSkin extends SliderSkin
 						sliderX = maxX;
 					}
 
-					float ratio = 1-(float) (sliderX - dragOffset.x) / (sliderWidth - thumbWidthLocal);
+					float ratio = 1 - (float) (sliderX - dragOffset.x) / (sliderWidth - thumbWidthLocal);
 
 					int start = slider.getStart();
 					int end = slider.getEnd();
@@ -174,7 +174,7 @@ public class BelugaSliderSkin extends SliderSkin
 						sliderY = maxY;
 					}
 
-					float ratio = 1-(float) (sliderY - dragOffset.y) / (sliderHeight - thumbHeightLocal);
+					float ratio = 1 - (float) (sliderY - dragOffset.y) / (sliderHeight - thumbHeightLocal);
 
 					int start = slider.getStart();
 					int end = slider.getEnd();
@@ -370,7 +370,7 @@ public class BelugaSliderSkin extends SliderSkin
 		int end = slider.getEnd();
 		int value = slider.getValue();
 
-		float ratio = 1-(float) (value - start) / (end - start);
+		float ratio = 1 - (float) (value - start) / (end - start);
 
 		if (slider.getOrientation() == Orientation.HORIZONTAL)
 		{
@@ -647,17 +647,21 @@ public class BelugaSliderSkin extends SliderSkin
 	{
 		layout();
 	}
-	
+
 	@Override
 	public boolean mouseWheel(Component componentArgument, ScrollType scrollType, int scrollAmount, int wheelRotation, int x, int y)
 	{
 		// quick and dirty, we increase/decrease 10% of the value
 		Slider slider = (Slider) BelugaSliderSkin.this.getComponent();
 		int value = slider.getValue();
-		if(wheelRotation >0)
-			slider.setValue((int)(value*0.9));
+		int step = (int) (0.1 * (slider.getEnd() - slider.getStart()));
+
+		if (wheelRotation > 0)
+			value = Math.max(slider.getStart(), value - step);
 		else
-			slider.setValue((int)(value*1.1));
+			value = Math.min(slider.getEnd(), value + step);
+
+		slider.setValue(value);
 		return true;
 	}
 }

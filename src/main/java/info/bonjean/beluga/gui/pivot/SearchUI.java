@@ -86,6 +86,7 @@ public class SearchUI extends TablePane implements Bindable
 			@Override
 			public void asyncPerform(final Component source)
 			{
+				log.info("creatingNewStation");
 				String type = (String) source.getUserData().get("type");
 				String token = (String) source.getUserData().get("token");
 				try
