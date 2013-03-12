@@ -56,7 +56,8 @@ public class HTTPUtil
 	private static final Gson gson = GsonUtil.getGsonInstance();
 	private static final String SERVICE_URL = "http://tuner.pandora.com/services/json/?";
 
-	public static <E> E request(Method method, ParameterMap params, JsonRequest jsonData, boolean encrypt, TypeToken<Response<E>> typeToken) throws BelugaException
+	public static <E> E request(Method method, ParameterMap params, JsonRequest jsonData, boolean encrypt, TypeToken<Response<E>> typeToken)
+			throws BelugaException
 	{
 		String urlStr = createRequestUrl(method, params);
 		String data = gson.toJson(jsonData);
@@ -67,16 +68,16 @@ public class HTTPUtil
 
 		if (encrypt)
 			data = CryptoUtil.pandoraEncrypt(data);
-		
+
 		String requestResponse = HTTPUtil.jsonRequest(urlStr, data);
 		log.debug("Response: " + requestResponse);
 
-		
 		Response<E> response;
 		try
 		{
 			response = gson.fromJson(requestResponse, typeToken.getType());
-		} catch (JsonSyntaxException e)
+		}
+		catch (JsonSyntaxException e)
 		{
 			throw new CommunicationException("Response is not valid");
 		}
@@ -108,7 +109,8 @@ public class HTTPUtil
 			post.addHeader("Content-Type", "application/json");
 			post.setEntity(json);
 			return IOUtils.toString(BelugaHTTPClient.getInstance().httpRequest(post));
-		} catch (Exception e)
+		}
+		catch (Exception e)
 		{
 			throw new CommunicationException(e);
 		}
@@ -120,7 +122,8 @@ public class HTTPUtil
 		{
 			HttpGet get = new HttpGet(urlStr);
 			return IOUtils.toByteArray(BelugaHTTPClient.getInstance().httpRequest(get));
-		} catch (IOException e)
+		}
+		catch (IOException e)
 		{
 			throw new CommunicationException(e);
 		}

@@ -20,8 +20,6 @@ package info.bonjean.beluga.client;
 
 import info.bonjean.beluga.configuration.BelugaConfiguration;
 import info.bonjean.beluga.exception.BelugaException;
-import info.bonjean.beluga.exception.CommunicationException;
-import info.bonjean.beluga.gui.webkit.Page;
 import info.bonjean.beluga.request.ArtistBookmarkDeleteRequest;
 import info.bonjean.beluga.request.ArtistBookmarkRequest;
 import info.bonjean.beluga.request.BookmarksRequest;
@@ -47,7 +45,6 @@ import info.bonjean.beluga.response.Response;
 import info.bonjean.beluga.response.Result;
 import info.bonjean.beluga.response.Song;
 import info.bonjean.beluga.response.Station;
-import info.bonjean.beluga.util.HTMLUtil;
 import info.bonjean.beluga.util.HTTPUtil;
 import info.bonjean.beluga.util.PandoraUtil;
 
@@ -181,30 +178,8 @@ public class PandoraClient
 		Station stationFull = HTTPUtil.<Station> request(Method.GET_STATION, params, stationRequest, true, new TypeToken<Response<Station>>()
 		{
 		});
-		//stationFull.setArtBase64(retrieveCover(stationFull.getArtUrl()));
+		// stationFull.setArtBase64(retrieveCover(stationFull.getArtUrl()));
 		return stationFull;
-	}
-
-	public String retrieveCover(String coverUrl)
-	{
-		log.debug("Retrieve cover from: " + coverUrl);
-		String cover = null;
-		if (coverUrl != null && !coverUrl.isEmpty())
-		{
-			try
-			{
-				cover = HTMLUtil.getRemoteResourceBase64(coverUrl);
-			}
-			catch (CommunicationException e)
-			{
-				log.debug("Cannot retrieve cover: " + coverUrl);
-			}
-		}
-		if (cover == null)
-		{
-			cover = HTMLUtil.getResourceBase64(Page.IMG_PATH + "beluga.200x200.png");
-		}
-		return cover;
 	}
 
 	public List<String> retrieveFocusTraits(Song song)
@@ -294,7 +269,7 @@ public class PandoraClient
 		{
 		});
 	}
-	
+
 	public void deleteArtistBookmark(String bookmarkToken) throws BelugaException
 	{
 		ParameterMap params = getDefaultParameterMap();

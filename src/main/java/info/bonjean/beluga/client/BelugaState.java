@@ -18,7 +18,6 @@
  */
 package info.bonjean.beluga.client;
 
-import info.bonjean.beluga.gui.webkit.Page;
 import info.bonjean.beluga.response.Bookmarks;
 import info.bonjean.beluga.response.Song;
 import info.bonjean.beluga.response.Station;
@@ -44,14 +43,11 @@ public class BelugaState
 	private Song song;
 	private Bookmarks bookmarks;
 
-	private Page page;
-	private Page pageBack;
-
 	private float volume = 1f;
 	// workaround for missing feature in webkit
 	// we store the volume value before mute to be able to restore it later
 	private float mutedVolume = 0f;
-	
+
 	private String version;
 
 	Set<String> errors = new HashSet<String>();
@@ -121,26 +117,6 @@ public class BelugaState
 	public void addError(String key)
 	{
 		errors.add(key);
-	}
-
-	public Page getPage()
-	{
-		return page;
-	}
-
-	public void setPage(Page page)
-	{
-		this.page = page;
-	}
-
-	public Page getPageBack()
-	{
-		return pageBack;
-	}
-
-	public void setPageBack(Page pageBack)
-	{
-		this.pageBack = pageBack;
 	}
 
 	public float getMutedVolume()

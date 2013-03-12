@@ -19,7 +19,6 @@
 package info.bonjean.beluga.misc;
 
 import info.bonjean.beluga.client.BelugaState;
-import info.bonjean.beluga.gui.webkit.Page;
 import info.bonjean.beluga.response.Song;
 import info.bonjean.beluga.response.Station;
 
@@ -72,6 +71,6 @@ public class Mock
 		BelugaState.getInstance().setStation(station2);
 		BelugaState.getInstance().setPlaylist(playlist);
 		BelugaState.getInstance().setSong(song);
-		BelugaState.getInstance().setPage(Page.SONG);
+//		BelugaState.getInstance().setPage(Page.SONG);
 	}
 }

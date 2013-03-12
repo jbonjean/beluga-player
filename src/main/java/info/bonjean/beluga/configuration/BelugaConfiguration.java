@@ -18,7 +18,6 @@
  */
 package info.bonjean.beluga.configuration;
 
-import info.bonjean.beluga.gui.webkit.Theme;
 import info.bonjean.beluga.log.Log;
 
 import java.io.File;
@@ -223,7 +222,7 @@ public class BelugaConfiguration
 
 	public String getThemeId()
 	{
-		return getString(Property.THEME, Theme.CLASSIC.getId());
+		return getString(Property.THEME, "classic");
 	}
 
 	public void setThemeId(String themeId)
