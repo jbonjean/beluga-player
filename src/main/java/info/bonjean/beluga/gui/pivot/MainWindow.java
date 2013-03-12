@@ -38,6 +38,7 @@ import org.apache.pivot.beans.Bindable;
 import org.apache.pivot.collections.Map;
 import org.apache.pivot.util.Resources;
 import org.apache.pivot.wtk.Action;
+import org.apache.pivot.wtk.ActivityIndicator;
 import org.apache.pivot.wtk.ApplicationContext;
 import org.apache.pivot.wtk.Component;
 import org.apache.pivot.wtk.Label;
@@ -91,6 +92,9 @@ public class MainWindow extends Window implements Bindable
 
 	@BXML
 	Prompt confirmStationDelete;
+	
+	@BXML
+	ActivityIndicator loader;
 
 	Component content;
 	String page = "loader";
@@ -353,6 +357,7 @@ public class MainWindow extends Window implements Bindable
 		menuUI.setEnabled(enabled);
 		content.setEnabled(enabled);
 		playerUI.setEnabled(enabled);
+		loader.setVisible(!enabled);
 	}
 
 	public void songChanged(Song song)

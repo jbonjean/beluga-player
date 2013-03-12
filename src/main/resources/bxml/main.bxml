@@ -18,11 +18,19 @@
 			<bxml:include inline="true" src="player.bxml" />
 		</TablePane.Row>
 
-		<TablePane.Row height="15">
-			<BoxPane styles="{padding:5, backgroundColor:'#eeeeee',verticalAlignment:'center'}" >
-				<ImageView  bxml:id="statusBarIcon" preferredWidth="7" preferredHeight="7" styles="{fill:true}" visible="false"/>
-				<Label bxml:id="statusBarText"/>
-			</BoxPane>
+		<TablePane.Row height="-1">
+			<TablePane styles="{backgroundColor:'#eeeeee'}">
+				<columns>
+					<TablePane.Column width="-1" />
+					<TablePane.Column width="1*" />
+					<TablePane.Column width="-1" />
+				</columns>
+				<TablePane.Row height="15">
+					<ImageView bxml:id="statusBarIcon" preferredWidth="7" preferredHeight="7" styles="{fill:true}" visible="false" />
+					<Label bxml:id="statusBarText" styles="{verticalAlignment:'center',padding:{left:5}}" />
+					<ActivityIndicator bxml:id="loader" preferredWidth="15" preferredHeight="15" active="true"  styles="{backgroundColor:'#eeeeee'}" visible="false"/>
+				</TablePane.Row>
+			</TablePane>
 		</TablePane.Row>
 	</TablePane>
 
