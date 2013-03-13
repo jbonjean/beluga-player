@@ -69,7 +69,7 @@ public abstract class AsyncAction extends Action
 	@Override
 	public final void perform(final Component source)
 	{
-		UIPools.actionPool.execute(new Runnable()
+		ThreadPools.actionPool.execute(new Runnable()
 		{
 			@Override
 			public void run()

@@ -18,7 +18,11 @@
  */
 package info.bonjean.beluga.log;
 
+import java.util.Date;
+
 import info.bonjean.beluga.exception.PandoraException;
+import info.bonjean.beluga.gui.pivot.ThreadPools;
+import info.bonjean.beluga.util.HTMLUtil;
 
 import org.apache.pivot.util.Resources;
 import org.apache.pivot.wtk.ApplicationContext;
@@ -36,10 +40,47 @@ import ch.qos.logback.core.AppenderBase;
  */
 public class StatusBarAppender<E> extends AppenderBase<E>
 {
+	private static final long messageDuration = 2 * 1000;
 	private static Label label = null;
 	@SuppressWarnings("unused")
 	private static ImageView icon = null;
 	private static Resources resources = null;
+	private long lastMessage = 0L;
+	private long lastMessageCleared = 0L;
+
+	public StatusBarAppender()
+	{
+		ThreadPools.statusPool.execute(new Runnable()
+		{
+			@Override
+			public void run()
+			{
+				while (true)
+				{
+					try
+					{
+						Thread.sleep(messageDuration);
+					}
+					catch (InterruptedException e)
+					{
+						break;
+					}
+					if (lastMessage != lastMessageCleared && (lastMessage + messageDuration < new Date().getTime()))
+					{
+						lastMessageCleared = lastMessage;
+						ApplicationContext.queueCallback(new Runnable()
+						{
+							@Override
+							public void run()
+							{
+								label.setText("");
+							}
+						}, true);
+					}
+				}
+			}
+		});
+	}
 
 	@Override
 	protected void append(final E eventObject)
@@ -80,7 +121,7 @@ public class StatusBarAppender<E> extends AppenderBase<E>
 		sb.append('[');
 		sb.append(event.getLevel());
 		sb.append("] ");
-		sb.append(message);
+		sb.append(HTMLUtil.shorten(message, 80));
 
 		ApplicationContext.queueCallback(new Runnable()
 		{
@@ -90,6 +131,7 @@ public class StatusBarAppender<E> extends AppenderBase<E>
 				label.setText(sb.toString());
 				if (event.getLevel().isGreaterOrEqual(Level.ERROR))
 					label.getStyles().put("color", "#ff0000");
+				lastMessage = new Date().getTime();
 			}
 		}, false);
 	}

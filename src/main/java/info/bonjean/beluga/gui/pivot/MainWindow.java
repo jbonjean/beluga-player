@@ -102,8 +102,6 @@ public class MainWindow extends Window implements Bindable
 
 	private static MainWindow instance;
 
-	private int disableLockCount = 0;
-
 	public MainWindow()
 	{
 		instance = this;
@@ -267,19 +265,6 @@ public class MainWindow extends Window implements Bindable
 							setEnablePandoraMenu(true);
 						}
 					}, true);
-
-					// set the page to song, this means the page will be loaded
-					// as soon as songChanged is invoked (by the player)
-					page = "song";
-
-					// increase count because the player will decrease on first song
-					disableLockCount++;
-
-					// TODO: we could wait here that playback starts, this would prevent
-					// the short time where UI is inconsistent. Another possibility is to create
-					// a dummy song entry to set the state, this way nothing is broken
-					// but be careful to synchronize the state, because it can also be updated
-					// by the player thread.
 				}
 				catch (BelugaException e)
 				{
@@ -330,7 +315,7 @@ public class MainWindow extends Window implements Bindable
 		StatusBarAppender.setResources(resources);
 
 		// load temporary screen
-		load("loader");
+		load("welcome");
 		
 		// disable pandora stuff
 		setEnablePandoraMenu(false);
@@ -339,21 +324,9 @@ public class MainWindow extends Window implements Bindable
 		// Action.getNamedActions().get("pandoraStart").perform(this);
 	}
 
-	/**
-	 * Be careful with that method, setEnable must be paired to keep consistent lock count TODO: better solutions are welcome
-	 */
 	@Override
 	public synchronized void setEnabled(boolean enabled)
 	{
-		if (enabled)
-			disableLockCount--;
-		else
-			disableLockCount++;
-
-		// we don't enable the display if somebody has still a lock
-		if (enabled && disableLockCount > 0)
-			return;
-
 		menuUI.setEnabled(enabled);
 		content.setEnabled(enabled);
 		playerUI.setEnabled(enabled);
@@ -363,7 +336,7 @@ public class MainWindow extends Window implements Bindable
 	public void songChanged(Song song)
 	{
 		// reload song page only if currently displayed
-		if (page.equals("song"))
+		if (page.equals("song") || page.equals("welcome"))
 			load("song");
 	}
 

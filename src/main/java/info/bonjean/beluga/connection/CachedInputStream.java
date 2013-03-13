@@ -18,7 +18,7 @@
  */
 package info.bonjean.beluga.connection;
 
-import info.bonjean.beluga.gui.pivot.UIPools;
+import info.bonjean.beluga.gui.pivot.ThreadPools;
 
 import java.io.FilterInputStream;
 import java.io.IOException;
@@ -33,7 +33,7 @@ import com.Ostermiller.util.CircularByteBuffer;
  */
 public class CachedInputStream extends FilterInputStream
 {
-	private static final int CACHE_SIZE = 512 * 1024;
+	private static final int CACHE_SIZE = 1024 * 1024;
 	private CircularByteBuffer circularByteBuffer;
 	private int read;
 	private InputStream input;
@@ -46,7 +46,7 @@ public class CachedInputStream extends FilterInputStream
 		circularByteBuffer = new CircularByteBuffer(CACHE_SIZE, true);
 		super.in = circularByteBuffer.getInputStream();
 
-		future = UIPools.streamPool.submit(new Runnable()
+		future = ThreadPools.streamPool.submit(new Runnable()
 		{
 			public void run()
 			{

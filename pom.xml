@@ -2,11 +2,11 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>info.bonjean</groupId>
-	<artifactId>beluga</artifactId>
-	<version>0.5</version>
+	<artifactId>beluga-player</artifactId>
+	<version>0.5.9</version>
 	<name>Beluga Player</name>
 	<description>Beluga Player</description>
-	<url>http://github.com/jbonjean/beluga</url>
+	<url>http://code.google.com/p/beluga-player/</url>
 	<developers>
 		<developer>
 			<id>jbonjean</id>
@@ -256,18 +256,18 @@
 									</singleInstance>
 									<headerType>gui</headerType>
 									<outfile>dist/win32/${project.artifactId}-${project.version}.exe</outfile>
-									<jar>target/${project.artifactId}-${project.version}.jar</jar>
+									<jar>dist/${project.artifactId}-${project.version}.jar</jar>
 									<classPath>
 										<mainClass>info.bonjean.beluga.Main</mainClass>
 										<addDependencies>false</addDependencies>
 										<preCp>anything</preCp>
 									</classPath>
 									<versionInfo>
-										<fileVersion>${project.version}.0.0</fileVersion>
+										<fileVersion>${project.version}.0</fileVersion>
 										<txtFileVersion>${project.version}</txtFileVersion>
 										<fileDescription>${project.description}</fileDescription>
 										<copyright>Julien Bonjean</copyright>
-										<productVersion>${project.version}.0.0</productVersion>
+										<productVersion>${project.version}.0</productVersion>
 										<txtProductVersion>${project.version}</txtProductVersion>
 										<productName>${project.name}</productName>
 										<internalName>${project.artifactId}</internalName>

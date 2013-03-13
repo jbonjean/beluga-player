@@ -95,10 +95,10 @@ public class PlayerUI extends TablePane implements Bindable
 		});
 
 		// start the UI sync thread
-		UIPools.playerUISyncPool.execute(new SyncUI());
+		ThreadPools.playerUISyncPool.execute(new SyncUI());
 
 		// start the playback thread
-		UIPools.playbackPool.execute(new Playback());
+		ThreadPools.playbackPool.execute(new Playback());
 	}
 
 	@Override
@@ -188,16 +188,6 @@ public class PlayerUI extends TablePane implements Bindable
 						}
 					}, true);
 
-					ApplicationContext.queueCallback(new Runnable()
-					{
-						@Override
-						public void run()
-						{
-							// (first enabled paired with the one from MainWindow.initialize)
-							mainWindow.setEnabled(true);
-						}
-					}, true);
-
 					try
 					{
 						new Notification(state.getSong());
@@ -232,8 +222,6 @@ public class PlayerUI extends TablePane implements Bindable
 								progress.setPercentage(1);
 								currentTime.setText(formatTime((long) duration));
 							}
-
-							mainWindow.setEnabled(false);
 						}
 					}, true);
 				}
