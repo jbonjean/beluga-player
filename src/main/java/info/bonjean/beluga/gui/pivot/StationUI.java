@@ -24,10 +24,11 @@ import info.bonjean.beluga.exception.BelugaException;
 import info.bonjean.beluga.log.Log;
 import info.bonjean.beluga.response.Feedback;
 
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
+import javax.imageio.ImageIO;
 
 import org.apache.pivot.beans.BXML;
 import org.apache.pivot.beans.Bindable;
@@ -42,6 +43,7 @@ import org.apache.pivot.wtk.Label;
 import org.apache.pivot.wtk.Menu;
 import org.apache.pivot.wtk.MenuButton;
 import org.apache.pivot.wtk.TablePane;
+import org.apache.pivot.wtk.media.Picture;
 import org.slf4j.Logger;
 
 /**
@@ -118,16 +120,19 @@ public class StationUI extends TablePane implements Bindable
 	{
 		this.resources = resources;
 		stationName.setText(state.getStation().getStationName());
+
 		try
 		{
-			URL imageURL = state.getSong().getAlbumArtUrl().isEmpty() ? SongUI.class.getResource("/img/beluga.200x200.png") : new URL(state.getSong()
-					.getAlbumArtUrl());
-			stationCover.setImage(imageURL);
+			if (state.getStation().getArtUrl().isEmpty())
+				stationCover.setImage(new Picture(ImageIO.read(SongUI.class.getResourceAsStream("/img/beluga.200x200.png"))));
+			else
+				stationCover.setImage(new URL(state.getStation().getArtUrl()));
 		}
-		catch (MalformedURLException mue)
+		catch (Exception e)
 		{
-			mue.printStackTrace();
+			log.error(e.getMessage(), e);
 		}
+
 		stationCreationDate.setText(new SimpleDateFormat("yyyy-MM-dd").format(new Date(state.getStation().getDateCreated().getTime())));
 		StringBuffer sb = new StringBuffer();
 		for (String genre : state.getStation().getGenre())

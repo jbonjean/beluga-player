@@ -47,6 +47,18 @@ public class BelugaConfiguration
 	{
 	}
 
+	// for migration from 0.5 to 0.6
+	private void propertiesMigrationV0_5()
+	{
+		// dns proxy format changed
+		if (DNSProxy.get(getDNSProxy()) == null)
+		{
+			log.debug("Migrating DNS proxy settings");
+			// if proxy invalid (IP address), we set proxy DNS
+			setDNSProxy(DNSProxy.PROXY_DNS.getId());
+		}
+	}
+
 	public static BelugaConfiguration getInstance()
 	{
 		if (instance == null)
@@ -115,6 +127,9 @@ public class BelugaConfiguration
 			if (properties.get(key) == null)
 				properties.put(key, "");
 		}
+
+		propertiesMigrationV0_5();
+
 		// synchronize file, test write
 		store();
 	}

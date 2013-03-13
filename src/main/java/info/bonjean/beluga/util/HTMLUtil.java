@@ -66,6 +66,11 @@ public class HTMLUtil
 		}
 		return baos.toByteArray();
 	}
+	
+	public static String getResourceAsString(String resource)
+	{
+		return new String(getResourceAsByteArray(resource));
+	}
 
 	public static String getResourceBase64(String resource)
 	{

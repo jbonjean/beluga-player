@@ -23,9 +23,6 @@ import info.bonjean.beluga.log.Log;
 import info.bonjean.beluga.response.Song;
 import info.bonjean.beluga.util.HTMLUtil;
 
-import java.io.IOException;
-
-import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 
 import ch.swingfx.twinkle.NotificationBuilder;
@@ -44,28 +41,20 @@ public class Notification extends NotificationBuilder
 
 	private String getMessage(Song song)
 	{
+		String message = HTMLUtil.getResourceAsString("/notification.html");
+		message = message.replace("@SONG_NAME@", song.getSongName());
+		message = message.replace("@ARTIST_NAME@", song.getArtistName());
 		try
 		{
-			String message = FileUtils.readFileToString(FileUtils.toFile(this.getClass().getResource("/notification.html")));
-			message = message.replace("@SONG_NAME@", song.getSongName());
-			message = message.replace("@ARTIST_NAME@", song.getArtistName());
-			try
-			{
-				String coverArt = song.getAlbumArtUrl().isEmpty() ? HTMLUtil.getResourceBase64("/img/beluga.200x200.png") : HTMLUtil
-						.getRemoteResourceBase64(song.getAlbumArtUrl());
-				message = message.replace("@COVER_ART@", coverArt);
-			}
-			catch (CommunicationException e)
-			{
-				log.error(e.getMessage(), e);
-			}
-			return message;
+			String coverArt = song.getAlbumArtUrl().isEmpty() ? HTMLUtil.getResourceBase64("/img/beluga.200x200.png") : HTMLUtil
+					.getRemoteResourceBase64(song.getAlbumArtUrl());
+			message = message.replace("@COVER_ART@", coverArt);
 		}
-		catch (IOException e)
+		catch (CommunicationException e)
 		{
 			log.error(e.getMessage(), e);
 		}
-		return null;
+		return message;
 	}
 
 	public Notification(Song song)

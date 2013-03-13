@@ -23,8 +23,9 @@ import info.bonjean.beluga.client.PandoraClient;
 import info.bonjean.beluga.exception.BelugaException;
 import info.bonjean.beluga.log.Log;
 
-import java.net.MalformedURLException;
 import java.net.URL;
+
+import javax.imageio.ImageIO;
 
 import org.apache.pivot.beans.BXML;
 import org.apache.pivot.beans.Bindable;
@@ -36,6 +37,7 @@ import org.apache.pivot.wtk.ImageView;
 import org.apache.pivot.wtk.Label;
 import org.apache.pivot.wtk.PushButton;
 import org.apache.pivot.wtk.TablePane;
+import org.apache.pivot.wtk.media.Picture;
 import org.slf4j.Logger;
 
 /**
@@ -152,13 +154,14 @@ public class SongUI extends TablePane implements Bindable
 		songTraits.setText(focusTraits.toString());
 		try
 		{
-			URL imageURL = state.getSong().getAlbumArtUrl().isEmpty() ? SongUI.class.getResource("/img/beluga.200x200.png") : new URL(state.getSong()
-					.getAlbumArtUrl());
-			albumCover.setImage(imageURL);
+			if (state.getSong().getAlbumArtUrl().isEmpty())
+				albumCover.setImage(new Picture(ImageIO.read(SongUI.class.getResourceAsStream("/img/beluga.200x200.png"))));
+			else
+				albumCover.setImage(new URL(state.getSong().getAlbumArtUrl()));
 		}
-		catch (MalformedURLException e)
+		catch (Exception e)
 		{
-			e.printStackTrace();
+			log.error(e.getMessage(), e);
 		}
 
 		likeButtonEnabled = state.getSong().getSongRating() > 0 ? false : true;
