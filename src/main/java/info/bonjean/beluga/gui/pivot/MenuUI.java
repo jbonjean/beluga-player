@@ -39,10 +39,9 @@ import org.apache.pivot.wtk.TablePane;
 public class MenuUI extends TablePane implements Bindable
 {
 	@BXML
-	MenuBar menubar;
-
+	private MenuBar menubar;
 	@BXML
-	MenuButton stations;
+	private MenuButton stations;
 
 	@Override
 	public void initialize(Map<String, Object> namespace, URL location, Resources resources)

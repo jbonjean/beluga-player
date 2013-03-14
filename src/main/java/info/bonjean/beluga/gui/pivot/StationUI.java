@@ -23,12 +23,11 @@ import info.bonjean.beluga.client.PandoraClient;
 import info.bonjean.beluga.exception.BelugaException;
 import info.bonjean.beluga.log.Log;
 import info.bonjean.beluga.response.Feedback;
+import info.bonjean.beluga.util.HTMLUtil;
 
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-
-import javax.imageio.ImageIO;
 
 import org.apache.pivot.beans.BXML;
 import org.apache.pivot.beans.Bindable;
@@ -43,7 +42,6 @@ import org.apache.pivot.wtk.Label;
 import org.apache.pivot.wtk.Menu;
 import org.apache.pivot.wtk.MenuButton;
 import org.apache.pivot.wtk.TablePane;
-import org.apache.pivot.wtk.media.Picture;
 import org.slf4j.Logger;
 
 /**
@@ -55,23 +53,22 @@ public class StationUI extends TablePane implements Bindable
 {
 	@Log
 	private static Logger log;
+	@BXML
+	private ImageView stationCover;
+	@BXML
+	private Label stationName;
+	@BXML
+	private Label stationCreationDate;
+	@BXML
+	private Label stationGenres;
+	@BXML
+	private BoxPane lovedSongsPane;
+	@BXML
+	private BoxPane bannedSongsPane;
 
 	private final BelugaState state = BelugaState.getInstance();
 	private final PandoraClient pandoraClient = PandoraClient.getInstance();
 	private Resources resources;
-
-	@BXML
-	ImageView stationCover;
-	@BXML
-	Label stationName;
-	@BXML
-	Label stationCreationDate;
-	@BXML
-	Label stationGenres;
-	@BXML
-	BoxPane lovedSongsPane;
-	@BXML
-	BoxPane bannedSongsPane;
 
 	public StationUI()
 	{
@@ -121,16 +118,18 @@ public class StationUI extends TablePane implements Bindable
 		this.resources = resources;
 		stationName.setText(state.getStation().getStationName());
 
-		try
+		if (state.getStation().getArtUrl().isEmpty())
+			stationCover.setImage(HTMLUtil.getDefaultCover());
+		else
 		{
-			if (state.getStation().getArtUrl().isEmpty())
-				stationCover.setImage(new Picture(ImageIO.read(SongUI.class.getResourceAsStream("/img/beluga.200x200.png"))));
-			else
+			try
+			{
 				stationCover.setImage(new URL(state.getStation().getArtUrl()));
-		}
-		catch (Exception e)
-		{
-			log.error(e.getMessage(), e);
+			}
+			catch (Exception e)
+			{
+				stationCover.setImage(HTMLUtil.getDefaultCover());
+			}
 		}
 
 		stationCreationDate.setText(new SimpleDateFormat("yyyy-MM-dd").format(new Date(state.getStation().getDateCreated().getTime())));

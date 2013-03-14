@@ -9,6 +9,10 @@
 		<Label text="http://thenounproject.com/noun/skip/#icon-No5650" styles="{padding:{left:20}}"/>
 	</BoxPane>
 	<BoxPane orientation="vertical" styles="{padding:10}">
+		<Label text="Disconnect icon designed by Danny Amacher from the Noun Project " styles="{font:{bold:true}}"/>
+		<Label text="http://thenounproject.com/noun/skip/#icon-No6446" styles="{padding:{left:20}}"/>
+	</BoxPane>
+	<BoxPane orientation="vertical" styles="{padding:10}">
 		<Label text="Beluga picture by Opals-On-BlackCom" styles="{font:{bold:true}}"/>
 		<Label text="(Creative Commons Attribution 2.0 Generic license)" styles="{font:{bold:true}}"/>
 		<Label text="http://www.flickr.com/photos/opals-on-black" styles="{padding:{left:20}}"/>

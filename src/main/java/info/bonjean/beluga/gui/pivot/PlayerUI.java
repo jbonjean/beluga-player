@@ -52,28 +52,26 @@ public class PlayerUI extends TablePane implements Bindable
 {
 	@Log
 	private static Logger log;
+	@BXML
+	private MainWindow mainWindow;
+	@BXML
+	private Label stationName;
+	@BXML
+	private Label currentTime;
+	@BXML
+	private Label totalTime;
+	@BXML
+	private Meter progress;
+	@BXML
+	private Meter progressCache;
+	@BXML
+	private LinkButton nextButton;
+	@BXML
+	private Slider volumeControl;
 
 	private final BelugaState state = BelugaState.getInstance();
-
-	@BXML
-	MainWindow mainWindow;
-	@BXML
-	Label stationName;
-	@BXML
-	Label currentTime;
-	@BXML
-	Label totalTime;
-	@BXML
-	Meter progress;
-	@BXML
-	Meter progressCache;
-	@BXML
-	LinkButton nextButton;
-	@BXML
-	Slider volumeControl;
-
-	BelugaMP3Player mp3Player;
-	float duration;
+	private BelugaMP3Player mp3Player;
+	private float duration;
 
 	@Override
 	public void initialize(Map<String, Object> namespace, URL location, Resources resources)
@@ -159,7 +157,7 @@ public class PlayerUI extends TablePane implements Bindable
 						if (successiveFailures >= 3)
 						{
 							log.error("tooManyPlayerSuccessiveFailures");
-							Thread.sleep(5 * 60 * 1000);
+							mainWindow.disconnect();
 						}
 						else
 						{

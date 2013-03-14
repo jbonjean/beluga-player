@@ -47,7 +47,7 @@ public class BelugaHTTPClient
 {
 	private static final Logger log = LoggerFactory.getLogger(BelugaHTTPClient.class);
 	private static final int CONNECTION_TIMEOUT = 4000;
-	private static final int SOCKET_TIMEOUT = 4000;
+	private static final int SOCKET_TIMEOUT = 10000;
 	private static final int MAX_RETRIES = 2;
 
 	private HttpClient client;
@@ -105,6 +105,6 @@ public class BelugaHTTPClient
 				log.error("connectionProblem");
 			}
 		}
-		throw new CommunicationException(e);
+		throw new CommunicationException("communicationProblem",e);
 	}
 }

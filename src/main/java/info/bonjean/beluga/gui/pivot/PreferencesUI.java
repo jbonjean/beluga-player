@@ -31,7 +31,6 @@ import org.apache.pivot.collections.Map;
 import org.apache.pivot.util.Resources;
 import org.apache.pivot.wtk.Action;
 import org.apache.pivot.wtk.Component;
-import org.apache.pivot.wtk.Label;
 import org.apache.pivot.wtk.ListButton;
 import org.apache.pivot.wtk.PushButton;
 import org.apache.pivot.wtk.TablePane;
@@ -41,29 +40,26 @@ import org.slf4j.Logger;
 /**
  * 
  * @author Julien Bonjean <julien@bonjean.info>
- *
+ * 
  */
 public class PreferencesUI extends TablePane implements Bindable
 {
 	@Log
 	private static Logger log;
+	@BXML
+	private TextInput emailAddressInput;
+	@BXML
+	private TextInput passwordInput;
+	@BXML
+	private TextInput httpProxyHostInput;
+	@BXML
+	private TextInput httpProxyPortInput;
+	@BXML
+	private ListButton dnsProxyInput;
+	@BXML
+	private PushButton submitButton;
 
 	private final BelugaConfiguration configuration = BelugaConfiguration.getInstance();
-
-	@BXML
-	TextInput emailAddressInput;
-	@BXML
-	TextInput passwordInput;
-	@BXML
-	TextInput httpProxyHostInput;
-	@BXML
-	TextInput httpProxyPortInput;
-	@BXML
-	ListButton dnsProxyInput;
-	@BXML
-	PushButton submitButton;
-	@BXML
-	Label errorArea;
 
 	public PreferencesUI()
 	{

@@ -33,7 +33,6 @@ import org.apache.pivot.wtk.Action;
 import org.apache.pivot.wtk.ButtonGroup;
 import org.apache.pivot.wtk.Checkbox;
 import org.apache.pivot.wtk.Component;
-import org.apache.pivot.wtk.Label;
 import org.apache.pivot.wtk.PushButton;
 import org.apache.pivot.wtk.TablePane;
 import org.apache.pivot.wtk.TextInput;
@@ -48,28 +47,25 @@ public class AccountCreationUI extends TablePane implements Bindable
 {
 	@Log
 	private static Logger log;
+	@BXML
+	private TextInput emailAddressInput;
+	@BXML
+	private TextInput passwordInput;
+	@BXML
+	private TextInput birthYearInput;
+	@BXML
+	private TextInput zipCodeInput;
+	@BXML
+	private ButtonGroup genderGroup;
+	@BXML
+	private Checkbox emailOptInInput;
+	@BXML
+	private Checkbox termsOfUseInput;
+	@BXML
+	private PushButton submitButton;
 
 	private final BelugaConfiguration configuration = BelugaConfiguration.getInstance();
 	private final PandoraClient pandoraClient = PandoraClient.getInstance();
-
-	@BXML
-	TextInput emailAddressInput;
-	@BXML
-	TextInput passwordInput;
-	@BXML
-	TextInput birthYearInput;
-	@BXML
-	TextInput zipCodeInput;
-	@BXML
-	ButtonGroup genderGroup;
-	@BXML
-	Checkbox emailOptInInput;
-	@BXML
-	Checkbox termsOfUseInput;
-	@BXML
-	PushButton submitButton;
-	@BXML
-	Label errorArea;
 
 	public AccountCreationUI()
 	{

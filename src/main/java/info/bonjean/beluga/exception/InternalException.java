@@ -27,8 +27,8 @@ public class InternalException extends BelugaException
 {
 	private static final long serialVersionUID = -2616331392230022391L;
 
-	public InternalException(Throwable cause)
+	public InternalException(String message)
 	{
-		super(cause);
+		super(message);
 	}
 }

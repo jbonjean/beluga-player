@@ -19,12 +19,18 @@
 package info.bonjean.beluga.util;
 
 import info.bonjean.beluga.exception.CommunicationException;
+import info.bonjean.beluga.gui.pivot.SongUI;
 import info.bonjean.beluga.log.Log;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 
+import javax.imageio.ImageIO;
+
 import org.apache.commons.codec.binary.Base64;
+import org.apache.pivot.wtk.media.Image;
+import org.apache.pivot.wtk.media.Picture;
 import org.slf4j.Logger;
 
 /**
@@ -36,6 +42,19 @@ public class HTMLUtil
 {
 	@Log
 	private static Logger log;
+
+	public static Image getDefaultCover()
+	{
+		try
+		{
+			return new Picture(ImageIO.read(SongUI.class.getResourceAsStream("/img/beluga.200x200.png")));
+		}
+		catch (IOException e)
+		{
+			log.error(e.getMessage(), e);
+		}
+		return null;
+	}
 
 	public static String shorten(String str, int length)
 	{
@@ -66,7 +85,7 @@ public class HTMLUtil
 		}
 		return baos.toByteArray();
 	}
-	
+
 	public static String getResourceAsString(String resource)
 	{
 		return new String(getResourceAsByteArray(resource));

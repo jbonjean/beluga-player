@@ -79,7 +79,7 @@ public class HTTPUtil
 		}
 		catch (JsonSyntaxException e)
 		{
-			throw new CommunicationException("Response is not valid");
+			throw new CommunicationException("invalidPandoraResponse", e);
 		}
 
 		if (response.getStat().equals("fail"))
@@ -112,7 +112,7 @@ public class HTTPUtil
 		}
 		catch (Exception e)
 		{
-			throw new CommunicationException(e);
+			throw new CommunicationException("communicationProblem", e);
 		}
 	}
 
@@ -125,7 +125,7 @@ public class HTTPUtil
 		}
 		catch (IOException e)
 		{
-			throw new CommunicationException(e);
+			throw new CommunicationException("communicationProblem", e);
 		}
 	}
 

@@ -64,42 +64,33 @@ public class MainWindow extends Window implements Bindable
 {
 	@Log
 	private static Logger log;
+	@BXML
+	private TablePane.Row contentWrapper;
+	@BXML
+	private PlayerUI playerUI;
+	@BXML
+	private MenuButton stations;
+	@BXML
+	private MenuBar.Item pandoraMenu;
+	@BXML
+	private MenuUI menuUI;
+	@BXML
+	private Label statusBarText;
+	@BXML
+	private ImageView statusBarIcon;
+	@BXML
+	private ImageView statusBarIconDiconnected;
+	@BXML
+	private Prompt confirmStationDelete;
+	@BXML
+	private ActivityIndicator loader;
 
 	private final BelugaState state = BelugaState.getInstance();
 	private final PandoraClient pandoraClient = PandoraClient.getInstance();
 	private final BelugaConfiguration configuration = BelugaConfiguration.getInstance();
-
-	@BXML
-	TablePane.Row contentWrapper;
-
-	@BXML
-	PlayerUI playerUI;
-
-	@BXML
-	MenuButton stations;
-
-	@BXML
-	MenuBar.Item pandoraMenu;
-
-	@BXML
-	MenuUI menuUI;
-
-	@BXML
-	Label statusBarText;
-	
-	@BXML
-	ImageView statusBarIcon;
-
-	@BXML
-	Prompt confirmStationDelete;
-	
-	@BXML
-	ActivityIndicator loader;
-
-	Component content;
-	String page = "loader";
-	Resources resources;
-
+	private Component content;
+	private String page = "loader";
+	private Resources resources;
 	private static MainWindow instance;
 
 	public MainWindow()
@@ -244,7 +235,7 @@ public class MainWindow extends Window implements Bindable
 				try
 				{
 					log.info("connectionToPandora");
-					
+
 					pandoraClient.reset();
 					state.reset();
 					PandoraPlaylist.getInstance().clear();
@@ -263,6 +254,7 @@ public class MainWindow extends Window implements Bindable
 						{
 							updateStationsListMenu();
 							setEnablePandoraMenu(true);
+							statusBarIconDiconnected.setVisible(false);
 						}
 					}, true);
 				}
@@ -316,7 +308,7 @@ public class MainWindow extends Window implements Bindable
 
 		// load temporary screen
 		load("welcome");
-		
+
 		// disable pandora stuff
 		setEnablePandoraMenu(false);
 
@@ -338,6 +330,25 @@ public class MainWindow extends Window implements Bindable
 		// reload song page only if currently displayed
 		if (page.equals("song") || page.equals("welcome"))
 			load("song");
+	}
+
+	public void disconnect()
+	{
+		state.setStation(null);
+		pandoraClient.reset();
+		
+		// invalidate playlist
+		PandoraPlaylist.getInstance().clear();
+
+		ApplicationContext.queueCallback(new Runnable()
+		{
+			@Override
+			public void run()
+			{
+				statusBarIconDiconnected.setVisible(true);
+				setEnablePandoraMenu(false);
+			}
+		},true);
 	}
 
 	public void stopPlayer()
@@ -415,7 +426,7 @@ public class MainWindow extends Window implements Bindable
 			{
 				// TODO: not yet implemented
 				log.error("This account has no station");
-				throw new InternalException(null);
+				throw new InternalException("noStationCreated");
 			}
 			newStation = state.getStationList().get(0);
 		}
@@ -433,6 +444,9 @@ public class MainWindow extends Window implements Bindable
 
 		state.setStation(newStation);
 		log.debug("Station selected: " + state.getStation().getStationName());
+		
+		// initial feed of the playlist
+		PandoraPlaylist.getInstance().feedQueue();
 	}
 
 	public void updateStationsList() throws BelugaException

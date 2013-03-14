@@ -51,14 +51,13 @@ public class BookmarksUI extends TablePane implements Bindable
 {
 	@Log
 	private static Logger log;
+	@BXML
+	private BoxPane artistBookmarksPane;
+	@BXML
+	private BoxPane songBookmarksPane;
 
 	private final BelugaState state = BelugaState.getInstance();
 	private final PandoraClient pandoraClient = PandoraClient.getInstance();
-
-	@BXML
-	BoxPane artistBookmarksPane;
-	@BXML
-	BoxPane songBookmarksPane;
 
 	public BookmarksUI()
 	{

@@ -18,11 +18,11 @@
  */
 package info.bonjean.beluga.log;
 
-import java.util.Date;
-
-import info.bonjean.beluga.exception.PandoraException;
+import info.bonjean.beluga.exception.BelugaException;
 import info.bonjean.beluga.gui.pivot.ThreadPools;
 import info.bonjean.beluga.util.HTMLUtil;
+
+import java.util.Date;
 
 import org.apache.pivot.util.Resources;
 import org.apache.pivot.wtk.ApplicationContext;
@@ -47,6 +47,7 @@ public class StatusBarAppender<E> extends AppenderBase<E>
 	private static Resources resources = null;
 	private long lastMessage = 0L;
 	private long lastMessageCleared = 0L;
+	private Level lastMessageLevel = Level.INFO;
 
 	public StatusBarAppender()
 	{
@@ -65,7 +66,8 @@ public class StatusBarAppender<E> extends AppenderBase<E>
 					{
 						break;
 					}
-					if (lastMessage != lastMessageCleared && (lastMessage + messageDuration < new Date().getTime()))
+					if (lastMessage != lastMessageCleared && !lastMessageLevel.isGreaterOrEqual(Level.ERROR)
+							&& (lastMessage + messageDuration < new Date().getTime()))
 					{
 						lastMessageCleared = lastMessage;
 						ApplicationContext.queueCallback(new Runnable()
@@ -101,11 +103,20 @@ public class StatusBarAppender<E> extends AppenderBase<E>
 			// if we received an exception
 			if (event.getThrowableProxy() != null)
 			{
-				// use PandoraException message as key and translate it
-				if (event.getThrowableProxy().getClassName().equals(PandoraException.class.getName()))
+				try
 				{
-					String key = event.getThrowableProxy().getMessage();
-					message = (String) resources.get(key);
+					@SuppressWarnings("rawtypes")
+					Class clazz = Class.forName(event.getThrowableProxy().getClassName());
+
+					// use PandoraException message as key and translate it
+					if (clazz.isInstance(BelugaException.class))
+					{
+						String key = event.getThrowableProxy().getMessage();
+						message = (String) resources.get(key);
+					}
+				}
+				catch (ClassNotFoundException e)
+				{
 				}
 			}
 			// no exception, this is a single text key and should be translatable
@@ -132,6 +143,7 @@ public class StatusBarAppender<E> extends AppenderBase<E>
 				if (event.getLevel().isGreaterOrEqual(Level.ERROR))
 					label.getStyles().put("color", "#ff0000");
 				lastMessage = new Date().getTime();
+				lastMessageLevel = event.getLevel();
 			}
 		}, false);
 	}

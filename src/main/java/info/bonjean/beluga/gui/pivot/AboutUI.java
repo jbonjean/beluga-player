@@ -36,10 +36,10 @@ import org.apache.pivot.wtk.TablePane;
  */
 public class AboutUI extends TablePane implements Bindable
 {
-	private final BelugaState state = BelugaState.getInstance();
-
 	@BXML
 	private Label belugaVersion;
+
+	private final BelugaState state = BelugaState.getInstance();
 
 	@Override
 	public void initialize(Map<String, Object> namespace, URL location, Resources resources)

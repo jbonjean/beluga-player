@@ -19,11 +19,14 @@
 package info.bonjean.beluga.connection;
 
 import info.bonjean.beluga.gui.pivot.ThreadPools;
+import info.bonjean.beluga.log.Log;
 
 import java.io.FilterInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.concurrent.Future;
+
+import org.slf4j.Logger;
 
 import com.Ostermiller.util.CircularByteBuffer;
 
@@ -33,7 +36,10 @@ import com.Ostermiller.util.CircularByteBuffer;
  */
 public class CachedInputStream extends FilterInputStream
 {
-	private static final int CACHE_SIZE = 1024 * 1024;
+	@Log
+	private static Logger log;
+
+	private static final int CACHE_SIZE = 512 * 1024;
 	private CircularByteBuffer circularByteBuffer;
 	private int read;
 	private InputStream input;
@@ -59,13 +65,14 @@ public class CachedInputStream extends FilterInputStream
 					{
 						length = input.read(buffer);
 						if (length == -1)
-							throw new IOException();
+							throw new IOException("End of stream");
 					}
 					catch (IOException e)
 					{
 						// no more data to read
 						try
 						{
+							log.debug(e.getMessage());
 							circularByteBuffer.getOutputStream().close();
 						}
 						catch (IOException e1)
@@ -80,6 +87,7 @@ public class CachedInputStream extends FilterInputStream
 					}
 					catch (IOException e)
 					{
+						log.debug("InputStream has been closed by the reader");
 						// reader has closed circularByteBuffer inputstream
 						return;
 					}
@@ -99,8 +107,9 @@ public class CachedInputStream extends FilterInputStream
 		}
 		catch (IOException e1)
 		{
+			// never happen
 		}
-		
+
 		// block until thread is finished
 		try
 		{
@@ -108,8 +117,7 @@ public class CachedInputStream extends FilterInputStream
 		}
 		catch (Exception e)
 		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			log.error(e.getMessage(), e);
 		}
 	}
 

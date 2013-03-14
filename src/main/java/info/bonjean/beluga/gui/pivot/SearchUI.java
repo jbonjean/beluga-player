@@ -58,25 +58,21 @@ public class SearchUI extends TablePane implements Bindable
 {
 	@Log
 	private static Logger log;
+	@BXML
+	private TextInput searchInput;
+	@BXML
+	private PushButton submitButton;
+	@BXML
+	private BoxPane artistsPane;
+	@BXML
+	private BoxPane songsPane;
+	@BXML
+	private Border artistsTabPane;
+	@BXML
+	private Border songsTabPane;
 
 	private final PandoraClient pandoraClient = PandoraClient.getInstance();
 	private final BelugaState state = BelugaState.getInstance();
-
-	@BXML
-	TextInput searchInput;
-	@BXML
-	PushButton submitButton;
-	@BXML
-	BoxPane artistsPane;
-	@BXML
-	BoxPane songsPane;
-	@BXML
-	Border artistsTabPane;
-	@BXML
-	Border songsTabPane;
-	@BXML
-	TabPane searchTabPane;
-
 	private Resources resources;
 
 	public SearchUI()

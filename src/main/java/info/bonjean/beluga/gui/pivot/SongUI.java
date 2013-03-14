@@ -22,10 +22,9 @@ import info.bonjean.beluga.client.BelugaState;
 import info.bonjean.beluga.client.PandoraClient;
 import info.bonjean.beluga.exception.BelugaException;
 import info.bonjean.beluga.log.Log;
+import info.bonjean.beluga.util.HTMLUtil;
 
 import java.net.URL;
-
-import javax.imageio.ImageIO;
 
 import org.apache.pivot.beans.BXML;
 import org.apache.pivot.beans.Bindable;
@@ -37,7 +36,6 @@ import org.apache.pivot.wtk.ImageView;
 import org.apache.pivot.wtk.Label;
 import org.apache.pivot.wtk.PushButton;
 import org.apache.pivot.wtk.TablePane;
-import org.apache.pivot.wtk.media.Picture;
 import org.slf4j.Logger;
 
 /**
@@ -49,27 +47,25 @@ public class SongUI extends TablePane implements Bindable
 {
 	@Log
 	private static Logger log;
+	@BXML
+	private Label songTitle;
+	@BXML
+	private Label albumTitle;
+	@BXML
+	private Label artistName;
+	@BXML
+	private Label songTraits;
+	@BXML
+	private ImageView albumCover;
+	@BXML
+	private PushButton likeButton;
+	@BXML
+	private PushButton banButton;
+	@BXML
+	private PushButton sleepButton;
 
 	private final BelugaState state = BelugaState.getInstance();
 	private final PandoraClient pandoraClient = PandoraClient.getInstance();
-
-	@BXML
-	Label songTitle;
-	@BXML
-	Label albumTitle;
-	@BXML
-	Label artistName;
-	@BXML
-	Label songTraits;
-	@BXML
-	ImageView albumCover;
-	@BXML
-	PushButton likeButton;
-	@BXML
-	PushButton banButton;
-	@BXML
-	PushButton sleepButton;
-
 	boolean likeButtonEnabled = true;
 
 	public SongUI()
@@ -152,16 +148,19 @@ public class SongUI extends TablePane implements Bindable
 			focusTraits.append(".");
 		}
 		songTraits.setText(focusTraits.toString());
-		try
+
+		if (state.getSong().getAlbumArtUrl().isEmpty())
+			albumCover.setImage(HTMLUtil.getDefaultCover());
+		else
 		{
-			if (state.getSong().getAlbumArtUrl().isEmpty())
-				albumCover.setImage(new Picture(ImageIO.read(SongUI.class.getResourceAsStream("/img/beluga.200x200.png"))));
-			else
+			try
+			{
 				albumCover.setImage(new URL(state.getSong().getAlbumArtUrl()));
-		}
-		catch (Exception e)
-		{
-			log.error(e.getMessage(), e);
+			}
+			catch (Exception e)
+			{
+				albumCover.setImage(HTMLUtil.getDefaultCover());
+			}
 		}
 
 		likeButtonEnabled = state.getSong().getSongRating() > 0 ? false : true;

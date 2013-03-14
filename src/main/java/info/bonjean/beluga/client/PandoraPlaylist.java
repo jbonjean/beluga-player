@@ -19,6 +19,7 @@
 package info.bonjean.beluga.client;
 
 import info.bonjean.beluga.exception.BelugaException;
+import info.bonjean.beluga.gui.pivot.MainWindow;
 import info.bonjean.beluga.response.Song;
 
 import java.util.LinkedList;
@@ -69,7 +70,7 @@ public class PandoraPlaylist
 		return song;
 	}
 
-	private void feedQueue()
+	public void feedQueue()
 	{
 		// check if Pandora client is ready
 		if (!pandoraClient.isLoggedIn() || state.getStation() == null)
@@ -77,15 +78,12 @@ public class PandoraPlaylist
 
 		// check if the feed is empty, we do not want to reach Pandora limit
 		if (!queue.isEmpty())
-		{
-			log.warn("We should not be there!");
 			return;
-		}
 
 		try
 		{
 			log.info("retrievingPlaylist");
-			
+
 			List<Song> playlist = pandoraClient.getPlaylist(state.getStation());
 
 			// populate additional data
@@ -96,7 +94,8 @@ public class PandoraPlaylist
 		}
 		catch (BelugaException e)
 		{
-			e.printStackTrace();
+			log.error(e.getMessage(), e);
+			MainWindow.getInstance().disconnect();
 		}
 	}
 
