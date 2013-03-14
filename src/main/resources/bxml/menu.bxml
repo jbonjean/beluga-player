@@ -45,7 +45,7 @@
 						</Menu.Item>
 					</Menu.Section>
 					<Menu.Section>
-						<Menu.Item bxml:id="pandoraConnectButton" buttonData="%connectReconnect" action="pandoraStart" />
+						<Menu.Item bxml:id="pandoraConnectButton" buttonData="%connectReconnect" action="startPandora" />
 					</Menu.Section>
 				</Menu>
 			</MenuBar.Item>
@@ -62,7 +62,7 @@
 				</Menu>
 			</MenuBar.Item>
 		</MenuBar>
-		<MenuButton bxml:id="stations" buttonData="%stations" styles="{toolbar:true,font:{bold:true}}">
+		<MenuButton bxml:id="stations" buttonData="%stations" styles="{toolbar:true,font:{bold:true}}" enabled="false">
 			<Menu>
 				<Menu.Section>
 				</Menu.Section>

@@ -19,6 +19,7 @@
 package info.bonjean.beluga.gui.pivot;
 
 import info.bonjean.beluga.client.BelugaState;
+import info.bonjean.beluga.gui.PivotUI;
 import info.bonjean.beluga.log.Log;
 
 import java.io.InputStream;
@@ -31,6 +32,7 @@ import org.apache.pivot.collections.Map;
 import org.apache.pivot.util.Resources;
 import org.apache.pivot.wtk.ApplicationContext;
 import org.apache.pivot.wtk.Label;
+import org.apache.pivot.wtk.PushButton;
 import org.apache.pivot.wtk.StackPane;
 import org.apache.pivot.wtk.TablePane;
 import org.slf4j.Logger;
@@ -48,6 +50,8 @@ public class WelcomeUI extends TablePane implements Bindable
 	private Label belugaVersion;
 	@BXML
 	private StackPane newVersionPane;
+	@BXML
+	private PushButton startPandoraButton;
 
 	private final BelugaState state = BelugaState.getInstance();
 
@@ -91,5 +95,11 @@ public class WelcomeUI extends TablePane implements Bindable
 				}
 			}
 		}.start();
+	}
+
+	@Override
+	public void setEnabled(boolean enabled)
+	{
+		PivotUI.setEnable(startPandoraButton, enabled);
 	}
 }

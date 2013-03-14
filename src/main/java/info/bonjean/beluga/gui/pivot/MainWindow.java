@@ -44,11 +44,9 @@ import org.apache.pivot.wtk.ApplicationContext;
 import org.apache.pivot.wtk.Component;
 import org.apache.pivot.wtk.ImageView;
 import org.apache.pivot.wtk.Label;
-import org.apache.pivot.wtk.Menu;
 import org.apache.pivot.wtk.Menu.Item;
 import org.apache.pivot.wtk.Menu.Section;
 import org.apache.pivot.wtk.MenuBar;
-import org.apache.pivot.wtk.MenuButton;
 import org.apache.pivot.wtk.Prompt;
 import org.apache.pivot.wtk.Sheet;
 import org.apache.pivot.wtk.SheetCloseListener;
@@ -69,8 +67,6 @@ public class MainWindow extends Window implements Bindable
 	private TablePane.Row contentWrapper;
 	@BXML
 	private PlayerUI playerUI;
-	@BXML
-	private MenuButton stations;
 	@BXML
 	private MenuBar.Item pandoraMenu;
 	@BXML
@@ -147,7 +143,7 @@ public class MainWindow extends Window implements Bindable
 										pandoraClient.deleteStation(state.getStation());
 										log.info("stationDeleted");
 										updateStationsList();
-										updateStationsListMenu();
+										menuUI.updateStationsListMenu();
 										selectStation(null);
 										stopPlayer();
 									}
@@ -245,7 +241,7 @@ public class MainWindow extends Window implements Bindable
 			}
 		});
 
-		Action.getNamedActions().put("pandoraStart", new AsyncAction(getInstance())
+		Action.getNamedActions().put("startPandora", new AsyncAction(getInstance())
 		{
 			@Override
 			public void asyncPerform(Component source)
@@ -270,7 +266,7 @@ public class MainWindow extends Window implements Bindable
 						@Override
 						public void run()
 						{
-							updateStationsListMenu();
+							menuUI.updateStationsListMenu();
 							setEnablePandoraMenu(true);
 							statusBarIconDiconnected.setVisible(false);
 						}
@@ -343,11 +339,16 @@ public class MainWindow extends Window implements Bindable
 		loader.setVisible(!enabled);
 	}
 
-	public void songChanged(Song song)
+	public void playbackStarted(Song song)
 	{
 		// reload song page only if currently displayed
 		if (page.equals("song") || page.equals("welcome"))
 			load("song");
+	}
+
+	public void playbackFinished(Song song, long position, long duration)
+	{
+		log.debug("Played " + position + " of " + duration);
 	}
 
 	public void disconnect()
@@ -385,7 +386,7 @@ public class MainWindow extends Window implements Bindable
 					PivotUI.setEnable(item, enabled);
 			}
 		}
-		PivotUI.setEnable(stations, enabled);
+		menuUI.setStationsEnabled(enabled);
 	}
 
 	private void load(String bxml)
@@ -475,16 +476,7 @@ public class MainWindow extends Window implements Bindable
 
 	public void updateStationsListMenu()
 	{
-		// rebuild menu entry
-		Section section = stations.getMenu().getSections().get(0);
-		section.remove(0, section.getLength());
-		for (Station station : state.getStationList())
-		{
-			Menu.Item item = new Menu.Item(station.getStationName());
-			item.getUserData().put("station", station);
-			item.setAction(Action.getNamedActions().get("stationSelect"));
-			section.add(item);
-		}
+		menuUI.updateStationsListMenu();
 	}
 
 	public static MainWindow getInstance()
@@ -496,4 +488,5 @@ public class MainWindow extends Window implements Bindable
 	{
 		return page;
 	}
+
 }

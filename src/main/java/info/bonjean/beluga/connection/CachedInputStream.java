@@ -41,7 +41,7 @@ public class CachedInputStream extends FilterInputStream
 
 	private static final int CACHE_SIZE = 512 * 1024;
 	private CircularByteBuffer circularByteBuffer;
-	private int read;
+	private long read;
 	private InputStream input;
 	private Future<?> future;
 
@@ -121,7 +121,7 @@ public class CachedInputStream extends FilterInputStream
 		}
 	}
 
-	public int getPosition()
+	public long getPosition()
 	{
 		return read;
 	}

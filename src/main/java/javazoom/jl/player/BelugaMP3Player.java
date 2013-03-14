@@ -53,8 +53,8 @@ public class BelugaMP3Player
 	private AudioDevice audio;
 	private boolean closed = false;
 	private boolean complete = false;
-	private int lastPosition = 0;
-	private final float duration;
+	private long lastPosition = 0;
+	private long duration;
 	private Header header;
 	private HttpGet httpGet;
 
@@ -79,10 +79,10 @@ public class BelugaMP3Player
 		bitstream.unreadFrame();
 
 		// get file size from HTTP headers
-		int songSize = Integer.parseInt(httpResponse.getFirstHeader("Content-Length").getValue());
+		long songSize = Long.parseLong(httpResponse.getFirstHeader("Content-Length").getValue());
 
 		// calculate the duration
-		duration = header.total_ms(songSize);
+		duration = ((songSize * 1000) / (header.bitrate() / 8));
 	}
 
 	public FloatControl getFloatControl()
@@ -142,14 +142,14 @@ public class BelugaMP3Player
 		return complete;
 	}
 
-	public float getCachePosition()
+	public long getCachePosition()
 	{
-		return header.total_ms(cachedInputStream.getPosition());
+		return (cachedInputStream.getPosition() * 1000) / (header.bitrate() / 8);
 	}
 
-	public int getPosition()
+	public long getPosition()
 	{
-		int position = lastPosition;
+		long position = lastPosition;
 
 		AudioDevice out = audio;
 		if (out != null)
@@ -193,7 +193,7 @@ public class BelugaMP3Player
 		return true;
 	}
 
-	public float getDuration()
+	public long getDuration()
 	{
 		return duration;
 	}

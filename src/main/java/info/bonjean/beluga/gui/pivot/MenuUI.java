@@ -18,6 +18,9 @@
  */
 package info.bonjean.beluga.gui.pivot;
 
+import info.bonjean.beluga.client.BelugaState;
+import info.bonjean.beluga.response.Station;
+
 import java.net.URL;
 
 import org.apache.pivot.beans.BXML;
@@ -25,6 +28,7 @@ import org.apache.pivot.beans.Bindable;
 import org.apache.pivot.collections.Map;
 import org.apache.pivot.util.Resources;
 import org.apache.pivot.wtk.MenuBar;
+import org.apache.pivot.wtk.Menu.Section;
 import org.apache.pivot.wtk.MenuBar.Item;
 import org.apache.pivot.wtk.Action;
 import org.apache.pivot.wtk.Menu;
@@ -43,10 +47,11 @@ public class MenuUI extends TablePane implements Bindable
 	@BXML
 	private MenuButton stations;
 
+	private final BelugaState state = BelugaState.getInstance();
 	// keep track of stations entry enabled status
-	// as it will be manuaaly enabled/disabled
+	// as it will be manually enabled/disabled
 	boolean stationsEnabled = false;
-			
+
 	@Override
 	public void initialize(Map<String, Object> namespace, URL location, Resources resources)
 	{
@@ -64,12 +69,28 @@ public class MenuUI extends TablePane implements Bindable
 		for (Item item : menubar.getItems())
 			item.setEnabled(enabled);
 
-		if(enabled)
+		if (enabled)
 			stations.setEnabled(stationsEnabled);
 		else
-		{
-			stationsEnabled = stations.isEnabled();
 			stations.setEnabled(false);
+	}
+
+	public void setStationsEnabled(boolean enabled)
+	{
+		stationsEnabled = enabled;
+	}
+
+	public void updateStationsListMenu()
+	{
+		// rebuild menu entry
+		Section section = stations.getMenu().getSections().get(0);
+		section.remove(0, section.getLength());
+		for (Station station : state.getStationList())
+		{
+			Menu.Item item = new Menu.Item(station.getStationName());
+			item.getUserData().put("station", station);
+			item.setAction(Action.getNamedActions().get("stationSelect"));
+			section.add(item);
 		}
 	}
 }

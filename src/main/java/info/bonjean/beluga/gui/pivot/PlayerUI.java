@@ -71,7 +71,7 @@ public class PlayerUI extends TablePane implements Bindable
 
 	private final BelugaState state = BelugaState.getInstance();
 	private BelugaMP3Player mp3Player;
-	private float duration;
+	private long duration;
 
 	@Override
 	public void initialize(Map<String, Object> namespace, URL location, Resources resources)
@@ -118,10 +118,7 @@ public class PlayerUI extends TablePane implements Bindable
 	public void stopPlayer()
 	{
 		if (mp3Player != null)
-		{
 			mp3Player.close();
-			mp3Player = null;
-		}
 	}
 
 	private class Playback implements Runnable
@@ -142,11 +139,23 @@ public class PlayerUI extends TablePane implements Bindable
 						continue;
 					}
 
+					// update UI for song information as soon as possible
+					ApplicationContext.queueCallback(new Runnable()
+					{
+						@Override
+						public void run()
+						{
+							// notify main window
+							mainWindow.playbackStarted(song);
+						}
+					}, false);
+
 					log.debug("New song: " + song.getAdditionalAudioUrl());
 
 					// initialize the player
 					try
 					{
+						log.info("openingAudioStream");
 						mp3Player = new BelugaMP3Player(song.getAdditionalAudioUrl());
 						successiveFailures = 0;
 					}
@@ -176,13 +185,10 @@ public class PlayerUI extends TablePane implements Bindable
 						public void run()
 						{
 							// update song duration
-							totalTime.setText(formatTime((long) duration));
+							totalTime.setText(formatTime(duration));
 
 							// update station name
 							stationName.setText(state.getStation().getStationName());
-
-							// notify main window
-							mainWindow.songChanged(song);
 						}
 					}, true);
 
@@ -208,20 +214,8 @@ public class PlayerUI extends TablePane implements Bindable
 					}
 
 					log.debug("Playback finished");
-
-					ApplicationContext.queueCallback(new Runnable()
-					{
-						@Override
-						public void run()
-						{
-							if (mp3Player != null)
-							{
-								// make things clean in the UI
-								progress.setPercentage(1);
-								currentTime.setText(formatTime((long) duration));
-							}
-						}
-					}, true);
+					if (mp3Player != null)
+						mainWindow.playbackFinished(song, mp3Player.getPosition(), mp3Player.getDuration());
 				}
 				catch (Exception e)
 				{
@@ -257,9 +251,9 @@ public class PlayerUI extends TablePane implements Bindable
 				if (mp3Player == null)
 					continue;
 
-				final int position = mp3Player.getPosition();
-				final float progressValue = position / duration;
-				final float cacheProgressValue = mp3Player.getCachePosition() / duration;
+				final long position = mp3Player.getPosition();
+				final float progressValue = position / (float)duration;
+				final float cacheProgressValue = mp3Player.getCachePosition() / (float)duration;
 
 				ApplicationContext.queueCallback(new Runnable()
 				{

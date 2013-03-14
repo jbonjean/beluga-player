@@ -40,7 +40,7 @@ import ch.qos.logback.core.AppenderBase;
  */
 public class StatusBarAppender<E> extends AppenderBase<E>
 {
-	private static final long messageDuration = 2 * 1000;
+	private static final long messageDuration = 3 * 1000;
 	private static Label label = null;
 	@SuppressWarnings("unused")
 	private static ImageView icon = null;
@@ -142,6 +142,8 @@ public class StatusBarAppender<E> extends AppenderBase<E>
 				label.setText(sb.toString());
 				if (event.getLevel().isGreaterOrEqual(Level.ERROR))
 					label.getStyles().put("color", "#ff0000");
+				else
+					label.getStyles().put("color", "#000000");
 				lastMessage = new Date().getTime();
 				lastMessageLevel = event.getLevel();
 			}
