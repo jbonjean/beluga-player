@@ -4,7 +4,7 @@
 		<TablePane.Column width="1*" />
 	</columns>
 	<TablePane.Row height="-1">
-		<Label bxml:id="belugaVersion" styles="{horizontalAlignment:'center',font:{bold:true,size:15},padding:15}" />
+		<Label bxml:id="belugaVersion" styles="{horizontalAlignment:'center',font:{bold:true,size:16}}" />
 	</TablePane.Row>
 	<TablePane.Row height="1*">
 		<Border styles="{padding:5}">

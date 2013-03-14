@@ -23,13 +23,14 @@ import info.bonjean.beluga.client.PandoraClient;
 import info.bonjean.beluga.client.PandoraPlaylist;
 import info.bonjean.beluga.configuration.BelugaConfiguration;
 import info.bonjean.beluga.exception.BelugaException;
-import info.bonjean.beluga.exception.InternalException;
 import info.bonjean.beluga.gui.PivotUI;
 import info.bonjean.beluga.log.Log;
 import info.bonjean.beluga.log.StatusBarAppender;
 import info.bonjean.beluga.response.Song;
 import info.bonjean.beluga.response.Station;
 
+import java.awt.Desktop;
+import java.net.URI;
 import java.net.URL;
 
 import org.apache.pivot.beans.BXML;
@@ -41,18 +42,18 @@ import org.apache.pivot.wtk.Action;
 import org.apache.pivot.wtk.ActivityIndicator;
 import org.apache.pivot.wtk.ApplicationContext;
 import org.apache.pivot.wtk.Component;
+import org.apache.pivot.wtk.ImageView;
 import org.apache.pivot.wtk.Label;
 import org.apache.pivot.wtk.Menu;
 import org.apache.pivot.wtk.Menu.Item;
 import org.apache.pivot.wtk.Menu.Section;
-import org.apache.pivot.wtk.ImageView;
 import org.apache.pivot.wtk.MenuBar;
 import org.apache.pivot.wtk.MenuButton;
 import org.apache.pivot.wtk.Prompt;
 import org.apache.pivot.wtk.Sheet;
+import org.apache.pivot.wtk.SheetCloseListener;
 import org.apache.pivot.wtk.TablePane;
 import org.apache.pivot.wtk.Window;
-import org.apache.pivot.wtk.SheetCloseListener;
 import org.slf4j.Logger;
 
 /**
@@ -103,6 +104,23 @@ public class MainWindow extends Window implements Bindable
 			public void perform(Component source)
 			{
 				System.exit(0);
+			}
+		});
+
+		Action.getNamedActions().put("openURL", new Action()
+		{
+			@Override
+			public void perform(Component source)
+			{
+				String url = (String) source.getUserData().get("url");
+				try
+				{
+					Desktop.getDesktop().browse(new URI(url));
+				}
+				catch (Exception e)
+				{
+					log.error(e.getMessage(), e);
+				}
 			}
 		});
 
@@ -336,7 +354,7 @@ public class MainWindow extends Window implements Bindable
 	{
 		state.setStation(null);
 		pandoraClient.reset();
-		
+
 		// invalidate playlist
 		PandoraPlaylist.getInstance().clear();
 
@@ -348,7 +366,7 @@ public class MainWindow extends Window implements Bindable
 				statusBarIconDiconnected.setVisible(true);
 				setEnablePandoraMenu(false);
 			}
-		},true);
+		}, true);
 	}
 
 	public void stopPlayer()
@@ -422,13 +440,13 @@ public class MainWindow extends Window implements Bindable
 		// at this point, if no station has been selected, there has been a problem, select first one
 		if (newStation == null)
 		{
-			if (state.getStationList().isEmpty())
+			if (!state.getStationList().isEmpty())
+				newStation = state.getStationList().get(0);
+			else
 			{
-				// TODO: not yet implemented
-				log.error("This account has no station");
-				throw new InternalException("noStationCreated");
+				log.info("noStation");
+				return;
 			}
-			newStation = state.getStationList().get(0);
 		}
 
 		// check if station changed
@@ -444,7 +462,7 @@ public class MainWindow extends Window implements Bindable
 
 		state.setStation(newStation);
 		log.debug("Station selected: " + state.getStation().getStationName());
-		
+
 		// initial feed of the playlist
 		PandoraPlaylist.getInstance().feedQueue();
 	}

@@ -43,6 +43,10 @@ public class MenuUI extends TablePane implements Bindable
 	@BXML
 	private MenuButton stations;
 
+	// keep track of stations entry enabled status
+	// as it will be manuaaly enabled/disabled
+	boolean stationsEnabled = false;
+			
 	@Override
 	public void initialize(Map<String, Object> namespace, URL location, Resources resources)
 	{
@@ -59,7 +63,13 @@ public class MenuUI extends TablePane implements Bindable
 	{
 		for (Item item : menubar.getItems())
 			item.setEnabled(enabled);
-		stations.setEnabled(enabled);
-		super.setEnabled(enabled);
+
+		if(enabled)
+			stations.setEnabled(stationsEnabled);
+		else
+		{
+			stationsEnabled = stations.isEnabled();
+			stations.setEnabled(false);
+		}
 	}
 }
