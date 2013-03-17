@@ -21,11 +21,13 @@ package info.bonjean.beluga.configuration;
 /**
  * 
  * @author Julien Bonjean <julien@bonjean.info>
- *
+ * 
  */
 public enum Property
 {
-	USER("user"), PASSWORD("password"), PROXY_HOST("proxy.host"), PROXY_PORT("proxy.port"), PROXY_DNS("proxy.dns"), PROXY_DNS_WEBKIT("proxy.dns.webkit"), DEFAULT_STATION("default.station"), THEME("theme");
+	CONFIGURATION_VERSION("configuration.version"), USER("user"), PASSWORD("password"), PROXY_HOST("proxy.host"), PROXY_PORT("proxy.port"), PROXY_DNS(
+			"proxy.dns"), DEFAULT_STATION("default.station"), THEME("theme"), LAST_FM_USERNAME("last.fm.username"), LAST_FM_PASSWORD(
+			"last.fm.password"), LAST_FM_ENABLED("last.fm.enabled");
 
 	private final String key;
 

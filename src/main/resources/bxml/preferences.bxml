@@ -21,12 +21,24 @@
 
 			<Form.Section heading="%connection">
 				<BoxPane Form.label="%httpProxy">
-					<TextInput bxml:id="httpProxyHostInput" textSize="17"   prompt="%hostname" />
-					<TextInput bxml:id="httpProxyPortInput" textSize="5"  prompt="%port"/>
+					<TextInput bxml:id="httpProxyHostInput" textSize="17" prompt="%hostname" />
+					<TextInput bxml:id="httpProxyPortInput" textSize="5" prompt="%port" />
 				</BoxPane>
 				<Label text="%or" />
 				<BoxPane Form.label="%dnsProxy">
 					<ListButton bxml:id="dnsProxyInput" />
+				</BoxPane>
+			</Form.Section>
+
+			<Form.Section heading="last.fm">
+				<BoxPane>
+					<Checkbox bxml:id="lastFMEnableCheckbox" buttonData="%enableLastFMScrobbling" />
+				</BoxPane>
+				<BoxPane Form.label="%username">
+					<TextInput bxml:id="lastFMUsernameInput" textSize="24" />
+				</BoxPane>
+				<BoxPane Form.label="%password">
+					<TextInput bxml:id="lastFMPasswordInput" textSize="24" password="true" />
 				</BoxPane>
 			</Form.Section>
 

@@ -42,7 +42,7 @@ public class Notification extends NotificationBuilder
 	private String getMessage(Song song)
 	{
 		String message = HTMLUtil.getResourceAsString("/notification.html");
-		message = message.replace("@SONG_NAME@", song.getSongName());
+		message = message.replace("@SONG_NAME@", HTMLUtil.shorten(song.getSongName(), 60));
 		message = message.replace("@ARTIST_NAME@", song.getArtistName());
 		try
 		{

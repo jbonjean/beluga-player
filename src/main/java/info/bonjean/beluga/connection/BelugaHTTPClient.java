@@ -78,7 +78,7 @@ public class BelugaHTTPClient
 			instance = new BelugaHTTPClient();
 		return instance;
 	}
-
+	
 	public HttpClient getClient()
 	{
 		return client;

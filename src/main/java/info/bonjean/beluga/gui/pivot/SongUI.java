@@ -130,7 +130,7 @@ public class SongUI extends TablePane implements Bindable
 	public void initialize(Map<String, Object> namespace, URL location, Resources resources)
 	{
 		songTitle.setText(state.getSong().getSongName());
-		albumTitle.setText(state.getSong().getAlbumName());
+		albumTitle.setText(HTMLUtil.shorten(state.getSong().getAlbumName(), 80));
 		artistName.setText("by " + state.getSong().getArtistName());
 
 		StringBuffer focusTraits = new StringBuffer();

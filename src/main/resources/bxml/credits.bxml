@@ -3,8 +3,8 @@
 	<BoxPane orientation="vertical" styles="{padding:10}">
 		<Label text="Pandora API Wiki" styles="{font:{bold:true}}" />
 		<LinkButton action="openURL">
-			<content:ButtonData text="http://pan-do-ra-api.wikia.com/wiki/Pan-do-ra_API_Wik" />
-			<userData url="http://pan-do-ra-api.wikia.com/wiki/Pan-do-ra_API_Wik" />
+			<content:ButtonData text="http://pan-do-ra-api.wikia.com/wiki/Pan-do-ra_API_Wiki" />
+			<userData url="http://pan-do-ra-api.wikia.com/wiki/Pan-do-ra_API_Wiki" />
 		</LinkButton>
 	</BoxPane>
 	<BoxPane orientation="vertical" styles="{padding:10}">

@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>info.bonjean</groupId>
 	<artifactId>beluga-player</artifactId>
-	<version>0.5.9</version>
+	<version>0.5</version>
 	<name>Beluga Player</name>
 	<description>Beluga Player</description>
 	<url>http://code.google.com/p/beluga-player/</url>
@@ -17,7 +17,6 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<swt.version>3.8</swt.version>
 		<slf4j.version>1.6.4</slf4j.version>
 		<logback.version>1.0.1</logback.version>
 		<janino.version>2.6.1</janino.version>
@@ -29,10 +28,12 @@
 		<commons-io.version>1.3.2</commons-io.version>
 		<commons-lang.version>2.6</commons-lang.version>
 		<junit.version>4.8.1</junit.version>
-		<velocity.version>1.7</velocity.version>
-		<jna.version>3.0.9</jna.version>
-		<dj-nativeswing.version>1.0.2.20120308</dj-nativeswing.version>
 		<pivot.version>2.0.2</pivot.version>
+		<lastfm-java.version>0.1.2</lastfm-java.version>
+		<ostermiller-utils.version>1.07.00</ostermiller-utils.version>
+		<annovention.version>1.2</annovention.version>
+		<jlayer.version>1.0.1-1</jlayer.version>
+		<svg-salamander.version>1.0</svg-salamander.version>
 		<maven-shade-plugin.version>2.0</maven-shade-plugin.version>
 		<maven-compiler-plugin.version>2.5.1</maven-compiler-plugin.version>
 		<maven-surefire-plugin.version>2.12.4</maven-surefire-plugin.version>
@@ -110,19 +111,24 @@
 
 	<dependencies>
 		<dependency>
+			<groupId>de.u-mass</groupId>
+			<artifactId>lastfm-java</artifactId>
+			<version>${lastfm-java.version}</version>
+		</dependency>
+		<dependency>
 			<groupId>org.ostermiller</groupId>
 			<artifactId>utils</artifactId>
-			<version>1.07.00</version>
+			<version>${ostermiller-utils.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>tv.cntt</groupId>
 			<artifactId>annovention</artifactId>
-			<version>1.2</version>
+			<version>${annovention.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.googlecode.soundlibs</groupId>
 			<artifactId>jlayer</artifactId>
-			<version>1.0.1-1</version>
+			<version>${jlayer.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.pivot</groupId>
@@ -152,7 +158,7 @@
 		<dependency>
 			<groupId>com.kitfox.svg</groupId>
 			<artifactId>svg-salamander</artifactId>
-			<version>1.0</version>
+			<version>${svg-salamander.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>commons-lang</groupId>
@@ -216,7 +222,6 @@
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
-
 	<profiles>
 		<profile>
 			<id>dist-generic-</id>
@@ -226,79 +231,6 @@
 			<properties>
 				<jar.output.dir>dist</jar.output.dir>
 			</properties>
-		</profile>
-		<profile>
-			<id>dist-windows</id>
-			<properties>
-				<jar.output.dir>dist</jar.output.dir>
-			</properties>
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>com.akathist.maven.plugins.launch4j</groupId>
-						<artifactId>launch4j-maven-plugin</artifactId>
-						<version>${launch4j-maven-plugin.version}</version>
-						<executions>
-							<execution>
-								<id>l4j-clui</id>
-								<phase>package</phase>
-								<goals>
-									<goal>launch4j</goal>
-								</goals>
-								<configuration>
-									<downloadUrl>http://java.com/en/download/manual_v6.jsp</downloadUrl>
-									<jre>
-										<path>third.party/jre6</path>
-										<minVersion>1.6.0</minVersion>
-										<maxVersion>1.6.1</maxVersion>
-									</jre>
-									<singleInstance>
-									</singleInstance>
-									<headerType>gui</headerType>
-									<outfile>dist/win32/${project.artifactId}-${project.version}.exe</outfile>
-									<jar>dist/${project.artifactId}-${project.version}.jar</jar>
-									<classPath>
-										<mainClass>info.bonjean.beluga.Main</mainClass>
-										<addDependencies>false</addDependencies>
-										<preCp>anything</preCp>
-									</classPath>
-									<versionInfo>
-										<fileVersion>${project.version}.0</fileVersion>
-										<txtFileVersion>${project.version}</txtFileVersion>
-										<fileDescription>${project.description}</fileDescription>
-										<copyright>Julien Bonjean</copyright>
-										<productVersion>${project.version}.0</productVersion>
-										<txtProductVersion>${project.version}</txtProductVersion>
-										<productName>${project.name}</productName>
-										<internalName>${project.artifactId}</internalName>
-										<originalFilename>${project.artifactId}-${project.version}.exe</originalFilename>
-									</versionInfo>
-								</configuration>
-							</execution>
-						</executions>
-					</plugin>
-					<plugin>
-						<artifactId>maven-assembly-plugin</artifactId>
-						<version>${maven-assembly-plugin.version}</version>
-						<configuration>
-							<descriptors>
-								<descriptor>src/main/assembly/zip.xml</descriptor>
-							</descriptors>
-							<finalName>${project.artifactId}-${project.version}</finalName>
-							<outputDirectory>dist/win32</outputDirectory>
-						</configuration>
-						<executions>
-							<execution>
-								<id>make-assembly</id>
-								<phase>package</phase>
-								<goals>
-									<goal>single</goal>
-								</goals>
-							</execution>
-						</executions>
-					</plugin>
-				</plugins>
-			</build>
 		</profile>
 	</profiles>
 </project>

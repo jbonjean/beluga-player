@@ -21,6 +21,7 @@ package javazoom.jl.player;
 
 import info.bonjean.beluga.connection.BelugaHTTPClient;
 import info.bonjean.beluga.connection.CachedInputStream;
+import info.bonjean.beluga.exception.CommunicationException;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -58,7 +59,7 @@ public class BelugaMP3Player
 	private Header header;
 	private HttpGet httpGet;
 
-	public BelugaMP3Player(String url) throws JavaLayerException, MalformedURLException, IOException
+	public BelugaMP3Player(String url) throws JavaLayerException, MalformedURLException, IOException, CommunicationException
 	{
 		httpGet = new HttpGet(url);
 		HttpResponse httpResponse = BelugaHTTPClient.getInstance().getClient().execute(httpGet);
@@ -83,6 +84,13 @@ public class BelugaMP3Player
 
 		// calculate the duration
 		duration = ((songSize * 1000) / (header.bitrate() / 8));
+
+		// is there a better way to detect the Pandora skip protection (42sec length mp3)?
+		if (songSize == 340554 && header.bitrate() == 64000)
+		{
+			close();
+			throw new CommunicationException("pandoraSkipProtection");
+		}
 	}
 
 	public FloatControl getFloatControl()
@@ -156,7 +164,9 @@ public class BelugaMP3Player
 		{
 			position = out.getPosition();
 		}
-		return position;
+		// the level of precision is not guaranteed
+		// so we check if we do not exceed duration
+		return Math.min(position, duration);
 	}
 
 	protected boolean decodeFrame() throws JavaLayerException

@@ -18,6 +18,7 @@
  */
 package info.bonjean.beluga.configuration;
 
+import info.bonjean.beluga.client.BelugaState;
 import info.bonjean.beluga.log.Log;
 
 import java.io.File;
@@ -128,7 +129,21 @@ public class BelugaConfiguration
 				properties.put(key, "");
 		}
 
-		propertiesMigrationV0_5();
+		// do properties migration if necessary
+		try
+		{
+			float currentVersion = Float.parseFloat(BelugaState.getInstance().getVersion());
+			float configurationVersion = Float.parseFloat(getConfigurationVersion());
+			if (configurationVersion < currentVersion)
+			{
+				log.info("migratingConfiguration");
+				propertiesMigrationV0_5();
+				setConfigurationVersion(BelugaState.getInstance().getVersion());
+			}
+		}
+		catch (NumberFormatException e)
+		{
+		}
 
 		// synchronize file, test write
 		store();
@@ -245,13 +260,43 @@ public class BelugaConfiguration
 		set(Property.THEME, themeId);
 	}
 
-	public Boolean getDNSProxyWebkit()
+	public String getLastFMUsername()
 	{
-		return getBoolean(Property.PROXY_DNS_WEBKIT, false);
+		return getString(Property.LAST_FM_USERNAME);
 	}
 
-	public void setDNSProxyWebkit(Boolean dnsProxyWebkit)
+	public void setLastFMUsername(String emailAddress)
 	{
-		set(Property.PROXY_DNS_WEBKIT, dnsProxyWebkit.toString());
+		set(Property.LAST_FM_USERNAME, emailAddress);
+	}
+
+	public String getLastFMPassword()
+	{
+		return getString(Property.LAST_FM_PASSWORD);
+	}
+
+	public void setLastFMPassword(String password)
+	{
+		set(Property.LAST_FM_PASSWORD, password);
+	}
+
+	public Boolean getLastFMEnabled()
+	{
+		return getBoolean(Property.LAST_FM_ENABLED, false);
+	}
+
+	public void setLastFMEnabled(Boolean enabled)
+	{
+		set(Property.LAST_FM_ENABLED, enabled.toString());
+	}
+
+	public String getConfigurationVersion()
+	{
+		return getString(Property.CONFIGURATION_VERSION, "0.5");
+	}
+
+	public void setConfigurationVersion(String version)
+	{
+		set(Property.CONFIGURATION_VERSION, version);
 	}
 }

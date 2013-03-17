@@ -5,14 +5,18 @@
 	</columns>
 	<TablePane.Row height="1*">
 		<TabPane>
-			<ScrollPane horizontalScrollBarPolicy="fill_to_capacity" TabPane.tabData="%artists">
-				<BoxPane bxml:id="artistBookmarksPane" orientation="vertical">
-				</BoxPane>
-			</ScrollPane>
-			<ScrollPane horizontalScrollBarPolicy="fill_to_capacity" TabPane.tabData="%tracks">
-				<BoxPane bxml:id="songBookmarksPane" orientation="vertical">
-				</BoxPane>
-			</ScrollPane>
+			<Border TabPane.tabData="%artists">
+				<ScrollPane horizontalScrollBarPolicy="fill_to_capacity">
+					<BoxPane bxml:id="artistBookmarksPane" orientation="vertical">
+					</BoxPane>
+				</ScrollPane>
+			</Border>
+			<Border TabPane.tabData="%tracks">
+				<ScrollPane horizontalScrollBarPolicy="fill_to_capacity">
+					<BoxPane bxml:id="songBookmarksPane" orientation="vertical">
+					</BoxPane>
+				</ScrollPane>
+			</Border>
 		</TabPane>
 	</TablePane.Row>
 </local:BookmarksUI>

@@ -18,8 +18,10 @@
  */
 package info.bonjean.beluga.gui.pivot;
 
+import info.bonjean.beluga.client.LastFMSession;
 import info.bonjean.beluga.configuration.BelugaConfiguration;
 import info.bonjean.beluga.configuration.DNSProxy;
+import info.bonjean.beluga.connection.BelugaHTTPClient;
 import info.bonjean.beluga.log.Log;
 
 import java.net.URL;
@@ -30,6 +32,7 @@ import org.apache.pivot.collections.List;
 import org.apache.pivot.collections.Map;
 import org.apache.pivot.util.Resources;
 import org.apache.pivot.wtk.Action;
+import org.apache.pivot.wtk.Checkbox;
 import org.apache.pivot.wtk.Component;
 import org.apache.pivot.wtk.ListButton;
 import org.apache.pivot.wtk.PushButton;
@@ -50,6 +53,12 @@ public class PreferencesUI extends TablePane implements Bindable
 	private TextInput emailAddressInput;
 	@BXML
 	private TextInput passwordInput;
+	@BXML
+	private TextInput lastFMUsernameInput;
+	@BXML
+	private TextInput lastFMPasswordInput;
+	@BXML
+	private Checkbox lastFMEnableCheckbox;
 	@BXML
 	private TextInput httpProxyHostInput;
 	@BXML
@@ -73,9 +82,15 @@ public class PreferencesUI extends TablePane implements Bindable
 				configuration.setProxyHost(httpProxyHostInput.getText());
 				configuration.setProxyPort(httpProxyPortInput.getText());
 				configuration.setDNSProxy(((DNSProxy) dnsProxyInput.getSelectedItem()).getId());
+				configuration.setLastFMEnabled(lastFMEnableCheckbox.isSelected());
+				configuration.setLastFMUsername(lastFMUsernameInput.getText());
+				configuration.setLastFMPassword(lastFMPasswordInput.getText());
 				configuration.store();
 
 				log.info("preferencesUpdated");
+
+				BelugaHTTPClient.reset();
+				LastFMSession.reset();
 			}
 		});
 	}
@@ -92,6 +107,9 @@ public class PreferencesUI extends TablePane implements Bindable
 		for (DNSProxy dnsProxy : DNSProxy.values())
 			listData.add(dnsProxy);
 		dnsProxyInput.setSelectedItem(DNSProxy.get(configuration.getDNSProxy()));
+		lastFMUsernameInput.setText(configuration.getLastFMUsername());
+		lastFMPasswordInput.setText(configuration.getLastFMPassword());
+		lastFMEnableCheckbox.setSelected(configuration.getLastFMEnabled());
 	}
 
 	@Override
@@ -107,5 +125,8 @@ public class PreferencesUI extends TablePane implements Bindable
 		httpProxyHostInput.setEnabled(enabled);
 		httpProxyPortInput.setEnabled(enabled);
 		dnsProxyInput.setEnabled(enabled);
+		lastFMEnableCheckbox.setEnabled(enabled);
+		lastFMUsernameInput.setEnabled(enabled);
+		lastFMPasswordInput.setEnabled(enabled);
 	}
 }

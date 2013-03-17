@@ -83,6 +83,8 @@ public class WelcomeUI extends TablePane implements Bindable
 							}
 						}, true);
 					}
+					else
+						log.debug("No new version available");
 				}
 				catch (Exception e)
 				{

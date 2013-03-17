@@ -20,6 +20,8 @@ package info.bonjean.beluga.gui.pivot;
 
 import info.bonjean.beluga.client.BelugaState;
 import info.bonjean.beluga.client.PandoraPlaylist;
+import info.bonjean.beluga.exception.CommunicationException;
+import info.bonjean.beluga.gui.PivotUI;
 import info.bonjean.beluga.gui.notification.Notification;
 import info.bonjean.beluga.log.Log;
 import info.bonjean.beluga.response.Song;
@@ -27,7 +29,6 @@ import info.bonjean.beluga.response.Song;
 import java.net.URL;
 import java.util.concurrent.TimeUnit;
 
-import javazoom.jl.decoder.BitstreamException;
 import javazoom.jl.player.BelugaMP3Player;
 
 import org.apache.pivot.beans.BXML;
@@ -76,6 +77,8 @@ public class PlayerUI extends TablePane implements Bindable
 	@Override
 	public void initialize(Map<String, Object> namespace, URL location, Resources resources)
 	{
+		PivotUI.setEnable(nextButton, false);
+		
 		stationName.setText("Pandora");
 		currentTime.setText("00:00");
 		totalTime.setText("00:00");
@@ -102,11 +105,7 @@ public class PlayerUI extends TablePane implements Bindable
 	@Override
 	public void setEnabled(boolean enabled)
 	{
-		nextButton.getAction().setEnabled(enabled);
-		nextButton.setEnabled(enabled);
-		volumeControl.setEnabled(true);
-
-		super.setEnabled(enabled);
+		// nothing to do, everything is handled in playerUISync thread
 	}
 
 	private String formatTime(long ms)
@@ -159,6 +158,19 @@ public class PlayerUI extends TablePane implements Bindable
 						mp3Player = new BelugaMP3Player(song.getAdditionalAudioUrl());
 						successiveFailures = 0;
 					}
+					catch (CommunicationException e)
+					{
+						log.error("pandoraSkipProtection");
+
+						// prevent playlist to be filled again
+						PandoraPlaylist.getInstance().setEnabled(false);
+
+						// clear playlist
+						PandoraPlaylist.getInstance().clear();
+
+						// skip to waiting state
+						continue;
+					}
 					catch (Exception e)
 					{
 						successiveFailures++;
@@ -192,28 +204,14 @@ public class PlayerUI extends TablePane implements Bindable
 						}
 					}, true);
 
-					try
-					{
-						new Notification(state.getSong());
+					// display desktop notification
+					new Notification(state.getSong());
 
-						// start playback
-						mp3Player.play();
-					}
-					catch (BitstreamException e)
-					{
-						if (mp3Player != null && e.getErrorCode() == 258 && mp3Player.getDuration() == 42762.45f)
-						{
-							log.error("pandoraSkipProtection");
-							// prevent playlist to be filled again
-							state.setStation(null);
-							// clear playlist
-							PandoraPlaylist.getInstance().clear();
-
-							continue;
-						}
-					}
+					// start playback
+					mp3Player.play();
 
 					log.debug("Playback finished");
+					// notify main window playback is finished (will trigger last.fm update)
 					if (mp3Player != null)
 						mainWindow.playbackFinished(song, mp3Player.getPosition(), mp3Player.getDuration());
 				}
@@ -252,8 +250,8 @@ public class PlayerUI extends TablePane implements Bindable
 					continue;
 
 				final long position = mp3Player.getPosition();
-				final float progressValue = position / (float)duration;
-				final float cacheProgressValue = mp3Player.getCachePosition() / (float)duration;
+				final float progressValue = position / (float) duration;
+				final float cacheProgressValue = mp3Player.getCachePosition() / (float) duration;
 
 				ApplicationContext.queueCallback(new Runnable()
 				{
@@ -262,16 +260,21 @@ public class PlayerUI extends TablePane implements Bindable
 					{
 						if (mp3Player != null && mp3Player.getFloatControl() != null)
 						{
-							volumeControl.setEnabled(true);
-							if (volumeControl.getStart() == volumeControl.getEnd())
+							if (!volumeControl.isEnabled())
 							{
 								volumeControl.setStart((int) mp3Player.getFloatControl().getMinimum());
 								volumeControl.setEnd((int) mp3Player.getFloatControl().getMaximum());
+
+								volumeControl.setEnabled(true);
+								PivotUI.setEnable(nextButton, true);
 							}
 							volumeControl.setValue((int) mp3Player.getFloatControl().getValue());
 						}
 						else
+						{
 							volumeControl.setEnabled(false);
+							PivotUI.setEnable(nextButton, false);
+						}
 
 						currentTime.setText(formatTime(position));
 						progress.setPercentage(progressValue);

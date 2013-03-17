@@ -19,6 +19,7 @@
 package info.bonjean.beluga.gui.pivot;
 
 import info.bonjean.beluga.client.BelugaState;
+import info.bonjean.beluga.client.LastFMSession;
 import info.bonjean.beluga.client.PandoraClient;
 import info.bonjean.beluga.client.PandoraPlaylist;
 import info.bonjean.beluga.configuration.BelugaConfiguration;
@@ -346,15 +347,26 @@ public class MainWindow extends Window implements Bindable
 			load("song");
 	}
 
-	public void playbackFinished(Song song, long position, long duration)
+	public void playbackFinished(final Song song, final long position, final long duration)
 	{
 		log.debug("Played " + position + " of " + duration);
+
+		// do last.fm call in a separate thread as it could be slow
+		new Thread()
+		{
+			@Override
+			public void run()
+			{
+				LastFMSession.getInstance().scrobbleTrack(song, position, duration);
+			}
+		}.start();
 	}
 
 	public void disconnect()
 	{
-		state.setStation(null);
+		state.reset();
 		pandoraClient.reset();
+		PandoraPlaylist.getInstance().setEnabled(false);
 
 		// invalidate playlist
 		PandoraPlaylist.getInstance().clear();
@@ -366,6 +378,7 @@ public class MainWindow extends Window implements Bindable
 			{
 				statusBarIconDiconnected.setVisible(true);
 				setEnablePandoraMenu(false);
+				load("welcome");
 			}
 		}, true);
 	}
@@ -389,7 +402,7 @@ public class MainWindow extends Window implements Bindable
 		menuUI.setStationsEnabled(enabled);
 	}
 
-	private void load(String bxml)
+	private synchronized void load(String bxml)
 	{
 		try
 		{
@@ -462,9 +475,13 @@ public class MainWindow extends Window implements Bindable
 		}
 
 		state.setStation(newStation);
+
+		// enable playlist
+		PandoraPlaylist.getInstance().setEnabled(true);
+
 		log.debug("Station selected: " + state.getStation().getStationName());
 
-		// initial feed of the playlist
+		// initially feed the playlist
 		PandoraPlaylist.getInstance().feedQueue();
 	}
 

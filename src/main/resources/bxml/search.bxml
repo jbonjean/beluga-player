@@ -4,7 +4,7 @@
 		<TablePane.Column width="1*" />
 	</columns>
 
-	<TablePane.Row height="-1">
+	<TablePane.Row height="-1" >
 		<BoxPane styles="{padding:{bottom:10}}">
 			<TextInput bxml:id="searchInput" textSize="24" prompt="%songOrArtist" />
 			<PushButton bxml:id="submitButton" buttonData="%search" styles="{minimumAspectRatio:3}" action="submit" />
@@ -13,14 +13,24 @@
 
 	<TablePane.Row height="1*">
 		<TabPane>
-			<ScrollPane horizontalScrollBarPolicy="fill_to_capacity" TabPane.tabData="%artists">
-				<BoxPane bxml:id="artistsPane" orientation="vertical">
-				</BoxPane>
-			</ScrollPane>
-			<ScrollPane horizontalScrollBarPolicy="fill_to_capacity" TabPane.tabData="%tracks">
-				<BoxPane bxml:id="songsPane" orientation="vertical">
-				</BoxPane>
-			</ScrollPane>
+			<Border TabPane.tabData="%artists" bxml:id="artistsTabPane">
+				<ScrollPane horizontalScrollBarPolicy="fill_to_capacity">
+					<BoxPane bxml:id="artistsPane" orientation="vertical">
+					</BoxPane>
+				</ScrollPane>
+			</Border>
+			<Border TabPane.tabData="%tracks" bxml:id="songsTabPane">
+				<ScrollPane horizontalScrollBarPolicy="fill_to_capacity">
+					<BoxPane bxml:id="songsPane" orientation="vertical">
+					</BoxPane>
+				</ScrollPane>
+			</Border>
 		</TabPane>
+	</TablePane.Row>
+	
+	<TablePane.Row height="-1" >
+		<BoxPane>
+			<Label bxml:id="nearMatchesAvailable" text="%searchResultsIncomplete" visible="false" styles="{padding:{top:10},font:{bold:true},color:'#999999'}"/>
+		</BoxPane>
 	</TablePane.Row>
 </local:SearchUI>

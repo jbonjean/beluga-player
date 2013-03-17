@@ -19,6 +19,7 @@
 package info.bonjean.beluga.misc;
 
 import info.bonjean.beluga.configuration.BelugaConfiguration;
+import info.bonjean.beluga.exception.CommunicationException;
 import info.bonjean.beluga.log.Log;
 import info.bonjean.beluga.util.AnnotationUtil;
 
@@ -39,7 +40,7 @@ public class MP3PlayerTest
 	@Log
 	private static Logger log;
 	
-	public static void main(String[] args) throws MalformedURLException, JavaLayerException, IOException
+	public static void main(String[] args) throws MalformedURLException, JavaLayerException, IOException, CommunicationException
 	{
 		AnnotationUtil.parseAnnotations();
 		BelugaConfiguration.getInstance().load();

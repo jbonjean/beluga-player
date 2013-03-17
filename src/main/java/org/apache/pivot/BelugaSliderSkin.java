@@ -16,7 +16,6 @@
  */
 package org.apache.pivot;
 
-import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.GradientPaint;
 import java.awt.Graphics2D;
@@ -27,8 +26,8 @@ import org.apache.pivot.wtk.Dimensions;
 import org.apache.pivot.wtk.GraphicsUtilities;
 import org.apache.pivot.wtk.Keyboard;
 import org.apache.pivot.wtk.Keyboard.KeyCode;
-import org.apache.pivot.wtk.Mouse.ScrollType;
 import org.apache.pivot.wtk.Mouse;
+import org.apache.pivot.wtk.Mouse.ScrollType;
 import org.apache.pivot.wtk.Orientation;
 import org.apache.pivot.wtk.Point;
 import org.apache.pivot.wtk.Slider;
@@ -90,14 +89,16 @@ public class BelugaSliderSkin extends SliderSkin
 			int width = getWidth();
 			int height = getHeight();
 
-			graphics.setPaint(new GradientPaint(width / 2f, 0, buttonBevelColor, width / 2f, height, buttonBackgroundColor));
+			Color bgColor = isEnabled() ? buttonBackgroundColor : disabledButtonBackgroundColor;
+
+			graphics.setPaint(new GradientPaint(width / 2f, 0, bgColor, width / 2f, height, bgColor));
 			graphics.fillRect(0, 0, width, height);
 
 			float alpha = (highlighted || dragOffset != null) ? 0.25f : 0.0f;
 			graphics.setPaint(new Color(0, 0, 0, alpha));
 			graphics.fillRect(0, 0, width, height);
 
-			graphics.setPaint(buttonBorderColor);
+			graphics.setPaint(bgColor);
 			GraphicsUtilities.drawRect(graphics, 0, 0, width, height);
 		}
 
@@ -275,16 +276,12 @@ public class BelugaSliderSkin extends SliderSkin
 	private Thumb thumb = new Thumb();
 	Point dragOffset = null;
 
-	private Color trackColor;
 	private int trackWidth;
 	private Color buttonBackgroundColor;
-	private Color buttonBorderColor;
+	private Color disabledButtonBackgroundColor;
 	private int thumbWidth;
 	private int thumbHeight;
 	private int tickSpacing;
-
-	// Derived colors
-	private Color buttonBevelColor;
 
 	public static final int DEFAULT_WIDTH = 120;
 	public static final int MINIMUM_THUMB_WIDTH = 4;
@@ -294,12 +291,9 @@ public class BelugaSliderSkin extends SliderSkin
 	{
 		TerraTheme theme = (TerraTheme) Theme.getTheme();
 
-		trackColor = theme.getColor(6);
 		trackWidth = 2;
 		buttonBackgroundColor = theme.getColor(10);
-		buttonBorderColor = theme.getColor(7);
-
-		buttonBevelColor = TerraTheme.brighten(buttonBackgroundColor);
+		disabledButtonBackgroundColor = theme.getColor(7);
 
 		thumbWidth = 8;
 		thumbHeight = 16;
@@ -384,9 +378,6 @@ public class BelugaSliderSkin extends SliderSkin
 		}
 	}
 
-	private static final BasicStroke dashStroke = new BasicStroke(1.0f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND, 1.0f,
-			new float[] { 0.0f, 2.0f }, 0.0f);
-
 	@Override
 	public void paint(Graphics2D graphics)
 	{
@@ -397,7 +388,9 @@ public class BelugaSliderSkin extends SliderSkin
 		int width = getWidth();
 		int height = getHeight();
 
-		graphics.setColor(trackColor);
+		Color bgColor = isEnabled() ? buttonBackgroundColor : disabledButtonBackgroundColor;
+
+		graphics.setColor(bgColor);
 		graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		if (slider.getOrientation() == Orientation.HORIZONTAL)
 		{
@@ -433,42 +426,11 @@ public class BelugaSliderSkin extends SliderSkin
 				}
 			}
 		}
-
-		if (thumb.isFocused())
-		{
-			graphics.setStroke(dashStroke);
-			graphics.setColor(buttonBorderColor);
-
-			graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-
-			graphics.drawRect(0, 0, width - 1, height - 1);
-		}
 	}
 
-	public Color getTrackColor()
+	private boolean isEnabled()
 	{
-		return trackColor;
-	}
-
-	public void setTrackColor(Color trackColor)
-	{
-		if (trackColor == null)
-		{
-			throw new IllegalArgumentException("trackColor is null.");
-		}
-
-		this.trackColor = trackColor;
-		repaintComponent();
-	}
-
-	public final void setTrackColor(String trackColor)
-	{
-		if (trackColor == null)
-		{
-			throw new IllegalArgumentException("trackColor is null");
-		}
-
-		setTrackColor(GraphicsUtilities.decodeColor(trackColor));
+		return getComponent().isEnabled();
 	}
 
 	public int getTrackWidth()
@@ -510,7 +472,6 @@ public class BelugaSliderSkin extends SliderSkin
 		}
 
 		this.buttonBackgroundColor = buttonBackgroundColor;
-		buttonBevelColor = TerraTheme.brighten(buttonBackgroundColor);
 		repaintComponent();
 	}
 
@@ -522,32 +483,6 @@ public class BelugaSliderSkin extends SliderSkin
 		}
 
 		setButtonBackgroundColor(GraphicsUtilities.decodeColor(buttonBackgroundColor));
-	}
-
-	public Color getButtonBorderColor()
-	{
-		return buttonBorderColor;
-	}
-
-	public void setButtonBorderColor(Color buttonBorderColor)
-	{
-		if (buttonBorderColor == null)
-		{
-			throw new IllegalArgumentException("buttonBorderColor is null.");
-		}
-
-		this.buttonBorderColor = buttonBorderColor;
-		repaintComponent();
-	}
-
-	public final void setButtonBorderColor(String buttonBorderColor)
-	{
-		if (buttonBorderColor == null)
-		{
-			throw new IllegalArgumentException("buttonBorderColor is null.");
-		}
-
-		setButtonBorderColor(GraphicsUtilities.decodeColor(buttonBorderColor));
 	}
 
 	public int getThumbWidth()

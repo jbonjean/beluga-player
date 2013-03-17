@@ -56,6 +56,7 @@ public class BookmarksUI extends TablePane implements Bindable
 	@BXML
 	private BoxPane songBookmarksPane;
 
+	private Resources resources;
 	private final BelugaState state = BelugaState.getInstance();
 	private final PandoraClient pandoraClient = PandoraClient.getInstance();
 
@@ -104,6 +105,7 @@ public class BookmarksUI extends TablePane implements Bindable
 	@Override
 	public void initialize(Map<String, Object> namespace, URL location, Resources resources)
 	{
+		this.resources = resources;
 		artistBookmarksPane.removeAll();
 		for (ArtistBookmark artistBookmark : state.getBookmarks().getArtists())
 			artistBookmarksPane.add(newBookmark(new Date(artistBookmark.getDateCreated().getTime()), artistBookmark.getArtistName(),
@@ -135,7 +137,7 @@ public class BookmarksUI extends TablePane implements Bindable
 		link.setButtonData(sb.toString());
 		Menu menu = new Menu();
 		Menu.Section menuSection = new Menu.Section();
-		Menu.Item menuItem = new Menu.Item("delete");
+		Menu.Item menuItem = new Menu.Item(resources.get("deleteBookmark"));
 		menuItem.setAction("deleteBookmark");
 		menuItem.getUserData().put("bookmarkToken", bookmarkToken);
 		menuItem.getUserData().put("item", link);

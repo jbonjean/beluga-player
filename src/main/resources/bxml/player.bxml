@@ -39,8 +39,8 @@
 			</buttonData>
 		</LinkButton>
 		<Border styles="{padding:8, thickness:0}">
-			<Slider bxml:id="volumeControl" range="{start:0, end:0}" value="0" enabled="false" orientation="vertical"
-				styles="{buttonBackgroundColor:'#000000',buttonBorderColor:'#000000',trackColor:'#000000'}" />
+			<Slider bxml:id="volumeControl" range="{start:0, end:1}" value="0" enabled="false" orientation="vertical"
+				styles="{buttonBackgroundColor:'#000000'}" />
 		</Border>
 	</TablePane.Row>
 </local:PlayerUI>

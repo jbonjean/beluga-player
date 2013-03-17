@@ -41,6 +41,7 @@ import org.apache.pivot.wtk.Component;
 import org.apache.pivot.wtk.ComponentKeyListener;
 import org.apache.pivot.wtk.Keyboard;
 import org.apache.pivot.wtk.Keyboard.KeyLocation;
+import org.apache.pivot.wtk.Label;
 import org.apache.pivot.wtk.Menu;
 import org.apache.pivot.wtk.MenuButton;
 import org.apache.pivot.wtk.PushButton;
@@ -70,6 +71,8 @@ public class SearchUI extends TablePane implements Bindable
 	private Border artistsTabPane;
 	@BXML
 	private Border songsTabPane;
+	@BXML
+	private Label nearMatchesAvailable;
 
 	private final PandoraClient pandoraClient = PandoraClient.getInstance();
 	private final BelugaState state = BelugaState.getInstance();
@@ -151,6 +154,8 @@ public class SearchUI extends TablePane implements Bindable
 							for (SearchSong artist : results.getSongs())
 								songsPane.add(newResult(artist.getSongName() + " (" + artist.getArtistName() + ")", artist.getSongName(),
 										artist.getMusicToken(), "search"));
+
+							nearMatchesAvailable.setVisible(results.isNearMatchesAvailable());
 						}
 					}, true);
 				}
@@ -163,7 +168,15 @@ public class SearchUI extends TablePane implements Bindable
 			@Override
 			public void afterPerform()
 			{
-				setFocus();
+				ApplicationContext.queueCallback(new Runnable()
+				{
+					@Override
+					public void run()
+					{
+						setTabTitles();
+						setFocus();
+					}
+				}, true);
 			}
 		});
 	}
@@ -225,14 +238,7 @@ public class SearchUI extends TablePane implements Bindable
 
 	private void setFocus()
 	{
-		ApplicationContext.queueCallback(new Runnable()
-		{
-			@Override
-			public void run()
-			{
-				searchInput.requestFocus();
-			}
-		});
+		searchInput.requestFocus();
 	}
 
 	private String getTabTitle(BoxPane boxPane, String baseNameKey)

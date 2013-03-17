@@ -42,12 +42,10 @@ public class Main
 
 		System.out.println("Beluga BelugaMP3Player " + version);
 		if (args.length == 1 && args[0].equals("-version"))
-		{
 			System.exit(0);
-		}
 
-		BelugaConfiguration.getInstance().load();
 		BelugaState.getInstance().setVersion(version);
+		BelugaConfiguration.getInstance().load();
 
 		PivotUI.startDesktopUI();
 	}

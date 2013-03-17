@@ -40,6 +40,7 @@ public class PandoraPlaylist
 
 	private static PandoraPlaylist instance;
 	private LinkedList<Song> queue = new LinkedList<Song>();
+	private boolean enabled = false;
 
 	private PandoraPlaylist()
 	{
@@ -70,10 +71,10 @@ public class PandoraPlaylist
 		return song;
 	}
 
-	public void feedQueue()
+	public synchronized void feedQueue()
 	{
 		// check if Pandora client is ready
-		if (!pandoraClient.isLoggedIn() || state.getStation() == null)
+		if (!pandoraClient.isLoggedIn() || !enabled)
 			return;
 
 		// check if the feed is empty, we do not want to reach Pandora limit
@@ -103,5 +104,15 @@ public class PandoraPlaylist
 	{
 		log.debug("Invalidating playlist");
 		queue.clear();
+	}
+
+	public boolean isEnabled()
+	{
+		return enabled;
+	}
+
+	public void setEnabled(boolean enabled)
+	{
+		this.enabled = enabled;
 	}
 }
