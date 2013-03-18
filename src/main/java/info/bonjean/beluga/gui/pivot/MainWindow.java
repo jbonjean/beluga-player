@@ -304,7 +304,7 @@ public class MainWindow extends Window implements Bindable
 				}
 				catch (BelugaException e)
 				{
-					e.printStackTrace();
+					log.error(e.getMessage(), e);
 				}
 			}
 		});

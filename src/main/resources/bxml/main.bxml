@@ -22,15 +22,17 @@
 			<TablePane styles="{backgroundColor:'#eeeeee'}">
 				<columns>
 					<TablePane.Column width="-1" />
-					<TablePane.Column width="1*" />
 					<TablePane.Column width="-1" />
+					<TablePane.Column width="1*" />
 					<TablePane.Column width="-1" />
 				</columns>
 				<TablePane.Row height="15">
+					<ActivityIndicator bxml:id="loader" preferredWidth="15" preferredHeight="15" active="true"
+						styles="{backgroundColor:'#eeeeee',color:'#28931a'}" visible="false" />
 					<ImageView bxml:id="statusBarIcon" preferredWidth="7" preferredHeight="7" styles="{fill:true}" visible="false" />
-					<Label bxml:id="statusBarText" styles="{verticalAlignment:'center',padding:{left:5}}"/>
-					<ImageView bxml:id="statusBarIconDiconnected" tooltipText="%disconnected" tooltipDelay="200" preferredWidth="14" preferredHeight="14" styles="{fill:true}" image="/img/disconnected.svg"/>
-					<ActivityIndicator bxml:id="loader" preferredWidth="15" preferredHeight="15" active="true"  styles="{backgroundColor:'#eeeeee',color:'#2fbc1c'}" visible="false"/>
+					<Label bxml:id="statusBarText" styles="{verticalAlignment:'center',padding:{left:5}}" />
+					<ImageView bxml:id="statusBarIconDiconnected" tooltipText="%disconnected" tooltipDelay="200" preferredWidth="14"
+						preferredHeight="14" styles="{fill:true}" image="/img/disconnected.svg" />
 				</TablePane.Row>
 			</TablePane>
 		</TablePane.Row>

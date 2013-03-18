@@ -18,38 +18,41 @@
  */
 package info.bonjean.beluga.misc;
 
+import info.bonjean.beluga.client.LastFMSession;
 import info.bonjean.beluga.configuration.BelugaConfiguration;
-import info.bonjean.beluga.exception.CommunicationException;
-import info.bonjean.beluga.log.Log;
-import info.bonjean.beluga.util.AnnotationUtil;
-
-import java.io.IOException;
-import java.net.MalformedURLException;
-
-import org.slf4j.Logger;
-
-import javazoom.jl.decoder.JavaLayerException;
-import javazoom.jl.player.BelugaMP3Player;
+import de.umass.lastfm.Authenticator;
+import de.umass.lastfm.Session;
+import de.umass.lastfm.Track;
+import de.umass.lastfm.scrobble.ScrobbleResult;
 
 /**
  * @author Julien Bonjean <julien@bonjean.info>
  * 
  */
-public class MP3PlayerTest
+public class LastFMTest
 {
-	@Log
-	private static Logger log;
 	private static BelugaConfiguration configuration = BelugaConfiguration.getInstance();
 
-	public static void main(String[] args) throws MalformedURLException, JavaLayerException, IOException, CommunicationException
+	public static void main(String[] args)
 	{
-		AnnotationUtil.parseAnnotations();
+		String key = LastFMSession.API_KEY;
+		String secret = LastFMSession.API_SECRET;
+
 		configuration.load();
-//		BelugaMP3Player mp3Player = new BelugaMP3Player("http://www.soundjay.com/button/beep-5.mp3");
-		BelugaMP3Player mp3Player = new BelugaMP3Player("http://www.hubharp.com/web_sound/WalloonLilliShort.mp3");
-//		BelugaMP3Player mp3Player = new BelugaMP3Player("http://robtowns.com/music/blind_willie.mp3");
-		mp3Player.play();
-		log.info("Playback finished");
+
+		String user = configuration.getLastFMUsername();
+		String password = configuration.getLastFMPassword();
+
+		Session session = Authenticator.getMobileSession(user, password, key, secret);
+
+		// Update "now playing" status:
+		ScrobbleResult nowPlayingResult = Track.updateNowPlaying("Pixies", "Allison", session);
+		System.out.println("ok: " + (nowPlayingResult.isSuccessful() && !nowPlayingResult.isIgnored()));
+
+		// Scrobble track:
+		int now = (int) (System.currentTimeMillis() / 1000);
+		ScrobbleResult TrackScrobbleResult = Track.scrobble("Pixies", "Allison", now, session);
+		System.out.println("ok: " + (TrackScrobbleResult.isSuccessful() && !TrackScrobbleResult.isIgnored()));
 	}
 
 }

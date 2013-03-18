@@ -39,8 +39,8 @@ public class LastFMSession
 	@Log
 	private static Logger log;
 
-	private static final String API_KEY = "79bb16780e65af77078e118f59de365a";
-	private static final String API_SECRET = "d9fe10dcd95bee70fdd27588c489108d";
+	public static final String API_KEY = "79bb16780e65af77078e118f59de365a";
+	public static final String API_SECRET = "d9fe10dcd95bee70fdd27588c489108d";
 	private static final BelugaConfiguration configuration = BelugaConfiguration.getInstance();
 	private static LastFMSession instance;
 	private Session session = null;
