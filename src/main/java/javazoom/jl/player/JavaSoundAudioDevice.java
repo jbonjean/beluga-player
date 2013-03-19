@@ -40,9 +40,8 @@ import javazoom.jl.decoder.JavaLayerException;
 import org.slf4j.Logger;
 
 /**
- * The <code>JavaSoundAudioDevice</code> implements an audio
- * device by using the JavaSound API.
- *
+ * The <code>JavaSoundAudioDevice</code> implements an audio device by using the JavaSound API.
+ * 
  * @since 0.0.8
  * @author Mat McGowan
  */
@@ -50,14 +49,16 @@ public class JavaSoundAudioDevice extends AudioDeviceBase
 {
 	@Log
 	private static Logger log;
-	
-	private SourceDataLine	source = null;
 
-	private AudioFormat		fmt = null;
+	private SourceDataLine source = null;
 
-	private byte[]			byteBuf = new byte[4096];
-	
+	private AudioFormat fmt = null;
+
+	private byte[] byteBuf = new byte[4096];
+
 	private FloatControl floatControl = null;
+
+	private static float masterGain = Float.MAX_VALUE;
 
 	protected void setAudioFormat(AudioFormat fmt0)
 	{
@@ -66,14 +67,10 @@ public class JavaSoundAudioDevice extends AudioDeviceBase
 
 	protected AudioFormat getAudioFormat()
 	{
-		if (fmt==null)
+		if (fmt == null)
 		{
 			Decoder decoder = getDecoder();
-			fmt = new AudioFormat(decoder.getOutputFrequency(),
-								  16,
-								  decoder.getOutputChannels(),
-								  true,
-								  false);
+			fmt = new AudioFormat(decoder.getOutputFrequency(), 16, decoder.getOutputChannels(), true, false);
 		}
 		return fmt;
 	}
@@ -95,104 +92,116 @@ public class JavaSoundAudioDevice extends AudioDeviceBase
 		}
 	}
 
-	protected void openImpl()
-		throws JavaLayerException
+	protected void openImpl() throws JavaLayerException
 	{
 	}
 
-
 	// createSource fix.
 	protected void createSource() throws JavaLayerException
-    {
-        Throwable t = null;
-        try
-        {
+	{
+		Throwable t = null;
+		try
+		{
 			Line line = AudioSystem.getLine(getSourceLineInfo());
-            if (line instanceof SourceDataLine)
-            {
-         		source = (SourceDataLine)line;
+			if (line instanceof SourceDataLine)
+			{
+				source = (SourceDataLine) line;
 				source.open(fmt);
 
 				if (source.isControlSupported(FloatControl.Type.MASTER_GAIN))
 				{
 					log.debug("Control found: " + FloatControl.Type.MASTER_GAIN);
-					floatControl = (FloatControl)source.getControl(FloatControl.Type.MASTER_GAIN);
+					floatControl = (FloatControl) source.getControl(FloatControl.Type.MASTER_GAIN);
+
+					// in some conditions, gain value is not persistent between playback, so we
+					// manually restore it
+					if (masterGain == Float.MAX_VALUE)
+						masterGain = floatControl.getValue();
+					else
+					{
+						if (masterGain != floatControl.getValue())
+						{
+							floatControl.setValue(masterGain);
+							log.debug("Master gain value manually restored");
+						}
+					}
 				}
 				else if (source.isControlSupported(FloatControl.Type.VOLUME))
-                {
-					floatControl = (FloatControl)source.getControl(FloatControl.Type.VOLUME);
+				{
+					floatControl = (FloatControl) source.getControl(FloatControl.Type.VOLUME);
 					log.debug("Control found: " + FloatControl.Type.VOLUME);
-                }
+				}
 				else
 					log.info("noAudioControlFound");
-                
-                source.start();
 
-            }
-        } catch (RuntimeException ex)
-          {
-			  t = ex;
-          }
-          catch (LinkageError ex)
-          {
-              t = ex;
-          }
-          catch (LineUnavailableException ex)
-          {
-              t = ex;
-          }
-		if (source==null) throw new JavaLayerException("cannot obtain source audio line", t);
-    }
+				source.start();
+
+			}
+		}
+		catch (RuntimeException ex)
+		{
+			t = ex;
+		}
+		catch (LinkageError ex)
+		{
+			t = ex;
+		}
+		catch (LineUnavailableException ex)
+		{
+			t = ex;
+		}
+		if (source == null)
+			throw new JavaLayerException("cannot obtain source audio line", t);
+	}
 
 	public int millisecondsToBytes(AudioFormat fmt, int time)
 	{
-		return (int)(time*(fmt.getSampleRate()*fmt.getChannels()*fmt.getSampleSizeInBits())/8000.0);
+		return (int) (time * (fmt.getSampleRate() * fmt.getChannels() * fmt.getSampleSizeInBits()) / 8000.0);
 	}
 
 	protected void closeImpl()
 	{
-		if (source!=null)
+		if (source != null)
 		{
 			source.close();
 		}
 	}
 
-	protected void writeImpl(short[] samples, int offs, int len)
-		throws JavaLayerException
+	protected void writeImpl(short[] samples, int offs, int len) throws JavaLayerException
 	{
-		if (source==null)
+		if (source == null)
 			createSource();
 
 		byte[] b = toByteArray(samples, offs, len);
-		source.write(b, 0, len*2);
+		source.write(b, 0, len * 2);
 	}
 
 	protected byte[] getByteArray(int length)
 	{
 		if (byteBuf.length < length)
 		{
-			byteBuf = new byte[length+1024];
+			byteBuf = new byte[length + 1024];
 		}
 		return byteBuf;
 	}
 
 	protected byte[] toByteArray(short[] samples, int offs, int len)
 	{
-		byte[] b = getByteArray(len*2);
+		byte[] b = getByteArray(len * 2);
 		int idx = 0;
 		short s;
 		while (len-- > 0)
 		{
 			s = samples[offs++];
-			b[idx++] = (byte)s;
-			b[idx++] = (byte)(s>>>8);
+			b[idx++] = (byte) s;
+			b[idx++] = (byte) (s >>> 8);
 		}
 		return b;
 	}
 
 	protected void flushImpl()
 	{
-		if (source!=null)
+		if (source != null)
 		{
 			source.drain();
 		}
@@ -201,9 +210,9 @@ public class JavaSoundAudioDevice extends AudioDeviceBase
 	public int getPosition()
 	{
 		int pos = 0;
-		if (source!=null)
+		if (source != null)
 		{
-			pos = (int)(source.getMicrosecondPosition()/1000);
+			pos = (int) (source.getMicrosecondPosition() / 1000);
 		}
 		return pos;
 	}
@@ -211,20 +220,19 @@ public class JavaSoundAudioDevice extends AudioDeviceBase
 	/**
 	 * Runs a short test by playing a short silent sound.
 	 */
-	public void test()
-		throws JavaLayerException
+	public void test() throws JavaLayerException
 	{
 		try
 		{
 			open(new AudioFormat(22050, 16, 1, true, false));
-			short[] data = new short[22050/10];
+			short[] data = new short[22050 / 10];
 			write(data, 0, data.length);
 			flush();
 			close();
 		}
 		catch (RuntimeException ex)
 		{
-			throw new JavaLayerException("Device test failed: "+ex);
+			throw new JavaLayerException("Device test failed: " + ex);
 		}
 
 	}

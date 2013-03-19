@@ -100,8 +100,6 @@ public class BelugaSliderSkin extends SliderSkin
 
 			graphics.setPaint(bgColor);
 			GraphicsUtilities.drawRect(graphics, 0, 0, width, height);
-
-			System.out.println("paintThumbSkin");
 		}
 
 		@Override
