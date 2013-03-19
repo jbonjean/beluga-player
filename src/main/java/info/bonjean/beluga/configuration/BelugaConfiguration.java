@@ -20,6 +20,7 @@ package info.bonjean.beluga.configuration;
 
 import info.bonjean.beluga.client.BelugaState;
 import info.bonjean.beluga.log.Log;
+import info.bonjean.beluga.util.CryptoUtil;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -48,8 +49,8 @@ public class BelugaConfiguration
 	{
 	}
 
-	// for migration from 0.5 to 0.6
-	private void propertiesMigrationV0_5()
+	// for migration from 0.* to 0.6
+	private void propertiesMigrationV0_6()
 	{
 		// dns proxy format changed
 		if (DNSProxy.get(getDNSProxy()) == null)
@@ -58,6 +59,11 @@ public class BelugaConfiguration
 			// if proxy invalid (IP address), we set proxy DNS
 			setDNSProxy(DNSProxy.PROXY_DNS.getId());
 		}
+
+		// passwords are now obfuscated
+		// we use the property key as encryption key, this is not secure at all but this is not the purpose here
+		set(Property.PASSWORD, CryptoUtil.encryptBlowfish(getString(Property.PASSWORD), Property.PASSWORD.getKey()));
+		set(Property.LAST_FM_PASSWORD, CryptoUtil.encryptBlowfish(getString(Property.LAST_FM_PASSWORD), Property.LAST_FM_PASSWORD.getKey()));
 	}
 
 	public static BelugaConfiguration getInstance()
@@ -130,19 +136,27 @@ public class BelugaConfiguration
 		}
 
 		// do properties migration if necessary
-		try
+		if (!BelugaState.getInstance().getVersion().equals("dev"))
 		{
-			float currentVersion = Float.parseFloat(BelugaState.getInstance().getVersion());
-			float configurationVersion = Float.parseFloat(getConfigurationVersion());
-			if (configurationVersion < currentVersion)
+			float configurationVersion = 0.5f;
+			try
+			{
+				configurationVersion = Float.parseFloat(getConfigurationVersion());
+			}
+			catch (NumberFormatException e)
+			{
+			}
+
+			log.debug("Configuration file version is " + configurationVersion);
+
+			if (configurationVersion < 0.6f)
 			{
 				log.info("migratingConfiguration");
-				propertiesMigrationV0_5();
-				setConfigurationVersion(BelugaState.getInstance().getVersion());
+				log.debug("Configuration file migration to 0.6");
+				propertiesMigrationV0_6();
 			}
-		}
-		catch (NumberFormatException e)
-		{
+
+			setConfigurationVersion(BelugaState.getInstance().getVersion());
 		}
 
 		// synchronize file, test write
@@ -197,12 +211,12 @@ public class BelugaConfiguration
 
 	public String getPassword()
 	{
-		return getString(Property.PASSWORD);
+		return CryptoUtil.decryptBlowfish(getString(Property.PASSWORD), Property.PASSWORD.getKey());
 	}
 
 	public void setPassword(String password)
 	{
-		set(Property.PASSWORD, password);
+		set(Property.PASSWORD, CryptoUtil.encryptBlowfish(password, Property.PASSWORD.getKey()));
 	}
 
 	public String getProxyHost()
@@ -272,12 +286,12 @@ public class BelugaConfiguration
 
 	public String getLastFMPassword()
 	{
-		return getString(Property.LAST_FM_PASSWORD);
+		return CryptoUtil.decryptBlowfish(getString(Property.LAST_FM_PASSWORD), Property.LAST_FM_PASSWORD.getKey());
 	}
 
 	public void setLastFMPassword(String password)
 	{
-		set(Property.LAST_FM_PASSWORD, password);
+		set(Property.LAST_FM_PASSWORD, CryptoUtil.encryptBlowfish(password, Property.LAST_FM_PASSWORD.getKey()));
 	}
 
 	public Boolean getLastFMEnabled()
@@ -292,7 +306,7 @@ public class BelugaConfiguration
 
 	public String getConfigurationVersion()
 	{
-		return getString(Property.CONFIGURATION_VERSION, "0.5");
+		return getString(Property.CONFIGURATION_VERSION);
 	}
 
 	public void setConfigurationVersion(String version)

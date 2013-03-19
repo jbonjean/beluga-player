@@ -20,6 +20,10 @@ package info.bonjean.beluga.util;
 
 import info.bonjean.beluga.exception.CryptoException;
 
+import javax.crypto.Cipher;
+import javax.crypto.spec.SecretKeySpec;
+
+import org.apache.commons.codec.binary.Base64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -83,7 +87,8 @@ public class CryptoUtil
 				result.append(blowfish_decode.decrypt(pad(fromHex(s.substring(i, i16)), 8).toCharArray()));
 			}
 			return result.toString().trim();
-		} catch (Exception e)
+		}
+		catch (Exception e)
 		{
 			throw new CryptoException();
 		}
@@ -110,9 +115,47 @@ public class CryptoUtil
 				}
 			}
 			return result.toString();
-		} catch (Exception e)
+		}
+		catch (Exception e)
 		{
 			throw new CryptoException();
+		}
+	}
+
+	public static String encryptBlowfish(String to_encrypt, String strkey)
+	{
+		if (to_encrypt == null || to_encrypt.isEmpty())
+			return to_encrypt;
+		
+		try
+		{
+			SecretKeySpec key = new SecretKeySpec(strkey.getBytes(), "Blowfish");
+			Cipher cipher = Cipher.getInstance("Blowfish");
+			cipher.init(Cipher.ENCRYPT_MODE, key);
+			return new String(Base64.encodeBase64(cipher.doFinal(to_encrypt.getBytes())));
+		}
+		catch (Exception e)
+		{
+			return null;
+		}
+	}
+
+	public static String decryptBlowfish(String to_decrypt, String strkey)
+	{
+		if (to_decrypt == null || to_decrypt.isEmpty())
+			return to_decrypt;
+
+		try
+		{
+			SecretKeySpec key = new SecretKeySpec(strkey.getBytes(), "Blowfish");
+			Cipher cipher = Cipher.getInstance("Blowfish");
+			cipher.init(Cipher.DECRYPT_MODE, key);
+			byte[] decrypted = cipher.doFinal(Base64.decodeBase64(to_decrypt));
+			return new String(decrypted);
+		}
+		catch (Exception e)
+		{
+			return null;
 		}
 	}
 }

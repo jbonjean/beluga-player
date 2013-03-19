@@ -108,8 +108,8 @@ public class StatusBarAppender<E> extends AppenderBase<E>
 					@SuppressWarnings("rawtypes")
 					Class clazz = Class.forName(event.getThrowableProxy().getClassName());
 
-					// use PandoraException message as key and translate it
-					if (clazz.isInstance(BelugaException.class))
+					// use BelugaException message as key and translate it
+					if (BelugaException.class.isAssignableFrom(clazz))
 					{
 						String key = event.getThrowableProxy().getMessage();
 						message = (String) resources.get(key);

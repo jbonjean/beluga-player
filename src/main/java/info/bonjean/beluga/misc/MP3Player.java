@@ -35,7 +35,7 @@ import javazoom.jl.player.BelugaMP3Player;
  * @author Julien Bonjean <julien@bonjean.info>
  * 
  */
-public class MP3PlayerTest
+public class MP3Player
 {
 	@Log
 	private static Logger log;
