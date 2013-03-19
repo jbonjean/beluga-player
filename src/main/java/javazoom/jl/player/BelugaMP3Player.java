@@ -54,10 +54,9 @@ public class BelugaMP3Player
 	private AudioDevice audio;
 	private boolean closed = false;
 	private boolean complete = false;
-	private long lastPosition = 0;
 	private long duration;
-	private Header header;
 	private HttpGet httpGet;
+	private int bitrate;
 
 	public BelugaMP3Player(String url) throws JavaLayerException, MalformedURLException, IOException, CommunicationException
 	{
@@ -76,17 +75,17 @@ public class BelugaMP3Player
 		audio.open(decoder);
 
 		// get the first frame header to get bitrate
-		header = bitstream.readFrame();
+		bitrate = bitstream.readFrame().bitrate();
 		bitstream.unreadFrame();
 
 		// get file size from HTTP headers
 		long songSize = Long.parseLong(httpResponse.getFirstHeader("Content-Length").getValue());
 
 		// calculate the duration
-		duration = ((songSize * 1000) / (header.bitrate() / 8));
+		duration = ((songSize * 1000) / (bitrate / 8));
 
 		// is there a better way to detect the Pandora skip protection (42sec length mp3)?
-		if (songSize == 340554 && header.bitrate() == 64000)
+		if (songSize == 340554 && bitrate == 64000)
 		{
 			close();
 			throw new CommunicationException("pandoraSkipProtection");
@@ -131,7 +130,6 @@ public class BelugaMP3Player
 			closed = true;
 			audio = null;
 			out.close();
-			lastPosition = out.getPosition();
 			try
 			{
 				bitstream.close();
@@ -152,21 +150,12 @@ public class BelugaMP3Player
 
 	public long getCachePosition()
 	{
-		return (cachedInputStream.getPosition() * 1000) / (header.bitrate() / 8);
+		return (cachedInputStream.getPosition() * 1000) / (bitrate / 8);
 	}
 
 	public long getPosition()
 	{
-		long position = lastPosition;
-
-		AudioDevice out = audio;
-		if (out != null)
-		{
-			position = out.getPosition();
-		}
-		// the level of precision is not guaranteed
-		// so we check if we do not exceed duration
-		return Math.min(position, duration);
+		return (bitstream.getPosition() * 1000) / (bitrate / 8);
 	}
 
 	protected boolean decodeFrame() throws JavaLayerException

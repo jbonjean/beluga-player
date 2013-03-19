@@ -131,6 +131,8 @@ public final class Bitstream implements BitstreamErrors
 	private byte[]					rawid3v2 = null;
 
 	private boolean					firstframe = true;
+	
+	private long position = 0;
 
 
 	/**
@@ -340,6 +342,7 @@ public final class Bitstream implements BitstreamErrors
 			try
 			{
 				source.unread(frame_bytes, 0, framesize);
+				this.position-=framesize;
 			}
 			catch (IOException ex)
 			{
@@ -370,6 +373,7 @@ public final class Bitstream implements BitstreamErrors
 		try
 		{
 			source.unread(syncbuf, 0, read);
+			this.position-=read;
 		}
 		catch (IOException ex)
 		{
@@ -612,6 +616,7 @@ public final class Bitstream implements BitstreamErrors
 					break;
 					//throw newBitstreamException(UNEXPECTED_EOF, new EOFException());
 				}
+				this.position+=bytesread;
 				nRead = nRead + bytesread;
 				offs += bytesread;
 				len -= bytesread;
@@ -641,6 +646,7 @@ public final class Bitstream implements BitstreamErrors
 				{
 					break;
 				}
+				this.position+=bytesread;
 				totalBytesRead += bytesread;
 				offs += bytesread;
 				len -= bytesread;
@@ -651,5 +657,10 @@ public final class Bitstream implements BitstreamErrors
 			throw newBitstreamException(STREAM_ERROR, ex);
 		}
 		return totalBytesRead;
+	}
+	
+	public long getPosition()
+	{
+		return position;
 	}
 }
