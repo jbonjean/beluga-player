@@ -100,23 +100,8 @@ public class BelugaSliderSkin extends SliderSkin
 
 			graphics.setPaint(bgColor);
 			GraphicsUtilities.drawRect(graphics, 0, 0, width, height);
-		}
 
-		@Override
-		public void enabledChanged(Component component)
-		{
-			super.enabledChanged(component);
-
-			highlighted = false;
-			repaintComponent();
-		}
-
-		@Override
-		public void focusedChanged(Component component, Component obverseComponent)
-		{
-			super.focusedChanged(component, obverseComponent);
-
-			BelugaSliderSkin.this.repaintComponent();
+			System.out.println("paintThumbSkin");
 		}
 
 		@Override
@@ -376,6 +361,13 @@ public class BelugaSliderSkin extends SliderSkin
 			thumb.setSize(thumbHeight, thumbWidth);
 			thumb.setLocation((width - thumbHeight) / 2, (int) ((height - thumbWidth) * ratio));
 		}
+	}
+	
+	@Override
+	public void enabledChanged(Component component)
+	{
+		super.enabledChanged(component);
+		repaintComponent();
 	}
 
 	@Override
