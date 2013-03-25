@@ -18,17 +18,17 @@
  */
 package info.bonjean.beluga.util;
 
-import info.bonjean.beluga.exception.CryptoException;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
 
+import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.codec.binary.Hex;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.aregner.pandora.Blowfish;
-import com.aregner.pandora.PandoraKeys;
 
 /**
  * 
@@ -37,125 +37,115 @@ import com.aregner.pandora.PandoraKeys;
  */
 public class CryptoUtil
 {
-	@SuppressWarnings("unused")
 	private static final Logger log = LoggerFactory.getLogger(CryptoUtil.class);
 
-	private static final Blowfish blowfish_decode = new Blowfish(PandoraKeys.in_key_p, PandoraKeys.in_key_s);
-	private static final Blowfish blowfish_encode = new Blowfish(PandoraKeys.out_key_p, PandoraKeys.out_key_s);
+	private static final Map<String, Cipher> encryptCiphers = new HashMap<String, Cipher>();
+	private static final Map<String, Cipher> decryptCiphers = new HashMap<String, Cipher>();
 
-	private static String fromHex(String hexText)
-	{
-		String decodedText = null;
-		String chunk = null;
-		if (hexText != null && hexText.length() > 0)
-		{
-			int numBytes = hexText.length() / 2;
-			char[] rawToByte = new char[numBytes];
-			int offset = 0;
-			for (int i = 0; i < numBytes; i++)
-			{
-				chunk = hexText.substring(offset, offset + 2);
-				offset += 2;
-				rawToByte[i] = (char) (Integer.parseInt(chunk, 16) & 0x000000FF);
-			}
-			decodedText = new String(rawToByte);
-		}
-		return decodedText;
-	}
+	private static final String ENCRYPT_KEY = "6#26FRL$ZWD";
+	private static final String DECRYPT_KEY = "R=U!LH$O2B#";
 
-	private static String pad(String s, int l)
+	private static Cipher getCipher(String strKey, boolean encoder)
 	{
-		String result = s;
-		while (l - s.length() > 0)
-		{
-			result += '\0';
-			l--;
-		}
-		return result;
-	}
+		Cipher cipher = null;
+		if (encoder)
+			cipher = encryptCiphers.get(strKey);
+		else
+			cipher = decryptCiphers.get(strKey);
 
-	public static String pandoraDecrypt(String s) throws CryptoException
-	{
+		if (cipher != null)
+			return cipher;
+
 		try
 		{
-			StringBuilder result = new StringBuilder();
-			int length = s.length();
-			int i16 = 0;
-			for (int i = 0; i < length; i += 16)
-			{
-				i16 = (i + 16 > length) ? (length - 1) : (i + 16);
-				result.append(blowfish_decode.decrypt(pad(fromHex(s.substring(i, i16)), 8).toCharArray()));
-			}
-			return result.toString().trim();
+			SecretKeySpec key = new SecretKeySpec(strKey.getBytes(), "Blowfish");
+			cipher = Cipher.getInstance("Blowfish/ECB/NoPadding");
+			cipher.init(encoder ? Cipher.ENCRYPT_MODE : Cipher.DECRYPT_MODE, key);
+
+			if (encoder)
+				encryptCiphers.put(strKey, cipher);
+			else
+				decryptCiphers.put(strKey, cipher);
 		}
 		catch (Exception e)
 		{
-			throw new CryptoException();
+			log.error(e.getMessage(), e);
 		}
+
+		return cipher;
 	}
 
-	public static String pandoraEncrypt(String s) throws CryptoException
+	public static String passwordDecrypt(String text, String strKey)
+	{
+		return new String(decryptBlowfish(Base64.decodeBase64(text.getBytes()), strKey)).trim();
+	}
+
+	public static String passwordEncrypt(String text, String strKey)
+	{
+		return new String(Base64.encodeBase64(encryptBlowfish(text, strKey)));
+	}
+
+	public static String pandoraDecrypt(String text)
 	{
 		try
 		{
-			int length = s.length();
-			StringBuilder result = new StringBuilder(length * 2);
-			int i8 = 0;
-			for (int i = 0; i < length; i += 8)
-			{
-				i8 = (i + 8 >= length) ? (length) : (i + 8);
-				String substring = s.substring(i, i8);
-				String padded = pad(substring, 8);
-				long[] blownstring = blowfish_encode.encrypt(padded.toCharArray());
-				for (int c = 0; c < blownstring.length; c++)
-				{
-					if (blownstring[c] < 0x10)
-						result.append("0");
-					result.append(Integer.toHexString((int) blownstring[c]));
-				}
-			}
-			return result.toString();
+			return new String(decryptBlowfish(Hex.decodeHex(text.toCharArray()), DECRYPT_KEY)).trim();
 		}
-		catch (Exception e)
+		catch (DecoderException e)
 		{
-			throw new CryptoException();
-		}
-	}
-
-	public static String encryptBlowfish(String to_encrypt, String strkey)
-	{
-		if (to_encrypt == null || to_encrypt.isEmpty())
-			return to_encrypt;
-		
-		try
-		{
-			SecretKeySpec key = new SecretKeySpec(strkey.getBytes(), "Blowfish");
-			Cipher cipher = Cipher.getInstance("Blowfish");
-			cipher.init(Cipher.ENCRYPT_MODE, key);
-			return new String(Base64.encodeBase64(cipher.doFinal(to_encrypt.getBytes())));
-		}
-		catch (Exception e)
-		{
+			log.error(e.getMessage(), e);
 			return null;
 		}
 	}
 
-	public static String decryptBlowfish(String to_decrypt, String strkey)
+	public static String pandoraEncrypt(String text)
 	{
-		if (to_decrypt == null || to_decrypt.isEmpty())
-			return to_decrypt;
+		return new String(Hex.encodeHex(encryptBlowfish(text, ENCRYPT_KEY)));
+	}
+
+	public static byte[] encryptBlowfish(String strToEncrypt, String strKey)
+	{
+		if (strToEncrypt == null || strToEncrypt.isEmpty())
+			return new byte[] {};
+
+		byte[] toEncrypt = strToEncrypt.getBytes();
+
+		// padding with null bytes if not a multiple of 8
+		if (toEncrypt.length % 8 != 0)
+		{
+			byte[] padded = new byte[toEncrypt.length + 8 - (toEncrypt.length % 8)];
+			System.arraycopy(toEncrypt, 0, padded, 0, toEncrypt.length);
+			toEncrypt = padded;
+		}
 
 		try
 		{
-			SecretKeySpec key = new SecretKeySpec(strkey.getBytes(), "Blowfish");
-			Cipher cipher = Cipher.getInstance("Blowfish");
-			cipher.init(Cipher.DECRYPT_MODE, key);
-			byte[] decrypted = cipher.doFinal(Base64.decodeBase64(to_decrypt));
-			return new String(decrypted);
+			return getCipher(strKey, true).doFinal(toEncrypt);
 		}
 		catch (Exception e)
 		{
-			return null;
+			// TODO: throw the exception, should be handled in higher layers
+			log.error(e.getMessage(), e);
+			return new byte[] {};
+		}
+	}
+
+	public static byte[] decryptBlowfish(byte[] strToDecrypt, String strKey)
+	{
+		if (strToDecrypt == null || strToDecrypt.length == 0)
+			return new byte[] {};
+
+		byte[] decrypt = strToDecrypt;// .getBytes();
+
+		try
+		{
+			return getCipher(strKey, false).doFinal(decrypt);
+		}
+		catch (Exception e)
+		{
+			// TODO: throw the exception, should be handled in higher layers
+			log.error(e.getMessage(), e);
+			return new byte[] {};
 		}
 	}
 }

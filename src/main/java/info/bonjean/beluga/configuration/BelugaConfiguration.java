@@ -62,8 +62,8 @@ public class BelugaConfiguration
 
 		// passwords are now obfuscated
 		// we use the property key as encryption key, this is not secure at all but this is not the purpose here
-		set(Property.PASSWORD, CryptoUtil.encryptBlowfish(getString(Property.PASSWORD), Property.PASSWORD.getKey()));
-		set(Property.LAST_FM_PASSWORD, CryptoUtil.encryptBlowfish(getString(Property.LAST_FM_PASSWORD), Property.LAST_FM_PASSWORD.getKey()));
+		set(Property.PASSWORD, CryptoUtil.passwordEncrypt(getString(Property.PASSWORD), Property.PASSWORD.getKey()));
+		set(Property.LAST_FM_PASSWORD, CryptoUtil.passwordEncrypt(getString(Property.LAST_FM_PASSWORD), Property.LAST_FM_PASSWORD.getKey()));
 	}
 
 	public static BelugaConfiguration getInstance()
@@ -136,7 +136,7 @@ public class BelugaConfiguration
 		}
 
 		// do properties migration if necessary
-		if (!BelugaState.getInstance().getVersion().equals("dev"))
+		if (!BelugaState.getInstance().getVersion().equals("(dev)"))
 		{
 			float configurationVersion = 0.5f;
 			try
@@ -211,12 +211,12 @@ public class BelugaConfiguration
 
 	public String getPassword()
 	{
-		return CryptoUtil.decryptBlowfish(getString(Property.PASSWORD), Property.PASSWORD.getKey());
+		return CryptoUtil.passwordDecrypt(getString(Property.PASSWORD), Property.PASSWORD.getKey());
 	}
 
 	public void setPassword(String password)
 	{
-		set(Property.PASSWORD, CryptoUtil.encryptBlowfish(password, Property.PASSWORD.getKey()));
+		set(Property.PASSWORD, CryptoUtil.passwordEncrypt(password, Property.PASSWORD.getKey()));
 	}
 
 	public String getProxyHost()
@@ -286,12 +286,12 @@ public class BelugaConfiguration
 
 	public String getLastFMPassword()
 	{
-		return CryptoUtil.decryptBlowfish(getString(Property.LAST_FM_PASSWORD), Property.LAST_FM_PASSWORD.getKey());
+		return CryptoUtil.passwordDecrypt(getString(Property.LAST_FM_PASSWORD), Property.LAST_FM_PASSWORD.getKey());
 	}
 
 	public void setLastFMPassword(String password)
 	{
-		set(Property.LAST_FM_PASSWORD, CryptoUtil.encryptBlowfish(password, Property.LAST_FM_PASSWORD.getKey()));
+		set(Property.LAST_FM_PASSWORD, CryptoUtil.passwordEncrypt(password, Property.LAST_FM_PASSWORD.getKey()));
 	}
 
 	public Boolean getLastFMEnabled()
