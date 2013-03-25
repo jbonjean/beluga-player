@@ -18,6 +18,7 @@
  */
 package info.bonjean.beluga.gui.pivot;
 
+import info.bonjean.beluga.client.BelugaState;
 import info.bonjean.beluga.client.PandoraClient;
 import info.bonjean.beluga.configuration.BelugaConfiguration;
 import info.bonjean.beluga.exception.BelugaException;
@@ -88,6 +89,7 @@ public class AccountCreationUI extends TablePane implements Bindable
 					log.info("accountCreated");
 					configuration.setUserName(emailAddressInput.getText());
 					configuration.setPassword(passwordInput.getText());
+					configuration.setConfigurationVersion(BelugaState.getInstance().getVersion());
 					configuration.store();
 				}
 				catch (BelugaException e)

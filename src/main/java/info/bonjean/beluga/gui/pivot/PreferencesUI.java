@@ -18,6 +18,7 @@
  */
 package info.bonjean.beluga.gui.pivot;
 
+import info.bonjean.beluga.client.BelugaState;
 import info.bonjean.beluga.client.LastFMSession;
 import info.bonjean.beluga.configuration.BelugaConfiguration;
 import info.bonjean.beluga.configuration.DNSProxy;
@@ -85,6 +86,7 @@ public class PreferencesUI extends TablePane implements Bindable
 				configuration.setLastFMEnabled(lastFMEnableCheckbox.isSelected());
 				configuration.setLastFMUsername(lastFMUsernameInput.getText());
 				configuration.setLastFMPassword(lastFMPasswordInput.getText());
+				configuration.setConfigurationVersion(BelugaState.getInstance().getVersion());
 				configuration.store();
 
 				log.info("preferencesUpdated");

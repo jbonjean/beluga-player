@@ -139,9 +139,11 @@ public class BelugaConfiguration
 		if (!BelugaState.getInstance().getVersion().equals("(dev)"))
 		{
 			float configurationVersion = 0.5f;
+			float belugaVersion = 0.1f;
 			try
 			{
 				configurationVersion = Float.parseFloat(getConfigurationVersion());
+				belugaVersion = Float.parseFloat(BelugaState.getInstance().getVersion());
 			}
 			catch (NumberFormatException e)
 			{
@@ -149,14 +151,22 @@ public class BelugaConfiguration
 
 			log.debug("Configuration file version is " + configurationVersion);
 
-			if (configurationVersion < 0.6f)
+			if (belugaVersion > configurationVersion)
 			{
-				log.info("migratingConfiguration");
-				log.debug("Configuration file migration to 0.6");
-				propertiesMigrationV0_6();
+				if (configurationVersion < 0.6f)
+				{
+					log.info("migratingConfiguration");
+					log.debug("Configuration file migration to 0.6");
+					propertiesMigrationV0_6();
+				}
+				// update configuration version
+				setConfigurationVersion(BelugaState.getInstance().getVersion());
 			}
-
-			setConfigurationVersion(BelugaState.getInstance().getVersion());
+			else if (belugaVersion < configurationVersion)
+			{
+				// TODO: display an error message, the GUI is not loaded yet...
+				log.error("Your configuration file is for a newer version of Beluga");
+			}
 		}
 
 		// synchronize file, test write
