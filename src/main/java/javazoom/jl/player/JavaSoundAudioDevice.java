@@ -163,6 +163,10 @@ public class JavaSoundAudioDevice extends AudioDeviceBase
 	{
 		if (source != null)
 		{
+			// backup master gain value before closing source
+			if (floatControl != null && floatControl.getType() == FloatControl.Type.MASTER_GAIN)
+				masterGain = floatControl.getValue();
+			
 			source.close();
 		}
 	}
