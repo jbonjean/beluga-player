@@ -1,11 +1,14 @@
-  ____       _                   
- |  _ \     | |                  
- | |_) | ___| |_   _  __ _  __ _ 
- |  _ < / _ \ | | | |/ _` |/ _` |
- | |_) |  __/ | |_| | (_| | (_| |
- |____/ \___|_|\__,_|\__, |\__,_|
-                      __/ |      
-                     |___/       
+  ____       _                     _____  _                       
+ |  _ \     | |                   |  __ \| |                      
+ | |_) | ___| |_   _  __ _  __ _  | |__) | | __ _ _   _  ___ _ __ 
+ |  _ < / _ \ | | | |/ _` |/ _` | |  ___/| |/ _` | | | |/ _ \ '__|
+ | |_) |  __/ | |_| | (_| | (_| | | |    | | (_| | |_| |  __/ |   
+ |____/ \___|_|\__,_|\__, |\__,_| |_|    |_|\__,_|\__, |\___|_|   
+                      __/ |                        __/ |          
+                     |___/                        |___/           
+
+
+Project main page: http://sourceforge.net/projects/beluga-player/
 
 Beluga Player is a cross-platform Pandora (pandora.com) player developed
 using Java programming language, and released under GPL3.
@@ -13,17 +16,19 @@ This is still a work in progress, many features are missing, but it seems to be
 pretty stable.
 
 Supported features:
- - Proxy and DNS proxy
+ - HTTP proxy and DNS proxy
  - Play / Pause / Next Song
  - Switching stations
  - Cover Art
  - Thumbs Up / Thumbs Down / Tired of this song
  - Creating / Deleting stations
+ - Creating / Deleting song and artist bookmarks
 
 Follow the instructions on the wiki to install the required dependencies:
-http://github.com/jbonjean/beluga/wiki/Installation
+http://sourceforge.net/p/beluga-player/wiki/Home/
 
 Starting Beluga Player:
  - Windows: unzip and run the executable
  - Linux: java -jar beluga-VERSION-linux-x86_64.jar
 
+Downloads page: http://sourceforge.net/projects/beluga-player/files/
