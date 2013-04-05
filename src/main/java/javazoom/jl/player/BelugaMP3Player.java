@@ -122,7 +122,7 @@ public class BelugaMP3Player
 		}
 	}
 
-	public synchronized void close()
+	public void close()
 	{
 		AudioDevice out = audio;
 		if (out != null)

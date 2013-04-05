@@ -46,6 +46,7 @@
 					</Menu.Section>
 					<Menu.Section>
 						<Menu.Item bxml:id="pandoraConnectButton" buttonData="%connectReconnect" action="startPandora" />
+						<Menu.Item bxml:id="pandoraDisconnectButton" buttonData="%disconnect" action="stopPandora" />
 					</Menu.Section>
 				</Menu>
 			</MenuBar.Item>

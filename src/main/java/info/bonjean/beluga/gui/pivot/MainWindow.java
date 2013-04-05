@@ -280,6 +280,16 @@ public class MainWindow extends Window implements Bindable
 			}
 		});
 
+		Action.getNamedActions().put("stopPandora", new AsyncAction(getInstance())
+		{
+			@Override
+			public void asyncPerform(Component source)
+			{
+				disconnect();
+				log.info("disconnectedFromPandora");
+			}
+		});
+
 		Action.getNamedActions().put("nextSong", new AsyncAction(getInstance())
 		{
 			@Override
@@ -345,7 +355,7 @@ public class MainWindow extends Window implements Bindable
 		// reload song page only if currently displayed
 		if (page.equals("song") || page.equals("welcome"))
 			loadPage("song");
-		
+
 		state.setPlaybackStarted(true);
 	}
 
@@ -382,7 +392,9 @@ public class MainWindow extends Window implements Bindable
 				setEnablePandoraMenu(false);
 				loadPage("welcome");
 			}
-		}, true);
+		}, false);
+		
+		stopPlayer();
 	}
 
 	public void stopPlayer()
