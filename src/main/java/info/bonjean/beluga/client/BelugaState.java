@@ -42,6 +42,7 @@ public class BelugaState
 	private List<Song> playlist;
 	private Song song;
 	private Bookmarks bookmarks;
+	private boolean playbackStarted = false;
 
 	private String version;
 
@@ -120,6 +121,7 @@ public class BelugaState
 		station = null;
 		playlist = null;
 		song = null;
+		playbackStarted = false;
 	}
 
 	public Bookmarks getBookmarks()
@@ -140,5 +142,15 @@ public class BelugaState
 	public void setVersion(String version)
 	{
 		this.version = version;
+	}
+
+	public boolean isPlaybackStarted()
+	{
+		return playbackStarted;
+	}
+
+	public void setPlaybackStarted(boolean playbackStarted)
+	{
+		this.playbackStarted = playbackStarted;
 	}
 }

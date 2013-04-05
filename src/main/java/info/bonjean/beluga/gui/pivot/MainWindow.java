@@ -231,7 +231,7 @@ public class MainWindow extends Window implements Bindable
 						@Override
 						public void run()
 						{
-							load(newPage);
+							loadPage(newPage);
 						}
 					}, true);
 				}
@@ -322,7 +322,7 @@ public class MainWindow extends Window implements Bindable
 		StatusBarAppender.setResources(resources);
 
 		// load temporary screen
-		load("welcome");
+		loadPage("welcome");
 
 		// disable pandora stuff
 		setEnablePandoraMenu(false);
@@ -344,7 +344,9 @@ public class MainWindow extends Window implements Bindable
 	{
 		// reload song page only if currently displayed
 		if (page.equals("song") || page.equals("welcome"))
-			load("song");
+			loadPage("song");
+		
+		state.setPlaybackStarted(true);
 	}
 
 	public void playbackFinished(final Song song, final long position, final long duration)
@@ -378,7 +380,7 @@ public class MainWindow extends Window implements Bindable
 			{
 				statusBarIconDiconnected.setVisible(true);
 				setEnablePandoraMenu(false);
-				load("welcome");
+				loadPage("welcome");
 			}
 		}, true);
 	}
@@ -402,7 +404,7 @@ public class MainWindow extends Window implements Bindable
 		menuUI.setStationsEnabled(enabled);
 	}
 
-	private synchronized void load(String bxml)
+	public synchronized void loadPage(String bxml)
 	{
 		try
 		{

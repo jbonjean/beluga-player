@@ -33,6 +33,7 @@ import org.apache.pivot.collections.List;
 import org.apache.pivot.collections.Map;
 import org.apache.pivot.util.Resources;
 import org.apache.pivot.wtk.Action;
+import org.apache.pivot.wtk.ApplicationContext;
 import org.apache.pivot.wtk.Checkbox;
 import org.apache.pivot.wtk.Component;
 import org.apache.pivot.wtk.ListButton;
@@ -93,6 +94,16 @@ public class PreferencesUI extends TablePane implements Bindable
 
 				BelugaHTTPClient.reset();
 				LastFMSession.reset();
+
+				// redirect to the main screen: song if playback started, welcome otherwise
+				ApplicationContext.queueCallback(new Runnable()
+				{
+					@Override
+					public void run()
+					{
+						MainWindow.getInstance().loadPage(BelugaState.getInstance().isPlaybackStarted() ? "song" : "welcome");
+					}
+				}, false);
 			}
 		});
 	}
