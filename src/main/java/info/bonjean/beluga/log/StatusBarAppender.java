@@ -40,64 +40,42 @@ import ch.qos.logback.core.AppenderBase;
  */
 public class StatusBarAppender<E> extends AppenderBase<E>
 {
-	private static final long messageDuration = 3 * 1000;
+	private static final long LOG_MESSAGE_DURATION = 3 * 1000;
+
 	private static Label label = null;
 	@SuppressWarnings("unused")
 	private static ImageView icon = null;
 	private static Resources resources = null;
-	private long lastMessage = 0L;
-	private long lastMessageCleared = 0L;
-	private Level lastMessageLevel = Level.INFO;
 
-	public StatusBarAppender()
+	private long lastMessageDisplayTime = 0L;
+	private LoggingEvent messageDisplayed = null;
+
+	private synchronized void doDisplayMessage(final LoggingEvent event)
 	{
-		ThreadPools.statusPool.execute(new Runnable()
+		// add to the queue for the UI but we do not wait
+		// logging should not slow down everything
+		ApplicationContext.queueCallback(new Runnable()
 		{
 			@Override
 			public void run()
 			{
-				while (true)
-				{
-					try
-					{
-						Thread.sleep(messageDuration);
-					}
-					catch (InterruptedException e)
-					{
-						break;
-					}
-					if (lastMessage != lastMessageCleared && !lastMessageLevel.isGreaterOrEqual(Level.ERROR)
-							&& (lastMessage + messageDuration < new Date().getTime()))
-					{
-						lastMessageCleared = lastMessage;
-						ApplicationContext.queueCallback(new Runnable()
-						{
-							@Override
-							public void run()
-							{
-								label.setText("");
-							}
-						}, true);
-					}
-				}
+				label.setText(formatMessage(event));
+				if (event.getLevel().isGreaterOrEqual(Level.ERROR))
+					label.getStyles().put("color", "#ff0000");
+				else
+					label.getStyles().put("color", "#000000");
 			}
-		});
+		}, false);
+
+		lastMessageDisplayTime = new Date().getTime();
+		messageDisplayed = event;
 	}
 
-	@Override
-	protected void append(final E eventObject)
+	private String formatMessage(LoggingEvent event)
 	{
-		// if not a loggingevent, what is it?
-		if (!(eventObject instanceof LoggingEvent))
-			return;
-
-		final LoggingEvent event = (LoggingEvent) eventObject;
-
-		if (label == null)
-			return;
-
 		String message = null;
 
+		// if we got resources, we try to translate it
 		if (resources != null)
 		{
 			// if we received an exception
@@ -128,26 +106,87 @@ public class StatusBarAppender<E> extends AppenderBase<E>
 		if (message == null)
 			message = event.getMessage();
 
-		final StringBuffer sb = new StringBuffer();
-		sb.append('[');
-		sb.append(event.getLevel());
-		sb.append("] ");
-		sb.append(HTMLUtil.shorten(message, 80));
+		return HTMLUtil.shorten(message, 80);
+	}
 
-		ApplicationContext.queueCallback(new Runnable()
+	public synchronized boolean displayMessage(LoggingEvent event)
+	{
+		// if no message currently displayed
+		if (messageDisplayed == null)
+		{
+			doDisplayMessage(event);
+			return true;
+		}
+
+		// if this is at least as important as what we currently display
+		if (event.getLevel().isGreaterOrEqual(messageDisplayed.getLevel()))
+		{
+			doDisplayMessage(event);
+			return true;
+		}
+
+		// if current message expired
+		if (lastMessageDisplayTime + LOG_MESSAGE_DURATION < new Date().getTime())
+		{
+			doDisplayMessage(event);
+			return true;
+		}
+
+		// the message is discarded
+		return false;
+	}
+
+	public StatusBarAppender()
+	{
+		ThreadPools.statusPool.execute(new Runnable()
 		{
 			@Override
 			public void run()
 			{
-				label.setText(sb.toString());
-				if (event.getLevel().isGreaterOrEqual(Level.ERROR))
-					label.getStyles().put("color", "#ff0000");
-				else
-					label.getStyles().put("color", "#000000");
-				lastMessage = new Date().getTime();
-				lastMessageLevel = event.getLevel();
+				while (true)
+				{
+					try
+					{
+						Thread.sleep(1000);
+					}
+					catch (InterruptedException e)
+					{
+						break;
+					}
+					// if there is a message currently displayed and it's not an error
+					if (messageDisplayed != null && !messageDisplayed.getLevel().isGreaterOrEqual(Level.ERROR))
+					{
+						// and it is expired
+						if (lastMessageDisplayTime + LOG_MESSAGE_DURATION < new Date().getTime())
+						{
+							// clear the status bar
+							ApplicationContext.queueCallback(new Runnable()
+							{
+								@Override
+								public void run()
+								{
+									label.setText("");
+								}
+							}, true);
+						}
+					}
+				}
 			}
-		}, false);
+		});
+	}
+
+	@Override
+	protected void append(final E eventObject)
+	{
+		// UI not ready
+		if (label == null)
+			return;
+
+		// if not a loggingevent, what is it?
+		if (!(eventObject instanceof LoggingEvent))
+			return;
+
+		displayMessage((LoggingEvent) eventObject);
 	}
 
 	public static void setLabel(Label label)

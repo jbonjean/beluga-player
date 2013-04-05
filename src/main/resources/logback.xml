@@ -6,6 +6,9 @@
 		</encoder>
 	</appender>
 	<appender name="FILE" class="ch.qos.logback.core.FileAppender">
+		<filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+			<level>WARN</level>
+		</filter>
 		<file>${user.home}/.log/beluga/beluga.log</file>
 		<append>false</append>
 		<encoder>
@@ -34,7 +37,7 @@
 		</then>
 		<else>
 			<root>
-				<level value="WARN" />
+				<level value="INFO" />
 				<appender-ref ref="FILE" />
 			</root>
 		</else>
