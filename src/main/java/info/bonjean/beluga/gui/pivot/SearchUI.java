@@ -138,6 +138,8 @@ public class SearchUI extends TablePane implements Bindable
 				log.info("searching");
 				try
 				{
+					setEnabled(false);
+
 					final Result results = pandoraClient.search(searchInput.getText());
 
 					ApplicationContext.queueCallback(new Runnable()
@@ -156,6 +158,8 @@ public class SearchUI extends TablePane implements Bindable
 										artist.getMusicToken(), "search"));
 
 							nearMatchesAvailable.setVisible(results.isNearMatchesAvailable());
+
+							setEnabled(true);
 						}
 					}, true);
 				}
