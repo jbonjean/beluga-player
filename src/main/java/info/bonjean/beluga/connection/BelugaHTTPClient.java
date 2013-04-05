@@ -61,14 +61,17 @@ public class BelugaHTTPClient
 		HttpConnectionParams.setConnectionTimeout(httpParameters, CONNECTION_TIMEOUT);
 		HttpConnectionParams.setSoTimeout(httpParameters, SOCKET_TIMEOUT);
 
-		client = new DefaultHttpClient(httpParameters);
-		if (!configuration.getDNSProxy().isEmpty())
+		PoolingClientConnectionManager poolingClientConnectionManager = null;
+		if (configuration.getDNSProxy().isEmpty())
+			poolingClientConnectionManager = new PoolingClientConnectionManager(SchemeRegistryFactory.createDefault());
+		else
 		{
 			DNSProxy dnsProxy = DNSProxy.get(configuration.getDNSProxy());
 			BelugaDNSResolver dnsOverrider = new BelugaDNSResolver(dnsProxy);
-			client = new DefaultHttpClient(new PoolingClientConnectionManager(SchemeRegistryFactory.createDefault(), dnsOverrider), httpParameters);
+			poolingClientConnectionManager = new PoolingClientConnectionManager(SchemeRegistryFactory.createDefault(), dnsOverrider);
 		}
-		else if (!configuration.getProxyHost().isEmpty())
+		client = new DefaultHttpClient(poolingClientConnectionManager, httpParameters);
+		if (configuration.getDNSProxy().isEmpty() && !configuration.getProxyHost().isEmpty())
 			ConnRouteParams.setDefaultProxy(client.getParams(), new HttpHost(configuration.getProxyHost(), configuration.getProxyPort(), "http"));
 	}
 
@@ -78,7 +81,7 @@ public class BelugaHTTPClient
 			instance = new BelugaHTTPClient();
 		return instance;
 	}
-	
+
 	public HttpClient getClient()
 	{
 		return client;
@@ -105,6 +108,6 @@ public class BelugaHTTPClient
 				log.error("connectionProblem");
 			}
 		}
-		throw new CommunicationException("communicationProblem",e);
+		throw new CommunicationException("communicationProblem", e);
 	}
 }
