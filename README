@@ -10,25 +10,22 @@
 
 Project main page: http://sourceforge.net/projects/beluga-player/
 
-Beluga Player is a cross-platform Pandora (pandora.com) player developed
-using Java programming language, and released under GPL3.
-This is still a work in progress, many features are missing, but it seems to be
-pretty stable.
+Beluga Player is a cross-platform Pandora (pandora.com) player released under GPL3.
 
 Supported features:
  - HTTP proxy and DNS proxy
- - Play / Pause / Next Song
+ - Play / Next Song
  - Switching stations
  - Cover Art
  - Thumbs Up / Thumbs Down / Tired of this song
  - Creating / Deleting stations
  - Creating / Deleting song and artist bookmarks
+ - Last.fm scrobbling
 
 Follow the instructions on the wiki to install the required dependencies:
 http://sourceforge.net/p/beluga-player/wiki/Home/
 
 Starting Beluga Player:
- - Windows: unzip and run the executable
- - Linux: java -jar beluga-VERSION-linux-x86_64.jar
+ - java -jar beluga-player-VERSION.jar
 
 Downloads page: http://sourceforge.net/projects/beluga-player/files/
