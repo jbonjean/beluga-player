@@ -52,8 +52,7 @@ public class BelugaMP3Player
 	private CachedInputStream cachedInputStream;
 	private Decoder decoder;
 	private AudioDevice audio;
-	private boolean closed = false;
-	private boolean complete = false;
+	private boolean close = true;
 	private long duration;
 	private HttpGet httpGet;
 	private int bitrate;
@@ -94,7 +93,7 @@ public class BelugaMP3Player
 
 	public FloatControl getFloatControl()
 	{
-		if (audio instanceof JavaSoundAudioDevice)
+		if (audio != null && audio.isOpen() && audio instanceof JavaSoundAudioDevice)
 			return ((JavaSoundAudioDevice) audio).getFloatControl();
 
 		return null;
@@ -102,50 +101,30 @@ public class BelugaMP3Player
 
 	public void play() throws JavaLayerException
 	{
+		close = false;
 		while (decodeFrame())
 			;
 
-		AudioDevice out = audio;
-		if (out != null)
+		if(audio != null)
 		{
-			out.flush();
-			synchronized (this)
-			{
-				complete = (!closed);
-				close();
-			}
+			audio.flush();
+			audio.close();
 		}
-
-		// if close called from outside, allow it to exit before us
-		synchronized (this)
+		try
 		{
+			bitstream.close();
 		}
+		catch (BitstreamException e)
+		{
+			e.printStackTrace();
+		}
+		// clean up http connection
+		httpGet.releaseConnection();
 	}
 
 	public void close()
 	{
-		AudioDevice out = audio;
-		if (out != null)
-		{
-			closed = true;
-			audio = null;
-			out.close();
-			try
-			{
-				bitstream.close();
-			}
-			catch (BitstreamException e)
-			{
-				e.printStackTrace();
-			}
-			// clean up http connection
-			httpGet.releaseConnection();
-		}
-	}
-
-	public synchronized boolean isComplete()
-	{
-		return complete;
+		close = true;
 	}
 
 	public long getCachePosition()
@@ -160,30 +139,19 @@ public class BelugaMP3Player
 
 	protected boolean decodeFrame() throws JavaLayerException
 	{
+		if (close)
+			return false;
+
 		try
 		{
-			AudioDevice out = audio;
-			if (out == null)
+			Header h = bitstream.readFrame();
+
+			if (h == null)
 				return false;
 
-			synchronized (this)
-			{
-				Header h = bitstream.readFrame();
-
-				if (h == null)
-					return false;
-
-				SampleBuffer output = (SampleBuffer) decoder.decodeFrame(h, bitstream);
-
-				out = audio;
-				if (out != null)
-				{
-					out.write(output.getBuffer(), 0, output.getBufferLength());
-				}
-
-				bitstream.closeFrame();
-			}
-
+			SampleBuffer output = (SampleBuffer) decoder.decodeFrame(h, bitstream);
+			audio.write(output.getBuffer(), 0, output.getBufferLength());
+			bitstream.closeFrame();
 		}
 		catch (RuntimeException ex)
 		{

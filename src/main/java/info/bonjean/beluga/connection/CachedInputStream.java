@@ -114,6 +114,7 @@ public class CachedInputStream extends FilterInputStream
 		try
 		{
 			future.get();
+			log.debug("Thread ended");
 		}
 		catch (Exception e)
 		{

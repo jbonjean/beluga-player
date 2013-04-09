@@ -201,14 +201,20 @@ public class PlayerUI extends TablePane implements Bindable
 
 							// update station name
 							stationName.setText(state.getStation().getStationName());
+							
+							// display desktop notification
+							new Notification(state.getSong());
 						}
-					}, true);
+					}, false);
 
-					// display desktop notification
-					new Notification(state.getSong());
-
+					// increase thread priority before starting playback
+					Thread.currentThread().setPriority(Thread.MAX_PRIORITY);
+					
 					// start playback
 					mp3Player.play();
+					
+					// restore thread priority to normal
+					Thread.currentThread().setPriority(Thread.NORM_PRIORITY);
 
 					log.debug("Playback finished");
 					// notify main window playback is finished (will trigger last.fm update)
