@@ -69,7 +69,7 @@ public class WelcomeUI extends TablePane implements Bindable
 				try
 				{
 					float currentVersion = Float.parseFloat(state.getVersion());
-					in = new URL("http://beluga-player.googlecode.com/git-history/native/VERSION").openStream();
+					in = new URL("http://beluga-player.googlecode.com/git-history/master/VERSION").openStream();
 					float newVersion = Float.parseFloat(IOUtils.toString(in));
 
 					if (newVersion > currentVersion)
