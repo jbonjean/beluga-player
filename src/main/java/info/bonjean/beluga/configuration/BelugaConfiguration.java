@@ -142,8 +142,8 @@ public class BelugaConfiguration
 			float belugaVersion = 0.1f;
 			try
 			{
-				configurationVersion = Float.parseFloat(getConfigurationVersion());
 				belugaVersion = Float.parseFloat(BelugaState.getInstance().getVersion());
+				configurationVersion = Float.parseFloat(getConfigurationVersion());
 			}
 			catch (NumberFormatException e)
 			{
