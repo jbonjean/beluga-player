@@ -34,6 +34,7 @@
 		<annovention.version>1.2</annovention.version>
 		<jlayer.version>1.0.1-1</jlayer.version>
 		<svg-salamander.version>1.0</svg-salamander.version>
+		<commons-configuration.version>1.9</commons-configuration.version>
 		<maven-shade-plugin.version>2.0</maven-shade-plugin.version>
 		<maven-compiler-plugin.version>2.5.1</maven-compiler-plugin.version>
 		<maven-surefire-plugin.version>2.12.4</maven-surefire-plugin.version>
@@ -110,6 +111,11 @@
 	</build>
 
 	<dependencies>
+		<dependency>
+			<groupId>commons-configuration</groupId>
+			<artifactId>commons-configuration</artifactId>
+			<version>${commons-configuration.version}</version>
+		</dependency>
 		<dependency>
 			<groupId>de.u-mass</groupId>
 			<artifactId>lastfm-java</artifactId>

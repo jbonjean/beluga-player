@@ -23,11 +23,9 @@ import info.bonjean.beluga.log.Log;
 import info.bonjean.beluga.util.CryptoUtil;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.Properties;
 
+import org.apache.commons.configuration.PropertiesConfiguration;
 import org.slf4j.Logger;
 
 /**
@@ -41,7 +39,7 @@ public class BelugaConfiguration
 	private static Logger log;
 	private static final String CONFIGURATION_DIRECTORY = System.getProperty("user.home") + "/.config/beluga";
 	private static final String CONFIGURATION_FILE = CONFIGURATION_DIRECTORY + "/configuration.properties";
-	private Properties properties;
+	private PropertiesConfiguration properties;
 
 	private static BelugaConfiguration instance;
 
@@ -62,8 +60,10 @@ public class BelugaConfiguration
 
 		// passwords are now obfuscated
 		// we use the property key as encryption key, this is not secure at all but this is not the purpose here
-		set(Property.PASSWORD, CryptoUtil.passwordEncrypt(getString(Property.PASSWORD), Property.PASSWORD.getKey()));
-		set(Property.LAST_FM_PASSWORD, CryptoUtil.passwordEncrypt(getString(Property.LAST_FM_PASSWORD), Property.LAST_FM_PASSWORD.getKey()));
+		properties.setProperty(Property.PASSWORD.getKey(),
+				CryptoUtil.passwordEncrypt(properties.getString(Property.PASSWORD.getKey()), Property.PASSWORD.getKey()));
+		properties.setProperty(Property.LAST_FM_PASSWORD.getKey(),
+				CryptoUtil.passwordEncrypt(properties.getString(Property.LAST_FM_PASSWORD.getKey()), Property.LAST_FM_PASSWORD.getKey()));
 	}
 
 	public static BelugaConfiguration getInstance()
@@ -79,7 +79,7 @@ public class BelugaConfiguration
 		try
 		{
 			// TODO: check proxy port is valid (number)
-			properties.store(new FileOutputStream(CONFIGURATION_FILE), null);
+			properties.save(CONFIGURATION_FILE);
 		}
 		catch (Exception e)
 		{
@@ -116,10 +116,9 @@ public class BelugaConfiguration
 		}
 
 		// load configuration file
-		properties = new Properties();
 		try
 		{
-			properties.load(new FileInputStream(CONFIGURATION_FILE));
+			properties = new PropertiesConfiguration(CONFIGURATION_FILE);
 		}
 		catch (Exception e)
 		{
@@ -131,8 +130,8 @@ public class BelugaConfiguration
 		for (Property property : Property.values())
 		{
 			String key = property.getKey();
-			if (properties.get(key) == null)
-				properties.put(key, "");
+			if (properties.getString(key) == null)
+				properties.setProperty(key, "");
 		}
 
 		// do properties migration if necessary
@@ -173,70 +172,34 @@ public class BelugaConfiguration
 		store();
 	}
 
-	private void set(Property property, String value)
-	{
-		properties.setProperty(property.getKey(), value);
-	}
-
-	private String getString(Property property, String defaultValue)
-	{
-		if (properties.get(property.getKey()) == null)
-			return defaultValue;
-
-		return (String) properties.get(property.getKey());
-	}
-
-	private String getString(Property property)
-	{
-		return getString(property, null);
-	}
-
-	private Integer getInteger(Property property, Integer defaultValue)
-	{
-		String stringValue = (String) properties.get(property.getKey());
-		if (stringValue == null || stringValue.isEmpty())
-			return defaultValue;
-
-		return new Integer(stringValue);
-	}
-
-	private Boolean getBoolean(Property property, Boolean defaultValue)
-	{
-		String stringValue = (String) properties.get(property.getKey());
-		if (stringValue == null || stringValue.isEmpty())
-			return defaultValue;
-
-		return new Boolean(stringValue);
-	}
-
 	public String getUserName()
 	{
-		return getString(Property.USER);
+		return properties.getString(Property.USER.getKey());
 	}
 
 	public void setUserName(String userName)
 	{
-		set(Property.USER, userName);
+		properties.setProperty(Property.USER.getKey(), userName);
 	}
 
 	public String getPassword()
 	{
-		return CryptoUtil.passwordDecrypt(getString(Property.PASSWORD), Property.PASSWORD.getKey());
+		return CryptoUtil.passwordDecrypt(properties.getString(Property.PASSWORD.getKey()), Property.PASSWORD.getKey());
 	}
 
 	public void setPassword(String password)
 	{
-		set(Property.PASSWORD, CryptoUtil.passwordEncrypt(password, Property.PASSWORD.getKey()));
+		properties.setProperty(Property.PASSWORD.getKey(), CryptoUtil.passwordEncrypt(password, Property.PASSWORD.getKey()));
 	}
 
 	public String getProxyHost()
 	{
-		return getString(Property.PROXY_HOST);
+		return properties.getString(Property.PROXY_HOST.getKey());
 	}
 
 	public void setProxyHost(String proxyServer)
 	{
-		set(Property.PROXY_HOST, proxyServer);
+		properties.setProperty(Property.PROXY_HOST.getKey(), proxyServer);
 	}
 
 	public String getProxyPortStr()
@@ -246,81 +209,81 @@ public class BelugaConfiguration
 
 	public Integer getProxyPort()
 	{
-		return getInteger(Property.PROXY_PORT, null);
+		return properties.getInteger(Property.PROXY_PORT.getKey(), null);
 	}
 
 	public void setProxyPort(String proxyServerPort)
 	{
-		set(Property.PROXY_PORT, proxyServerPort);
+		properties.setProperty(Property.PROXY_PORT.getKey(), proxyServerPort);
 	}
 
 	public String getDefaultStationId()
 	{
-		return getString(Property.DEFAULT_STATION);
+		return properties.getString(Property.DEFAULT_STATION.getKey());
 	}
 
 	public void setDefaultStationId(String defaultStationId)
 	{
-		set(Property.DEFAULT_STATION, defaultStationId);
+		properties.setProperty(Property.DEFAULT_STATION.getKey(), defaultStationId);
 	}
 
 	public String getDNSProxy()
 	{
-		return getString(Property.PROXY_DNS);
+		return properties.getString(Property.PROXY_DNS.getKey());
 	}
 
 	public void setDNSProxy(String proxyDNS)
 	{
-		set(Property.PROXY_DNS, proxyDNS);
+		properties.setProperty(Property.PROXY_DNS.getKey(), proxyDNS);
 	}
 
 	public String getThemeId()
 	{
-		return getString(Property.THEME, "classic");
+		return properties.getString(Property.THEME.getKey(), "classic");
 	}
 
 	public void setThemeId(String themeId)
 	{
-		set(Property.THEME, themeId);
+		properties.setProperty(Property.THEME.getKey(), themeId);
 	}
 
 	public String getLastFMUsername()
 	{
-		return getString(Property.LAST_FM_USERNAME);
+		return properties.getString(Property.LAST_FM_USERNAME.getKey());
 	}
 
 	public void setLastFMUsername(String emailAddress)
 	{
-		set(Property.LAST_FM_USERNAME, emailAddress);
+		properties.setProperty(Property.LAST_FM_USERNAME.getKey(), emailAddress);
 	}
 
 	public String getLastFMPassword()
 	{
-		return CryptoUtil.passwordDecrypt(getString(Property.LAST_FM_PASSWORD), Property.LAST_FM_PASSWORD.getKey());
+		return CryptoUtil.passwordDecrypt(properties.getString(Property.LAST_FM_PASSWORD.getKey()), Property.LAST_FM_PASSWORD.getKey());
 	}
 
 	public void setLastFMPassword(String password)
 	{
-		set(Property.LAST_FM_PASSWORD, CryptoUtil.passwordEncrypt(password, Property.LAST_FM_PASSWORD.getKey()));
+		properties.setProperty(Property.LAST_FM_PASSWORD.getKey(), CryptoUtil.passwordEncrypt(password, Property.LAST_FM_PASSWORD.getKey()));
 	}
 
 	public Boolean getLastFMEnabled()
 	{
-		return getBoolean(Property.LAST_FM_ENABLED, false);
+		return properties.getBoolean(Property.LAST_FM_ENABLED.getKey(), false);
 	}
 
 	public void setLastFMEnabled(Boolean enabled)
 	{
-		set(Property.LAST_FM_ENABLED, enabled.toString());
+		properties.setProperty(Property.LAST_FM_ENABLED.getKey(), enabled.toString());
 	}
 
 	public String getConfigurationVersion()
 	{
-		return getString(Property.CONFIGURATION_VERSION);
+		return properties.getString(Property.CONFIGURATION_VERSION.getKey());
 	}
 
 	public void setConfigurationVersion(String version)
 	{
-		set(Property.CONFIGURATION_VERSION, version);
+		properties.setProperty(Property.CONFIGURATION_VERSION.getKey(), version);
 	}
 }
