@@ -25,6 +25,7 @@ import java.util.prefs.Preferences;
 
 import org.apache.pivot.BelugaLabelSkin;
 import org.apache.pivot.BelugaMenuButtonSkin;
+import org.apache.pivot.BelugaMenuSkin;
 import org.apache.pivot.BelugaSliderSkin;
 import org.apache.pivot.beans.BXMLSerializer;
 import org.apache.pivot.collections.Map;
@@ -34,6 +35,7 @@ import org.apache.pivot.wtk.Button;
 import org.apache.pivot.wtk.DesktopApplicationContext;
 import org.apache.pivot.wtk.Display;
 import org.apache.pivot.wtk.Label;
+import org.apache.pivot.wtk.Menu;
 import org.apache.pivot.wtk.MenuButton;
 import org.apache.pivot.wtk.Slider;
 import org.apache.pivot.wtk.Theme;
@@ -65,6 +67,7 @@ public class PivotUI implements Application
 		{
 		}
 
+		Theme.getTheme().set(Menu.class, BelugaMenuSkin.class);
 		Theme.getTheme().set(Label.class, BelugaLabelSkin.class);
 		Theme.getTheme().set(MenuButton.class, BelugaMenuButtonSkin.class);
 		Theme.getTheme().set(Slider.class, BelugaSliderSkin.class);
