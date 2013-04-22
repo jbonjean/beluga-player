@@ -1,6 +1,6 @@
 #!/bin/bash
 
-SOURCE_NO_LICENSE=$(find ../src/main/java/info/bonjean/ -name "*.java" -exec grep -L "This file is part of Beluga." {} \;)
+SOURCE_NO_LICENSE=$(find ../src/main/java/info/bonjean/ -name "*.java" -exec grep -L "This file is part of Beluga Player\." {} \;)
 
 if [ ! -z "$SOURCE_NO_LICENSE" ]
 then

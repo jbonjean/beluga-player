@@ -1,6 +1,6 @@
 /* Copyright (C) 2012, 2013 Julien Bonjean <julien@bonjean.info>
  * 
- * This file is part of Beluga.
+ * This file is part of Beluga Player.
  * 
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
