@@ -114,7 +114,7 @@ public class PreferencesUI extends TablePane implements Bindable
 		emailAddressInput.setText(configuration.getUserName());
 		passwordInput.setText(configuration.getPassword());
 		httpProxyHostInput.setText(configuration.getProxyHost());
-		httpProxyPortInput.setText(configuration.getProxyPortStr());
+		httpProxyPortInput.setText(configuration.getProxyPort());
 		@SuppressWarnings("unchecked")
 		List<Object> listData = (List<Object>) dnsProxyInput.getListData();
 		for (DNSProxy dnsProxy : DNSProxy.values())

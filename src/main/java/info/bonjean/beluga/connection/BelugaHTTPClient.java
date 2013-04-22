@@ -71,8 +71,9 @@ public class BelugaHTTPClient
 			poolingClientConnectionManager = new PoolingClientConnectionManager(SchemeRegistryFactory.createDefault(), dnsOverrider);
 		}
 		client = new DefaultHttpClient(poolingClientConnectionManager, httpParameters);
-		if (configuration.getDNSProxy().isEmpty() && !configuration.getProxyHost().isEmpty())
-			ConnRouteParams.setDefaultProxy(client.getParams(), new HttpHost(configuration.getProxyHost(), configuration.getProxyPort(), "http"));
+		if (configuration.getDNSProxy().isEmpty() && !configuration.getProxyHost().isEmpty() && !configuration.getProxyPort().isEmpty())
+			ConnRouteParams.setDefaultProxy(client.getParams(),
+					new HttpHost(configuration.getProxyHost(), Integer.parseInt(configuration.getProxyPort()), "http"));
 	}
 
 	public static BelugaHTTPClient getInstance()

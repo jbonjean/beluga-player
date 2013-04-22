@@ -1,48 +1,135 @@
 <local:PreferencesUI xmlns:bxml="http://pivot.apache.org/bxml" xmlns:local="info.bonjean.beluga.gui.pivot" xmlns="org.apache.pivot.wtk"
-	styles="{padding:6}">
+	xmlns:collections="org.apache.pivot.collections" xmlns:content="org.apache.pivot.wtk.content" styles="{padding:6}">
 	<columns>
 		<TablePane.Column width="1*" />
 	</columns>
 
 	<TablePane.Row height="1*">
-		<Form>
+		<TabPane>
+			<Form TabPane.tabData="%general">
+				<Form.Section heading="%pandora">
+					<BoxPane Form.label="%emailAddress">
+						<TextInput bxml:id="emailAddressInput" textSize="24" />
+					</BoxPane>
+					<BoxPane Form.label="%password">
+						<TextInput bxml:id="passwordInput" textSize="24" password="true" />
+					</BoxPane>
+					<LinkButton bxml:id="newUserLink" buttonData="%newUser" action="load">
+						<userData bxml="account_creation" />
+					</LinkButton>
+				</Form.Section>
 
-			<Form.Section heading="%pandora">
-				<BoxPane Form.label="%emailAddress">
-					<TextInput bxml:id="emailAddressInput" textSize="24" />
-				</BoxPane>
-				<BoxPane Form.label="%password">
-					<TextInput bxml:id="passwordInput" textSize="24" password="true" />
-				</BoxPane>
-				<LinkButton bxml:id="newUserLink" buttonData="%newUser" action="load">
-					<userData bxml="account_creation" />
-				</LinkButton>
-			</Form.Section>
+				<Form.Section heading="%connection">
+					<BoxPane Form.label="%httpProxy">
+						<TextInput bxml:id="httpProxyHostInput" textSize="17" prompt="%hostname" />
+						<TextInput bxml:id="httpProxyPortInput" textSize="5" prompt="%port" />
+					</BoxPane>
+					<Label text="%or" />
+					<BoxPane Form.label="%dnsProxy">
+						<ListButton bxml:id="dnsProxyInput" />
+					</BoxPane>
+				</Form.Section>
+			</Form>
 
-			<Form.Section heading="%connection">
-				<BoxPane Form.label="%httpProxy">
-					<TextInput bxml:id="httpProxyHostInput" textSize="17" prompt="%hostname" />
-					<TextInput bxml:id="httpProxyPortInput" textSize="5" prompt="%port" />
-				</BoxPane>
-				<Label text="%or" />
-				<BoxPane Form.label="%dnsProxy">
-					<ListButton bxml:id="dnsProxyInput" />
-				</BoxPane>
-			</Form.Section>
+			<Form TabPane.tabData="%scrobbling">
+				<Form.Section heading="%last.fm">
+					<BoxPane>
+						<Checkbox bxml:id="lastFMEnableCheckbox" buttonData="%enableLastFMScrobbling" />
+					</BoxPane>
+					<BoxPane Form.label="%username">
+						<TextInput bxml:id="lastFMUsernameInput" textSize="24" />
+					</BoxPane>
+					<BoxPane Form.label="%password">
+						<TextInput bxml:id="lastFMPasswordInput" textSize="24" password="true" />
+					</BoxPane>
+				</Form.Section>
+			</Form>
 
-			<Form.Section heading="last.fm">
-				<BoxPane>
-					<Checkbox bxml:id="lastFMEnableCheckbox" buttonData="%enableLastFMScrobbling" />
-				</BoxPane>
-				<BoxPane Form.label="%username">
-					<TextInput bxml:id="lastFMUsernameInput" textSize="24" />
-				</BoxPane>
-				<BoxPane Form.label="%password">
-					<TextInput bxml:id="lastFMPasswordInput" textSize="24" password="true" />
-				</BoxPane>
-			</Form.Section>
-
-		</Form>
+			<Form TabPane.tabData="%hooks" styles="{fill:true}">
+				<Form.Section heading="%customActions">
+					<TablePane styles="{verticalSpacing:5,horizontalSpacing:5}">
+						<columns>
+							<TablePane.Column width="80" />
+							<TablePane.Column width="150" />
+							<TablePane.Column width="1*" />
+						</columns>
+						
+						<TablePane.Row height="65">
+							<Label text="%customActionsDescription" styles="{color:'#777777'}" TablePane.columnSpan="3" />
+						</TablePane.Row>
+						
+						<TablePane.Row>
+							<ListButton>
+								<listData>
+									<collections:ArrayList>
+										<content:ListItem text="%url">
+											<userData type="url"/>
+										</content:ListItem>
+										<content:ListItem text="%command">
+											<userData type="command"/>
+										</content:ListItem>
+									</collections:ArrayList>
+								</listData>
+							</ListButton>
+							<TextInput prompt="%name" />
+							<TextInput prompt="%action" />
+						</TablePane.Row>
+						
+						<TablePane.Row>
+							<ListButton>
+								<listData>
+									<collections:ArrayList>
+										<content:ListItem text="%url">
+											<userData type="url"/>
+										</content:ListItem>
+										<content:ListItem text="%command">
+											<userData type="command"/>
+										</content:ListItem>
+									</collections:ArrayList>
+								</listData>
+							</ListButton>
+							<TextInput prompt="%name" />
+							<TextInput prompt="%action" />
+						</TablePane.Row>
+						
+						<TablePane.Row>
+							<ListButton>
+								<listData>
+									<collections:ArrayList>
+										<content:ListItem text="%url">
+											<userData type="url"/>
+										</content:ListItem>
+										<content:ListItem text="%command">
+											<userData type="command"/>
+										</content:ListItem>
+									</collections:ArrayList>
+								</listData>
+							</ListButton>
+							<TextInput prompt="%name" />
+							<TextInput prompt="%action" />
+						</TablePane.Row>
+						
+						<TablePane.Row>
+							<ListButton>
+								<listData>
+									<collections:ArrayList>
+										<content:ListItem text="%url">
+											<userData type="url"/>
+										</content:ListItem>
+										<content:ListItem text="%command">
+											<userData type="command"/>
+										</content:ListItem>
+									</collections:ArrayList>
+								</listData>
+							</ListButton>
+							<TextInput prompt="%name" />
+							<TextInput prompt="%action" />
+						</TablePane.Row>
+						
+					</TablePane>
+				</Form.Section>
+			</Form>
+		</TabPane>
 	</TablePane.Row>
 
 	<TablePane.Row height="-1">
@@ -56,7 +143,7 @@
 				<BoxPane styles="{verticalAlignment:'center'}">
 					<Label bxml:id="errorArea" styles="{color:22}" />
 				</BoxPane>
-				<BoxPane styles="{horizontalAlignment:'right', verticalAlignment:'center'}">
+				<BoxPane styles="{horizontalAlignment:'right', verticalAlignment:'center', padding:5}">
 					<PushButton bxml:id="submitButton" buttonData="%save" styles="{minimumAspectRatio:3}" action="submit" />
 				</BoxPane>
 			</TablePane.Row>
