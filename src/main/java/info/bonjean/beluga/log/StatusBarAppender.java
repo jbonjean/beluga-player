@@ -106,7 +106,10 @@ public class StatusBarAppender<E> extends AppenderBase<E>
 		if (message == null)
 			message = event.getMessage();
 
-		return HTMLUtil.shorten(message, 80);
+		if (message != null)
+			return HTMLUtil.shorten(message, 80);
+
+		return null;
 	}
 
 	public synchronized boolean displayMessage(LoggingEvent event)

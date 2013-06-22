@@ -8,6 +8,10 @@
 		<Label text="%userCreationWarning" styles="{padding:10,color:22,wrapText:'true',font:{bold:true}}" />
 	</TablePane.Row>
 
+	<TablePane.Row height="-1">
+		<Label text="%dontForgetProxy" styles="{padding:10,wrapText:'true'}" />
+	</TablePane.Row>
+
 	<TablePane.Row height="1*">
 		<Form>
 			<Form.Section heading="%newPandoraAccount">

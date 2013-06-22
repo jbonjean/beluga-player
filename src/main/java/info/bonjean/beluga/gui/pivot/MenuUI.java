@@ -19,6 +19,8 @@
 package info.bonjean.beluga.gui.pivot;
 
 import info.bonjean.beluga.client.BelugaState;
+import info.bonjean.beluga.configuration.BelugaConfiguration;
+import info.bonjean.beluga.configuration.CustomAction;
 import info.bonjean.beluga.response.Station;
 
 import java.net.URL;
@@ -63,7 +65,7 @@ public class MenuUI extends TablePane implements Bindable
 			debugEntry.setAction(Action.getNamedActions().get("load"));
 			menubar.getItems().get(0).getMenu().getSections().get(0).insert(debugEntry, 0);
 		}
-		initializeCustomMenuSection();
+		updateCustomActionsMenuSection();
 	}
 
 	@Override
@@ -77,26 +79,27 @@ public class MenuUI extends TablePane implements Bindable
 		else
 			stations.setEnabled(false);
 	}
-	
-	private void initializeCustomMenuSection()
+
+	public void updateCustomActionsMenuSection()
 	{
-//		for(String customMenuEntryAction : properties.getStringArray("custom.menu.entry.action"))
-//		{
-//			System.out.println(customMenuEntryAction);
-//		}
-//		properties.setProperty("custom.menu.entry.action", new String[]{"a","b","c"});
-		
 		customMenuSection.remove(0, customMenuSection.getLength());
-		
-		Menu.Item hookEntry = new Menu.Item("url");
-		hookEntry.setAction(Action.getNamedActions().get("openURL"));
-		hookEntry.getUserData().put("url", "http://bonjean.info");
-		customMenuSection.add(hookEntry);
-		
-		Menu.Item hookEntry2 = new Menu.Item("exec");
-		hookEntry2.setAction(Action.getNamedActions().get("executeSystemCommand"));
-		hookEntry2.getUserData().put("command", "firefox http://google.ca");
-		customMenuSection.add(hookEntry2);
+
+		for (CustomAction action : BelugaConfiguration.getInstance().getCustomActions())
+		{
+			Menu.Item item = new Menu.Item(action.getName());
+			switch (action.getType())
+			{
+				case COMMAND:
+					item.setAction(Action.getNamedActions().get("executeSystemCommand"));
+					item.getUserData().put("command", action.getAction());
+					break;
+				case URL:
+					item.setAction(Action.getNamedActions().get("openURL"));
+					item.getUserData().put("url", action.getAction());
+					break;
+			}
+			customMenuSection.add(item);
+		}
 	}
 
 	public void setStationsEnabled(boolean enabled)

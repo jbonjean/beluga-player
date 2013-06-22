@@ -18,13 +18,17 @@
  */
 package info.bonjean.beluga.util;
 
+import info.bonjean.beluga.client.BelugaState;
 import info.bonjean.beluga.exception.CommunicationException;
 import info.bonjean.beluga.gui.pivot.SongUI;
 import info.bonjean.beluga.log.Log;
+import info.bonjean.beluga.response.Song;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 
 import javax.imageio.ImageIO;
 
@@ -61,6 +65,20 @@ public class HTMLUtil
 		if (str.length() > length)
 			return str.substring(0, length - 3) + "...";
 		return str;
+	}
+
+	public static String replaceTokens(String string) throws UnsupportedEncodingException
+	{
+		Song song = BelugaState.getInstance().getSong();
+
+		if (song != null)
+		{
+			string = string.replaceAll("\\$\\{song\\}", URLEncoder.encode(song.getSongName(), "UTF-8"));
+			string = string.replaceAll("\\$\\{artist\\}", URLEncoder.encode(song.getArtistName(), "UTF-8"));
+			string = string.replaceAll("\\$\\{album\\}", URLEncoder.encode(song.getAlbumName(), "UTF-8"));
+			string = string.replaceAll("\\$\\{url\\}", song.getAdditionalAudioUrl());
+		}
+		return string;
 	}
 
 	private static byte[] getResourceAsByteArray(String resource)

@@ -47,7 +47,7 @@
 
 			<Form TabPane.tabData="%hooks" styles="{fill:true}">
 				<Form.Section heading="%customActions">
-					<TablePane styles="{verticalSpacing:5,horizontalSpacing:5}">
+					<TablePane styles="{verticalSpacing:5,horizontalSpacing:5}" bxml:id="customActionsTablePane">
 						<columns>
 							<TablePane.Column width="80" />
 							<TablePane.Column width="150" />
@@ -57,75 +57,6 @@
 						<TablePane.Row height="65">
 							<Label text="%customActionsDescription" styles="{color:'#777777'}" TablePane.columnSpan="3" />
 						</TablePane.Row>
-						
-						<TablePane.Row>
-							<ListButton>
-								<listData>
-									<collections:ArrayList>
-										<content:ListItem text="%url">
-											<userData type="url"/>
-										</content:ListItem>
-										<content:ListItem text="%command">
-											<userData type="command"/>
-										</content:ListItem>
-									</collections:ArrayList>
-								</listData>
-							</ListButton>
-							<TextInput prompt="%name" />
-							<TextInput prompt="%action" />
-						</TablePane.Row>
-						
-						<TablePane.Row>
-							<ListButton>
-								<listData>
-									<collections:ArrayList>
-										<content:ListItem text="%url">
-											<userData type="url"/>
-										</content:ListItem>
-										<content:ListItem text="%command">
-											<userData type="command"/>
-										</content:ListItem>
-									</collections:ArrayList>
-								</listData>
-							</ListButton>
-							<TextInput prompt="%name" />
-							<TextInput prompt="%action" />
-						</TablePane.Row>
-						
-						<TablePane.Row>
-							<ListButton>
-								<listData>
-									<collections:ArrayList>
-										<content:ListItem text="%url">
-											<userData type="url"/>
-										</content:ListItem>
-										<content:ListItem text="%command">
-											<userData type="command"/>
-										</content:ListItem>
-									</collections:ArrayList>
-								</listData>
-							</ListButton>
-							<TextInput prompt="%name" />
-							<TextInput prompt="%action" />
-						</TablePane.Row>
-						
-						<TablePane.Row>
-							<ListButton>
-								<listData>
-									<collections:ArrayList>
-										<content:ListItem text="%url">
-											<userData type="url"/>
-										</content:ListItem>
-										<content:ListItem text="%command">
-											<userData type="command"/>
-										</content:ListItem>
-									</collections:ArrayList>
-								</listData>
-							</ListButton>
-							<TextInput prompt="%name" />
-							<TextInput prompt="%action" />
-						</TablePane.Row>
-						
 					</TablePane>
 				</Form.Section>
 			</Form>

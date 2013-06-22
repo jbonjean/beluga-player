@@ -24,6 +24,7 @@ import info.bonjean.beluga.util.CryptoUtil;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.configuration.PropertiesConfiguration;
@@ -65,6 +66,19 @@ public class BelugaConfiguration
 				CryptoUtil.passwordEncrypt(properties.getString(Property.PASSWORD.getKey()), Property.PASSWORD.getKey()));
 		properties.setProperty(Property.LAST_FM_PASSWORD.getKey(),
 				CryptoUtil.passwordEncrypt(properties.getString(Property.LAST_FM_PASSWORD.getKey()), Property.LAST_FM_PASSWORD.getKey()));
+	}
+
+	private void propertiesMigrationV0_7()
+	{
+		// add examples for custom actions
+		CustomAction youtube = new CustomAction(CustomAction.Type.URL, "Search song on Youtube",
+				"http://www.youtube.com/results?search_query=${song}%20${artist}");
+		CustomAction wikipedia = new CustomAction(CustomAction.Type.URL, "Search artist on Wikipedia",
+				"http://en.wikipedia.org/w/index.php?search=${artist}");
+		List<CustomAction> customActions = new ArrayList<CustomAction>();
+		customActions.add(youtube);
+		customActions.add(wikipedia);
+		setCustomActions(customActions);
 	}
 
 	public static BelugaConfiguration getInstance()
@@ -158,6 +172,12 @@ public class BelugaConfiguration
 					log.info("migratingConfiguration");
 					log.debug("Configuration file migration to 0.6");
 					propertiesMigrationV0_6();
+				}
+				if (configurationVersion < 0.7f)
+				{
+					log.info("migratingConfiguration");
+					log.debug("Configuration file migration to 0.7");
+					propertiesMigrationV0_7();
 				}
 				// update configuration version
 				setConfigurationVersion(BelugaState.getInstance().getVersion());
@@ -283,13 +303,19 @@ public class BelugaConfiguration
 		properties.setProperty(Property.CONFIGURATION_VERSION.getKey(), version);
 	}
 
-	public List<Object> getCustomActions()
+	public List<CustomAction> getCustomActions()
 	{
-		return properties.getList(Property.CUSTOM_ACTION.getKey());
+		List<CustomAction> actions = new ArrayList<CustomAction>();
+		for (Object property : properties.getList(Property.CUSTOM_ACTION.getKey()))
+			actions.add(new CustomAction((String) property));
+		return actions;
 	}
 
-	public void setCustomActions(List<Object> customActions)
+	public void setCustomActions(List<CustomAction> customActions)
 	{
-		properties.setProperty(Property.CUSTOM_ACTION.getKey(), customActions);
+		List<String> actionProperties = new ArrayList<String>();
+		for (CustomAction action : customActions)
+			actionProperties.add(action.serialize());
+		properties.setProperty(Property.CUSTOM_ACTION.getKey(), actionProperties);
 	}
 }

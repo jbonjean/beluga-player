@@ -21,11 +21,13 @@ package info.bonjean.beluga.gui.pivot;
 import info.bonjean.beluga.client.BelugaState;
 import info.bonjean.beluga.client.LastFMSession;
 import info.bonjean.beluga.configuration.BelugaConfiguration;
+import info.bonjean.beluga.configuration.CustomAction;
 import info.bonjean.beluga.configuration.DNSProxy;
 import info.bonjean.beluga.connection.BelugaHTTPClient;
 import info.bonjean.beluga.log.Log;
 
 import java.net.URL;
+import java.util.ArrayList;
 
 import org.apache.pivot.beans.BXML;
 import org.apache.pivot.beans.Bindable;
@@ -68,9 +70,40 @@ public class PreferencesUI extends TablePane implements Bindable
 	@BXML
 	private ListButton dnsProxyInput;
 	@BXML
+	private TablePane customActionsTablePane;
+	@BXML
 	private PushButton submitButton;
 
+	private ListButton[] actionTypes;
+	private TextInput[] actionNames;
+	private TextInput[] actionValues;
+
 	private final BelugaConfiguration configuration = BelugaConfiguration.getInstance();
+
+	public static final int CUSTOM_ACTIONS_COUNT = 4;
+
+	private final class ActionTypeData
+	{
+		private CustomAction.Type type;
+		private String name;
+
+		public ActionTypeData(CustomAction.Type type, String name)
+		{
+			this.type = type;
+			this.name = name;
+		}
+
+		public CustomAction.Type getType()
+		{
+			return type;
+		}
+
+		@Override
+		public String toString()
+		{
+			return name;
+		}
+	}
 
 	public PreferencesUI()
 	{
@@ -88,6 +121,20 @@ public class PreferencesUI extends TablePane implements Bindable
 				configuration.setLastFMUsername(lastFMUsernameInput.getText());
 				configuration.setLastFMPassword(lastFMPasswordInput.getText());
 				configuration.setConfigurationVersion(BelugaState.getInstance().getVersion());
+
+				java.util.List<CustomAction> customActions = new ArrayList<CustomAction>();
+				for (int i = 0; i < CUSTOM_ACTIONS_COUNT; i++)
+				{
+					CustomAction.Type type = ((ActionTypeData) actionTypes[i].getSelectedItem()).getType();
+					String name = actionNames[i].getText();
+					String action = actionValues[i].getText();
+
+					CustomAction customAction = new CustomAction(type, name, action);
+					if (customAction.isValid())
+						customActions.add(customAction);
+				}
+				configuration.setCustomActions(customActions);
+
 				configuration.store();
 
 				log.info("preferencesUpdated");
@@ -101,6 +148,7 @@ public class PreferencesUI extends TablePane implements Bindable
 					@Override
 					public void run()
 					{
+						MainWindow.getInstance().updateCustomActionsMenuSection();
 						MainWindow.getInstance().loadPage(BelugaState.getInstance().isPlaybackStarted() ? "song" : "welcome");
 					}
 				}, false);
@@ -123,6 +171,52 @@ public class PreferencesUI extends TablePane implements Bindable
 		lastFMUsernameInput.setText(configuration.getLastFMUsername());
 		lastFMPasswordInput.setText(configuration.getLastFMPassword());
 		lastFMEnableCheckbox.setSelected(configuration.getLastFMEnabled());
+		initializeCustomActions(resources);
+	}
+
+	private void initializeCustomActions(Resources resources)
+	{
+		actionTypes = new ListButton[CUSTOM_ACTIONS_COUNT];
+		actionNames = new TextInput[CUSTOM_ACTIONS_COUNT];
+		actionValues = new TextInput[CUSTOM_ACTIONS_COUNT];
+
+		java.util.List<CustomAction> customActions = configuration.getCustomActions();
+		for (int i = 0; i < CUSTOM_ACTIONS_COUNT; i++)
+		{
+			CustomAction customAction = customActions.size() > i ? configuration.getCustomActions().get(i) : null;
+
+			TablePane.Row row = new TablePane.Row();
+			customActionsTablePane.getRows().add(row);
+
+			ListButton actionType = new ListButton();
+			@SuppressWarnings("unchecked")
+			List<ActionTypeData> actionTypeListData = (List<ActionTypeData>) actionType.getListData();
+			for (CustomAction.Type type : CustomAction.Type.values())
+			{
+				ActionTypeData item = new ActionTypeData(type, (String) resources.get(type.getKey()));
+				actionTypeListData.add(item);
+				if (customAction != null && type == customAction.getType())
+					actionType.setSelectedItem(item);
+			}
+			if (customAction == null)
+				actionType.setSelectedIndex(0);
+			row.add(actionType);
+			actionTypes[i] = actionType;
+
+			TextInput actionName = new TextInput();
+			actionName.setPrompt((String) resources.get("name"));
+			if (customAction != null)
+				actionName.setText(customAction.getName());
+			row.add(actionName);
+			actionNames[i] = actionName;
+
+			TextInput actionValue = new TextInput();
+			actionValue.setPrompt((String) resources.get("action"));
+			if (customAction != null)
+				actionValue.setText(customAction.getAction());
+			row.add(actionValue);
+			actionValues[i] = actionValue;
+		}
 	}
 
 	@Override
