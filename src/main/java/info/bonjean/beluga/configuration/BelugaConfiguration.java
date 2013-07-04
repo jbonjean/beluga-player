@@ -63,9 +63,9 @@ public class BelugaConfiguration
 		// passwords are now obfuscated
 		// we use the property key as encryption key, this is not secure at all but this is not the purpose here
 		properties.setProperty(Property.PASSWORD.getKey(),
-				CryptoUtil.passwordEncrypt(properties.getString(Property.PASSWORD.getKey()), Property.PASSWORD.getKey()));
+				CryptoUtil.passwordEncrypt(properties.getString(Property.PASSWORD.getKey(), ""), Property.PASSWORD.getKey()));
 		properties.setProperty(Property.LAST_FM_PASSWORD.getKey(),
-				CryptoUtil.passwordEncrypt(properties.getString(Property.LAST_FM_PASSWORD.getKey()), Property.LAST_FM_PASSWORD.getKey()));
+				CryptoUtil.passwordEncrypt(properties.getString(Property.LAST_FM_PASSWORD.getKey(), ""), Property.LAST_FM_PASSWORD.getKey()));
 	}
 
 	private void propertiesMigrationV0_7()
@@ -141,27 +141,11 @@ public class BelugaConfiguration
 			System.exit(-1);
 		}
 
-		// check everything is there
-		for (Property property : Property.values())
-		{
-			String key = property.getKey();
-			if (properties.getString(key) == null)
-				properties.setProperty(key, "");
-		}
-
 		// do properties migration if necessary
 		if (!BelugaState.getInstance().getVersion().equals("(dev)"))
 		{
-			float configurationVersion = 0.5f;
-			float belugaVersion = 0.1f;
-			try
-			{
-				belugaVersion = Float.parseFloat(BelugaState.getInstance().getVersion());
-				configurationVersion = Float.parseFloat(getConfigurationVersion());
-			}
-			catch (NumberFormatException e)
-			{
-			}
+			float configurationVersion = getConfigurationVersion();
+			float belugaVersion = Float.parseFloat(BelugaState.getInstance().getVersion());
 
 			log.debug("Configuration file version is " + configurationVersion);
 
@@ -195,7 +179,7 @@ public class BelugaConfiguration
 
 	public String getUserName()
 	{
-		return properties.getString(Property.USER.getKey());
+		return properties.getString(Property.USER.getKey(), "");
 	}
 
 	public void setUserName(String userName)
@@ -205,7 +189,7 @@ public class BelugaConfiguration
 
 	public String getPassword()
 	{
-		return CryptoUtil.passwordDecrypt(properties.getString(Property.PASSWORD.getKey()), Property.PASSWORD.getKey());
+		return CryptoUtil.passwordDecrypt(properties.getString(Property.PASSWORD.getKey(), ""), Property.PASSWORD.getKey());
 	}
 
 	public void setPassword(String password)
@@ -215,7 +199,7 @@ public class BelugaConfiguration
 
 	public String getProxyHost()
 	{
-		return properties.getString(Property.PROXY_HOST.getKey());
+		return properties.getString(Property.PROXY_HOST.getKey(), "");
 	}
 
 	public void setProxyHost(String proxyServer)
@@ -225,7 +209,7 @@ public class BelugaConfiguration
 
 	public String getProxyPort()
 	{
-		return properties.getString(Property.PROXY_PORT.getKey());
+		return properties.getString(Property.PROXY_PORT.getKey(), "");
 	}
 
 	public void setProxyPort(String proxyServerPort)
@@ -235,7 +219,7 @@ public class BelugaConfiguration
 
 	public String getDefaultStationId()
 	{
-		return properties.getString(Property.DEFAULT_STATION.getKey());
+		return properties.getString(Property.DEFAULT_STATION.getKey(), "");
 	}
 
 	public void setDefaultStationId(String defaultStationId)
@@ -245,7 +229,7 @@ public class BelugaConfiguration
 
 	public String getDNSProxy()
 	{
-		return properties.getString(Property.PROXY_DNS.getKey());
+		return properties.getString(Property.PROXY_DNS.getKey(), "");
 	}
 
 	public void setDNSProxy(String proxyDNS)
@@ -265,7 +249,7 @@ public class BelugaConfiguration
 
 	public String getLastFMUsername()
 	{
-		return properties.getString(Property.LAST_FM_USERNAME.getKey());
+		return properties.getString(Property.LAST_FM_USERNAME.getKey(), "");
 	}
 
 	public void setLastFMUsername(String emailAddress)
@@ -275,7 +259,7 @@ public class BelugaConfiguration
 
 	public String getLastFMPassword()
 	{
-		return CryptoUtil.passwordDecrypt(properties.getString(Property.LAST_FM_PASSWORD.getKey()), Property.LAST_FM_PASSWORD.getKey());
+		return CryptoUtil.passwordDecrypt(properties.getString(Property.LAST_FM_PASSWORD.getKey(), ""), Property.LAST_FM_PASSWORD.getKey());
 	}
 
 	public void setLastFMPassword(String password)
@@ -293,9 +277,9 @@ public class BelugaConfiguration
 		properties.setProperty(Property.LAST_FM_ENABLED.getKey(), enabled.toString());
 	}
 
-	public String getConfigurationVersion()
+	public Float getConfigurationVersion()
 	{
-		return properties.getString(Property.CONFIGURATION_VERSION.getKey());
+		return properties.getFloat(Property.CONFIGURATION_VERSION.getKey(), 0.5f);
 	}
 
 	public void setConfigurationVersion(String version)
