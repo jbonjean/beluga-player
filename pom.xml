@@ -228,6 +228,12 @@
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
+	<repositories>
+		<repository>
+			<id>jbonjean-github</id>
+			<url>https://github.com/jbonjean/maven-repository/raw/master</url>
+		</repository>
+	</repositories>
 	<profiles>
 		<profile>
 			<id>dist-generic-</id>
