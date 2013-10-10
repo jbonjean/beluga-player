@@ -29,7 +29,6 @@ import info.bonjean.beluga.log.Log;
 import info.bonjean.beluga.log.StatusBarAppender;
 import info.bonjean.beluga.response.Song;
 import info.bonjean.beluga.response.Station;
-import info.bonjean.beluga.util.HTMLUtil;
 
 import java.awt.Desktop;
 import java.net.URI;
@@ -105,14 +104,14 @@ public class MainWindow extends Window implements Bindable
 			}
 		});
 
-		Action.getNamedActions().put("openURL", new AsyncAction(getInstance())
+		Action.getNamedActions().put("openURL", new Action()
 		{
 			@Override
-			public void asyncPerform(Component source)
+			public void perform(Component source)
 			{
+				String url = (String) source.getUserData().get("url");
 				try
 				{
-					String url = HTMLUtil.replaceTokens((String) source.getUserData().get("url"));
 					Desktop.getDesktop().browse(new URI(url));
 				}
 				catch (Exception e)
@@ -122,14 +121,14 @@ public class MainWindow extends Window implements Bindable
 			}
 		});
 
-		Action.getNamedActions().put("executeSystemCommand", new AsyncAction(getInstance())
+		Action.getNamedActions().put("executeSystemCommand", new Action()
 		{
 			@Override
-			public void asyncPerform(Component source)
+			public void perform(Component source)
 			{
+				String command = (String) source.getUserData().get("command");
 				try
 				{
-					String command = HTMLUtil.replaceTokens((String) source.getUserData().get("command"));
 					Runtime r = Runtime.getRuntime();
 					Process p = r.exec(command);
 					p.waitFor();
@@ -530,11 +529,6 @@ public class MainWindow extends Window implements Bindable
 		menuUI.updateStationsListMenu();
 	}
 
-	public void updateCustomActionsMenuSection()
-	{
-		menuUI.updateCustomActionsMenuSection();
-	}
-
 	public static MainWindow getInstance()
 	{
 		return instance;
@@ -544,4 +538,5 @@ public class MainWindow extends Window implements Bindable
 	{
 		return page;
 	}
+
 }

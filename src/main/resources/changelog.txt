@@ -1,3 +1,9 @@
-Beluga Player 0.7
+Beluga Player 0.6
 
-* Add support for user defined menu entries
+* GUI now uses Apache Pivot
+* Built-in MP3 player based on JLayer
+* Playback use MP3 format instead of AAC
+* Better cache support
+* Improved DNS Proxy support
+* Add LastFM support
+* Global responsiveness improvement
