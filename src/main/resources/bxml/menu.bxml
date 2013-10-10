@@ -28,8 +28,6 @@
 							<userData bxml="song" />
 						</Menu.Item>
 					</Menu.Section>
-					<Menu.Section bxml:id="customMenuSection">
-					</Menu.Section>
 					<Menu.Section>
 						<Menu.Item buttonData="%createStation" action="load">
 							<userData bxml="search" />

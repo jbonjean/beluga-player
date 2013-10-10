@@ -24,7 +24,6 @@ import info.bonjean.beluga.util.CryptoUtil;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.List;
 
 import org.apache.commons.configuration.PropertiesConfiguration;
 import org.slf4j.Logger;
@@ -203,9 +202,14 @@ public class BelugaConfiguration
 		properties.setProperty(Property.PROXY_HOST.getKey(), proxyServer);
 	}
 
-	public String getProxyPort()
+	public String getProxyPortStr()
 	{
-		return properties.getString(Property.PROXY_PORT.getKey());
+		return getProxyPort() == null ? "" : String.valueOf(getProxyPort());
+	}
+
+	public Integer getProxyPort()
+	{
+		return properties.getInteger(Property.PROXY_PORT.getKey(), null);
 	}
 
 	public void setProxyPort(String proxyServerPort)
@@ -281,15 +285,5 @@ public class BelugaConfiguration
 	public void setConfigurationVersion(String version)
 	{
 		properties.setProperty(Property.CONFIGURATION_VERSION.getKey(), version);
-	}
-
-	public List<Object> getCustomActions()
-	{
-		return properties.getList(Property.CUSTOM_ACTION.getKey());
-	}
-
-	public void setCustomActions(List<Object> customActions)
-	{
-		properties.setProperty(Property.CUSTOM_ACTION.getKey(), customActions);
 	}
 }

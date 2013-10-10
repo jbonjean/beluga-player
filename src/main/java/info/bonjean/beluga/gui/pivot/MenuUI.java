@@ -27,11 +27,11 @@ import org.apache.pivot.beans.BXML;
 import org.apache.pivot.beans.Bindable;
 import org.apache.pivot.collections.Map;
 import org.apache.pivot.util.Resources;
+import org.apache.pivot.wtk.MenuBar;
+import org.apache.pivot.wtk.Menu.Section;
+import org.apache.pivot.wtk.MenuBar.Item;
 import org.apache.pivot.wtk.Action;
 import org.apache.pivot.wtk.Menu;
-import org.apache.pivot.wtk.Menu.Section;
-import org.apache.pivot.wtk.MenuBar;
-import org.apache.pivot.wtk.MenuBar.Item;
 import org.apache.pivot.wtk.MenuButton;
 import org.apache.pivot.wtk.TablePane;
 
@@ -46,8 +46,6 @@ public class MenuUI extends TablePane implements Bindable
 	private MenuBar menubar;
 	@BXML
 	private MenuButton stations;
-	@BXML
-	private Section customMenuSection;
 
 	private final BelugaState state = BelugaState.getInstance();
 	// keep track of stations entry enabled status
@@ -63,7 +61,6 @@ public class MenuUI extends TablePane implements Bindable
 			debugEntry.setAction(Action.getNamedActions().get("load"));
 			menubar.getItems().get(0).getMenu().getSections().get(0).insert(debugEntry, 0);
 		}
-		initializeCustomMenuSection();
 	}
 
 	@Override
@@ -76,27 +73,6 @@ public class MenuUI extends TablePane implements Bindable
 			stations.setEnabled(stationsEnabled);
 		else
 			stations.setEnabled(false);
-	}
-	
-	private void initializeCustomMenuSection()
-	{
-//		for(String customMenuEntryAction : properties.getStringArray("custom.menu.entry.action"))
-//		{
-//			System.out.println(customMenuEntryAction);
-//		}
-//		properties.setProperty("custom.menu.entry.action", new String[]{"a","b","c"});
-		
-		customMenuSection.remove(0, customMenuSection.getLength());
-		
-		Menu.Item hookEntry = new Menu.Item("url");
-		hookEntry.setAction(Action.getNamedActions().get("openURL"));
-		hookEntry.getUserData().put("url", "http://bonjean.info");
-		customMenuSection.add(hookEntry);
-		
-		Menu.Item hookEntry2 = new Menu.Item("exec");
-		hookEntry2.setAction(Action.getNamedActions().get("executeSystemCommand"));
-		hookEntry2.getUserData().put("command", "firefox http://google.ca");
-		customMenuSection.add(hookEntry2);
 	}
 
 	public void setStationsEnabled(boolean enabled)

@@ -121,25 +121,6 @@ public class MainWindow extends Window implements Bindable
 			}
 		});
 
-		Action.getNamedActions().put("executeSystemCommand", new Action()
-		{
-			@Override
-			public void perform(Component source)
-			{
-				String command = (String) source.getUserData().get("command");
-				try
-				{
-					Runtime r = Runtime.getRuntime();
-					Process p = r.exec(command);
-					p.waitFor();
-				}
-				catch (Exception e)
-				{
-					log.error(e.getMessage(), e);
-				}
-			}
-		});
-
 		Action.getNamedActions().put("deleteStation", new AsyncAction(getInstance())
 		{
 			@Override
@@ -412,7 +393,7 @@ public class MainWindow extends Window implements Bindable
 				loadPage("welcome");
 			}
 		}, false);
-
+		
 		stopPlayer();
 	}
 
