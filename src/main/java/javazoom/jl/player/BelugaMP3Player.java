@@ -24,7 +24,6 @@ import info.bonjean.beluga.connection.CachedInputStream;
 import info.bonjean.beluga.exception.CommunicationException;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.MalformedURLException;
 
 import javax.sound.sampled.FloatControl;
@@ -37,7 +36,10 @@ import javazoom.jl.decoder.JavaLayerException;
 import javazoom.jl.decoder.SampleBuffer;
 
 import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.HttpGet;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * The <code>BelugaMP3Player</code> class implements a simple player for playback of an MPEG audio stream.
@@ -48,6 +50,8 @@ import org.apache.http.client.methods.HttpGet;
  */
 public class BelugaMP3Player
 {
+	private static final Logger log = LoggerFactory.getLogger(BelugaMP3Player.class);
+
 	private Bitstream bitstream;
 	private CachedInputStream cachedInputStream;
 	private Decoder decoder;
@@ -61,9 +65,14 @@ public class BelugaMP3Player
 	{
 		httpGet = new HttpGet(url);
 		HttpResponse httpResponse = BelugaHTTPClient.getInstance().getClient().execute(httpGet);
-		InputStream inputStream = httpResponse.getEntity().getContent();
+		if (httpResponse.getStatusLine().getStatusCode() != HttpStatus.SC_OK)
+		{
+			close();
+			log.debug("Got response: " + httpResponse.getStatusLine().getReasonPhrase());
+			throw new IOException("streamNotAvailable");
+		}
 
-		cachedInputStream = new CachedInputStream(inputStream);
+		cachedInputStream = new CachedInputStream(httpResponse.getEntity());
 
 		bitstream = new Bitstream(cachedInputStream);
 		decoder = new Decoder();
@@ -74,14 +83,17 @@ public class BelugaMP3Player
 		audio.open(decoder);
 
 		// get the first frame header to get bitrate
-		bitrate = bitstream.readFrame().bitrate();
+		Header frame = bitstream.readFrame();
+		if (frame == null)
+			throw new IOException("noAudioStream");
+		bitrate = frame.bitrate();
 		bitstream.unreadFrame();
 
 		// get file size from HTTP headers
 		long songSize = Long.parseLong(httpResponse.getFirstHeader("Content-Length").getValue());
 
 		// calculate the duration
-		duration = ((songSize * 1000) / (bitrate / 8));
+		duration = (songSize * 1000) / (bitrate / 8);
 
 		// is there a better way to detect the Pandora skip protection (42sec length mp3)?
 		if (songSize == 340554 && bitrate == 64000)
@@ -105,7 +117,7 @@ public class BelugaMP3Player
 		while (decodeFrame())
 			;
 
-		if(audio != null)
+		if (audio != null)
 		{
 			audio.flush();
 			audio.close();
@@ -116,7 +128,7 @@ public class BelugaMP3Player
 		}
 		catch (BitstreamException e)
 		{
-			e.printStackTrace();
+			log.debug(e.getMessage());
 		}
 		// clean up http connection
 		httpGet.releaseConnection();
@@ -129,7 +141,15 @@ public class BelugaMP3Player
 
 	public long getCachePosition()
 	{
-		return (cachedInputStream.getPosition() * 1000) / (bitrate / 8);
+		try
+		{
+			return ((cachedInputStream.available() + bitstream.getPosition()) * 1000) / (bitrate / 8);
+		}
+		catch (IOException e)
+		{
+			log.debug(e.getMessage());
+			return 0;
+		}
 	}
 
 	public long getPosition()

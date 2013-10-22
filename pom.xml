@@ -19,7 +19,6 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<slf4j.version>1.6.4</slf4j.version>
 		<logback.version>1.0.1</logback.version>
-		<janino.version>2.6.1</janino.version>
 		<dnsjava.version>2.1.1</dnsjava.version>
 		<twinkle.version>1.0.0</twinkle.version>
 		<sax.version>2.0.1</sax.version>
@@ -30,14 +29,11 @@
 		<junit.version>4.8.1</junit.version>
 		<pivot.version>2.0.2</pivot.version>
 		<lastfm-java.version>0.1.2</lastfm-java.version>
-		<ostermiller-utils.version>1.07.00</ostermiller-utils.version>
 		<jlayer.version>1.0.1-1</jlayer.version>
 		<svg-salamander.version>1.0</svg-salamander.version>
 		<maven-shade-plugin.version>2.0</maven-shade-plugin.version>
 		<maven-compiler-plugin.version>2.5.1</maven-compiler-plugin.version>
 		<maven-surefire-plugin.version>2.12.4</maven-surefire-plugin.version>
-		<launch4j-maven-plugin.version>1.5.2</launch4j-maven-plugin.version>
-		<maven-assembly-plugin.version>2.3</maven-assembly-plugin.version>
 		<maven-jar-plugin.version>2.4</maven-jar-plugin.version>
 	</properties>
 
@@ -71,7 +67,7 @@
 							<mainClass>info.bonjean.beluga.Main</mainClass>
 						</transformer>
 					</transformers>
-					<outputFile>${jar.output.dir}/${project.artifactId}-${project.version}.jar</outputFile>
+					<outputFile>dist/${project.artifactId}-${project.version}.jar</outputFile>
 				</configuration>
 			</plugin>
 			<plugin>
@@ -113,11 +109,6 @@
 			<groupId>de.u-mass</groupId>
 			<artifactId>lastfm-java</artifactId>
 			<version>${lastfm-java.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.ostermiller</groupId>
-			<artifactId>utils</artifactId>
-			<version>${ostermiller-utils.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.googlecode.soundlibs</groupId>
@@ -175,11 +166,6 @@
 			<version>${logback.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>org.codehaus.janino</groupId>
-			<artifactId>janino</artifactId>
-			<version>${janino.version}</version>
-		</dependency>
-		<dependency>
 			<groupId>dnsjava</groupId>
 			<artifactId>dnsjava</artifactId>
 			<version>${dnsjava.version}</version>
@@ -222,15 +208,4 @@
 			<url>https://github.com/jbonjean/maven-repository/raw/master</url>
 		</repository>
 	</repositories>
-	<profiles>
-		<profile>
-			<id>dist-generic-</id>
-			<activation>
-				<activeByDefault>true</activeByDefault>
-			</activation>
-			<properties>
-				<jar.output.dir>dist</jar.output.dir>
-			</properties>
-		</profile>
-	</profiles>
 </project>

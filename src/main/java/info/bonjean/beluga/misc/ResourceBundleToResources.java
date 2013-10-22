@@ -33,7 +33,7 @@ import java.util.Properties;
  */
 public class ResourceBundleToResources
 {
-	private static final String RESOURCES_PATH = "/home/jb/dev/beluga/src/main/resources/i18n/";
+	private static final String RESOURCES_PATH = "/home/jb/dev/beluga-player/src/main/resources/i18n/";
 	private static final String[] RESOURCES = { "messages" };
 
 	public static void main(String[] args)

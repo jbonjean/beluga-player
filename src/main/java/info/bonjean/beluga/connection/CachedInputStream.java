@@ -22,13 +22,13 @@ import info.bonjean.beluga.gui.pivot.ThreadPools;
 
 import java.io.FilterInputStream;
 import java.io.IOException;
-import java.io.InputStream;
+import java.io.PipedInputStream;
+import java.io.PipedOutputStream;
 import java.util.concurrent.Future;
 
+import org.apache.http.HttpEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.Ostermiller.util.CircularByteBuffer;
 
 /**
  * @author Julien Bonjean <julien@bonjean.info>
@@ -39,90 +39,117 @@ public class CachedInputStream extends FilterInputStream
 	private static Logger log = LoggerFactory.getLogger(CachedInputStream.class);
 
 	private static final int CACHE_SIZE = 512 * 1024;
-	private CircularByteBuffer circularByteBuffer;
-	private long read;
-	private InputStream input;
+	private static final int INITIAL_CACHE_SIZE = 100 * 1024;
+	private PipedOutputStream pipe;
+	// private InputStream source;
 	private Future<?> future;
 
-	public CachedInputStream(InputStream in)
+	// public CachedInputStream(final InputStream in)
+	public CachedInputStream(final HttpEntity entity)
 	{
-		super(null);
-		this.input = in;
-		circularByteBuffer = new CircularByteBuffer(CACHE_SIZE, true);
-		super.in = circularByteBuffer.getInputStream();
+		super(new PipedInputStream(CACHE_SIZE));
+		// source = in;
+		// super.in = input;
 
 		future = ThreadPools.streamPool.submit(new Runnable()
 		{
 			public void run()
 			{
-				// For network the optimal buffer size can be 2 KB to 8 KB (The underlying packet size is typically up to ~1.5 KB)
-				byte[] buffer = new byte[8192];
-				int length;
-				while (true)
+				try
+				{
+//					// For network the optimal buffer size can be 2 KB to 8 KB (The underlying packet size is typically up to ~1.5 KB)
+//					byte[] buffer = new byte[8192];
+//					int length;
+//
+//					// create the pipe, connect output (producer) to input stream (consumer)
+//					pipe = new PipedOutputStream(input);
+//
+//					while (true)
+//					{
+//						length = in.read(buffer);
+//						if (length == -1)
+//							throw new IOException("End of stream");
+//						pipe.write(buffer, 0, length);
+//					}
+					// create the pipe, connect output (producer) to input stream (consumer)
+					pipe = new PipedOutputStream((PipedInputStream) in);
+					System.out.println("pipe created");
+
+					// feed stream to the pipe
+					entity.writeTo(pipe);
+					System.out.println("playback finished");
+				}
+				catch (IOException e1)
+				{
+					System.out.println(e1.getMessage());
+				}
+				if (pipe != null)
 				{
 					try
 					{
-						length = input.read(buffer);
-						if (length == -1)
-							throw new IOException("End of stream");
+						// close the original input stream
+						// source.close();
+
+						// no more data will be send, flush
+						pipe.flush();
+						System.out.println("pipe flushed");
+
+						// close the producer, break the pipe
+						pipe.close();
+						System.out.println("pipe closed");
 					}
-					catch (IOException e)
+					catch (IOException e2)
 					{
-						// no more data to read
-						try
-						{
-							log.debug(e.getMessage());
-							circularByteBuffer.getOutputStream().close();
-						}
-						catch (IOException e1)
-						{
-							// never happen (circularByteBuffer inputstream close method never throw exception)
-						}
-						return;
+						System.out.println(e2.getMessage());
 					}
-					try
-					{
-						circularByteBuffer.getOutputStream().write(buffer, 0, length);
-					}
-					catch (IOException e)
-					{
-						log.debug("InputStream has been closed by the reader");
-						// reader has closed circularByteBuffer inputstream
-						return;
-					}
-					read += length;
 				}
+				System.out.println("end of producer thread");
 			}
 		});
+
+		// wait for enough cache
+		try
+		{
+			while (in.available() < INITIAL_CACHE_SIZE)
+			{
+				System.out.println("caching stream (" + in.available() + "/" + INITIAL_CACHE_SIZE + ")");
+				try
+				{
+					Thread.sleep(100);
+				}
+				catch (InterruptedException e)
+				{
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
+		catch (IOException e)
+		{
+			e.printStackTrace();
+		}
 	}
 
 	@Override
 	public void close()
 	{
-		// close circularByteBuffer outputstream, will not be feed anymore
 		try
 		{
-			circularByteBuffer.getOutputStream().close();
-		}
-		catch (IOException e1)
-		{
-			// never happen
-		}
+			// close the original input stream
+			// source.close();
 
-		// block until thread is finished
-		try
-		{
+			// break the pipe by closing the consumer
+			in.close();
+			System.out.println("pipe closed");
+
+			// block until thread is finished
 			future.get();
-			log.debug("Thread ended");
+			System.out.println("producer thread ended");
 		}
 		catch (Exception e)
 		{
+			System.out.println(e.getMessage());
 			log.error(e.getMessage(), e);
 		}
-	}
-
-	public long getPosition()
-	{
-		return read;
 	}
 }
