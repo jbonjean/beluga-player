@@ -41,15 +41,11 @@ public class CachedInputStream extends FilterInputStream
 	private static final int CACHE_SIZE = 512 * 1024;
 	private static final int INITIAL_CACHE_SIZE = 100 * 1024;
 	private PipedOutputStream pipe;
-	// private InputStream source;
 	private Future<?> future;
 
-	// public CachedInputStream(final InputStream in)
 	public CachedInputStream(final HttpEntity entity)
 	{
 		super(new PipedInputStream(CACHE_SIZE));
-		// source = in;
-		// super.in = input;
 
 		future = ThreadPools.streamPool.submit(new Runnable()
 		{
@@ -57,53 +53,36 @@ public class CachedInputStream extends FilterInputStream
 			{
 				try
 				{
-//					// For network the optimal buffer size can be 2 KB to 8 KB (The underlying packet size is typically up to ~1.5 KB)
-//					byte[] buffer = new byte[8192];
-//					int length;
-//
-//					// create the pipe, connect output (producer) to input stream (consumer)
-//					pipe = new PipedOutputStream(input);
-//
-//					while (true)
-//					{
-//						length = in.read(buffer);
-//						if (length == -1)
-//							throw new IOException("End of stream");
-//						pipe.write(buffer, 0, length);
-//					}
 					// create the pipe, connect output (producer) to input stream (consumer)
 					pipe = new PipedOutputStream((PipedInputStream) in);
-					System.out.println("pipe created");
+					log.debug("producer: pipe created");
 
 					// feed stream to the pipe
 					entity.writeTo(pipe);
-					System.out.println("playback finished");
+					log.debug("producer: stream finished");
 				}
-				catch (IOException e1)
+				catch (IOException e)
 				{
-					System.out.println(e1.getMessage());
+					log.error(e.getMessage());
 				}
 				if (pipe != null)
 				{
 					try
 					{
-						// close the original input stream
-						// source.close();
-
 						// no more data will be send, flush
 						pipe.flush();
-						System.out.println("pipe flushed");
+						log.debug("producer: pipe flushed");
 
 						// close the producer, break the pipe
 						pipe.close();
-						System.out.println("pipe closed");
+						log.debug("producer: pipe closed");
 					}
-					catch (IOException e2)
+					catch (IOException e)
 					{
-						System.out.println(e2.getMessage());
+						log.debug(e.getMessage());
 					}
 				}
-				System.out.println("end of producer thread");
+				log.debug("producer: end of thread");
 			}
 		});
 
@@ -112,21 +91,20 @@ public class CachedInputStream extends FilterInputStream
 		{
 			while (in.available() < INITIAL_CACHE_SIZE)
 			{
-				System.out.println("caching stream (" + in.available() + "/" + INITIAL_CACHE_SIZE + ")");
+				log.debug("caching stream (" + in.available() + "/" + INITIAL_CACHE_SIZE + ")");
 				try
 				{
 					Thread.sleep(100);
 				}
 				catch (InterruptedException e)
 				{
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					log.debug(e.getMessage());
 				}
 			}
 		}
 		catch (IOException e)
 		{
-			e.printStackTrace();
+			log.debug(e.getMessage());
 		}
 	}
 
@@ -135,20 +113,16 @@ public class CachedInputStream extends FilterInputStream
 	{
 		try
 		{
-			// close the original input stream
-			// source.close();
-
 			// break the pipe by closing the consumer
 			in.close();
-			System.out.println("pipe closed");
+			log.debug("consumer: pipe closed");
 
 			// block until thread is finished
 			future.get();
-			System.out.println("producer thread ended");
+			log.debug("consumer: producer thread ended");
 		}
 		catch (Exception e)
 		{
-			System.out.println(e.getMessage());
 			log.error(e.getMessage(), e);
 		}
 	}
