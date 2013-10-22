@@ -44,6 +44,7 @@ import org.apache.pivot.wtk.ApplicationContext;
 import org.apache.pivot.wtk.Component;
 import org.apache.pivot.wtk.ImageView;
 import org.apache.pivot.wtk.Label;
+import org.apache.pivot.wtk.Menu;
 import org.apache.pivot.wtk.Menu.Item;
 import org.apache.pivot.wtk.Menu.Section;
 import org.apache.pivot.wtk.MenuBar;
@@ -69,6 +70,8 @@ public class MainWindow extends Window implements Bindable
 	private PlayerUI playerUI;
 	@BXML
 	private MenuBar.Item pandoraMenu;
+	@BXML
+	private Menu.Item deleteStationButton;
 	@BXML
 	private MenuUI menuUI;
 	@BXML
@@ -423,6 +426,8 @@ public class MainWindow extends Window implements Bindable
 			}
 		}
 		menuUI.setStationsEnabled(enabled);
+		if (enabled)
+			updateDeleteStationButton();
 	}
 
 	public synchronized void loadPage(String bxml)
@@ -481,7 +486,8 @@ public class MainWindow extends Window implements Bindable
 				newStation = state.getStationList().get(0);
 			else
 			{
-				log.info("noStation");
+				// should not happen
+				log.error("noStation");
 				return;
 			}
 		}
@@ -499,6 +505,8 @@ public class MainWindow extends Window implements Bindable
 
 		state.setStation(newStation);
 
+		updateDeleteStationButton();
+
 		// enable playlist
 		PandoraPlaylist.getInstance().setEnabled(true);
 
@@ -508,10 +516,20 @@ public class MainWindow extends Window implements Bindable
 		PandoraPlaylist.getInstance().feedQueue();
 	}
 
+	public void updateDeleteStationButton()
+	{
+		// disable delete station button if only 1 station (+quickmix) or quickmix is selected
+		if (state.getStationList().size() < 3 || (state.getStation() != null && state.getStation().isQuickMix()))
+			PivotUI.setEnable(deleteStationButton, false);
+		else
+			PivotUI.setEnable(deleteStationButton, true);
+	}
+
 	public void updateStationsList() throws BelugaException
 	{
 		log.info("retrievingStations");
 		state.setStationList(pandoraClient.getStationList());
+		updateDeleteStationButton();
 	}
 
 	public void updateStationsListMenu()

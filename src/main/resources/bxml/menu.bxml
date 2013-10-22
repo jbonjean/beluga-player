@@ -32,7 +32,7 @@
 						<Menu.Item buttonData="%createStation" action="load">
 							<userData bxml="search" />
 						</Menu.Item>
-						<Menu.Item buttonData="%deleteStation" action="deleteStation" />
+						<Menu.Item bxml:id="deleteStationButton" buttonData="%deleteStation" action="deleteStation" />
 						<Menu.Item buttonData="%stationDetails" action="load">
 							<userData bxml="station" />
 						</Menu.Item>
