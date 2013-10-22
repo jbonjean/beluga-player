@@ -258,6 +258,16 @@ public class MainWindow extends Window implements Bindable
 					pandoraClient.userLogin();
 
 					updateStationsList();
+					if (state.getStationList().size() == 0)
+					{
+						// we need at least one station, this way there is no need
+						// to handle the no station case
+						// default station: Wolfgang Amadeus Mozart
+						pandoraClient.addStation("C88");
+						log.info("defaultStationCreated");
+						updateStationsList();
+					}
+
 					selectStation(null);
 
 					// enable/update Pandora menus
