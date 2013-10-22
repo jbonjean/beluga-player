@@ -59,11 +59,15 @@ public class StatusBarAppender<E> extends AppenderBase<E>
 			@Override
 			public void run()
 			{
-				label.setText(formatMessage(event));
-				if (event.getLevel().isGreaterOrEqual(Level.ERROR))
-					label.getStyles().put("color", "#ff0000");
-				else
-					label.getStyles().put("color", "#000000");
+				String message = formatMessage(event);
+				if (message != null)
+				{
+					label.setText(message);
+					if (event.getLevel().isGreaterOrEqual(Level.ERROR))
+						label.getStyles().put("color", "#ff0000");
+					else
+						label.getStyles().put("color", "#000000");
+				}
 			}
 		}, false);
 
@@ -106,7 +110,10 @@ public class StatusBarAppender<E> extends AppenderBase<E>
 		if (message == null)
 			message = event.getMessage();
 
-		return HTMLUtil.shorten(message, 80);
+		if (message != null)
+			message = HTMLUtil.shorten(message, 80);
+
+		return message;
 	}
 
 	public synchronized boolean displayMessage(LoggingEvent event)
