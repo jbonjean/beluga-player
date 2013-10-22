@@ -58,7 +58,14 @@ public class CachedInputStream extends FilterInputStream
 					log.debug("producer: pipe created");
 
 					// feed stream to the pipe
-					entity.writeTo(pipe);
+					// we do it manually because the method writeTo from HttpEntity calls
+					// the close method of ChunkedInputStream that do some work to prepare
+					// for the next response but this can be slow and we don't really need it.
+					byte[] buffer = new byte[8192];
+					int length;
+					while ((length = entity.getContent().read(buffer)) != -1)
+						pipe.write(buffer, 0, length);
+
 					log.debug("producer: stream finished");
 				}
 				catch (IOException e)
