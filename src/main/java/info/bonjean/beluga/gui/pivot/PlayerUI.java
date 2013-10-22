@@ -177,6 +177,7 @@ public class PlayerUI extends TablePane implements Bindable
 						if (successiveFailures >= 3)
 						{
 							log.error("tooManyPlayerSuccessiveFailures");
+							successiveFailures = 0;
 							mainWindow.disconnect();
 						}
 						else
