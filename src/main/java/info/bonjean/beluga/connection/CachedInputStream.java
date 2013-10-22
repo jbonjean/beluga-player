@@ -63,7 +63,7 @@ public class CachedInputStream extends FilterInputStream
 				}
 				catch (IOException e)
 				{
-					log.error(e.getMessage());
+					log.debug(e.getMessage());
 				}
 				if (pipe != null)
 				{
