@@ -129,7 +129,12 @@ public class PlayerUI extends TablePane implements Bindable
 			{
 				try
 				{
-					final Song song = PandoraPlaylist.getInstance().getNext();
+					final Song song;
+					if (successiveFailures == 0 || state.getSong() == null)
+						song = PandoraPlaylist.getInstance().getNext();
+					else
+						// do not skip to next song if we failed before
+						song = state.getSong();
 
 					if (song == null)
 					{
@@ -176,7 +181,7 @@ public class PlayerUI extends TablePane implements Bindable
 
 						if (successiveFailures >= 3)
 						{
-							log.error("tooManyPlayerSuccessiveFailures");
+							log.error(e.getMessage(), e);
 							successiveFailures = 0;
 							mainWindow.disconnect();
 						}
