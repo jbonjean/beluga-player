@@ -29,6 +29,7 @@
 		<junit.version>4.8.1</junit.version>
 		<pivot.version>2.0.2</pivot.version>
 		<lastfm-java.version>0.1.2</lastfm-java.version>
+		<janino.version>2.6.1</janino.version>
 		<jlayer.version>1.0.1-1</jlayer.version>
 		<svg-salamander.version>1.0</svg-salamander.version>
 		<maven-shade-plugin.version>2.0</maven-shade-plugin.version>
@@ -63,7 +64,8 @@
 						</filter>
 					</filters>
 					<transformers>
-						<transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+						<transformer
+							implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
 							<mainClass>info.bonjean.beluga.Main</mainClass>
 						</transformer>
 					</transformers>
@@ -159,6 +161,11 @@
 			<groupId>ch.qos.logback</groupId>
 			<artifactId>logback-classic</artifactId>
 			<version>${logback.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.codehaus.janino</groupId>
+			<artifactId>janino</artifactId>
+			<version>${janino.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>ch.qos.logback</groupId>
