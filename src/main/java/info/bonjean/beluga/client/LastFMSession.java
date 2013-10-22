@@ -19,10 +19,10 @@
 package info.bonjean.beluga.client;
 
 import info.bonjean.beluga.configuration.BelugaConfiguration;
-import info.bonjean.beluga.log.Log;
 import info.bonjean.beluga.response.Song;
 
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import de.umass.lastfm.Authenticator;
 import de.umass.lastfm.Result;
@@ -36,8 +36,7 @@ import de.umass.lastfm.scrobble.ScrobbleResult;
  */
 public class LastFMSession
 {
-	@Log
-	private static Logger log;
+	private static Logger log = LoggerFactory.getLogger(LastFMSession.class);
 
 	public static final String API_KEY = "79bb16780e65af77078e118f59de365a";
 	public static final String API_SECRET = "d9fe10dcd95bee70fdd27588c489108d";
@@ -77,8 +76,8 @@ public class LastFMSession
 			log.debug("Played less than 90%, will no be scrobbled with last.fm");
 			return;
 		}
-		
-		//41952 of 42569
+
+		// 41952 of 42569
 
 		int now = (int) (System.currentTimeMillis() / 1000);
 		ScrobbleResult TrackScrobbleResult = Track.scrobble(song.getArtistName(), song.getSongName(), now, session);

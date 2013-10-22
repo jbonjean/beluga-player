@@ -21,7 +21,6 @@ package info.bonjean.beluga.gui.pivot;
 import info.bonjean.beluga.client.BelugaState;
 import info.bonjean.beluga.client.PandoraClient;
 import info.bonjean.beluga.exception.BelugaException;
-import info.bonjean.beluga.log.Log;
 import info.bonjean.beluga.response.ArtistBookmark;
 import info.bonjean.beluga.response.SongBookmark;
 
@@ -41,6 +40,7 @@ import org.apache.pivot.wtk.Menu;
 import org.apache.pivot.wtk.MenuButton;
 import org.apache.pivot.wtk.TablePane;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 
@@ -49,8 +49,7 @@ import org.slf4j.Logger;
  */
 public class BookmarksUI extends TablePane implements Bindable
 {
-	@Log
-	private static Logger log;
+	private static Logger log = LoggerFactory.getLogger(BookmarksUI.class);
 	@BXML
 	private BoxPane artistBookmarksPane;
 	@BXML

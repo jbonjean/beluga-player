@@ -27,7 +27,7 @@ import org.apache.http.message.BasicNameValuePair;
 /**
  * 
  * @author Julien Bonjean <julien@bonjean.info>
- *
+ * 
  */
 public class ParameterMap
 {

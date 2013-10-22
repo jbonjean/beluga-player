@@ -23,7 +23,7 @@ import java.util.List;
 /**
  * 
  * @author Julien Bonjean <julien@bonjean.info>
- *
+ * 
  */
 public class Result
 {
@@ -38,7 +38,6 @@ public class Result
 	private List<SearchArtist> artists;
 	private boolean nearMatchesAvailable;
 	private String explanation;
-	
 
 	public String getPartnerId()
 	{

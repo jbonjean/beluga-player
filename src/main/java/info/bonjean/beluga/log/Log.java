@@ -26,7 +26,7 @@ import java.lang.annotation.Target;
 /**
  * 
  * @author Julien Bonjean <julien@bonjean.info>
- *
+ * 
  */
 @Target({ ElementType.FIELD })
 @Retention(RetentionPolicy.RUNTIME)

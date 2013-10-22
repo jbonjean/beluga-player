@@ -23,7 +23,6 @@ import info.bonjean.beluga.client.PandoraPlaylist;
 import info.bonjean.beluga.exception.CommunicationException;
 import info.bonjean.beluga.gui.PivotUI;
 import info.bonjean.beluga.gui.notification.Notification;
-import info.bonjean.beluga.log.Log;
 import info.bonjean.beluga.response.Song;
 
 import java.net.URL;
@@ -43,6 +42,7 @@ import org.apache.pivot.wtk.Slider;
 import org.apache.pivot.wtk.SliderValueListener;
 import org.apache.pivot.wtk.TablePane;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 
@@ -51,8 +51,7 @@ import org.slf4j.Logger;
  */
 public class PlayerUI extends TablePane implements Bindable
 {
-	@Log
-	private static Logger log;
+	private static Logger log = LoggerFactory.getLogger(PlayerUI.class);
 	@BXML
 	private MainWindow mainWindow;
 	@BXML
@@ -78,7 +77,7 @@ public class PlayerUI extends TablePane implements Bindable
 	public void initialize(Map<String, Object> namespace, URL location, Resources resources)
 	{
 		PivotUI.setEnable(nextButton, false);
-		
+
 		stationName.setText("Pandora");
 		currentTime.setText("00:00");
 		totalTime.setText("00:00");
@@ -201,7 +200,7 @@ public class PlayerUI extends TablePane implements Bindable
 
 							// update station name
 							stationName.setText(state.getStation().getStationName());
-							
+
 							// display desktop notification
 							new Notification(state.getSong());
 						}
@@ -209,10 +208,10 @@ public class PlayerUI extends TablePane implements Bindable
 
 					// increase thread priority before starting playback
 					Thread.currentThread().setPriority(Thread.MAX_PRIORITY);
-					
+
 					// start playback
 					mp3Player.play();
-					
+
 					// restore thread priority to normal
 					Thread.currentThread().setPriority(Thread.NORM_PRIORITY);
 

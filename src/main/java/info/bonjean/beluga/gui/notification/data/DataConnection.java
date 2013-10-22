@@ -30,26 +30,30 @@ import javax.xml.bind.DatatypeConverter;
  * 
  * @author Julien Bonjean <julien@bonjean.info>
  * 
- * Code from: http://stackoverflow.com/questions/9388264/jeditorpane-with-inline-image
+ *         Code from: http://stackoverflow.com/questions/9388264/jeditorpane-with-inline-image
  * 
  */
-public class DataConnection extends URLConnection {
+public class DataConnection extends URLConnection
+{
 
-    public DataConnection(URL u) {
-        super(u);
-    }
+	public DataConnection(URL u)
+	{
+		super(u);
+	}
 
-    @Override
-    public void connect() throws IOException {
-        connected = true;
-    }
+	@Override
+	public void connect() throws IOException
+	{
+		connected = true;
+	}
 
-    @Override
-    public InputStream getInputStream() throws IOException {
-        String data = url.toString();
-        data = data.replaceFirst("^.*;base64,", "");
-        byte[] bytes = DatatypeConverter.parseBase64Binary(data);
-        return new ByteArrayInputStream(bytes);
-    }
+	@Override
+	public InputStream getInputStream() throws IOException
+	{
+		String data = url.toString();
+		data = data.replaceFirst("^.*;base64,", "");
+		byte[] bytes = DatatypeConverter.parseBase64Binary(data);
+		return new ByteArrayInputStream(bytes);
+	}
 
 }

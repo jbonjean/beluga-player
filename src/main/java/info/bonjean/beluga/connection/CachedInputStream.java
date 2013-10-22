@@ -19,7 +19,6 @@
 package info.bonjean.beluga.connection;
 
 import info.bonjean.beluga.gui.pivot.ThreadPools;
-import info.bonjean.beluga.log.Log;
 
 import java.io.FilterInputStream;
 import java.io.IOException;
@@ -27,6 +26,7 @@ import java.io.InputStream;
 import java.util.concurrent.Future;
 
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.Ostermiller.util.CircularByteBuffer;
 
@@ -36,8 +36,7 @@ import com.Ostermiller.util.CircularByteBuffer;
  */
 public class CachedInputStream extends FilterInputStream
 {
-	@Log
-	private static Logger log;
+	private static Logger log = LoggerFactory.getLogger(CachedInputStream.class);
 
 	private static final int CACHE_SIZE = 512 * 1024;
 	private CircularByteBuffer circularByteBuffer;

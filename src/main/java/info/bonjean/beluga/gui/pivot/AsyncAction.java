@@ -18,12 +18,11 @@
  */
 package info.bonjean.beluga.gui.pivot;
 
-import info.bonjean.beluga.log.Log;
-
 import org.apache.pivot.wtk.Action;
 import org.apache.pivot.wtk.ApplicationContext;
 import org.apache.pivot.wtk.Component;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 
@@ -32,8 +31,7 @@ import org.slf4j.Logger;
  */
 public abstract class AsyncAction extends Action
 {
-	@Log
-	private static Logger log;
+	private static Logger log = LoggerFactory.getLogger(AsyncAction.class);
 
 	private MainWindow mainWindow;
 	private boolean disableUI;

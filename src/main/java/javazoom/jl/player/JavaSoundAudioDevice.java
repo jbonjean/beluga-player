@@ -24,8 +24,6 @@
 
 package javazoom.jl.player;
 
-import info.bonjean.beluga.log.Log;
-
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.DataLine;
@@ -38,6 +36,7 @@ import javazoom.jl.decoder.Decoder;
 import javazoom.jl.decoder.JavaLayerException;
 
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * The <code>JavaSoundAudioDevice</code> implements an audio device by using the JavaSound API.
@@ -47,8 +46,7 @@ import org.slf4j.Logger;
  */
 public class JavaSoundAudioDevice extends AudioDeviceBase
 {
-	@Log
-	private static Logger log;
+	private static Logger log = LoggerFactory.getLogger(JavaSoundAudioDevice.class);
 
 	private SourceDataLine source = null;
 

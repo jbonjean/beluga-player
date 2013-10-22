@@ -21,16 +21,17 @@ package info.bonjean.beluga.response;
 /**
  * 
  * @author Julien Bonjean <julien@bonjean.info>
- *
+ * 
  */
 public class SearchArtist extends SearchItem
 {
 	private boolean likelyMatch;
-	
+
 	public boolean isLikelyMatch()
 	{
 		return likelyMatch;
 	}
+
 	public void setLikelyMatch(boolean likelyMatch)
 	{
 		this.likelyMatch = likelyMatch;

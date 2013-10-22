@@ -20,7 +20,6 @@ package info.bonjean.beluga.util;
 
 import info.bonjean.beluga.exception.CommunicationException;
 import info.bonjean.beluga.gui.pivot.SongUI;
-import info.bonjean.beluga.log.Log;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -32,6 +31,7 @@ import org.apache.commons.codec.binary.Base64;
 import org.apache.pivot.wtk.media.Image;
 import org.apache.pivot.wtk.media.Picture;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 
@@ -40,8 +40,7 @@ import org.slf4j.Logger;
  */
 public class HTMLUtil
 {
-	@Log
-	private static Logger log;
+	private static Logger log = LoggerFactory.getLogger(HTMLUtil.class);
 
 	public static Image getDefaultCover()
 	{

@@ -19,11 +19,11 @@
 package info.bonjean.beluga.gui.notification;
 
 import info.bonjean.beluga.exception.CommunicationException;
-import info.bonjean.beluga.log.Log;
 import info.bonjean.beluga.response.Song;
 import info.bonjean.beluga.util.HTMLUtil;
 
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import ch.swingfx.twinkle.NotificationBuilder;
 
@@ -34,8 +34,7 @@ import ch.swingfx.twinkle.NotificationBuilder;
  */
 public class Notification extends NotificationBuilder
 {
-	@Log
-	private static Logger log;
+	private static Logger log = LoggerFactory.getLogger(Notification.class);
 
 	public final static int TIMEOUT = 5000;
 

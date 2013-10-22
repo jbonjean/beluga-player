@@ -21,7 +21,6 @@ package info.bonjean.beluga.gui.pivot;
 import info.bonjean.beluga.client.BelugaState;
 import info.bonjean.beluga.client.PandoraClient;
 import info.bonjean.beluga.exception.BelugaException;
-import info.bonjean.beluga.log.Log;
 import info.bonjean.beluga.response.Result;
 import info.bonjean.beluga.response.SearchArtist;
 import info.bonjean.beluga.response.SearchSong;
@@ -49,6 +48,7 @@ import org.apache.pivot.wtk.TabPane;
 import org.apache.pivot.wtk.TablePane;
 import org.apache.pivot.wtk.TextInput;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 
@@ -57,8 +57,7 @@ import org.slf4j.Logger;
  */
 public class SearchUI extends TablePane implements Bindable
 {
-	@Log
-	private static Logger log;
+	private static Logger log = LoggerFactory.getLogger(SearchUI.class);
 	@BXML
 	private TextInput searchInput;
 	@BXML

@@ -23,7 +23,6 @@ import info.bonjean.beluga.client.LastFMSession;
 import info.bonjean.beluga.configuration.BelugaConfiguration;
 import info.bonjean.beluga.configuration.DNSProxy;
 import info.bonjean.beluga.connection.BelugaHTTPClient;
-import info.bonjean.beluga.log.Log;
 
 import java.net.URL;
 
@@ -41,6 +40,7 @@ import org.apache.pivot.wtk.PushButton;
 import org.apache.pivot.wtk.TablePane;
 import org.apache.pivot.wtk.TextInput;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 
@@ -49,8 +49,7 @@ import org.slf4j.Logger;
  */
 public class PreferencesUI extends TablePane implements Bindable
 {
-	@Log
-	private static Logger log;
+	private static Logger log = LoggerFactory.getLogger(PreferencesUI.class);
 	@BXML
 	private TextInput emailAddressInput;
 	@BXML

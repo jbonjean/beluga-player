@@ -46,10 +46,10 @@ public class NotificationWindow extends JWindow
 		Handler.install();
 		JTextPane textPane = new JTextPane();
 		textPane.setMargin(new Insets(0, 0, 0, 0));
-		textPane.setPreferredSize(new Dimension(300,90));
+		textPane.setPreferredSize(new Dimension(300, 90));
 		textPane.setContentType("text/html");
 		textPane.setText(message);
-		getContentPane().add(textPane,BorderLayout.NORTH);
+		getContentPane().add(textPane, BorderLayout.NORTH);
 		pack();
 	}
 }

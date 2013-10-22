@@ -31,7 +31,6 @@
 		<pivot.version>2.0.2</pivot.version>
 		<lastfm-java.version>0.1.2</lastfm-java.version>
 		<ostermiller-utils.version>1.07.00</ostermiller-utils.version>
-		<annovention.version>1.2</annovention.version>
 		<jlayer.version>1.0.1-1</jlayer.version>
 		<svg-salamander.version>1.0</svg-salamander.version>
 		<maven-shade-plugin.version>2.0</maven-shade-plugin.version>
@@ -119,11 +118,6 @@
 			<groupId>org.ostermiller</groupId>
 			<artifactId>utils</artifactId>
 			<version>${ostermiller-utils.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>tv.cntt</groupId>
-			<artifactId>annovention</artifactId>
-			<version>${annovention.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.googlecode.soundlibs</groupId>

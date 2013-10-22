@@ -18,7 +18,6 @@
  */
 package info.bonjean.beluga.gui.notification.data;
 
-
 import java.io.IOException;
 import java.net.URL;
 import java.net.URLConnection;
@@ -28,27 +27,32 @@ import java.net.URLStreamHandler;
  * 
  * @author Julien Bonjean <julien@bonjean.info>
  * 
- * Code from: http://stackoverflow.com/questions/9388264/jeditorpane-with-inline-image
+ *         Code from: http://stackoverflow.com/questions/9388264/jeditorpane-with-inline-image
  * 
  */
-public class Handler extends URLStreamHandler {
+public class Handler extends URLStreamHandler
+{
 
-    @Override
-    protected URLConnection openConnection(URL u) throws IOException {
-        return new DataConnection(u);
-    }
+	@Override
+	protected URLConnection openConnection(URL u) throws IOException
+	{
+		return new DataConnection(u);
+	}
 
-    public static void install() {
-        String pkgName = Handler.class.getPackage().getName();
-        String pkg = pkgName.substring(0, pkgName.lastIndexOf('.'));
+	public static void install()
+	{
+		String pkgName = Handler.class.getPackage().getName();
+		String pkg = pkgName.substring(0, pkgName.lastIndexOf('.'));
 
-        String protocolHandlers = System.getProperty("java.protocol.handler.pkgs", "");
-        if (!protocolHandlers.contains(pkg)) {
-            if (!protocolHandlers.isEmpty()) {
-                protocolHandlers += "|";
-            }
-            protocolHandlers += pkg;
-            System.setProperty("java.protocol.handler.pkgs", protocolHandlers);
-        }
-    }
+		String protocolHandlers = System.getProperty("java.protocol.handler.pkgs", "");
+		if (!protocolHandlers.contains(pkg))
+		{
+			if (!protocolHandlers.isEmpty())
+			{
+				protocolHandlers += "|";
+			}
+			protocolHandlers += pkg;
+			System.setProperty("java.protocol.handler.pkgs", protocolHandlers);
+		}
+	}
 }

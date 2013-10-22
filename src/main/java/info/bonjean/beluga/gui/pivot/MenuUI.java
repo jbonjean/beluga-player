@@ -27,11 +27,11 @@ import org.apache.pivot.beans.BXML;
 import org.apache.pivot.beans.Bindable;
 import org.apache.pivot.collections.Map;
 import org.apache.pivot.util.Resources;
-import org.apache.pivot.wtk.MenuBar;
-import org.apache.pivot.wtk.Menu.Section;
-import org.apache.pivot.wtk.MenuBar.Item;
 import org.apache.pivot.wtk.Action;
 import org.apache.pivot.wtk.Menu;
+import org.apache.pivot.wtk.Menu.Section;
+import org.apache.pivot.wtk.MenuBar;
+import org.apache.pivot.wtk.MenuBar.Item;
 import org.apache.pivot.wtk.MenuButton;
 import org.apache.pivot.wtk.TablePane;
 

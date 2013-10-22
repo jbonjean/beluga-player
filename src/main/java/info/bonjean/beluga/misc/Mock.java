@@ -32,25 +32,26 @@ import java.util.List;
  */
 public class Mock
 {
-	public static void setup() {
+	public static void setup()
+	{
 		Station station1 = new Station();
 		station1.setStationId("1");
 		station1.setStationName("QuickMix");
 		station1.setQuickMix(true);
 		station1.setStationDetailUrl("");
 		station1.setStationToken("abc");
-		
+
 		Station station2 = new Station();
 		station2.setStationId("2");
 		station2.setStationName("Station 1");
 		station2.setQuickMix(false);
 		station2.setStationDetailUrl("");
 		station2.setStationToken("cba");
-		
+
 		List<Station> stationList = new ArrayList<Station>();
 		stationList.add(station1);
 		stationList.add(station2);
-		
+
 		Song song = new Song();
 		song.setAlbumArtBase64("");
 		song.setAlbumName("ALBUM NAME");
@@ -63,10 +64,10 @@ public class Mock
 		song.setTrackToken("abc");
 //		song.setAlbumArtBase64(PandoraClient.retrieveAlbumArt(song));
 //		song.setFocusTraits(PandoraClient.retrieveFocusTraits(song));
-		
+
 		List<Song> playlist = new ArrayList<Song>();
 		playlist.add(song);
-		
+
 		BelugaState.getInstance().setStationList(stationList);
 		BelugaState.getInstance().setStation(station2);
 		BelugaState.getInstance().setPlaylist(playlist);

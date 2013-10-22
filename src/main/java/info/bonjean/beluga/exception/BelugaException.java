@@ -32,17 +32,17 @@ public abstract class BelugaException extends Exception
 	{
 		super();
 	}
-	
+
 	public BelugaException(String message)
 	{
 		super(message);
 	}
-	
+
 	public BelugaException(Throwable cause)
 	{
 		super(cause);
 	}
-	
+
 	public BelugaException(String message, Throwable cause)
 	{
 		super(message, cause);

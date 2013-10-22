@@ -40,7 +40,8 @@ public class NotificationStyle extends AbstractNotificationStyle
 		withNotificationWindowCreator(new ICreateNotificationWindow()
 		{
 			@Override
-			public JWindow createNotificationWindow(Icon icon, String title, String message, INotificationStyle style, GraphicsConfiguration graphicsConfiguration)
+			public JWindow createNotificationWindow(Icon icon, String title, String message, INotificationStyle style,
+					GraphicsConfiguration graphicsConfiguration)
 			{
 				return new NotificationWindow(icon, title, message, style, graphicsConfiguration);
 			}

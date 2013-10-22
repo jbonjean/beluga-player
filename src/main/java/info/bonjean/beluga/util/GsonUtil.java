@@ -27,7 +27,7 @@ import com.google.gson.GsonBuilder;
 /**
  * 
  * @author Julien Bonjean <julien@bonjean.info>
- *
+ * 
  */
 public class GsonUtil
 {
@@ -38,7 +38,6 @@ public class GsonUtil
 
 	public static Gson getGsonInstance()
 	{
-
 		if (gson == null)
 		{
 			GsonBuilder gsonBuilder = new GsonBuilder();

@@ -24,7 +24,7 @@ import javax.sound.sampled.Mixer;
 /**
  * 
  * @author Julien Bonjean <julien@bonjean.info>
- *
+ * 
  */
 public class AudioDevList
 {

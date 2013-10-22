@@ -19,7 +19,6 @@
 package info.bonjean.beluga.configuration;
 
 import info.bonjean.beluga.client.BelugaState;
-import info.bonjean.beluga.log.Log;
 import info.bonjean.beluga.util.CryptoUtil;
 
 import java.io.File;
@@ -29,6 +28,7 @@ import java.io.IOException;
 import java.util.Properties;
 
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 
@@ -37,8 +37,7 @@ import org.slf4j.Logger;
  */
 public class BelugaConfiguration
 {
-	@Log
-	private static Logger log;
+	private static Logger log = LoggerFactory.getLogger(BelugaConfiguration.class);
 	private static final String CONFIGURATION_DIRECTORY = System.getProperty("user.home") + "/.config/beluga";
 	private static final String CONFIGURATION_FILE = CONFIGURATION_DIRECTORY + "/configuration.properties";
 	private Properties properties;

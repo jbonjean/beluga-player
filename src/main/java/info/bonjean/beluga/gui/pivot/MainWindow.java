@@ -25,7 +25,6 @@ import info.bonjean.beluga.client.PandoraPlaylist;
 import info.bonjean.beluga.configuration.BelugaConfiguration;
 import info.bonjean.beluga.exception.BelugaException;
 import info.bonjean.beluga.gui.PivotUI;
-import info.bonjean.beluga.log.Log;
 import info.bonjean.beluga.log.StatusBarAppender;
 import info.bonjean.beluga.response.Song;
 import info.bonjean.beluga.response.Station;
@@ -54,6 +53,7 @@ import org.apache.pivot.wtk.SheetCloseListener;
 import org.apache.pivot.wtk.TablePane;
 import org.apache.pivot.wtk.Window;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 
@@ -62,8 +62,7 @@ import org.slf4j.Logger;
  */
 public class MainWindow extends Window implements Bindable
 {
-	@Log
-	private static Logger log;
+	private static Logger log = LoggerFactory.getLogger(MainWindow.class);
 	@BXML
 	private TablePane.Row contentWrapper;
 	@BXML
@@ -393,7 +392,7 @@ public class MainWindow extends Window implements Bindable
 				loadPage("welcome");
 			}
 		}, false);
-		
+
 		stopPlayer();
 	}
 

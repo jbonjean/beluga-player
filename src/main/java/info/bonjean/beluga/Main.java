@@ -21,7 +21,6 @@ package info.bonjean.beluga;
 import info.bonjean.beluga.client.BelugaState;
 import info.bonjean.beluga.configuration.BelugaConfiguration;
 import info.bonjean.beluga.gui.PivotUI;
-import info.bonjean.beluga.util.AnnotationUtil;
 
 /**
  * 
@@ -34,8 +33,6 @@ public class Main
 {
 	public static void main(String[] args)
 	{
-		AnnotationUtil.parseAnnotations();
-
 		String version = Main.class.getPackage().getImplementationVersion();
 		if (version == null)
 			version = "(dev)";

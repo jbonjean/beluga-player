@@ -26,7 +26,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * 
  * @author Julien Bonjean <julien@bonjean.info>
- *
+ * 
  */
 public class ThreadPools
 {

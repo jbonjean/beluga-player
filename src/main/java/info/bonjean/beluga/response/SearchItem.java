@@ -21,34 +21,39 @@ package info.bonjean.beluga.response;
 /**
  * 
  * @author Julien Bonjean <julien@bonjean.info>
- *
+ * 
  */
 public abstract class SearchItem
 {
 	private String artistName;
 	private String musicToken;
 	private int score;
-	
+
 	public String getArtistName()
 	{
 		return artistName;
 	}
+
 	public void setArtistName(String artistName)
 	{
 		this.artistName = artistName;
 	}
+
 	public String getMusicToken()
 	{
 		return musicToken;
 	}
+
 	public void setMusicToken(String musicToken)
 	{
 		this.musicToken = musicToken;
 	}
+
 	public int getScore()
 	{
 		return score;
 	}
+
 	public void setScore(int score)
 	{
 		this.score = score;

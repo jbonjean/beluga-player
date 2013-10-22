@@ -20,7 +20,6 @@ package info.bonjean.beluga.gui.pivot;
 
 import info.bonjean.beluga.client.BelugaState;
 import info.bonjean.beluga.gui.PivotUI;
-import info.bonjean.beluga.log.Log;
 
 import java.io.InputStream;
 import java.net.URL;
@@ -36,6 +35,7 @@ import org.apache.pivot.wtk.PushButton;
 import org.apache.pivot.wtk.StackPane;
 import org.apache.pivot.wtk.TablePane;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 
@@ -44,8 +44,7 @@ import org.slf4j.Logger;
  */
 public class WelcomeUI extends TablePane implements Bindable
 {
-	@Log
-	private static Logger log;
+	private static Logger log = LoggerFactory.getLogger(WelcomeUI.class);
 	@BXML
 	private Label belugaVersion;
 	@BXML

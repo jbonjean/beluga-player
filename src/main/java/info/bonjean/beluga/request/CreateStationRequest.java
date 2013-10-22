@@ -28,27 +28,32 @@ public class CreateStationRequest extends AuthentifiedJsonRequest
 	String musicToken;
 	String trackToken;
 	String musicType;
-	
+
 	public String getMusicToken()
 	{
 		return musicToken;
 	}
+
 	public void setMusicToken(String musicToken)
 	{
 		this.musicToken = musicToken;
 	}
+
 	public String getTrackToken()
 	{
 		return trackToken;
 	}
+
 	public void setTrackToken(String trackToken)
 	{
 		this.trackToken = trackToken;
 	}
+
 	public String getMusicType()
 	{
 		return musicType;
 	}
+
 	public void setMusicType(String musicType)
 	{
 		this.musicType = musicType;

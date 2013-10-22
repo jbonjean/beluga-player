@@ -20,16 +20,15 @@ package info.bonjean.beluga.misc;
 
 import info.bonjean.beluga.configuration.BelugaConfiguration;
 import info.bonjean.beluga.exception.CommunicationException;
-import info.bonjean.beluga.log.Log;
-import info.bonjean.beluga.util.AnnotationUtil;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
 
-import org.slf4j.Logger;
-
 import javazoom.jl.decoder.JavaLayerException;
 import javazoom.jl.player.BelugaMP3Player;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Julien Bonjean <julien@bonjean.info>
@@ -37,13 +36,11 @@ import javazoom.jl.player.BelugaMP3Player;
  */
 public class MP3Player
 {
-	@Log
-	private static Logger log;
+	private static Logger log = LoggerFactory.getLogger(MP3Player.class);
 	private static BelugaConfiguration configuration = BelugaConfiguration.getInstance();
 
 	public static void main(String[] args) throws MalformedURLException, JavaLayerException, IOException, CommunicationException
 	{
-		AnnotationUtil.parseAnnotations();
 		configuration.load();
 //		BelugaMP3Player mp3Player = new BelugaMP3Player("http://www.soundjay.com/button/beep-5.mp3");
 		BelugaMP3Player mp3Player = new BelugaMP3Player("http://www.hubharp.com/web_sound/WalloonLilliShort.mp3");

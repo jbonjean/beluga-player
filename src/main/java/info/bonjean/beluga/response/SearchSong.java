@@ -21,16 +21,17 @@ package info.bonjean.beluga.response;
 /**
  * 
  * @author Julien Bonjean <julien@bonjean.info>
- *
+ * 
  */
 public class SearchSong extends SearchItem
 {
 	private String songName;
-	
+
 	public String getSongName()
 	{
 		return songName;
 	}
+
 	public void setSongName(String songName)
 	{
 		this.songName = songName;

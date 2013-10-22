@@ -34,96 +34,117 @@ public class CreateUserRequest extends JsonRequest
 	private String zipCode;
 	private String gender;
 	private boolean emailOptIn;
-	
+
 	private long syncTime;
 	private String partnerAuthToken;
-	
+
 	public String getAccountType()
 	{
 		return accountType;
 	}
+
 	public void setAccountType(String accountType)
 	{
 		this.accountType = accountType;
 	}
+
 	public String getCountryCode()
 	{
 		return countryCode;
 	}
+
 	public void setCountryCode(String countryCode)
 	{
 		this.countryCode = countryCode;
 	}
+
 	public String getRegisteredType()
 	{
 		return registeredType;
 	}
+
 	public void setRegisteredType(String registeredType)
 	{
 		this.registeredType = registeredType;
 	}
+
 	public String getUsername()
 	{
 		return username;
 	}
+
 	public void setUsername(String username)
 	{
 		this.username = username;
 	}
+
 	public String getPassword()
 	{
 		return password;
 	}
+
 	public void setPassword(String password)
 	{
 		this.password = password;
 	}
+
 	public int getBirthYear()
 	{
 		return birthYear;
 	}
+
 	public void setBirthYear(int birthYear)
 	{
 		this.birthYear = birthYear;
 	}
+
 	public String getZipCode()
 	{
 		return zipCode;
 	}
+
 	public void setZipCode(String zipCode)
 	{
 		this.zipCode = zipCode;
 	}
+
 	public String getGender()
 	{
 		return gender;
 	}
+
 	public void setGender(String gender)
 	{
 		this.gender = gender;
 	}
+
 	public boolean isEmailOptIn()
 	{
 		return emailOptIn;
 	}
+
 	public void setEmailOptIn(boolean emailOptIn)
 	{
 		this.emailOptIn = emailOptIn;
 	}
+
 	public long getSyncTime()
 	{
 		return syncTime;
 	}
+
 	public void setSyncTime(long syncTime)
 	{
 		this.syncTime = syncTime;
 	}
+
 	public String getPartnerAuthToken()
 	{
 		return partnerAuthToken;
 	}
+
 	public void setPartnerAuthToken(String partnerAuthToken)
 	{
 		this.partnerAuthToken = partnerAuthToken;
-	} 
+	}
 }

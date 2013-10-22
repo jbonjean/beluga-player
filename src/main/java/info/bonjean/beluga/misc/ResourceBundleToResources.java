@@ -50,14 +50,14 @@ public class ResourceBundleToResources
 
 				Properties properties = new Properties();
 				properties.load(input);
-				
+
 				output.println("{");
 				for (Object key : properties.keySet())
 				{
 					StringBuffer sb = new StringBuffer();
 					sb.append(key);
 					sb.append(":\"");
-					sb.append(properties.getProperty((String)key));
+					sb.append(properties.getProperty((String) key));
 					sb.append("\",");
 
 					output.println(sb.toString());

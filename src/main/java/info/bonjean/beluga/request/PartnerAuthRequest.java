@@ -21,7 +21,7 @@ package info.bonjean.beluga.request;
 /**
  * 
  * @author Julien Bonjean <julien@bonjean.info>
- *
+ * 
  */
 @SuppressWarnings("unused")
 public class PartnerAuthRequest extends JsonRequest

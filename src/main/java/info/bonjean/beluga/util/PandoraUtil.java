@@ -28,7 +28,7 @@ import java.util.List;
 /**
  * 
  * @author Julien Bonjean <julien@bonjean.info>
- *
+ * 
  */
 public class PandoraUtil
 {
