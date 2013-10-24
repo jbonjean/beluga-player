@@ -78,7 +78,6 @@ public class PlayerUI extends TablePane implements Bindable
 	{
 		PivotUI.setEnable(nextButton, false);
 
-		stationName.setText("Pandora");
 		currentTime.setText("00:00");
 		totalTime.setText("00:00");
 		progress.setPercentage(0);

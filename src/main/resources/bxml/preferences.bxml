@@ -5,44 +5,45 @@
 	</columns>
 
 	<TablePane.Row height="1*">
-		<Form>
+		<TabPane>
+			<Form TabPane.tabData="%general">
+				<Form.Section heading="%pandora">
+					<BoxPane Form.label="%emailAddress">
+						<TextInput bxml:id="emailAddressInput" textSize="24" />
+					</BoxPane>
+					<BoxPane Form.label="%password">
+						<TextInput bxml:id="passwordInput" textSize="24" password="true" />
+					</BoxPane>
+					<LinkButton bxml:id="newUserLink" buttonData="%newUser" action="load">
+						<userData bxml="account_creation" />
+					</LinkButton>
+				</Form.Section>
+				<Form.Section heading="%connection">
+					<BoxPane Form.label="%httpProxy">
+						<TextInput bxml:id="httpProxyHostInput" textSize="17" prompt="%hostname" />
+						<TextInput bxml:id="httpProxyPortInput" textSize="5" prompt="%port" />
+					</BoxPane>
+					<Label text="%or" />
+					<BoxPane Form.label="%dnsProxy">
+						<ListButton bxml:id="dnsProxyInput" />
+					</BoxPane>
+				</Form.Section>
+			</Form>
 
-			<Form.Section heading="%pandora">
-				<BoxPane Form.label="%emailAddress">
-					<TextInput bxml:id="emailAddressInput" textSize="24" />
-				</BoxPane>
-				<BoxPane Form.label="%password">
-					<TextInput bxml:id="passwordInput" textSize="24" password="true" />
-				</BoxPane>
-				<LinkButton bxml:id="newUserLink" buttonData="%newUser" action="load">
-					<userData bxml="account_creation" />
-				</LinkButton>
-			</Form.Section>
-
-			<Form.Section heading="%connection">
-				<BoxPane Form.label="%httpProxy">
-					<TextInput bxml:id="httpProxyHostInput" textSize="17" prompt="%hostname" />
-					<TextInput bxml:id="httpProxyPortInput" textSize="5" prompt="%port" />
-				</BoxPane>
-				<Label text="%or" />
-				<BoxPane Form.label="%dnsProxy">
-					<ListButton bxml:id="dnsProxyInput" />
-				</BoxPane>
-			</Form.Section>
-
-			<Form.Section heading="last.fm">
-				<BoxPane>
-					<Checkbox bxml:id="lastFMEnableCheckbox" buttonData="%enableLastFMScrobbling" />
-				</BoxPane>
-				<BoxPane Form.label="%username">
-					<TextInput bxml:id="lastFMUsernameInput" textSize="24" />
-				</BoxPane>
-				<BoxPane Form.label="%password">
-					<TextInput bxml:id="lastFMPasswordInput" textSize="24" password="true" />
-				</BoxPane>
-			</Form.Section>
-
-		</Form>
+			<Form TabPane.tabData="%scrobbling">
+				<Form.Section heading="last.fm">
+					<BoxPane>
+						<Checkbox bxml:id="lastFMEnableCheckbox" buttonData="%enableLastFMScrobbling" />
+					</BoxPane>
+					<BoxPane Form.label="%username">
+						<TextInput bxml:id="lastFMUsernameInput" textSize="24" />
+					</BoxPane>
+					<BoxPane Form.label="%password">
+						<TextInput bxml:id="lastFMPasswordInput" textSize="24" password="true" />
+					</BoxPane>
+				</Form.Section>
+			</Form>
+		</TabPane>
 	</TablePane.Row>
 
 	<TablePane.Row height="-1">
@@ -56,7 +57,7 @@
 				<BoxPane styles="{verticalAlignment:'center'}">
 					<Label bxml:id="errorArea" styles="{color:22}" />
 				</BoxPane>
-				<BoxPane styles="{horizontalAlignment:'right', verticalAlignment:'center'}">
+				<BoxPane styles="{horizontalAlignment:'right', padding:{top:5}}">
 					<PushButton bxml:id="submitButton" buttonData="%save" styles="{minimumAspectRatio:3}" action="submit" />
 				</BoxPane>
 			</TablePane.Row>
