@@ -73,6 +73,8 @@ public class MainWindow extends Window implements Bindable
 	@BXML
 	private Menu.Item deleteStationButton;
 	@BXML
+	private Menu.Item stationDetailsButton;
+	@BXML
 	private MenuUI menuUI;
 	@BXML
 	private Label statusBarText;
@@ -427,7 +429,7 @@ public class MainWindow extends Window implements Bindable
 		}
 		menuUI.setStationsEnabled(enabled);
 		if (enabled)
-			updateDeleteStationButton();
+			updateStationControlButtons();
 	}
 
 	public synchronized void loadPage(String bxml)
@@ -505,7 +507,7 @@ public class MainWindow extends Window implements Bindable
 
 		state.setStation(newStation);
 
-		updateDeleteStationButton();
+		updateStationControlButtons();
 
 		// enable playlist
 		PandoraPlaylist.getInstance().setEnabled(true);
@@ -516,20 +518,26 @@ public class MainWindow extends Window implements Bindable
 		PandoraPlaylist.getInstance().feedQueue();
 	}
 
-	public void updateDeleteStationButton()
+	public void updateStationControlButtons()
 	{
 		// disable delete station button if only 1 station (+quickmix) or quickmix is selected
 		if (state.getStationList().size() < 3 || (state.getStation() != null && state.getStation().isQuickMix()))
 			PivotUI.setEnable(deleteStationButton, false);
 		else
 			PivotUI.setEnable(deleteStationButton, true);
+
+		// there is no station details for the quickmix
+		if (state.getStation() != null && state.getStation().isQuickMix())
+			PivotUI.setEnable(stationDetailsButton, false);
+		else
+			PivotUI.setEnable(stationDetailsButton, true);
 	}
 
 	public void updateStationsList() throws BelugaException
 	{
 		log.info("retrievingStations");
 		state.setStationList(pandoraClient.getStationList());
-		updateDeleteStationButton();
+		updateStationControlButtons();
 	}
 
 	public void updateStationsListMenu()

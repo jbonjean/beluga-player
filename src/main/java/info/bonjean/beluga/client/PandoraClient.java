@@ -33,6 +33,7 @@ import info.bonjean.beluga.request.ParameterMap;
 import info.bonjean.beluga.request.PartnerAuthRequest;
 import info.bonjean.beluga.request.PlayListRequest;
 import info.bonjean.beluga.request.SearchRequest;
+import info.bonjean.beluga.request.SetQuickMixRequest;
 import info.bonjean.beluga.request.SongBookmarkDeleteRequest;
 import info.bonjean.beluga.request.SongBookmarkRequest;
 import info.bonjean.beluga.request.SongSleepRequest;
@@ -393,6 +394,20 @@ public class PandoraClient
 		createStation.setStationToken(station.getStationToken());
 
 		HTTPUtil.<Result> request(Method.DELETE_STATION, params, createStation, true, new TypeToken<Response<Result>>()
+		{
+		});
+	}
+
+	public void setQuickMix(List<String> quickMixStationIds) throws BelugaException
+	{
+		ParameterMap params = getDefaultParameterMap();
+
+		SetQuickMixRequest setQuickMix = new SetQuickMixRequest();
+		setQuickMix.setSyncTime(PandoraUtil.getSyncTime());
+		setQuickMix.setUserAuthToken(userAuthToken);
+		setQuickMix.setQuickMixStationIds(quickMixStationIds);
+
+		HTTPUtil.<Result> request(Method.SET_QUICK_MIX, params, setQuickMix, true, new TypeToken<Response<Result>>()
 		{
 		});
 	}

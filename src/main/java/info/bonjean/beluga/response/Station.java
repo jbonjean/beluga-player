@@ -32,6 +32,7 @@ public class Station
 	private String stationDetailUrl;
 	private String stationToken;
 	private String stationName;
+	private List<String> quickMixStationIds;
 
 	// getStation attributes
 	private boolean allowAddMusic;
@@ -205,5 +206,15 @@ public class Station
 	public void setArtBase64(String artBase64)
 	{
 		this.artBase64 = artBase64;
+	}
+
+	public List<String> getQuickMixStationIds()
+	{
+		return quickMixStationIds;
+	}
+
+	public void setQuickMixStationIds(List<String> quickMixStationIds)
+	{
+		this.quickMixStationIds = quickMixStationIds;
 	}
 }
