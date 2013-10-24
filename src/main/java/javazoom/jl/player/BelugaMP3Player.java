@@ -65,10 +65,26 @@ public class BelugaMP3Player
 	{
 		httpGet = new HttpGet(url);
 		HttpResponse httpResponse = BelugaHTTPClient.getInstance().getClient().execute(httpGet);
+
 		if (httpResponse.getStatusLine().getStatusCode() != HttpStatus.SC_OK)
 		{
 			close();
 			log.debug("Got response: " + httpResponse.getStatusLine().getReasonPhrase());
+
+			if (httpResponse.getStatusLine().getStatusCode() == HttpStatus.SC_FORBIDDEN)
+			{
+				try
+				{
+					// blacklist address used for this request
+					BelugaHTTPClient.getInstance().blacklist(httpResponse);
+				}
+				catch (Exception e)
+				{
+					// not critical, we just didn't blacklist it
+					log.info(e.getMessage(), e);
+				}
+			}
+
 			throw new IOException("streamNotAvailable");
 		}
 

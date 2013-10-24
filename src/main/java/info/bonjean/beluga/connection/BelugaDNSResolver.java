@@ -49,6 +49,7 @@ public class BelugaDNSResolver implements DnsResolver
 	private static final int MAX_RETRIES = 1;
 	private static final int TIMEOUT_SECONDS = 2;
 	private ExtendedResolver resolver;
+	private List<String> backlistedAddresses = new ArrayList<String>();
 
 	public BelugaDNSResolver(DNSProxy dnsProxy)
 	{
@@ -84,7 +85,11 @@ public class BelugaDNSResolver implements DnsResolver
 				for (Record record : records)
 				{
 					if (record instanceof ARecord)
-						addresses.add(((ARecord) record).getAddress());
+					{
+						InetAddress address = ((ARecord) record).getAddress();
+						if (!backlistedAddresses.contains(address.getHostAddress()))
+							addresses.add(address);
+					}
 				}
 			}
 			if (addresses.isEmpty())
@@ -98,5 +103,12 @@ public class BelugaDNSResolver implements DnsResolver
 		{
 			throw new UnknownHostException("dns.proxy.error");
 		}
+	}
+
+	public void blacklistAddress(InetAddress address)
+	{
+		String strAddress = address.getHostAddress();
+		log.info("Add " + strAddress + " to blacklist");
+		backlistedAddresses.add(strAddress);
 	}
 }

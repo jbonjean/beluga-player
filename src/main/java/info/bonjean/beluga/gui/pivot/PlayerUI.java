@@ -165,15 +165,8 @@ public class PlayerUI extends TablePane implements Bindable
 					catch (CommunicationException e)
 					{
 						log.error("pandoraSkipProtection");
-
-						// prevent playlist to be filled again
-						PandoraPlaylist.getInstance().setEnabled(false);
-
-						// clear playlist
-						PandoraPlaylist.getInstance().clear();
-
-						// skip to waiting state
-						continue;
+						mainWindow.disconnect();
+						return;
 					}
 					catch (Exception e)
 					{
@@ -184,10 +177,11 @@ public class PlayerUI extends TablePane implements Bindable
 							log.error(e.getMessage(), e);
 							successiveFailures = 0;
 							mainWindow.disconnect();
+							return;
 						}
 						else
 						{
-							log.error(e.getMessage(), e);
+							log.info(e.getMessage(), e);
 							Thread.sleep(2000);
 						}
 						continue;

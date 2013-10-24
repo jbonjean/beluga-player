@@ -22,16 +22,22 @@ import info.bonjean.beluga.configuration.BelugaConfiguration;
 import info.bonjean.beluga.configuration.DNSProxy;
 import info.bonjean.beluga.exception.CommunicationException;
 
+import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Field;
+import java.net.Socket;
 
 import org.apache.http.HttpHost;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.conn.EofSensorInputStream;
 import org.apache.http.conn.params.ConnRouteParams;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.conn.PoolingClientConnectionManager;
 import org.apache.http.impl.conn.SchemeRegistryFactory;
+import org.apache.http.impl.io.ContentLengthInputStream;
+import org.apache.http.io.SessionInputBuffer;
 import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
@@ -51,6 +57,7 @@ public class BelugaHTTPClient
 	private static final int MAX_RETRIES = 2;
 
 	private HttpClient client;
+	private BelugaDNSResolver dnsOverrider;
 	private static BelugaHTTPClient instance;
 
 	private BelugaHTTPClient()
@@ -67,7 +74,7 @@ public class BelugaHTTPClient
 		else
 		{
 			DNSProxy dnsProxy = DNSProxy.get(configuration.getDNSProxy());
-			BelugaDNSResolver dnsOverrider = new BelugaDNSResolver(dnsProxy);
+			dnsOverrider = new BelugaDNSResolver(dnsProxy);
 			poolingClientConnectionManager = new PoolingClientConnectionManager(SchemeRegistryFactory.createDefault(), dnsOverrider);
 		}
 		client = new DefaultHttpClient(poolingClientConnectionManager, httpParameters);
@@ -109,5 +116,27 @@ public class BelugaHTTPClient
 			}
 		}
 		throw new CommunicationException("communicationProblem", e);
+	}
+
+	public void blacklist(HttpResponse httpResponse) throws NoSuchFieldException, SecurityException, IllegalArgumentException,
+			IllegalAccessException, IllegalStateException, IOException
+	{
+		// this piece of code is not very reliable (reflection) but not critical
+		EofSensorInputStream eofSensorInputStream = (EofSensorInputStream) httpResponse.getEntity().getContent();
+
+		Field wrappedStreamField = eofSensorInputStream.getClass().getDeclaredField("wrappedStream");
+		wrappedStreamField.setAccessible(true);
+		ContentLengthInputStream contentLengthInputStream = (ContentLengthInputStream) wrappedStreamField.get(eofSensorInputStream);
+
+		Field inField = contentLengthInputStream.getClass().getDeclaredField("in");
+		inField.setAccessible(true);
+		SessionInputBuffer sessionInputBuffer = (SessionInputBuffer) inField.get(contentLengthInputStream);
+
+		Field socketField = sessionInputBuffer.getClass().getDeclaredField("socket");
+		socketField.setAccessible(true);
+		Socket socket = (Socket) socketField.get(sessionInputBuffer);
+
+		// blacklist address in the DNS resolver
+		dnsOverrider.blacklistAddress(socket.getInetAddress());
 	}
 }
