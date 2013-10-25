@@ -163,6 +163,7 @@ public class QuickMixUI extends TablePane implements Bindable
 					Checkbox checkbox = (Checkbox) stationsPane.get(i);
 					checkbox.setSelected(true);
 				}
+				PivotUI.setEnable(submitButton, true);
 			}
 		});
 
