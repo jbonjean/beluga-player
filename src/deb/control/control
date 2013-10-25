@@ -1,0 +1,9 @@
+Package: beluga-player
+Version: 0.6
+Section: misc
+Priority: optional
+Architecture: all
+Depends: default-jre (>= 1.6)
+Maintainer: Julien Bonjean <julien@bonjean.info>
+Description: Cross-platform open source Pandora client released under GPL3
+Distribution: development

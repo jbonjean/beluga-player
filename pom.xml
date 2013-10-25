@@ -32,6 +32,7 @@
 		<janino.version>2.6.1</janino.version>
 		<jlayer.version>1.0.1-1</jlayer.version>
 		<svg-salamander.version>1.0</svg-salamander.version>
+		<jdeb-plugin.version>1.0.1</jdeb-plugin.version>
 		<maven-shade-plugin.version>2.0</maven-shade-plugin.version>
 		<maven-compiler-plugin.version>2.5.1</maven-compiler-plugin.version>
 		<maven-surefire-plugin.version>2.12.4</maven-surefire-plugin.version>
@@ -102,6 +103,72 @@
 						</manifest>
 					</archive>
 				</configuration>
+			</plugin>
+			<plugin>
+				<artifactId>jdeb</artifactId>
+				<groupId>org.vafer</groupId>
+				<version>${jdeb-plugin.version}</version>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>jdeb</goal>
+						</goals>
+						<configuration>
+							<deb>dist/${project.artifactId}_${project.version}_all.deb</deb>
+							<dataSet>
+								<data>
+									<src>dist/${project.build.finalName}.jar</src>
+									<type>file</type>
+									<mapper>
+										<type>perm</type>
+										<prefix>/usr/share/beluga-player</prefix>
+									</mapper>
+								</data>
+								<data>
+									<src>src/deb/copyright</src>
+									<type>file</type>
+									<mapper>
+										<type>perm</type>
+										<prefix>/usr/share/doc/beluga-player</prefix>
+									</mapper>
+								</data>
+								<data>
+									<src>src/deb/beluga-player</src>
+									<type>file</type>
+									<mapper>
+										<type>perm</type>
+										<prefix>/usr/bin</prefix>
+										<filemode>755</filemode>
+									</mapper>
+								</data>
+								<data>
+									<type>link</type>
+									<linkName>/usr/share/beluga-player/beluga-player.jar</linkName>
+									<linkTarget>/usr/share/beluga-player/${project.artifactId}-${project.version}.jar</linkTarget>
+									<symlink>true</symlink>
+								</data>
+								<data>
+									<src>src/main/resources/img/beluga.40x40.png</src>
+									<dst>icon.png</dst>
+									<type>file</type>
+									<mapper>
+										<type>perm</type>
+										<prefix>/usr/share/beluga-player/images</prefix>
+									</mapper>
+								</data>
+								<data>
+									<src>src/deb/beluga-player.desktop</src>
+									<type>file</type>
+									<mapper>
+										<type>perm</type>
+										<prefix>/usr/share/applications</prefix>
+									</mapper>
+								</data>
+							</dataSet>
+						</configuration>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>
