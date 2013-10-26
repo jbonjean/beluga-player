@@ -5,6 +5,7 @@ Beluga Player 0.7
 * Improve stream buffering
 * Fix new accounts bug
 * Update Tunlr IP addresses
+* Add pause button
 * Add Debian package
 
 Beluga Player 0.6

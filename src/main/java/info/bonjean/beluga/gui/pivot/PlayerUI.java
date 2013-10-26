@@ -26,6 +26,7 @@ import info.bonjean.beluga.gui.notification.Notification;
 import info.bonjean.beluga.response.Song;
 
 import java.net.URL;
+import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
 import javazoom.jl.player.BelugaMP3Player;
@@ -41,6 +42,7 @@ import org.apache.pivot.wtk.Meter;
 import org.apache.pivot.wtk.Slider;
 import org.apache.pivot.wtk.SliderValueListener;
 import org.apache.pivot.wtk.TablePane;
+import org.apache.pivot.wtk.content.ButtonDataRenderer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -67,16 +69,62 @@ public class PlayerUI extends TablePane implements Bindable
 	@BXML
 	private LinkButton nextButton;
 	@BXML
+	private LinkButton pauseButton;
+	@BXML
 	private Slider volumeControl;
 
 	private final BelugaState state = BelugaState.getInstance();
 	private BelugaMP3Player mp3Player;
 	private long duration;
+	private Future<?> animationFuture;
+
+	private Runnable animation = new Runnable()
+	{
+		private final static int DEFAULT_SIZE = 30;
+		private int currentSize = DEFAULT_SIZE;
+		private ButtonDataRenderer buttonDataRenderer;
+
+		private void setSize(int size)
+		{
+			currentSize = size;
+			buttonDataRenderer.setIconWidth(size);
+			buttonDataRenderer.setIconHeight(size);
+			ApplicationContext.queueCallback(new Runnable()
+			{
+				@Override
+				public void run()
+				{
+					pauseButton.repaint();
+				}
+			}, true);
+		}
+
+		@Override
+		public void run()
+		{
+			buttonDataRenderer = (ButtonDataRenderer) pauseButton.getDataRenderer();
+			while (true)
+			{
+				try
+				{
+					Thread.sleep(700);
+				}
+				catch (InterruptedException e)
+				{
+					setSize(DEFAULT_SIZE);
+					return;
+				}
+				setSize(currentSize == DEFAULT_SIZE ? DEFAULT_SIZE + 2 : DEFAULT_SIZE);
+			}
+
+		}
+	};
 
 	@Override
 	public void initialize(Map<String, Object> namespace, URL location, Resources resources)
 	{
 		PivotUI.setEnable(nextButton, false);
+		PivotUI.setEnable(pauseButton, false);
 
 		currentTime.setText("00:00");
 		totalTime.setText("00:00");
@@ -88,8 +136,8 @@ public class PlayerUI extends TablePane implements Bindable
 			@Override
 			public void valueChanged(Slider slider, int previousValue)
 			{
-				if (mp3Player != null && mp3Player.getFloatControl() != null)
-					mp3Player.getFloatControl().setValue(slider.getValue());
+				if (mp3Player != null && mp3Player.getVolumeControl() != null)
+					mp3Player.getVolumeControl().setValue(slider.getValue());
 			}
 		});
 
@@ -116,6 +164,23 @@ public class PlayerUI extends TablePane implements Bindable
 	{
 		if (mp3Player != null)
 			mp3Player.close();
+	}
+
+	public void clearAnimation()
+	{
+		if (animationFuture != null && !animationFuture.isDone())
+			animationFuture.cancel(true);
+	}
+
+	public void pausePlayer()
+	{
+		if (mp3Player != null)
+			mp3Player.pause();
+
+		if (mp3Player.isPaused())
+			animationFuture = ThreadPools.animationPool.submit(animation);
+		else
+			animationFuture.cancel(true);
 	}
 
 	private class Playback implements Runnable
@@ -229,6 +294,9 @@ public class PlayerUI extends TablePane implements Bindable
 					if (mp3Player != null)
 						mp3Player.close();
 					mp3Player = null;
+
+					// and clear the animation
+					clearAnimation();
 				}
 			}
 		}
@@ -243,7 +311,7 @@ public class PlayerUI extends TablePane implements Bindable
 			{
 				try
 				{
-					Thread.sleep(100);
+					Thread.sleep(200);
 				}
 				catch (InterruptedException e)
 				{
@@ -262,22 +330,24 @@ public class PlayerUI extends TablePane implements Bindable
 					@Override
 					public void run()
 					{
-						if (mp3Player != null && mp3Player.getFloatControl() != null)
+						if (mp3Player != null && mp3Player.getVolumeControl() != null)
 						{
 							if (!volumeControl.isEnabled())
 							{
-								volumeControl.setStart((int) mp3Player.getFloatControl().getMinimum());
-								volumeControl.setEnd((int) mp3Player.getFloatControl().getMaximum());
+								volumeControl.setStart((int) mp3Player.getVolumeControl().getMinimum());
+								volumeControl.setEnd((int) mp3Player.getVolumeControl().getMaximum());
 
 								volumeControl.setEnabled(true);
 								PivotUI.setEnable(nextButton, true);
+								PivotUI.setEnable(pauseButton, true);
 							}
-							volumeControl.setValue((int) mp3Player.getFloatControl().getValue());
+							volumeControl.setValue((int) mp3Player.getVolumeControl().getValue());
 						}
 						else
 						{
 							volumeControl.setEnabled(false);
 							PivotUI.setEnable(nextButton, false);
+							PivotUI.setEnable(pauseButton, false);
 						}
 
 						currentTime.setText(formatTime(position));

@@ -57,9 +57,11 @@ public class BelugaMP3Player
 	private Decoder decoder;
 	private AudioDevice audio;
 	private boolean close = true;
+	private boolean pause = false;
 	private long duration;
 	private HttpGet httpGet;
 	private int bitrate;
+	private FloatControl volumeControl;
 
 	public BelugaMP3Player(String url) throws JavaLayerException, MalformedURLException, IOException, CommunicationException
 	{
@@ -119,19 +121,34 @@ public class BelugaMP3Player
 		}
 	}
 
-	public FloatControl getFloatControl()
+	public FloatControl getVolumeControl()
 	{
-		if (audio != null && audio.isOpen() && audio instanceof JavaSoundAudioDevice)
-			return ((JavaSoundAudioDevice) audio).getFloatControl();
+		if (close)
+			return null;
 
-		return null;
+		if (volumeControl == null && audio != null && audio instanceof JavaSoundAudioDevice)
+			volumeControl = ((JavaSoundAudioDevice) audio).getFloatControl();
+
+		return volumeControl;
 	}
 
 	public void play() throws JavaLayerException
 	{
 		close = false;
 		while (decodeFrame())
-			;
+		{
+			while (pause)
+			{
+				try
+				{
+					Thread.sleep(100);
+				}
+				catch (InterruptedException e)
+				{
+					break;
+				}
+			}
+		}
 
 		if (audio != null)
 		{
@@ -153,6 +170,17 @@ public class BelugaMP3Player
 	public void close()
 	{
 		close = true;
+		pause = false;
+	}
+
+	public void pause()
+	{
+		pause = !pause;
+	}
+
+	public void mute()
+	{
+		pause = !pause;
 	}
 
 	public long getCachePosition()
@@ -199,5 +227,10 @@ public class BelugaMP3Player
 	public long getDuration()
 	{
 		return duration;
+	}
+
+	public boolean isPaused()
+	{
+		return pause;
 	}
 }

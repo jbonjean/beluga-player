@@ -8,17 +8,17 @@
 		</LinkButton>
 	</BoxPane>
 	<BoxPane orientation="vertical" styles="{padding:10}">
-		<Label text="Skip icon designed by Marc Antosch from the Noun Project " styles="{font:{bold:true}}" />
+		<Label text="Skip Forward and Pause designed by Alex Fuller from the Noun Project " styles="{font:{bold:true}}" />
 		<LinkButton action="openURL">
-			<content:ButtonData text="http://thenounproject.com/noun/skip/#icon-No5650" />
-			<userData url="http://thenounproject.com/noun/skip/#icon-No5650" />
+			<content:ButtonData text="http://thenounproject.com/alexfuller" />
+			<userData url="http://thenounproject.com/alexfuller" />
 		</LinkButton>
 	</BoxPane>
 	<BoxPane orientation="vertical" styles="{padding:10}">
-		<Label text="Disconnect icon designed by Danny Amacher from the Noun Project " styles="{font:{bold:true}}" />
+		<Label text="Disconnect designed by Danny Amacher from the Noun Project " styles="{font:{bold:true}}" />
 		<LinkButton action="openURL">
-			<content:ButtonData text="http://thenounproject.com/noun/disconnect/#icon-No6446" />
-			<userData url="http://thenounproject.com/noun/disconnect/#icon-No6446" />
+			<content:ButtonData text="http://thenounproject.com/dannyamacher" />
+			<userData url="http://thenounproject.com/dannyamacher" />
 		</LinkButton>
 	</BoxPane>
 	<BoxPane orientation="vertical" styles="{padding:10}">

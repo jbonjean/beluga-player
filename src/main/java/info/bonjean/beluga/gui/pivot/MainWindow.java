@@ -314,6 +314,16 @@ public class MainWindow extends Window implements Bindable
 			}
 		});
 
+		Action.getNamedActions().put("pauseSong", new AsyncAction(getInstance())
+		{
+			@Override
+			public void asyncPerform(Component source)
+			{
+				log.info("pausingSong");
+				pausePlayer();
+			}
+		});
+
 		Action.getNamedActions().put("stationSelect", new AsyncAction(getInstance())
 		{
 			@Override
@@ -414,6 +424,11 @@ public class MainWindow extends Window implements Bindable
 	public void stopPlayer()
 	{
 		playerUI.stopPlayer();
+	}
+
+	public void pausePlayer()
+	{
+		playerUI.pausePlayer();
 	}
 
 	private void setEnablePandoraMenu(boolean enabled)
