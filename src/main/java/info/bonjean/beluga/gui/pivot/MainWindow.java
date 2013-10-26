@@ -148,8 +148,8 @@ public class MainWindow extends Window implements Bindable
 										pandoraClient.deleteStation(state.getStation());
 										log.info("stationDeleted");
 										updateStationsList();
-										menuUI.updateStationsListMenu();
 										selectStation(null);
+										menuUI.updateStationsListMenu();
 										stopPlayer();
 									}
 									catch (BelugaException e)
@@ -335,6 +335,14 @@ public class MainWindow extends Window implements Bindable
 				{
 					selectStation(station);
 					stopPlayer();
+					ApplicationContext.queueCallback(new Runnable()
+					{
+						@Override
+						public void run()
+						{
+							menuUI.updateStationsListMenu();
+						}
+					}, true);
 				}
 				catch (BelugaException e)
 				{
@@ -522,6 +530,7 @@ public class MainWindow extends Window implements Bindable
 
 		state.setStation(newStation);
 
+		// disable some buttons, depending on the station
 		updateStationControlButtons();
 
 		// enable playlist

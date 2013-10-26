@@ -19,6 +19,7 @@
 package info.bonjean.beluga.gui.pivot;
 
 import info.bonjean.beluga.client.BelugaState;
+import info.bonjean.beluga.gui.PivotUI;
 import info.bonjean.beluga.response.Station;
 
 import java.net.URL;
@@ -90,6 +91,8 @@ public class MenuUI extends TablePane implements Bindable
 			Menu.Item item = new Menu.Item(station.getStationName());
 			item.getUserData().put("station", station);
 			item.setAction(Action.getNamedActions().get("stationSelect"));
+			if (state.getStation() != null && state.getStation().getStationId().equals(station.getStationId()))
+				PivotUI.setEnable(item, false);
 			section.add(item);
 		}
 	}
