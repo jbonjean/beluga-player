@@ -149,7 +149,7 @@
 									<symlink>true</symlink>
 								</data>
 								<data>
-									<src>src/main/resources/img/beluga.40x40.png</src>
+									<src>src/main/resources/img/beluga.200x200.png</src>
 									<dst>icon.png</dst>
 									<type>file</type>
 									<mapper>
