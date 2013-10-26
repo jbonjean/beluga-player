@@ -319,7 +319,11 @@ public class MainWindow extends Window implements Bindable
 			@Override
 			public void asyncPerform(Component source)
 			{
-				log.info("pausingSong");
+				if (playerUI.isPaused())
+					log.info("unpausingSong");
+				else
+					log.info("pausingSong");
+
 				pausePlayer();
 			}
 		});

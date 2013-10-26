@@ -172,6 +172,11 @@ public class PlayerUI extends TablePane implements Bindable
 			animationFuture.cancel(true);
 	}
 
+	public boolean isPaused()
+	{
+		return mp3Player != null && mp3Player.isPaused();
+	}
+
 	public void pausePlayer()
 	{
 		if (mp3Player != null)
