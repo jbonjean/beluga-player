@@ -87,7 +87,7 @@ public class BelugaMP3Player
 				}
 			}
 
-			throw new IOException("streamNotAvailable");
+			throw new IOException("Server reply: " + httpResponse.getStatusLine().getReasonPhrase());
 		}
 
 		cachedInputStream = new CachedInputStream(httpResponse.getEntity());
