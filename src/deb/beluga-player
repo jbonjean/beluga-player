@@ -1,2 +1,2 @@
 #!/bin/sh
-java -jar /usr/share/beluga-player/beluga-player-0.6.jar
+java -jar /usr/share/beluga-player/beluga-player.jar
