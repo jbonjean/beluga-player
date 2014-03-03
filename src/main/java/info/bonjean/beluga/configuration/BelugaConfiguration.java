@@ -313,6 +313,26 @@ public class BelugaConfiguration
 		set(Property.LAST_FM_ENABLED, enabled.toString());
 	}
 
+	public Boolean getAdsDetectionEnabled()
+	{
+		return getBoolean(Property.ADS_DETECTION_ENABLED, false);
+	}
+
+	public void setAdsDetectionEnabled(Boolean enabled)
+	{
+		set(Property.ADS_DETECTION_ENABLED, enabled.toString());
+	}
+
+	public Boolean getAdsSilenceEnabled()
+	{
+		return getBoolean(Property.ADS_SILENCE_ENABLED, false);
+	}
+
+	public void setAdsSilenceEnabled(Boolean enabled)
+	{
+		set(Property.ADS_SILENCE_ENABLED, enabled.toString());
+	}
+
 	public String getConfigurationVersion()
 	{
 		return getString(Property.CONFIGURATION_VERSION);

@@ -67,6 +67,10 @@ public class PreferencesUI extends TablePane implements Bindable
 	@BXML
 	private ListButton dnsProxyInput;
 	@BXML
+	private Checkbox adsEnableDetectionCheckbox;
+	@BXML
+	private Checkbox adsEnableSilentCheckbox;
+	@BXML
 	private PushButton submitButton;
 
 	private final BelugaConfiguration configuration = BelugaConfiguration.getInstance();
@@ -86,6 +90,8 @@ public class PreferencesUI extends TablePane implements Bindable
 				configuration.setLastFMEnabled(lastFMEnableCheckbox.isSelected());
 				configuration.setLastFMUsername(lastFMUsernameInput.getText());
 				configuration.setLastFMPassword(lastFMPasswordInput.getText());
+				configuration.setAdsDetectionEnabled(adsEnableDetectionCheckbox.isSelected());
+				configuration.setAdsSilenceEnabled(adsEnableSilentCheckbox.isSelected());
 				configuration.setConfigurationVersion(BelugaState.getInstance().getVersion());
 				configuration.store();
 
@@ -122,6 +128,8 @@ public class PreferencesUI extends TablePane implements Bindable
 		lastFMUsernameInput.setText(configuration.getLastFMUsername());
 		lastFMPasswordInput.setText(configuration.getLastFMPassword());
 		lastFMEnableCheckbox.setSelected(configuration.getLastFMEnabled());
+		adsEnableDetectionCheckbox.setSelected(configuration.getAdsDetectionEnabled());
+		adsEnableSilentCheckbox.setSelected(configuration.getAdsSilenceEnabled());
 	}
 
 	@Override

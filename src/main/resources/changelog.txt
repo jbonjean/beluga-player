@@ -1,3 +1,6 @@
+Beluga Player 0.8
+* Add basic ads detection
+
 Beluga Player 0.7
 
 * Add support for QuickMix edition
