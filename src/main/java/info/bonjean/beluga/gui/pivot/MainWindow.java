@@ -1,20 +1,21 @@
-/* Copyright (C) 2012, 2013 Julien Bonjean <julien@bonjean.info>
+/*
+ * Copyright (C) 2012, 2013, 2014 Julien Bonjean <julien@bonjean.info>
  * 
  * This file is part of Beluga Player.
  * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 3
- * of the License, or (at your option) any later version.
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 3 of the License, or (at your option) any later
+ * version.
  * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
  * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ * You should have received a copy of the GNU General Public License along with
+ * this program; if not, write to the Free Software Foundation, Inc., 51
+ * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 package info.bonjean.beluga.gui.pivot;
 
@@ -217,7 +218,8 @@ public class MainWindow extends Window implements Bindable
 				final String newPage = source.getUserData().get("bxml") != null ? (String) source.getUserData().get("bxml") : page;
 				try
 				{
-					// TODO: temporary workaround to load data outside of UI thread
+					// TODO: temporary workaround to load data outside of UI
+					// thread
 					if (newPage.equals("station"))
 					{
 						log.info("retrievingStationDetails");
@@ -265,7 +267,8 @@ public class MainWindow extends Window implements Bindable
 					updateStationsList();
 					if (state.getStationList().size() == 0)
 					{
-						// we need at least one station, this way there is no need
+						// we need at least one station, this way there is no
+						// need
 						// to handle the no station case
 						// default station: Wolfgang Amadeus Mozart
 						pandoraClient.addStation("C88");
@@ -508,7 +511,8 @@ public class MainWindow extends Window implements Bindable
 			}
 		}
 
-		// at this point, if no station has been selected, there has been a problem, select first one
+		// at this point, if no station has been selected, there has been a
+		// problem, select first one
 		if (newStation == null)
 		{
 			if (!state.getStationList().isEmpty())
@@ -548,7 +552,8 @@ public class MainWindow extends Window implements Bindable
 
 	public void updateStationControlButtons()
 	{
-		// disable delete station button if only 1 station (+quickmix) or quickmix is selected
+		// disable delete station button if only 1 station (+quickmix) or
+		// quickmix is selected
 		if (state.getStationList().size() < 3 || (state.getStation() != null && state.getStation().isQuickMix()))
 			PivotUI.setEnable(deleteStationButton, false);
 		else

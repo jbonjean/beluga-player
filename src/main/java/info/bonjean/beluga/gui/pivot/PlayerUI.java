@@ -1,20 +1,21 @@
-/* Copyright (C) 2012, 2013 Julien Bonjean <julien@bonjean.info>
+/*
+ * Copyright (C) 2012, 2013, 2014 Julien Bonjean <julien@bonjean.info>
  * 
  * This file is part of Beluga Player.
  * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 3
- * of the License, or (at your option) any later version.
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 3 of the License, or (at your option) any later
+ * version.
  * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
  * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ * You should have received a copy of the GNU General Public License along with
+ * this program; if not, write to the Free Software Foundation, Inc., 51
+ * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 package info.bonjean.beluga.gui.pivot;
 
@@ -285,7 +286,8 @@ public class PlayerUI extends TablePane implements Bindable
 					Thread.currentThread().setPriority(Thread.NORM_PRIORITY);
 
 					log.debug("Playback finished");
-					// notify main window playback is finished (will trigger last.fm update)
+					// notify main window playback is finished (will trigger
+					// last.fm update)
 					if (mp3Player != null)
 						mainWindow.playbackFinished(song, mp3Player.getPosition(), mp3Player.getDuration());
 				}

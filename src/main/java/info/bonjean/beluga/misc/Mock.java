@@ -1,20 +1,21 @@
-/* Copyright (C) 2012, 2013 Julien Bonjean <julien@bonjean.info>
+/*
+ * Copyright (C) 2012, 2013, 2014 Julien Bonjean <julien@bonjean.info>
  * 
  * This file is part of Beluga Player.
  * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 3
- * of the License, or (at your option) any later version.
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 3 of the License, or (at your option) any later
+ * version.
  * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
  * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ * You should have received a copy of the GNU General Public License along with
+ * this program; if not, write to the Free Software Foundation, Inc., 51
+ * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 package info.bonjean.beluga.misc;
 
@@ -62,8 +63,8 @@ public class Mock
 		song.setSongRating(1);
 		song.setStationId("2");
 		song.setTrackToken("abc");
-//		song.setAlbumArtBase64(PandoraClient.retrieveAlbumArt(song));
-//		song.setFocusTraits(PandoraClient.retrieveFocusTraits(song));
+		// song.setAlbumArtBase64(PandoraClient.retrieveAlbumArt(song));
+		// song.setFocusTraits(PandoraClient.retrieveFocusTraits(song));
 
 		List<Song> playlist = new ArrayList<Song>();
 		playlist.add(song);
@@ -72,6 +73,6 @@ public class Mock
 		BelugaState.getInstance().setStation(station2);
 		BelugaState.getInstance().setPlaylist(playlist);
 		BelugaState.getInstance().setSong(song);
-//		BelugaState.getInstance().setPage(Page.SONG);
+		// BelugaState.getInstance().setPage(Page.SONG);
 	}
 }

@@ -1,9 +1,10 @@
 #!/bin/bash
 
-SOURCE_NO_LICENSE=$(find ../src/main/java/info/bonjean/ -name "*.java" -exec grep -L "This file is part of Beluga Player\." {} \;)
+HEADER_MD5="49a2b7c9dd236b673e04127764875069"
 
-if [ ! -z "$SOURCE_NO_LICENSE" ]
-then
-	echo "File with no license found (first match): $SOURCE_NO_LICENSE"
-	exit -1
-fi
+find ../src/ -wholename "*/info/bonjean/beluga/*.java" | while read file ; do
+	md5="$(head -n19 $file | md5sum | awk '{print $1}')"
+	[ "$md5" != "$HEADER_MD5" ] && echo "invalid header for $file"
+done
+
+echo "all done"

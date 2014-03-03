@@ -1,20 +1,21 @@
-/* Copyright (C) 2012, 2013 Julien Bonjean <julien@bonjean.info>
+/*
+ * Copyright (C) 2012, 2013, 2014 Julien Bonjean <julien@bonjean.info>
  * 
  * This file is part of Beluga Player.
  * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 3
- * of the License, or (at your option) any later version.
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 3 of the License, or (at your option) any later
+ * version.
  * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
  * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ * You should have received a copy of the GNU General Public License along with
+ * this program; if not, write to the Free Software Foundation, Inc., 51
+ * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 package info.bonjean.beluga.connection;
 
@@ -53,14 +54,18 @@ public class CachedInputStream extends FilterInputStream
 			{
 				try
 				{
-					// create the pipe, connect output (producer) to input stream (consumer)
+					// create the pipe, connect output (producer) to input
+					// stream (consumer)
 					pipe = new PipedOutputStream((PipedInputStream) in);
 					log.debug("producer: pipe created");
 
 					// feed stream to the pipe
-					// we do it manually because the method writeTo from HttpEntity calls
-					// the close method of ChunkedInputStream that do some work to prepare
-					// for the next response but this can be slow and we don't really need it.
+					// we do it manually because the method writeTo from
+					// HttpEntity calls
+					// the close method of ChunkedInputStream that do some work
+					// to prepare
+					// for the next response but this can be slow and we don't
+					// really need it.
 					byte[] buffer = new byte[8192];
 					int length;
 					while ((length = entity.getContent().read(buffer)) != -1)
