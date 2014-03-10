@@ -27,7 +27,7 @@
 		<commons-io.version>1.3.2</commons-io.version>
 		<commons-lang.version>2.6</commons-lang.version>
 		<junit.version>4.8.1</junit.version>
-		<pivot.version>2.0.2</pivot.version>
+		<pivot.version>2.0.3</pivot.version>
 		<lastfm-java.version>0.1.2</lastfm-java.version>
 		<janino.version>2.6.1</janino.version>
 		<jlayer.version>1.0.1-1</jlayer.version>

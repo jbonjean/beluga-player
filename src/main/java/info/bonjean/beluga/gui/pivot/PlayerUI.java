@@ -139,7 +139,7 @@ public class PlayerUI extends TablePane implements Bindable
 			public void valueChanged(Slider slider, int previousValue)
 			{
 				if (mp3Player != null && mp3Player.getVolumeControl() != null)
-					mp3Player.getVolumeControl().setValue(slider.getValue());
+					mp3Player.getVolumeControl().setValue((int) mp3Player.getVolumeControl().getMaximum() - slider.getValue());
 			}
 		});
 
@@ -360,7 +360,7 @@ public class PlayerUI extends TablePane implements Bindable
 								PivotUI.setEnable(nextButton, true);
 								PivotUI.setEnable(pauseButton, true);
 							}
-							volumeControl.setValue((int) mp3Player.getVolumeControl().getValue());
+							volumeControl.setValue((int) mp3Player.getVolumeControl().getMaximum() - (int) mp3Player.getVolumeControl().getValue());
 						}
 						else
 						{
