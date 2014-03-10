@@ -19,6 +19,7 @@
  */
 package info.bonjean.beluga.misc;
 
+import info.bonjean.beluga.client.BelugaState;
 import info.bonjean.beluga.configuration.BelugaConfiguration;
 import info.bonjean.beluga.exception.CommunicationException;
 
@@ -28,28 +29,23 @@ import java.net.MalformedURLException;
 import javazoom.jl.decoder.JavaLayerException;
 import javazoom.jl.player.BelugaMP3Player;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 /**
  * @author Julien Bonjean <julien@bonjean.info>
  * 
  */
 public class MP3Player
 {
-	private static Logger log = LoggerFactory.getLogger(MP3Player.class);
 	private static BelugaConfiguration configuration = BelugaConfiguration.getInstance();
 
 	public static void main(String[] args) throws MalformedURLException, JavaLayerException, IOException, CommunicationException
 	{
+		BelugaState.getInstance().setVersion("dev");
 		configuration.load();
-		// BelugaMP3Player mp3Player = new
-		// BelugaMP3Player("http://www.soundjay.com/button/beep-5.mp3");
-		BelugaMP3Player mp3Player = new BelugaMP3Player("http://www.hubharp.com/web_sound/WalloonLilliShort.mp3");
-		// BelugaMP3Player mp3Player = new
-		// BelugaMP3Player("http://robtowns.com/music/blind_willie.mp3");
+		configuration.setDNSProxy("");
+		BelugaMP3Player mp3Player = new BelugaMP3Player("http://www.soundjay.com/button/beep-10.mp3");
+		mp3Player.setSilence(true);
 		mp3Player.play();
-		log.info("Playback finished");
+		System.out.println("Playback finished");
 	}
 
 }

@@ -19,6 +19,7 @@
  */
 package info.bonjean.beluga.response;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -47,6 +48,7 @@ public class Song
 	private boolean artistBookmarked = false;
 	private String albumArtBase64;
 	private List<String> focusTraits;
+	private boolean ad = false;
 
 	public String getTrackToken()
 	{
@@ -70,6 +72,9 @@ public class Song
 
 	public String getArtistName()
 	{
+		if (ad)
+			return "Pandora";
+
 		return artistName;
 	}
 
@@ -80,6 +85,9 @@ public class Song
 
 	public String getAlbumName()
 	{
+		if (ad)
+			return "";
+
 		return albumName;
 	}
 
@@ -110,6 +118,8 @@ public class Song
 
 	public String getAlbumArtUrl()
 	{
+		if (ad)
+			return "";
 		return albumArtUrl;
 	}
 
@@ -140,6 +150,8 @@ public class Song
 
 	public String getSongName()
 	{
+		if (ad)
+			return "Commercial advertisement";
 		return songName;
 	}
 
@@ -210,6 +222,8 @@ public class Song
 
 	public List<String> getFocusTraits()
 	{
+		if (ad)
+			return new ArrayList<String>();
 		return focusTraits;
 	}
 
@@ -226,5 +240,15 @@ public class Song
 	public void setAdditionalAudioUrl(String additionalAudioUrl)
 	{
 		this.additionalAudioUrl = additionalAudioUrl;
+	}
+
+	public boolean isAd()
+	{
+		return ad;
+	}
+
+	public void setAd(boolean ad)
+	{
+		this.ad = ad;
 	}
 }

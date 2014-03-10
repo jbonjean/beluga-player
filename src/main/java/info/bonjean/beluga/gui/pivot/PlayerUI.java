@@ -21,7 +21,7 @@ package info.bonjean.beluga.gui.pivot;
 
 import info.bonjean.beluga.client.BelugaState;
 import info.bonjean.beluga.client.PandoraPlaylist;
-import info.bonjean.beluga.exception.CommunicationException;
+import info.bonjean.beluga.configuration.BelugaConfiguration;
 import info.bonjean.beluga.gui.PivotUI;
 import info.bonjean.beluga.gui.notification.Notification;
 import info.bonjean.beluga.response.Song;
@@ -75,6 +75,7 @@ public class PlayerUI extends TablePane implements Bindable
 	private Slider volumeControl;
 
 	private final BelugaState state = BelugaState.getInstance();
+	private final BelugaConfiguration configuration = BelugaConfiguration.getInstance();
 	private BelugaMP3Player mp3Player;
 	private long duration;
 	private Future<?> animationFuture;
@@ -212,17 +213,6 @@ public class PlayerUI extends TablePane implements Bindable
 						continue;
 					}
 
-					// update UI for song information as soon as possible
-					ApplicationContext.queueCallback(new Runnable()
-					{
-						@Override
-						public void run()
-						{
-							// notify main window
-							mainWindow.playbackStarted(song);
-						}
-					}, false);
-
 					log.debug("New song: " + song.getAdditionalAudioUrl());
 
 					// initialize the player
@@ -231,12 +221,6 @@ public class PlayerUI extends TablePane implements Bindable
 						log.info("openingAudioStream");
 						mp3Player = new BelugaMP3Player(song.getAdditionalAudioUrl());
 						successiveFailures = 0;
-					}
-					catch (CommunicationException e)
-					{
-						log.error("pandoraSkipProtection");
-						mainWindow.disconnect();
-						return;
 					}
 					catch (Exception e)
 					{
@@ -259,12 +243,40 @@ public class PlayerUI extends TablePane implements Bindable
 
 					duration = mp3Player.getDuration();
 
+					// is there a better way to detect the Pandora skip
+					// protection (42sec length mp3)?
+					if (duration == 42569 && mp3Player.getBitrate() == 64000)
+					{
+						log.error("pandoraSkipProtection");
+						mp3Player.close();
+						mainWindow.disconnect();
+						return;
+					}
+
+					// guess if it's an ad (not very reliable)
+					if (configuration.getAdsDetectionEnabled() && mp3Player.getBitrate() == 128000 && duration < 45000)
+					{
+						log.debug("Ad detected");
+
+						// set the ad flag on the song, for the display and to
+						// skip scrobbling
+						song.setAd(true);
+
+						// if ad silence configuration is enabled, notify the
+						// player
+						if (configuration.getAdsSilenceEnabled())
+							mp3Player.setSilence(true);
+					}
+
 					// update UI
 					ApplicationContext.queueCallback(new Runnable()
 					{
 						@Override
 						public void run()
 						{
+							// notify main window
+							mainWindow.playbackStarted(song);
+
 							// update song duration
 							totalTime.setText(formatTime(duration));
 

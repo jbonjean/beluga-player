@@ -1,21 +1,21 @@
 /*
- * 11/19/04		1.0 moved to LGPL.
- * 29/01/00		Initial version. mdm@techie.com
- *-----------------------------------------------------------------------
- *   This program is free software; you can redistribute it and/or modify
- *   it under the terms of the GNU Library General Public License as published
- *   by the Free Software Foundation; either version 2 of the License, or
- *   (at your option) any later version.
- *
- *   This program is distributed in the hope that it will be useful,
- *   but WITHOUT ANY WARRANTY; without even the implied warranty of
- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *   GNU Library General Public License for more details.
- *
- *   You should have received a copy of the GNU Library General Public
- *   License along with this program; if not, write to the Free Software
- *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
- *----------------------------------------------------------------------
+ * 11/19/04 1.0 moved to LGPL.
+ * 29/01/00 Initial version. mdm@techie.com
+ * -----------------------------------------------------------------------
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU Library General Public License as published
+ * by the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Library General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Library General Public
+ * License along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * ----------------------------------------------------------------------
  */
 package javazoom.jl.player;
 
@@ -42,7 +42,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * The <code>BelugaMP3Player</code> class implements a simple player for playback of an MPEG audio stream.
+ * The <code>BelugaMP3Player</code> class implements a simple player for
+ * playback of an MPEG audio stream.
  * 
  * @author Mat McGowan
  * @author Julien Bonjean <julien@bonjean.info>
@@ -62,6 +63,7 @@ public class BelugaMP3Player
 	private HttpGet httpGet;
 	private int bitrate;
 	private FloatControl volumeControl;
+	private boolean silence = false;
 
 	public BelugaMP3Player(String url) throws JavaLayerException, MalformedURLException, IOException, CommunicationException
 	{
@@ -112,13 +114,6 @@ public class BelugaMP3Player
 
 		// calculate the duration
 		duration = (songSize * 1000) / (bitrate / 8);
-
-		// is there a better way to detect the Pandora skip protection (42sec length mp3)?
-		if (songSize == 340554 && bitrate == 64000)
-		{
-			close();
-			throw new CommunicationException("pandoraSkipProtection");
-		}
 	}
 
 	public FloatControl getVolumeControl()
@@ -214,7 +209,13 @@ public class BelugaMP3Player
 				return false;
 
 			SampleBuffer output = (SampleBuffer) decoder.decodeFrame(h, bitstream);
-			audio.write(output.getBuffer(), 0, output.getBufferLength());
+			/*
+			 * This is where we handle silenced song.
+			 * We don't change audio device settings, and read the stream
+			 * as we were really playing it.
+			 */
+			short[] buffer = silence ? new short[output.getBufferLength()] : output.getBuffer();
+			audio.write(buffer, 0, output.getBufferLength());
 			bitstream.closeFrame();
 		}
 		catch (RuntimeException ex)
@@ -232,5 +233,15 @@ public class BelugaMP3Player
 	public boolean isPaused()
 	{
 		return pause;
+	}
+
+	public int getBitrate()
+	{
+		return bitrate;
+	}
+
+	public void setSilence(boolean silence)
+	{
+		this.silence = silence;
 	}
 }
