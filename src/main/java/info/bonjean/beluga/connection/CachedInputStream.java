@@ -43,6 +43,7 @@ public class CachedInputStream extends FilterInputStream
 	private static final int INITIAL_CACHE_SIZE = 100 * 1024;
 	private PipedOutputStream pipe;
 	private Future<?> future;
+	private boolean closed = false;
 
 	public CachedInputStream(final HttpEntity entity)
 	{
@@ -95,13 +96,14 @@ public class CachedInputStream extends FilterInputStream
 					}
 				}
 				log.debug("producer: end of thread");
+				closed = true;
 			}
 		});
 
 		// wait for enough cache
 		try
 		{
-			while (in.available() < INITIAL_CACHE_SIZE)
+			while (in.available() < INITIAL_CACHE_SIZE && !closed)
 			{
 				log.debug("caching stream (" + in.available() + "/" + INITIAL_CACHE_SIZE + ")");
 				try
