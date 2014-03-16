@@ -164,7 +164,8 @@ public class StatusBarAppender<E> extends AppenderBase<E>
 					}
 					// if there is a message currently displayed and it's not an
 					// error
-					if (messageDisplayed != null && !messageDisplayed.getLevel().isGreaterOrEqual(Level.ERROR))
+					if (messageDisplayed != null
+							&& !messageDisplayed.getLevel().isGreaterOrEqual(Level.ERROR))
 					{
 						// and it is expired
 						if (lastMessageDisplayTime + LOG_MESSAGE_DURATION < new Date().getTime())

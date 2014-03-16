@@ -17,38 +17,35 @@
  * this program; if not, write to the Free Software Foundation, Inc., 51
  * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
-package info.bonjean.beluga;
+package info.bonjean.beluga.misc;
 
 import info.bonjean.beluga.client.BelugaState;
 import info.bonjean.beluga.configuration.BelugaConfiguration;
-import info.bonjean.beluga.gui.PivotUI;
+import info.bonjean.beluga.exception.CommunicationException;
+import info.bonjean.beluga.player.MP3Player;
+
+import java.io.IOException;
+import java.net.MalformedURLException;
+
+import javazoom.jl.decoder.JavaLayerException;
 
 /**
- * 
  * @author Julien Bonjean <julien@bonjean.info>
  * 
- * Use the option -Ddebug=1 to run in debug mode.
- * 
  */
-public class Main
+public class MP3PlayerTest
 {
-	public static void main(String[] args)
+	private static BelugaConfiguration configuration = BelugaConfiguration.getInstance();
+
+	public static void main(String[] args) throws MalformedURLException, JavaLayerException, IOException, CommunicationException
 	{
-		String version = Main.class.getPackage().getImplementationVersion();
-		if (version == null)
-			version = "(dev)";
-
-		System.out.println("Beluga Player " + version);
-		if (args.length == 1 && args[0].equals("-version"))
-			System.exit(0);
-
-		BelugaState.getInstance().setVersion(version);
-		BelugaConfiguration.getInstance().load();
-
-		// enable anti-aliased text:
-		System.setProperty("awt.useSystemAAFontSettings", "on");
-		System.setProperty("swing.aatext", "true");
-
-		PivotUI.startDesktopUI();
+		BelugaState.getInstance().setVersion("dev");
+		configuration.load();
+		configuration.setDNSProxy("");
+		MP3Player mp3Player = new MP3Player("http://www.soundjay.com/button/beep-10.mp3");
+		mp3Player.setSilence(true);
+		mp3Player.play();
+		System.out.println("Playback finished");
 	}
+
 }

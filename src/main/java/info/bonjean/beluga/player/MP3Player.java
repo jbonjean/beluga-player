@@ -1,23 +1,23 @@
 /*
- * 11/19/04 1.0 moved to LGPL.
- * 29/01/00 Initial version. mdm@techie.com
- * -----------------------------------------------------------------------
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU Library General Public License as published
- * by the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
+ * Copyright (C) 2012, 2013, 2014 Julien Bonjean <julien@bonjean.info>
  * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU Library General Public License for more details.
+ * This file is part of Beluga Player.
  * 
- * You should have received a copy of the GNU Library General Public
- * License along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
- * ----------------------------------------------------------------------
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 3 of the License, or (at your option) any later
+ * version.
+ * 
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU General Public License along with
+ * this program; if not, write to the Free Software Foundation, Inc., 51
+ * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
-package javazoom.jl.player;
+package info.bonjean.beluga.player;
 
 import info.bonjean.beluga.connection.BelugaHTTPClient;
 import info.bonjean.beluga.connection.CachedInputStream;
@@ -34,6 +34,9 @@ import javazoom.jl.decoder.Decoder;
 import javazoom.jl.decoder.Header;
 import javazoom.jl.decoder.JavaLayerException;
 import javazoom.jl.decoder.SampleBuffer;
+import javazoom.jl.player.AudioDevice;
+import javazoom.jl.player.FactoryRegistry;
+import javazoom.jl.player.JavaSoundAudioDevice;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
@@ -42,16 +45,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * The <code>BelugaMP3Player</code> class implements a simple player for
- * playback of an MPEG audio stream.
  * 
- * @author Mat McGowan
  * @author Julien Bonjean <julien@bonjean.info>
- * @since 0.0.8
+ * 
+ * TODO: keep audio device open between songs.
+ * 
  */
-public class BelugaMP3Player
+public class MP3Player
 {
-	private static final Logger log = LoggerFactory.getLogger(BelugaMP3Player.class);
+	private static final Logger log = LoggerFactory.getLogger(MP3Player.class);
 
 	private Bitstream bitstream;
 	private CachedInputStream cachedInputStream;
@@ -59,13 +61,15 @@ public class BelugaMP3Player
 	private AudioDevice audio;
 	private boolean close = true;
 	private boolean pause = false;
+	private boolean started = false;
 	private long duration;
 	private HttpGet httpGet;
 	private int bitrate;
 	private FloatControl volumeControl;
 	private boolean silence = false;
 
-	public BelugaMP3Player(String url) throws JavaLayerException, MalformedURLException, IOException, CommunicationException
+	public MP3Player(String url) throws JavaLayerException, MalformedURLException, IOException,
+			CommunicationException
 	{
 		httpGet = new HttpGet(url);
 		HttpResponse httpResponse = BelugaHTTPClient.getInstance().getClient().execute(httpGet);
@@ -130,6 +134,7 @@ public class BelugaMP3Player
 	public void play() throws JavaLayerException
 	{
 		close = false;
+		started = true;
 		while (decodeFrame())
 		{
 			while (pause)
@@ -144,7 +149,11 @@ public class BelugaMP3Player
 				}
 			}
 		}
+		cleanResources();
+	}
 
+	private void cleanResources()
+	{
 		if (audio != null)
 		{
 			audio.flush();
@@ -166,6 +175,8 @@ public class BelugaMP3Player
 	{
 		close = true;
 		pause = false;
+		if (!started)
+			cleanResources();
 	}
 
 	public void pause()
@@ -182,7 +193,8 @@ public class BelugaMP3Player
 	{
 		try
 		{
-			return ((cachedInputStream.available() + bitstream.getPosition()) * 1000) / (bitrate / 8);
+			return ((cachedInputStream.available() + bitstream.getPosition()) * 1000)
+					/ (bitrate / 8);
 		}
 		catch (IOException e)
 		{

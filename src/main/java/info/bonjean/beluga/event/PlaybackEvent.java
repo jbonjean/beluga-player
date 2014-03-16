@@ -17,35 +17,38 @@
  * this program; if not, write to the Free Software Foundation, Inc., 51
  * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
-package info.bonjean.beluga.gui.notification;
+package info.bonjean.beluga.event;
 
-import java.awt.GraphicsConfiguration;
-
-import javax.swing.Icon;
-import javax.swing.JWindow;
-
-import ch.swingfx.twinkle.style.AbstractNotificationStyle;
-import ch.swingfx.twinkle.style.INotificationStyle;
-import ch.swingfx.twinkle.window.ICreateNotificationWindow;
+import info.bonjean.beluga.response.Song;
 
 /**
  * 
  * @author Julien Bonjean <julien@bonjean.info>
  * 
  */
-public class NotificationStyle extends AbstractNotificationStyle
+public class PlaybackEvent
 {
-	public NotificationStyle()
+	public enum Type
 	{
-		super();
-		withNotificationWindowCreator(new ICreateNotificationWindow()
-		{
-			@Override
-			public JWindow createNotificationWindow(Icon icon, String title, String message, INotificationStyle style,
-					GraphicsConfiguration graphicsConfiguration)
-			{
-				return new NotificationWindow(icon, title, message, style, graphicsConfiguration);
-			}
-		});
+		SONG_STARTED, SONG_PAUSED, SONG_RESUMED, SONG_FINISHED, PLAYBACK_STOP;
+	}
+
+	private Song song;
+	private Type type;
+
+	public PlaybackEvent(Type type, Song song)
+	{
+		this.type = type;
+		this.song = song;
+	}
+
+	public Song getSong()
+	{
+		return song;
+	}
+
+	public Type getType()
+	{
+		return type;
 	}
 }

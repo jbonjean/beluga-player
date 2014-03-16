@@ -19,6 +19,7 @@
  */
 package info.bonjean.beluga.client;
 
+import info.bonjean.beluga.gui.pivot.Page;
 import info.bonjean.beluga.response.Bookmarks;
 import info.bonjean.beluga.response.Song;
 import info.bonjean.beluga.response.Station;
@@ -43,8 +44,8 @@ public class BelugaState
 	private List<Song> playlist;
 	private Song song;
 	private Bookmarks bookmarks;
-	private boolean playbackStarted = false;
 
+	private Page page;
 	private String version;
 
 	Set<String> errors = new HashSet<String>();
@@ -122,7 +123,6 @@ public class BelugaState
 		station = null;
 		playlist = null;
 		song = null;
-		playbackStarted = false;
 	}
 
 	public Bookmarks getBookmarks()
@@ -145,13 +145,13 @@ public class BelugaState
 		this.version = version;
 	}
 
-	public boolean isPlaybackStarted()
+	public Page getPage()
 	{
-		return playbackStarted;
+		return page;
 	}
 
-	public void setPlaybackStarted(boolean playbackStarted)
+	public void setPage(Page page)
 	{
-		this.playbackStarted = playbackStarted;
+		this.page = page;
 	}
 }

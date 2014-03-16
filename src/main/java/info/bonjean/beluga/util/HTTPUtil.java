@@ -57,8 +57,8 @@ public class HTTPUtil
 	private static final Gson gson = GsonUtil.getGsonInstance();
 	private static final String SERVICE_URL = "http://tuner.pandora.com/services/json/?";
 
-	public static <E> E request(Method method, ParameterMap params, JsonRequest jsonData, boolean encrypt, TypeToken<Response<E>> typeToken)
-			throws BelugaException
+	public static <E> E request(Method method, ParameterMap params, JsonRequest jsonData,
+			boolean encrypt, TypeToken<Response<E>> typeToken) throws BelugaException
 	{
 		String urlStr = createRequestUrl(method, params);
 		String data = gson.toJson(jsonData);

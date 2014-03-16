@@ -20,7 +20,6 @@
 package info.bonjean.beluga.client;
 
 import info.bonjean.beluga.exception.BelugaException;
-import info.bonjean.beluga.gui.pivot.MainWindow;
 import info.bonjean.beluga.response.Song;
 
 import java.util.LinkedList;
@@ -41,7 +40,6 @@ public class PandoraPlaylist
 
 	private static PandoraPlaylist instance;
 	private LinkedList<Song> queue = new LinkedList<Song>();
-	private boolean enabled = false;
 
 	private PandoraPlaylist()
 	{
@@ -75,7 +73,7 @@ public class PandoraPlaylist
 	public synchronized void feedQueue()
 	{
 		// check if Pandora client is ready
-		if (!pandoraClient.isLoggedIn() || !enabled)
+		if (!pandoraClient.isLoggedIn() || state.getStation() == null)
 			return;
 
 		// check if the feed is empty, we do not want to reach Pandora limit
@@ -97,7 +95,8 @@ public class PandoraPlaylist
 		catch (BelugaException e)
 		{
 			log.error(e.getMessage(), e);
-			MainWindow.getInstance().disconnect();
+			// XXX: this code should not be here, the exception should be thrown
+			// MainWindow.getInstance().disconnect();
 		}
 	}
 
@@ -105,15 +104,5 @@ public class PandoraPlaylist
 	{
 		log.debug("Invalidating playlist");
 		queue.clear();
-	}
-
-	public boolean isEnabled()
-	{
-		return enabled;
-	}
-
-	public void setEnabled(boolean enabled)
-	{
-		this.enabled = enabled;
 	}
 }

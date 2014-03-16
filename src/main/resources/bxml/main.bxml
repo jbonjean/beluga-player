@@ -1,7 +1,9 @@
-<local:MainWindow title="Beluga Player" bxml:id="mainWindow" maximized="true" xmlns:bxml="http://pivot.apache.org/bxml"
-	xmlns:local="info.bonjean.beluga.gui.pivot" xmlns="org.apache.pivot.wtk" xmlns:content="org.apache.pivot.wtk.content">
+<local:MainWindow title="Beluga Player" bxml:id="mainWindow"
+	maximized="true" xmlns:bxml="http://pivot.apache.org/bxml" xmlns:local="info.bonjean.beluga.gui.pivot"
+	xmlns="org.apache.pivot.wtk" xmlns:content="org.apache.pivot.wtk.content">
 
-	<TablePane styles="{verticalSpacing:1,showHorizontalGridLines:true,horizontalSpacing:1}">
+	<TablePane
+		styles="{verticalSpacing:1,showHorizontalGridLines:true,horizontalSpacing:1}">
 		<columns>
 			<TablePane.Column width="1*" />
 		</columns>
@@ -27,11 +29,15 @@
 					<TablePane.Column width="-1" />
 				</columns>
 				<TablePane.Row height="15">
-					<ActivityIndicator bxml:id="loader" preferredWidth="15" preferredHeight="15" active="true"
+					<ActivityIndicator bxml:id="loader"
+						preferredWidth="15" preferredHeight="15" active="true"
 						styles="{backgroundColor:'#eeeeee',color:'#28931a'}" visible="false" />
-					<ImageView bxml:id="statusBarIcon" preferredWidth="7" preferredHeight="7" styles="{fill:true}" visible="false" />
-					<Label bxml:id="statusBarText" styles="{verticalAlignment:'center',padding:{left:5}}" />
-					<ImageView bxml:id="statusBarIconDiconnected" tooltipText="%disconnected" tooltipDelay="200" preferredWidth="14"
+					<ImageView bxml:id="statusBarIcon" preferredWidth="7"
+						preferredHeight="7" styles="{fill:true}" visible="false" />
+					<Label bxml:id="statusBarText"
+						styles="{verticalAlignment:'center',padding:{left:5}}" />
+					<ImageView bxml:id="statusBarIconDiconnected"
+						tooltipText="%disconnected" tooltipDelay="200" preferredWidth="14"
 						preferredHeight="14" styles="{fill:true}" image="/img/disconnected.svg" />
 				</TablePane.Row>
 			</TablePane>
@@ -39,7 +45,8 @@
 	</TablePane>
 
 	<bxml:define>
-		<Prompt bxml:id="confirmStationDelete" title="%confirmStationDeleteTitle" message="%confirmStationDeleteMessage" options="%okCancel"
+		<Prompt bxml:id="confirmStationDelete" title="%confirmStationDeleteTitle"
+			message="%confirmStationDeleteMessage" options="%okCancel"
 			selectedOptionIndex="1" />
 	</bxml:define>
 </local:MainWindow>

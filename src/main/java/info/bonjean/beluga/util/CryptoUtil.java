@@ -90,7 +90,8 @@ public class CryptoUtil
 	{
 		try
 		{
-			return new String(decryptBlowfish(Hex.decodeHex(text.toCharArray()), DECRYPT_KEY)).trim();
+			return new String(decryptBlowfish(Hex.decodeHex(text.toCharArray()), DECRYPT_KEY))
+					.trim();
 		}
 		catch (DecoderException e)
 		{

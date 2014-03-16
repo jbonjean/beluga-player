@@ -58,7 +58,8 @@ public class BelugaDNSResolver implements DnsResolver
 			Options.set("verbose", "true");
 		try
 		{
-			resolver = new ExtendedResolver(new String[] { dnsProxy.getPrimaryServer(), dnsProxy.getSecondaryServer() });
+			resolver = new ExtendedResolver(new String[] { dnsProxy.getPrimaryServer(),
+					dnsProxy.getSecondaryServer() });
 			resolver.setTimeout(TIMEOUT_SECONDS);
 			resolver.setRetries(MAX_RETRIES);
 		}

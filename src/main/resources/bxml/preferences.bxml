@@ -1,12 +1,13 @@
-<local:PreferencesUI xmlns:bxml="http://pivot.apache.org/bxml" xmlns:local="info.bonjean.beluga.gui.pivot" xmlns="org.apache.pivot.wtk"
+<local:PreferencesUI xmlns:bxml="http://pivot.apache.org/bxml"
+	xmlns:local="info.bonjean.beluga.gui.pivot" xmlns="org.apache.pivot.wtk"
 	styles="{padding:6}">
 	<bxml:script>
-	importClass(org.apache.pivot.wtk.Button);
+		importClass(org.apache.pivot.wtk.Button);
 
-	function stateToBoolean(value) {
-		return value == Button.State.SELECTED;
-	}
-    </bxml:script>
+		function stateToBoolean(value) {
+			return value == Button.State.SELECTED;
+		}
+	</bxml:script>
 
 	<columns>
 		<TablePane.Column width="1*" />
@@ -20,16 +21,20 @@
 						<TextInput bxml:id="emailAddressInput" textSize="24" />
 					</BoxPane>
 					<BoxPane Form.label="%password">
-						<TextInput bxml:id="passwordInput" textSize="24" password="true" />
+						<TextInput bxml:id="passwordInput" textSize="24"
+							password="true" />
 					</BoxPane>
-					<LinkButton bxml:id="newUserLink" buttonData="%newUser" action="load">
+					<LinkButton bxml:id="newUserLink" buttonData="%newUser"
+						action="load">
 						<userData bxml="account_creation" />
 					</LinkButton>
 				</Form.Section>
 				<Form.Section heading="%connection">
 					<BoxPane Form.label="%httpProxy">
-						<TextInput bxml:id="httpProxyHostInput" textSize="17" prompt="%hostname" />
-						<TextInput bxml:id="httpProxyPortInput" textSize="5" prompt="%port" />
+						<TextInput bxml:id="httpProxyHostInput" textSize="17"
+							prompt="%hostname" />
+						<TextInput bxml:id="httpProxyPortInput" textSize="5"
+							prompt="%port" />
 					</BoxPane>
 					<Label text="%or" />
 					<BoxPane Form.label="%dnsProxy">
@@ -47,20 +52,25 @@
 						<TextInput bxml:id="lastFMUsernameInput" textSize="24" />
 					</BoxPane>
 					<BoxPane Form.label="%password">
-						<TextInput bxml:id="lastFMPasswordInput" textSize="24" password="true" />
+						<TextInput bxml:id="lastFMPasswordInput" textSize="24"
+							password="true" />
 					</BoxPane>
 				</Form.Section>
 			</Form>
 
-			<BoxPane TabPane.tabData="%ads" styles="{fill:true}" orientation="vertical">
-				<Label text="%adsDetectionWarning" styles="{padding:{left:10,right:10,top:5,bottom:2},color:'#999999',wrapText:'true',font:{bold:true}}" />
+			<BoxPane TabPane.tabData="%ads" styles="{fill:true}"
+				orientation="vertical">
+				<Label text="%adsDetectionWarning"
+					styles="{padding:{left:10,right:10,top:5,bottom:2},color:'#999999',wrapText:'true',font:{bold:true}}" />
 				<Form>
 					<Form.Section heading="%adsDetection">
 						<BoxPane>
-							<Checkbox bxml:id="adsEnableDetectionCheckbox" buttonData="%enableAdsDetection" />
+							<Checkbox bxml:id="adsEnableDetectionCheckbox"
+								buttonData="%enableAdsDetection" />
 						</BoxPane>
 						<BoxPane>
-							<Checkbox bxml:id="adsEnableSilentCheckbox" buttonData="%enableAdsSilent" enabled="${stateToBoolean:adsEnableDetectionCheckbox.state}" />
+							<Checkbox bxml:id="adsEnableSilentCheckbox" buttonData="%enableAdsSilent"
+								enabled="${stateToBoolean:adsEnableDetectionCheckbox.state}" />
 						</BoxPane>
 					</Form.Section>
 				</Form>
@@ -81,7 +91,10 @@
 					<Label bxml:id="errorArea" styles="{color:22}" />
 				</BoxPane>
 				<BoxPane styles="{horizontalAlignment:'right', padding:{top:5}}">
-					<PushButton bxml:id="submitButton" buttonData="%save" styles="{minimumAspectRatio:3}" action="submit" />
+					<PushButton bxml:id="submitButton" buttonData="%save"
+						styles="{minimumAspectRatio:3}" action="save-preferences" />
+					<PushButton buttonData="%cancel" styles="{minimumAspectRatio:3}"
+						action="back" />
 				</BoxPane>
 			</TablePane.Row>
 		</TablePane>

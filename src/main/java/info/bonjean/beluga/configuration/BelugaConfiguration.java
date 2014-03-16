@@ -39,8 +39,10 @@ import org.slf4j.LoggerFactory;
 public class BelugaConfiguration
 {
 	private static Logger log = LoggerFactory.getLogger(BelugaConfiguration.class);
-	private static final String CONFIGURATION_DIRECTORY = System.getProperty("user.home") + "/.config/beluga";
-	private static final String CONFIGURATION_FILE = CONFIGURATION_DIRECTORY + "/configuration.properties";
+	private static final String CONFIGURATION_DIRECTORY = System.getProperty("user.home")
+			+ "/.config/beluga";
+	private static final String CONFIGURATION_FILE = CONFIGURATION_DIRECTORY
+			+ "/configuration.properties";
 	private Properties properties;
 
 	private static BelugaConfiguration instance;
@@ -63,8 +65,10 @@ public class BelugaConfiguration
 		// passwords are now obfuscated
 		// we use the property key as encryption key, this is not secure at all
 		// but this is not the purpose here
-		set(Property.PASSWORD, CryptoUtil.passwordEncrypt(getString(Property.PASSWORD), Property.PASSWORD.getKey()));
-		set(Property.LAST_FM_PASSWORD, CryptoUtil.passwordEncrypt(getString(Property.LAST_FM_PASSWORD), Property.LAST_FM_PASSWORD.getKey()));
+		set(Property.PASSWORD, CryptoUtil.passwordEncrypt(getString(Property.PASSWORD),
+				Property.PASSWORD.getKey()));
+		set(Property.LAST_FM_PASSWORD, CryptoUtil.passwordEncrypt(
+				getString(Property.LAST_FM_PASSWORD), Property.LAST_FM_PASSWORD.getKey()));
 	}
 
 	public static BelugaConfiguration getInstance()
@@ -297,12 +301,14 @@ public class BelugaConfiguration
 
 	public String getLastFMPassword()
 	{
-		return CryptoUtil.passwordDecrypt(getString(Property.LAST_FM_PASSWORD), Property.LAST_FM_PASSWORD.getKey());
+		return CryptoUtil.passwordDecrypt(getString(Property.LAST_FM_PASSWORD),
+				Property.LAST_FM_PASSWORD.getKey());
 	}
 
 	public void setLastFMPassword(String password)
 	{
-		set(Property.LAST_FM_PASSWORD, CryptoUtil.passwordEncrypt(password, Property.LAST_FM_PASSWORD.getKey()));
+		set(Property.LAST_FM_PASSWORD,
+				CryptoUtil.passwordEncrypt(password, Property.LAST_FM_PASSWORD.getKey()));
 	}
 
 	public Boolean getLastFMEnabled()

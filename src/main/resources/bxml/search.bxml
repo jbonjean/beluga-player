@@ -1,13 +1,15 @@
-<local:SearchUI xmlns:bxml="http://pivot.apache.org/bxml" xmlns:local="info.bonjean.beluga.gui.pivot" xmlns:content="org.apache.pivot.wtk.content"
+<local:SearchUI xmlns:bxml="http://pivot.apache.org/bxml"
+	xmlns:local="info.bonjean.beluga.gui.pivot" xmlns:content="org.apache.pivot.wtk.content"
 	xmlns="org.apache.pivot.wtk" styles="{padding:15}">
 	<columns>
 		<TablePane.Column width="1*" />
 	</columns>
 
-	<TablePane.Row height="-1" >
+	<TablePane.Row height="-1">
 		<BoxPane styles="{padding:{bottom:10}}">
 			<TextInput bxml:id="searchInput" textSize="24" prompt="%songOrArtist" />
-			<PushButton bxml:id="submitButton" buttonData="%search" styles="{minimumAspectRatio:3}" action="submit" />
+			<PushButton bxml:id="submitButton" buttonData="%search"
+				styles="{minimumAspectRatio:3}" action="search" />
 		</BoxPane>
 	</TablePane.Row>
 
@@ -27,10 +29,11 @@
 			</Border>
 		</TabPane>
 	</TablePane.Row>
-	
-	<TablePane.Row height="-1" >
+
+	<TablePane.Row height="-1">
 		<BoxPane>
-			<Label bxml:id="nearMatchesAvailable" text="%searchResultsIncomplete" visible="false" styles="{padding:{top:10},font:{bold:true},color:'#999999'}"/>
+			<Label bxml:id="nearMatchesAvailable" text="%searchResultsIncomplete"
+				visible="false" styles="{padding:{top:10},font:{bold:true},color:'#999999'}" />
 		</BoxPane>
 	</TablePane.Row>
 </local:SearchUI>

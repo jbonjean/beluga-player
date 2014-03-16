@@ -51,8 +51,9 @@ public class BelugaMenuButtonSkin extends TerraMenuButtonSkin
 		int width = getWidth();
 		int height = getHeight();
 
-		Bounds contentBounds = new Bounds(getPadding().left + 1, getPadding().top + 1, Math.max(width
-				- (getPadding().left + getPadding().right + getSpacing() + 2), 0), Math.max(height - (getPadding().top + getPadding().bottom + 2), 0));
+		Bounds contentBounds = new Bounds(getPadding().left + 1, getPadding().top + 1, Math.max(
+				width - (getPadding().left + getPadding().right + getSpacing() + 2), 0), Math.max(
+				height - (getPadding().top + getPadding().bottom + 2), 0));
 		Button.DataRenderer dataRenderer = menuButton.getDataRenderer();
 		dataRenderer.render(menuButton.getButtonData(), menuButton, highlighted);
 		dataRenderer.setSize(contentBounds.width, contentBounds.height);

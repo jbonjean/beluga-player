@@ -1,19 +1,22 @@
-<local:QuickMixUI xmlns:bxml="http://pivot.apache.org/bxml" xmlns:local="info.bonjean.beluga.gui.pivot" xmlns="org.apache.pivot.wtk"
+<local:QuickMixUI xmlns:bxml="http://pivot.apache.org/bxml"
+	xmlns:local="info.bonjean.beluga.gui.pivot" xmlns="org.apache.pivot.wtk"
 	styles="{padding:6}">
 	<columns>
 		<TablePane.Column width="1*" />
 	</columns>
-	
+
 	<TablePane.Row height="-1">
-		<Label text="%manageQuickMixInfo" styles="{padding:{bottom:5},color:'#999999',wrapText:'true'}" />
+		<Label text="%manageQuickMixInfo"
+			styles="{padding:{bottom:5},color:'#999999',wrapText:'true'}" />
 	</TablePane.Row>
 
 	<TablePane.Row height="1*">
 		<Border styles="{padding:5}">
 			<ScrollPane horizontalScrollBarPolicy="fill_to_capacity">
-	                <BoxPane bxml:id="stationsPane" orientation="vertical" styles="{padding:4, spacing:4}"/>
-	        </ScrollPane>
-        </Border>
+				<BoxPane bxml:id="stationsPane" orientation="vertical"
+					styles="{padding:4, spacing:4}" />
+			</ScrollPane>
+		</Border>
 	</TablePane.Row>
 
 	<TablePane.Row height="-1">
@@ -26,13 +29,16 @@
 
 			<TablePane.Row>
 				<BoxPane styles="{padding:{top:5}}">
-					<PushButton bxml:id="selectAllButton" buttonData="%selectAll" styles="{minimumAspectRatio:3}"/>
+					<PushButton bxml:id="selectAllButton" buttonData="%selectAll"
+						styles="{minimumAspectRatio:3}" />
 				</BoxPane>
 				<BoxPane styles="{padding:{top:5, left: 5}}">
-					<PushButton bxml:id="deselectAllButton" buttonData="%deselectAll" styles="{minimumAspectRatio:3}"/>
+					<PushButton bxml:id="deselectAllButton" buttonData="%deselectAll"
+						styles="{minimumAspectRatio:3}" />
 				</BoxPane>
 				<BoxPane styles="{horizontalAlignment:'right', padding:{top:5}}">
-					<PushButton bxml:id="submitButton" buttonData="%save" styles="{minimumAspectRatio:3}" action="submit" />
+					<PushButton bxml:id="submitButton" buttonData="%save"
+						styles="{minimumAspectRatio:3}" action="update-quickmix" />
 				</BoxPane>
 			</TablePane.Row>
 		</TablePane>

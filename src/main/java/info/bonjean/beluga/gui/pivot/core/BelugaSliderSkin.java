@@ -33,7 +33,8 @@ import org.apache.pivot.wtk.Slider;
 public class BelugaSliderSkin extends FixedTerraSliderSkin
 {
 	@Override
-	public boolean mouseWheel(Component componentArgument, ScrollType scrollType, int scrollAmount, int wheelRotation, int x, int y)
+	public boolean mouseWheel(Component componentArgument, ScrollType scrollType, int scrollAmount,
+			int wheelRotation, int x, int y)
 	{
 		// quick and dirty, we increase/decrease 10% of the value
 		Slider slider = (Slider) BelugaSliderSkin.this.getComponent();

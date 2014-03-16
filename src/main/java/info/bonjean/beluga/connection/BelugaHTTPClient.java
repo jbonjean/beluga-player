@@ -71,16 +71,20 @@ public class BelugaHTTPClient
 
 		PoolingClientConnectionManager poolingClientConnectionManager = null;
 		if (configuration.getDNSProxy().isEmpty())
-			poolingClientConnectionManager = new PoolingClientConnectionManager(SchemeRegistryFactory.createDefault());
+			poolingClientConnectionManager = new PoolingClientConnectionManager(
+					SchemeRegistryFactory.createDefault());
 		else
 		{
 			DNSProxy dnsProxy = DNSProxy.get(configuration.getDNSProxy());
 			dnsOverrider = new BelugaDNSResolver(dnsProxy);
-			poolingClientConnectionManager = new PoolingClientConnectionManager(SchemeRegistryFactory.createDefault(), dnsOverrider);
+			poolingClientConnectionManager = new PoolingClientConnectionManager(
+					SchemeRegistryFactory.createDefault(), dnsOverrider);
 		}
 		client = new DefaultHttpClient(poolingClientConnectionManager, httpParameters);
 		if (configuration.getDNSProxy().isEmpty() && !configuration.getProxyHost().isEmpty())
-			ConnRouteParams.setDefaultProxy(client.getParams(), new HttpHost(configuration.getProxyHost(), configuration.getProxyPort(), "http"));
+			ConnRouteParams
+					.setDefaultProxy(client.getParams(), new HttpHost(configuration.getProxyHost(),
+							configuration.getProxyPort(), "http"));
 	}
 
 	public static BelugaHTTPClient getInstance()
@@ -119,19 +123,24 @@ public class BelugaHTTPClient
 		throw new CommunicationException("communicationProblem", e);
 	}
 
-	public void blacklist(HttpResponse httpResponse) throws NoSuchFieldException, SecurityException, IllegalArgumentException,
-			IllegalAccessException, IllegalStateException, IOException
+	public void blacklist(HttpResponse httpResponse) throws NoSuchFieldException,
+			SecurityException, IllegalArgumentException, IllegalAccessException,
+			IllegalStateException, IOException
 	{
 		// this piece of code is not very reliable (reflection) but not critical
-		EofSensorInputStream eofSensorInputStream = (EofSensorInputStream) httpResponse.getEntity().getContent();
+		EofSensorInputStream eofSensorInputStream = (EofSensorInputStream) httpResponse.getEntity()
+				.getContent();
 
-		Field wrappedStreamField = eofSensorInputStream.getClass().getDeclaredField("wrappedStream");
+		Field wrappedStreamField = eofSensorInputStream.getClass()
+				.getDeclaredField("wrappedStream");
 		wrappedStreamField.setAccessible(true);
-		ContentLengthInputStream contentLengthInputStream = (ContentLengthInputStream) wrappedStreamField.get(eofSensorInputStream);
+		ContentLengthInputStream contentLengthInputStream = (ContentLengthInputStream) wrappedStreamField
+				.get(eofSensorInputStream);
 
 		Field inField = contentLengthInputStream.getClass().getDeclaredField("in");
 		inField.setAccessible(true);
-		SessionInputBuffer sessionInputBuffer = (SessionInputBuffer) inField.get(contentLengthInputStream);
+		SessionInputBuffer sessionInputBuffer = (SessionInputBuffer) inField
+				.get(contentLengthInputStream);
 
 		Field socketField = sessionInputBuffer.getClass().getDeclaredField("socket");
 		socketField.setAccessible(true);

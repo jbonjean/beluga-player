@@ -22,15 +22,15 @@ package info.bonjean.beluga.gui.pivot;
 import info.bonjean.beluga.client.BelugaState;
 import info.bonjean.beluga.client.PandoraPlaylist;
 import info.bonjean.beluga.configuration.BelugaConfiguration;
+import info.bonjean.beluga.event.PlaybackEvent;
 import info.bonjean.beluga.gui.PivotUI;
-import info.bonjean.beluga.gui.notification.Notification;
+import info.bonjean.beluga.player.MP3Player;
 import info.bonjean.beluga.response.Song;
+import info.bonjean.beluga.util.HTMLUtil;
 
+import java.io.IOException;
 import java.net.URL;
-import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
-
-import javazoom.jl.player.BelugaMP3Player;
 
 import org.apache.pivot.beans.BXML;
 import org.apache.pivot.beans.Bindable;
@@ -43,13 +43,15 @@ import org.apache.pivot.wtk.Meter;
 import org.apache.pivot.wtk.Slider;
 import org.apache.pivot.wtk.SliderValueListener;
 import org.apache.pivot.wtk.TablePane;
-import org.apache.pivot.wtk.content.ButtonDataRenderer;
+import org.bushe.swing.event.EventBus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
  * 
  * @author Julien Bonjean <julien@bonjean.info>
+ * 
+ * TODO: use more events to reduce coupling (play/pause).
  * 
  */
 public class PlayerUI extends TablePane implements Bindable
@@ -76,51 +78,8 @@ public class PlayerUI extends TablePane implements Bindable
 
 	private final BelugaState state = BelugaState.getInstance();
 	private final BelugaConfiguration configuration = BelugaConfiguration.getInstance();
-	private BelugaMP3Player mp3Player;
+	private MP3Player mp3Player;
 	private long duration;
-	private Future<?> animationFuture;
-
-	private Runnable animation = new Runnable()
-	{
-		private final static int DEFAULT_SIZE = 30;
-		private int currentSize = DEFAULT_SIZE;
-		private ButtonDataRenderer buttonDataRenderer;
-
-		private void setSize(int size)
-		{
-			currentSize = size;
-			buttonDataRenderer.setIconWidth(size);
-			buttonDataRenderer.setIconHeight(size);
-			ApplicationContext.queueCallback(new Runnable()
-			{
-				@Override
-				public void run()
-				{
-					pauseButton.repaint();
-				}
-			}, true);
-		}
-
-		@Override
-		public void run()
-		{
-			buttonDataRenderer = (ButtonDataRenderer) pauseButton.getDataRenderer();
-			while (true)
-			{
-				try
-				{
-					Thread.sleep(700);
-				}
-				catch (InterruptedException e)
-				{
-					setSize(DEFAULT_SIZE);
-					return;
-				}
-				setSize(currentSize == DEFAULT_SIZE ? DEFAULT_SIZE + 2 : DEFAULT_SIZE);
-			}
-
-		}
-	};
 
 	@Override
 	public void initialize(Map<String, Object> namespace, URL location, Resources resources)
@@ -139,7 +98,8 @@ public class PlayerUI extends TablePane implements Bindable
 			public void valueChanged(Slider slider, int previousValue)
 			{
 				if (mp3Player != null && mp3Player.getVolumeControl() != null)
-					mp3Player.getVolumeControl().setValue((int) mp3Player.getVolumeControl().getMaximum() - slider.getValue());
+					mp3Player.getVolumeControl().setValue(
+							(int) mp3Player.getVolumeControl().getMaximum() - slider.getValue());
 			}
 		});
 
@@ -158,20 +118,17 @@ public class PlayerUI extends TablePane implements Bindable
 
 	private String formatTime(long ms)
 	{
-		return String.format("%02d:%02d", TimeUnit.MILLISECONDS.toMinutes(ms),
-				TimeUnit.MILLISECONDS.toSeconds(ms) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(ms)));
+		return String.format(
+				"%02d:%02d",
+				TimeUnit.MILLISECONDS.toMinutes(ms),
+				TimeUnit.MILLISECONDS.toSeconds(ms)
+						- TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(ms)));
 	}
 
 	public void stopPlayer()
 	{
 		if (mp3Player != null)
 			mp3Player.close();
-	}
-
-	public void clearAnimation()
-	{
-		if (animationFuture != null && !animationFuture.isDone())
-			animationFuture.cancel(true);
 	}
 
 	public boolean isPaused()
@@ -184,10 +141,26 @@ public class PlayerUI extends TablePane implements Bindable
 		if (mp3Player != null)
 			mp3Player.pause();
 
-		if (mp3Player.isPaused())
-			animationFuture = ThreadPools.animationPool.submit(animation);
-		else
-			animationFuture.cancel(true);
+		EventBus.publish(new PlaybackEvent(mp3Player.isPaused() ? PlaybackEvent.Type.SONG_PAUSED
+				: PlaybackEvent.Type.SONG_RESUMED, null));
+
+		ApplicationContext.queueCallback(new Runnable()
+		{
+			@Override
+			public void run()
+			{
+				try
+				{
+					pauseButton.setButtonData(HTMLUtil.getSVGImage(mp3Player.isPaused() ? "/img/play.svg"
+							: "/img/pause.svg"));
+				}
+				catch (IOException e)
+				{
+					log.debug(e.getMessage());
+				}
+			}
+		}, false);
+
 	}
 
 	private class Playback implements Runnable
@@ -198,9 +171,9 @@ public class PlayerUI extends TablePane implements Bindable
 			int successiveFailures = 0;
 			while (true)
 			{
+				Song song = null;
 				try
 				{
-					final Song song;
 					if (successiveFailures == 0 || state.getSong() == null)
 						song = PandoraPlaylist.getInstance().getNext();
 					else
@@ -219,7 +192,7 @@ public class PlayerUI extends TablePane implements Bindable
 					try
 					{
 						log.info("openingAudioStream");
-						mp3Player = new BelugaMP3Player(song.getAdditionalAudioUrl());
+						mp3Player = new MP3Player(song.getAdditionalAudioUrl());
 						successiveFailures = 0;
 					}
 					catch (Exception e)
@@ -230,8 +203,10 @@ public class PlayerUI extends TablePane implements Bindable
 						{
 							log.error(e.getMessage(), e);
 							successiveFailures = 0;
-							mainWindow.disconnect();
-							return;
+							state.reset();
+							EventBus.publish(new PlaybackEvent(PlaybackEvent.Type.PLAYBACK_STOP,
+									null));
+							continue;
 						}
 						else
 						{
@@ -242,19 +217,22 @@ public class PlayerUI extends TablePane implements Bindable
 					}
 
 					duration = mp3Player.getDuration();
+					song.setDuration(duration);
 
 					// is there a better way to detect the Pandora skip
 					// protection (42sec length mp3)?
 					if (duration == 42569 && mp3Player.getBitrate() == 64000)
 					{
 						log.error("pandoraSkipProtection");
+						state.reset();
 						mp3Player.close();
-						mainWindow.disconnect();
-						return;
+						EventBus.publish(new PlaybackEvent(PlaybackEvent.Type.PLAYBACK_STOP, null));
+						continue;
 					}
 
 					// guess if it's an ad (not very reliable)
-					if (configuration.getAdsDetectionEnabled() && mp3Player.getBitrate() == 128000 && duration < 45000)
+					if (configuration.getAdsDetectionEnabled() && mp3Player.getBitrate() == 128000
+							&& duration < 45000)
 					{
 						log.debug("Ad detected");
 
@@ -268,23 +246,20 @@ public class PlayerUI extends TablePane implements Bindable
 							mp3Player.setSilence(true);
 					}
 
+					// notify song started
+					EventBus.publish(new PlaybackEvent(PlaybackEvent.Type.SONG_STARTED, song));
+
 					// update UI
 					ApplicationContext.queueCallback(new Runnable()
 					{
 						@Override
 						public void run()
 						{
-							// notify main window
-							mainWindow.playbackStarted(song);
-
 							// update song duration
 							totalTime.setText(formatTime(duration));
 
 							// update station name
 							stationName.setText(state.getStation().getStationName());
-
-							// display desktop notification
-							new Notification(state.getSong());
 						}
 					}, false);
 
@@ -298,10 +273,6 @@ public class PlayerUI extends TablePane implements Bindable
 					Thread.currentThread().setPriority(Thread.NORM_PRIORITY);
 
 					log.debug("Playback finished");
-					// notify main window playback is finished (will trigger
-					// last.fm update)
-					if (mp3Player != null)
-						mainWindow.playbackFinished(song, mp3Player.getPosition(), mp3Player.getDuration());
 				}
 				catch (Exception e)
 				{
@@ -309,13 +280,18 @@ public class PlayerUI extends TablePane implements Bindable
 				}
 				finally
 				{
+					if (mp3Player != null && song != null)
+					{
+						song.setPosition(mp3Player.getPosition());
+
+						// notify song finished
+						EventBus.publish(new PlaybackEvent(PlaybackEvent.Type.SONG_FINISHED, song));
+					}
+
 					// always stop the player when done
 					if (mp3Player != null)
 						mp3Player.close();
 					mp3Player = null;
-
-					// and clear the animation
-					clearAnimation();
 				}
 			}
 		}
@@ -353,14 +329,17 @@ public class PlayerUI extends TablePane implements Bindable
 						{
 							if (!volumeControl.isEnabled())
 							{
-								volumeControl.setStart((int) mp3Player.getVolumeControl().getMinimum());
-								volumeControl.setEnd((int) mp3Player.getVolumeControl().getMaximum());
+								volumeControl.setStart((int) mp3Player.getVolumeControl()
+										.getMinimum());
+								volumeControl.setEnd((int) mp3Player.getVolumeControl()
+										.getMaximum());
 
 								volumeControl.setEnabled(true);
 								PivotUI.setEnable(nextButton, true);
 								PivotUI.setEnable(pauseButton, true);
 							}
-							volumeControl.setValue((int) mp3Player.getVolumeControl().getMaximum() - (int) mp3Player.getVolumeControl().getValue());
+							volumeControl.setValue((int) mp3Player.getVolumeControl().getMaximum()
+									- (int) mp3Player.getVolumeControl().getValue());
 						}
 						else
 						{

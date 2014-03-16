@@ -1,5 +1,9 @@
 Beluga Player 0.8
 * Add basic ads detection
+* Add Home button
+* Fix reconnection bug
+* Enable anti-aliasing
+* Migrate to Apache Pivot 2.0.3
 
 Beluga Player 0.7
 

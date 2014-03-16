@@ -1,5 +1,6 @@
-<local:BookmarksUI styles="{verticalSpacing:1,horizontalSpacing:1,padding:10}" xmlns:bxml="http://pivot.apache.org/bxml"
-	xmlns:local="info.bonjean.beluga.gui.pivot" xmlns="org.apache.pivot.wtk" xmlns:content="org.apache.pivot.wtk.content">
+<local:BookmarksUI styles="{verticalSpacing:1,horizontalSpacing:1,padding:10}"
+	xmlns:bxml="http://pivot.apache.org/bxml" xmlns:local="info.bonjean.beluga.gui.pivot"
+	xmlns="org.apache.pivot.wtk" xmlns:content="org.apache.pivot.wtk.content">
 	<columns>
 		<TablePane.Column width="1*" />
 	</columns>

@@ -1,28 +1,38 @@
-<local:SongUI styles="{verticalSpacing:1,showHorizontalGridLines:true,horizontalSpacing:1}" xmlns:bxml="http://pivot.apache.org/bxml"
-	xmlns:local="info.bonjean.beluga.gui.pivot" xmlns="org.apache.pivot.wtk" xmlns:content="org.apache.pivot.wtk.content">
+<local:SongUI
+	styles="{verticalSpacing:1,showHorizontalGridLines:true,horizontalSpacing:1}"
+	xmlns:bxml="http://pivot.apache.org/bxml" xmlns:local="info.bonjean.beluga.gui.pivot"
+	xmlns="org.apache.pivot.wtk" xmlns:content="org.apache.pivot.wtk.content">
 	<columns>
 		<TablePane.Column width="252" />
 		<TablePane.Column width="1*" />
 	</columns>
 
 	<TablePane.Row height="-1">
-		<BoxPane orientation="vertical" styles="{horizontalAlignment:'center',padding: 10}">
-			<Border styles="{cornerRadii:5,color:'#dddddd',backgroundColor:'#eeeeda',padding:5}">
-				<ImageView bxml:id="albumCover" preferredHeight="225" preferredWidth="225" styles="{fill: 'true'}" />
+		<BoxPane orientation="vertical"
+			styles="{horizontalAlignment:'center',padding: 10}">
+			<Border
+				styles="{cornerRadii:5,color:'#dddddd',backgroundColor:'#eeeeda',padding:5}">
+				<ImageView bxml:id="albumCover" preferredHeight="225"
+					preferredWidth="225" styles="{fill: 'true'}" />
 			</Border>
-			<Label bxml:id="albumTitle" preferredWidth="230" styles="{horizontalAlignment:'center', font:{bold:true},wrapText:true, padding:{left:15}}" />
+			<Label bxml:id="albumTitle" preferredWidth="230"
+				styles="{horizontalAlignment:'center', font:{bold:true},wrapText:true, padding:{left:15}}" />
 		</BoxPane>
-		
-		<BoxPane orientation="vertical" styles="{fill:true,horizontalAlignment:'left',padding: 10}">
+
+		<BoxPane orientation="vertical"
+			styles="{fill:true,horizontalAlignment:'left',padding: 10}">
 			<Label bxml:id="songTitle" styles="{font:{bold:true, size:14},wrapText:true}" />
 			<Label bxml:id="artistName" styles="{font:{bold:true, size:13},wrapText:true}" />
 			<FillPane styles="{padding:10}">
-				<PushButton bxml:id="likeButton" buttonData="Like" action="like" />
+				<PushButton bxml:id="likeButton" buttonData="Like"
+					action="like" />
 				<PushButton bxml:id="banButton" buttonData="Ban" action="ban" />
-				<PushButton bxml:id="sleepButton" buttonData="Sleep" action="sleep" />
+				<PushButton bxml:id="sleepButton" buttonData="Sleep"
+					action="sleep" />
 			</FillPane>
-			<ScrollPane horizontalScrollBarPolicy="fill" verticalScrollBarPolicy="fill_to_capacity" preferredHeight="180">
-				<Label bxml:id="songTraits" textKey="%traits" />
+			<ScrollPane horizontalScrollBarPolicy="fill"
+				verticalScrollBarPolicy="fill_to_capacity" preferredHeight="180">
+				<Label bxml:id="songTraits" textKey="%traits" styles="{wrapText:'true'}" />
 			</ScrollPane>
 		</BoxPane>
 	</TablePane.Row>

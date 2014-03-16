@@ -48,7 +48,11 @@ public class Song
 	private boolean artistBookmarked = false;
 	private String albumArtBase64;
 	private List<String> focusTraits;
+
+	// extra info for internal usage
 	private boolean ad = false;
+	private long duration;
+	private long position;
 
 	public String getTrackToken()
 	{
@@ -250,5 +254,25 @@ public class Song
 	public void setAd(boolean ad)
 	{
 		this.ad = ad;
+	}
+
+	public long getDuration()
+	{
+		return duration;
+	}
+
+	public void setDuration(long duration)
+	{
+		this.duration = duration;
+	}
+
+	public long getPosition()
+	{
+		return position;
+	}
+
+	public void setPosition(long position)
+	{
+		this.position = position;
 	}
 }

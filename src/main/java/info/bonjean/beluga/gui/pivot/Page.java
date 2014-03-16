@@ -17,35 +17,33 @@
  * this program; if not, write to the Free Software Foundation, Inc., 51
  * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
-package info.bonjean.beluga.misc;
+package info.bonjean.beluga.gui.pivot;
 
-import info.bonjean.beluga.client.BelugaState;
-import info.bonjean.beluga.configuration.BelugaConfiguration;
-import info.bonjean.beluga.exception.CommunicationException;
-
-import java.io.IOException;
-import java.net.MalformedURLException;
-
-import javazoom.jl.decoder.JavaLayerException;
-import javazoom.jl.player.BelugaMP3Player;
+import org.apache.pivot.wtk.Component;
 
 /**
+ * 
  * @author Julien Bonjean <julien@bonjean.info>
  * 
  */
-public class MP3Player
+public class Page
 {
-	private static BelugaConfiguration configuration = BelugaConfiguration.getInstance();
+	private Component component;
+	private String name;
 
-	public static void main(String[] args) throws MalformedURLException, JavaLayerException, IOException, CommunicationException
+	public Page(String name, Component component)
 	{
-		BelugaState.getInstance().setVersion("dev");
-		configuration.load();
-		configuration.setDNSProxy("");
-		BelugaMP3Player mp3Player = new BelugaMP3Player("http://www.soundjay.com/button/beep-10.mp3");
-		mp3Player.setSilence(true);
-		mp3Player.play();
-		System.out.println("Playback finished");
+		this.name = name;
+		this.component = component;
 	}
 
+	public Component getComponent()
+	{
+		return component;
+	}
+
+	public String getName()
+	{
+		return name;
+	}
 }

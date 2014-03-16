@@ -50,9 +50,7 @@ public class MenuUI extends TablePane implements Bindable
 	private MenuButton stations;
 
 	private final BelugaState state = BelugaState.getInstance();
-	// keep track of stations entry enabled status
-	// as it will be manually enabled/disabled
-	boolean stationsEnabled = false;
+	boolean pandoraEnabled = false;
 
 	@Override
 	public void initialize(Map<String, Object> namespace, URL location, Resources resources)
@@ -69,17 +67,19 @@ public class MenuUI extends TablePane implements Bindable
 	public void setEnabled(boolean enabled)
 	{
 		for (Item item : menubar.getItems())
-			item.setEnabled(enabled);
+		{
+			if ("pandoraMenu".equals(item.getName()))
+				item.setEnabled(pandoraEnabled && enabled);
+			else
+				item.setEnabled(enabled);
+		}
 
-		if (enabled)
-			stations.setEnabled(stationsEnabled);
-		else
-			stations.setEnabled(false);
+		stations.setEnabled(pandoraEnabled && enabled);
 	}
 
-	public void setStationsEnabled(boolean enabled)
+	public void setPandoraEnabled(boolean enabled)
 	{
-		stationsEnabled = enabled;
+		pandoraEnabled = enabled;
 	}
 
 	public void updateStationsListMenu()
@@ -91,8 +91,9 @@ public class MenuUI extends TablePane implements Bindable
 		{
 			Menu.Item item = new Menu.Item(station.getStationName());
 			item.getUserData().put("station", station);
-			item.setAction(Action.getNamedActions().get("stationSelect"));
-			if (state.getStation() != null && state.getStation().getStationId().equals(station.getStationId()))
+			item.setAction(Action.getNamedActions().get("select-station"));
+			if (state.getStation() != null
+					&& state.getStation().getStationId().equals(station.getStationId()))
 				PivotUI.setEnable(item, false);
 			section.add(item);
 		}

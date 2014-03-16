@@ -19,52 +19,78 @@
  */
 package info.bonjean.beluga.gui.notification;
 
-import info.bonjean.beluga.exception.CommunicationException;
 import info.bonjean.beluga.response.Song;
 import info.bonjean.beluga.util.HTMLUtil;
+
+import java.awt.Dimension;
+import java.awt.Image;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.net.URL;
+
+import javax.imageio.ImageIO;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import ch.swingfx.twinkle.NotificationBuilder;
+import ch.swingfx.twinkle.style.INotificationStyle;
+import ch.swingfx.twinkle.style.theme.LightDefaultNotification;
+import ch.swingfx.twinkle.window.Positions;
+
+import com.kitfox.svg.app.beans.SVGIcon;
 
 /**
  * 
  * @author Julien Bonjean <julien@bonjean.info>
  * 
  */
-public class Notification extends NotificationBuilder
+public class Notification
 {
 	private static Logger log = LoggerFactory.getLogger(Notification.class);
 
-	public final static int TIMEOUT = 5000;
-
-	private String getMessage(Song song)
-	{
-		String message = HTMLUtil.getResourceAsString("/notification.html");
-		message = message.replace("@SONG_NAME@", HTMLUtil.shorten(song.getSongName(), 60));
-		message = message.replace("@ARTIST_NAME@", song.getArtistName());
-		try
-		{
-			String coverArt = song.getAlbumArtUrl().isEmpty() ? HTMLUtil.getResourceBase64("/img/beluga.200x200.png") : HTMLUtil
-					.getRemoteResourceBase64(song.getAlbumArtUrl());
-			message = message.replace("@COVER_ART@", coverArt);
-		}
-		catch (CommunicationException e)
-		{
-			log.error(e.getMessage(), e);
-		}
-		return message;
-	}
+	public final static int TIMEOUT = 3000;
 
 	public Notification(Song song)
 	{
-		super();
-		withStyle(new NotificationStyle());
-		withMessage(getMessage(song));
-		withFadeInAnimation(false);
-		withFadeOutAnimation(false);
-		withDisplayTime(TIMEOUT);
-		showNotification();
+		Icon icon = null;
+
+		if (!song.getAlbumArtUrl().isEmpty())
+		{
+			try
+			{
+				BufferedImage img = ImageIO.read(new URL(song.getAlbumArtUrl()));
+				icon = new ImageIcon(img.getScaledInstance(80, 80, Image.SCALE_SMOOTH));
+			}
+			catch (IOException e)
+			{
+				// nothing to do, fallback to the default icon
+				log.debug(e.getMessage());
+			}
+		}
+
+		if (icon == null)
+		{
+			try
+			{
+				SVGIcon svgIcon = HTMLUtil.getSVGIcon("/img/beluga-player.svg");
+				svgIcon.setPreferredSize(new Dimension(80, 80));
+				svgIcon.setScaleToFit(true);
+				icon = svgIcon;
+			}
+			catch (IOException e)
+			{
+				log.error(e.getMessage());
+			}
+		}
+
+		INotificationStyle style = new LightDefaultNotification();
+
+		new NotificationBuilder().withStyle(style)
+				.withTitle(HTMLUtil.shorten(song.getSongName(), 60))
+				.withMessage(song.getArtistName()).withIcon(icon).withDisplayTime(TIMEOUT)
+				.withPosition(Positions.NORTH_EAST).showNotification();
 	}
 }

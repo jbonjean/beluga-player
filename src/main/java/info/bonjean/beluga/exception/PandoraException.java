@@ -43,7 +43,8 @@ public class PandoraException extends BelugaException
 	@Override
 	public String toString()
 	{
-		return "Pandora returned an error when calling " + method + ", code: " + code + ", message: " + message;
+		return "Pandora returned an error when calling " + method + ", code: " + code
+				+ ", message: " + message;
 	}
 
 	public PandoraError getError()

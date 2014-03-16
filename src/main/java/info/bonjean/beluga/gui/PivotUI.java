@@ -54,7 +54,8 @@ public class PivotUI implements Application
 	{
 		try
 		{
-			Preferences preferences = Preferences.userNodeForPackage(DesktopApplicationContext.class);
+			Preferences preferences = Preferences
+					.userNodeForPackage(DesktopApplicationContext.class);
 			preferences = preferences.node(PivotUI.class.getName());
 			preferences.clear();
 			preferences.putInt("width", 600);
@@ -89,7 +90,8 @@ public class PivotUI implements Application
 	public void startup(Display display, Map<String, String> properties) throws Exception
 	{
 		BXMLSerializer bxmlSerializer = new BXMLSerializer();
-		window = (Window) bxmlSerializer.readObject(MainWindow.class.getResource(BXML_PATH + "main.bxml"), new Resources("i18n.messages"));
+		window = (Window) bxmlSerializer.readObject(MainWindow.class.getResource(BXML_PATH
+				+ "main.bxml"), new Resources("i18n.messages"));
 		window.open(display);
 	}
 

@@ -1,10 +1,12 @@
-<local:AboutUI styles="{verticalSpacing:1,horizontalSpacing:1,padding:10}" xmlns:bxml="http://pivot.apache.org/bxml"
-	xmlns:local="info.bonjean.beluga.gui.pivot" xmlns="org.apache.pivot.wtk" xmlns:content="org.apache.pivot.wtk.content">
+<local:AboutUI styles="{verticalSpacing:1,horizontalSpacing:1,padding:10}"
+	xmlns:bxml="http://pivot.apache.org/bxml" xmlns:local="info.bonjean.beluga.gui.pivot"
+	xmlns="org.apache.pivot.wtk" xmlns:content="org.apache.pivot.wtk.content">
 	<columns>
 		<TablePane.Column width="1*" />
 	</columns>
 	<TablePane.Row height="-1">
-		<Label bxml:id="belugaVersion" styles="{horizontalAlignment:'center',font:{bold:true,size:16},padding:{bottom:10}}" />
+		<Label bxml:id="belugaVersion"
+			styles="{horizontalAlignment:'center',font:{bold:true,size:16},padding:{bottom:10}}" />
 	</TablePane.Row>
 	<TablePane.Row height="1*">
 		<Border styles="{padding:5}">
@@ -15,7 +17,7 @@
 		<BoxPane orientation="horizontal" styles="{padding:10}">
 			<Label text="%projectWebsite" />
 			<Label text=":" />
-			<LinkButton action="openURL">
+			<LinkButton action="open-url">
 				<content:ButtonData text="http://code.google.com/p/beluga-player/" />
 				<userData url="http://code.google.com/p/beluga-player/" />
 			</LinkButton>

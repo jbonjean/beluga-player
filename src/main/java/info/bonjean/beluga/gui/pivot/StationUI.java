@@ -20,10 +20,7 @@
 package info.bonjean.beluga.gui.pivot;
 
 import info.bonjean.beluga.client.BelugaState;
-import info.bonjean.beluga.client.PandoraClient;
-import info.bonjean.beluga.exception.BelugaException;
 import info.bonjean.beluga.response.Feedback;
-import info.bonjean.beluga.util.HTMLUtil;
 
 import java.net.URL;
 import java.text.SimpleDateFormat;
@@ -33,10 +30,7 @@ import org.apache.pivot.beans.BXML;
 import org.apache.pivot.beans.Bindable;
 import org.apache.pivot.collections.Map;
 import org.apache.pivot.util.Resources;
-import org.apache.pivot.wtk.Action;
-import org.apache.pivot.wtk.ApplicationContext;
 import org.apache.pivot.wtk.BoxPane;
-import org.apache.pivot.wtk.Component;
 import org.apache.pivot.wtk.ImageView;
 import org.apache.pivot.wtk.Label;
 import org.apache.pivot.wtk.Menu;
@@ -54,62 +48,23 @@ public class StationUI extends TablePane implements Bindable
 {
 	private static Logger log = LoggerFactory.getLogger(StationUI.class);
 	@BXML
-	private ImageView stationCover;
+	protected ImageView stationCover;
 	@BXML
-	private Label stationName;
+	protected Label stationName;
 	@BXML
-	private Label stationCreationDate;
+	protected Label stationCreationDate;
 	@BXML
-	private Label stationGenres;
+	protected Label stationGenres;
 	@BXML
-	private BoxPane lovedSongsPane;
+	protected BoxPane lovedSongsPane;
 	@BXML
-	private BoxPane bannedSongsPane;
+	protected BoxPane bannedSongsPane;
 
 	private final BelugaState state = BelugaState.getInstance();
-	private final PandoraClient pandoraClient = PandoraClient.getInstance();
 	private Resources resources;
 
 	public StationUI()
 	{
-		Action.getNamedActions().put("deleteFeedback", new AsyncAction(MainWindow.getInstance())
-		{
-			@Override
-			public void asyncPerform(final Component source)
-			{
-				log.info("deletingFeedback");
-				final Feedback feedback = (Feedback) source.getUserData().get("feedback");
-				final MenuButton item = (MenuButton) source.getUserData().get("item");
-
-				try
-				{
-					pandoraClient.deleteFeedback(feedback.getFeedbackId());
-
-					// update song currently playing if necessary
-					if (feedback.isPositive())
-						updateSongFeedback(feedback.getFeedbackId());
-
-					// update UI
-					ApplicationContext.queueCallback(new Runnable()
-					{
-						@Override
-						public void run()
-						{
-							if (feedback.isPositive())
-								lovedSongsPane.remove(item);
-							else
-								bannedSongsPane.remove(item);
-						}
-					}, true);
-
-					log.info("feedbackDeleted");
-				}
-				catch (BelugaException e)
-				{
-					log.error(e.getMessage(), e);
-				}
-			}
-		});
 	}
 
 	@Override
@@ -119,7 +74,7 @@ public class StationUI extends TablePane implements Bindable
 		stationName.setText(state.getStation().getStationName());
 
 		if (state.getStation().getArtUrl().isEmpty())
-			stationCover.setImage(HTMLUtil.getDefaultCover());
+			stationCover.setImage("/img/beluga-player.svg");
 		else
 		{
 			try
@@ -128,11 +83,12 @@ public class StationUI extends TablePane implements Bindable
 			}
 			catch (Exception e)
 			{
-				stationCover.setImage(HTMLUtil.getDefaultCover());
+				stationCover.setImage("/img/beluga-player.svg");
 			}
 		}
 
-		stationCreationDate.setText(new SimpleDateFormat("yyyy-MM-dd").format(new Date(state.getStation().getDateCreated().getTime())));
+		stationCreationDate.setText(new SimpleDateFormat("yyyy-MM-dd").format(new Date(state
+				.getStation().getDateCreated().getTime())));
 		StringBuffer sb = new StringBuffer();
 		for (String genre : state.getStation().getGenre())
 		{
@@ -170,8 +126,9 @@ public class StationUI extends TablePane implements Bindable
 		link.setButtonData(sb.toString());
 		Menu menu = new Menu();
 		Menu.Section menuSection = new Menu.Section();
-		Menu.Item menuItem = new Menu.Item(resources.get(feedback.isPositive() ? "unlike" : "unban"));
-		menuItem.setAction("deleteFeedback");
+		Menu.Item menuItem = new Menu.Item(
+				resources.get(feedback.isPositive() ? "unlike" : "unban"));
+		menuItem.setAction("delete-feedback");
 		menuItem.getUserData().put("feedback", feedback);
 		menuItem.getUserData().put("item", link);
 		menuSection.add(menuItem);
@@ -186,7 +143,7 @@ public class StationUI extends TablePane implements Bindable
 	 * playing
 	 * 
 	 */
-	private void updateSongFeedback(String feedbackId)
+	protected void updateSongFeedback(String feedbackId)
 	{
 		if (state.getSong() == null)
 			return;
@@ -197,7 +154,8 @@ public class StationUI extends TablePane implements Bindable
 			{
 				// this is not bulletproof but should be good enough for 99% of
 				// cases.
-				if (state.getSong().getArtistName().equals(feedback.getArtistName()) && state.getSong().getSongName().equals(feedback.getSongName()))
+				if (state.getSong().getArtistName().equals(feedback.getArtistName())
+						&& state.getSong().getSongName().equals(feedback.getSongName()))
 				{
 					state.getSong().setSongRating(0);
 					log.debug("Current song feedback updated");

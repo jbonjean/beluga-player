@@ -4,5 +4,5 @@ Encoding=UTF-8
 Name=Beluga Player
 Comment=Beluga Player is a cross-platform open source Pandora client released under GPL3. 
 Exec=/usr/bin/beluga-player
-Icon=/usr/share/beluga-player/images/icon.png
+Icon=/usr/share/beluga-player/images/beluga-player.svg
 Terminal=false

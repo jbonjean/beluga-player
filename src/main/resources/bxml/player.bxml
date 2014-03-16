@@ -1,6 +1,7 @@
-<local:PlayerUI bxml:id="playerUI" styles="{verticalSpacing:1,horizontalSpacing:1}" xmlns:bxml="http://pivot.apache.org/bxml"
-	xmlns:local="info.bonjean.beluga.gui.pivot" xmlns="org.apache.pivot.wtk" xmlns:content="org.apache.pivot.wtk.content"
-	xmlns:effects="org.apache.pivot.wtk.effects">
+<local:PlayerUI bxml:id="playerUI"
+	styles="{verticalSpacing:1,horizontalSpacing:1}" xmlns:bxml="http://pivot.apache.org/bxml"
+	xmlns:local="info.bonjean.beluga.gui.pivot" xmlns="org.apache.pivot.wtk"
+	xmlns:content="org.apache.pivot.wtk.content" xmlns:effects="org.apache.pivot.wtk.effects">
 	<columns>
 		<TablePane.Column width="1*" />
 		<TablePane.Column width="40" />
@@ -16,7 +17,8 @@
 				<TablePane.Column width="-1" />
 			</columns>
 			<TablePane.Row height="22">
-				<Label TablePane.columnSpan="3" bxml:id="stationName" styles="{font:{bold:true},horizontalAlignment:'center',verticalAlignment:'center'}" />
+				<Label TablePane.columnSpan="3" bxml:id="stationName"
+					styles="{font:{bold:true},horizontalAlignment:'center',verticalAlignment:'center'}" />
 			</TablePane.Row>
 			<TablePane.Row height="1*">
 				<Label bxml:id="currentTime" styles="{padding:{left:5,right:5}}" />
@@ -32,24 +34,29 @@
 				<TablePane.Filler />
 			</TablePane.Row>
 		</TablePane>
-		<LinkButton bxml:id="pauseButton" action="pauseSong" tooltipText="Pause this song">
+		<LinkButton bxml:id="pauseButton" action="pause-song"
+			tooltipText="Pause this song">
 			<dataRenderer>
-				<content:ButtonDataRenderer orientation="vertical" iconWidth="30" iconHeight="30" fillIcon="true" />
+				<content:ButtonDataRenderer orientation="vertical"
+					iconWidth="30" iconHeight="30" fillIcon="true" />
 			</dataRenderer>
 			<buttonData>
 				<content:ButtonData icon="/img/pause.svg" />
 			</buttonData>
 		</LinkButton>
-		<LinkButton bxml:id="nextButton" action="nextSong" tooltipText="Skip this song">
+		<LinkButton bxml:id="nextButton" action="next-song"
+			tooltipText="Skip this song">
 			<dataRenderer>
-				<content:ButtonDataRenderer orientation="vertical" iconWidth="30" iconHeight="30" fillIcon="true" />
+				<content:ButtonDataRenderer orientation="vertical"
+					iconWidth="30" iconHeight="30" fillIcon="true" />
 			</dataRenderer>
 			<buttonData>
 				<content:ButtonData icon="/img/skip.svg" />
 			</buttonData>
 		</LinkButton>
 		<Border styles="{padding:8, thickness:0}">
-			<Slider bxml:id="volumeControl" range="{start:0, end:1}" value="0" enabled="false" orientation="vertical"
+			<Slider bxml:id="volumeControl" range="{start:0, end:1}"
+				value="0" enabled="false" orientation="vertical"
 				styles="{buttonBackgroundColor:'#000000',buttonBorderColor:'#eeeeee',trackColor:'#000000'}" />
 		</Border>
 	</TablePane.Row>

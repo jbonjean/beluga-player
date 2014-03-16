@@ -1,32 +1,45 @@
-<BoxPane styles="{fill:true,padding:10}" xmlns:bxml="http://pivot.apache.org/bxml" xmlns="org.apache.pivot.wtk" xmlns:content="org.apache.pivot.wtk.content"
+<BoxPane styles="{fill:true,padding:10}" xmlns:bxml="http://pivot.apache.org/bxml"
+	xmlns="org.apache.pivot.wtk" xmlns:content="org.apache.pivot.wtk.content"
 	orientation="vertical">
 	<BoxPane orientation="vertical" styles="{padding:10}">
 		<Label text="Pandora API Wiki" styles="{font:{bold:true}}" />
-		<LinkButton action="openURL">
-			<content:ButtonData text="http://pan-do-ra-api.wikia.com/wiki/Pan-do-ra_API_Wiki" />
+		<LinkButton action="open-url">
+			<content:ButtonData
+				text="http://pan-do-ra-api.wikia.com/wiki/Pan-do-ra_API_Wiki" />
 			<userData url="http://pan-do-ra-api.wikia.com/wiki/Pan-do-ra_API_Wiki" />
 		</LinkButton>
 	</BoxPane>
 	<BoxPane orientation="vertical" styles="{padding:10}">
-		<Label text="Skip Forward and Pause designed by Alex Fuller from the Noun Project " styles="{font:{bold:true}}" />
-		<LinkButton action="openURL">
+		<Label
+			text="Skip Forward, Play and Pause designed by Alex Fuller from the Noun Project "
+			styles="{font:{bold:true}}" />
+		<LinkButton action="open-url">
 			<content:ButtonData text="http://thenounproject.com/alexfuller" />
 			<userData url="http://thenounproject.com/alexfuller" />
 		</LinkButton>
 	</BoxPane>
 	<BoxPane orientation="vertical" styles="{padding:10}">
-		<Label text="Disconnect designed by Danny Amacher from the Noun Project " styles="{font:{bold:true}}" />
-		<LinkButton action="openURL">
+		<Label text="Disconnect designed by Danny Amacher from the Noun Project "
+			styles="{font:{bold:true}}" />
+		<LinkButton action="open-url">
 			<content:ButtonData text="http://thenounproject.com/dannyamacher" />
 			<userData url="http://thenounproject.com/dannyamacher" />
 		</LinkButton>
 	</BoxPane>
 	<BoxPane orientation="vertical" styles="{padding:10}">
-		<Label text="Beluga picture by Opals-On-BlackCom" styles="{font:{bold:true}}" />
-		<Label text="(Creative Commons Attribution 2.0 Generic license)" styles="{font:{bold:true}}" />
-		<LinkButton action="openURL">
-			<content:ButtonData text="http://www.flickr.com/photos/opals-on-black" />
-			<userData url="http://www.flickr.com/photos/opals-on-black" />
+		<Label text="Home designed by Edward Boatman from the Noun Project "
+			styles="{font:{bold:true}}" />
+		<LinkButton action="open-url">
+			<content:ButtonData text="http://thenounproject.com/edward" />
+			<userData url="http://thenounproject.com/edward" />
+		</LinkButton>
+	</BoxPane>
+	<BoxPane orientation="vertical" styles="{padding:10}">
+		<Label text="Pisces designed by Erika Jasso from the Noun Project "
+			styles="{font:{bold:true}}" />
+		<LinkButton action="open-url">
+			<content:ButtonData text="http://thenounproject.com/kikajasso" />
+			<userData url="http://thenounproject.com/kikajasso" />
 		</LinkButton>
 	</BoxPane>
 </BoxPane>

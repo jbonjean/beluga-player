@@ -19,6 +19,8 @@
  */
 package info.bonjean.beluga.gui.pivot;
 
+import info.bonjean.beluga.exception.BelugaException;
+
 import org.apache.pivot.wtk.Action;
 import org.apache.pivot.wtk.ApplicationContext;
 import org.apache.pivot.wtk.Component;
@@ -112,5 +114,6 @@ public abstract class AsyncAction extends Action
 	{
 	}
 
-	public abstract void asyncPerform(Component source);
+	// BelugaException thrown inside an action must only be logged
+	public abstract void asyncPerform(Component source) throws BelugaException;
 }

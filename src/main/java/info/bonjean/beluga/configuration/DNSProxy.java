@@ -30,8 +30,8 @@ import java.util.Map;
  */
 public enum DNSProxy
 {
-	NONE("", "None", "", ""), PROXY_DNS("proxydns", "Proxy DNS", "74.207.242.213", "50.116.28.138"), TUNLR("tunlr", "Tunlr", "69.197.169.9",
-			"192.95.16.109");
+	NONE("", "None", "", ""), PROXY_DNS("proxydns", "Proxy DNS", "74.207.242.213", "50.116.28.138"), TUNLR(
+			"tunlr", "Tunlr", "69.197.169.9", "192.95.16.109");
 	private String id;
 	private String name;
 	private String primaryServer;

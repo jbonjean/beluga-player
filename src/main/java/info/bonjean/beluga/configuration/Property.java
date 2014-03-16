@@ -26,10 +26,11 @@ package info.bonjean.beluga.configuration;
  */
 public enum Property
 {
-	CONFIGURATION_VERSION("configuration.version"), USER("user"), PASSWORD("password"), PROXY_HOST("proxy.host"), PROXY_PORT("proxy.port"), PROXY_DNS(
-			"proxy.dns"), DEFAULT_STATION("default.station"), THEME("theme"), LAST_FM_USERNAME("last.fm.username"), LAST_FM_PASSWORD(
-			"last.fm.password"), LAST_FM_ENABLED("last.fm.enabled"), ADS_DETECTION_ENABLED("ads.detection.enabled"), ADS_SILENCE_ENABLED(
-			"ads.silence.enabled");
+	CONFIGURATION_VERSION("configuration.version"), USER("user"), PASSWORD("password"), PROXY_HOST(
+			"proxy.host"), PROXY_PORT("proxy.port"), PROXY_DNS("proxy.dns"), DEFAULT_STATION(
+			"default.station"), THEME("theme"), LAST_FM_USERNAME("last.fm.username"), LAST_FM_PASSWORD(
+			"last.fm.password"), LAST_FM_ENABLED("last.fm.enabled"), ADS_DETECTION_ENABLED(
+			"ads.detection.enabled"), ADS_SILENCE_ENABLED("ads.silence.enabled");
 
 	private final String key;
 

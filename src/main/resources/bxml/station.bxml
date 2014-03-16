@@ -1,5 +1,6 @@
-<local:StationUI styles="{verticalSpacing:1,horizontalSpacing:1,padding:10}" xmlns:bxml="http://pivot.apache.org/bxml"
-	xmlns:local="info.bonjean.beluga.gui.pivot" xmlns="org.apache.pivot.wtk" xmlns:content="org.apache.pivot.wtk.content">
+<local:StationUI styles="{verticalSpacing:1,horizontalSpacing:1,padding:10}"
+	xmlns:bxml="http://pivot.apache.org/bxml" xmlns:local="info.bonjean.beluga.gui.pivot"
+	xmlns="org.apache.pivot.wtk" xmlns:content="org.apache.pivot.wtk.content">
 	<columns>
 		<TablePane.Column width="1*" />
 	</columns>
@@ -11,13 +12,18 @@
 					<TablePane.Column width="1*" />
 				</columns>
 				<TablePane.Row height="1*">
-					<BoxPane orientation="vertical" styles="{horizontalAlignment:'center',padding: 5}">
-						<Border styles="{cornerRadii:5,color:'#dddddd',backgroundColor:'#eeeeda',padding:5}">
-							<ImageView bxml:id="stationCover" preferredHeight="225" preferredWidth="225" styles="{fill: 'true'}" />
+					<BoxPane orientation="vertical"
+						styles="{horizontalAlignment:'center',padding: 5}">
+						<Border
+							styles="{cornerRadii:5,color:'#dddddd',backgroundColor:'#eeeeda',padding:5}">
+							<ImageView bxml:id="stationCover" preferredHeight="225"
+								preferredWidth="225" styles="{fill: 'true'}" />
 						</Border>
 					</BoxPane>
-					<BoxPane orientation="vertical" styles="{fill:true,horizontalAlignment:'left',padding: 10}">
-						<Label bxml:id="stationName" preferredWidth="230" styles="{horizontalAlignment:'center', font:{bold:true}, padding:10}" />
+					<BoxPane orientation="vertical"
+						styles="{fill:true,horizontalAlignment:'left',padding: 10}">
+						<Label bxml:id="stationName" preferredWidth="230"
+							styles="{horizontalAlignment:'center', font:{bold:true}, padding:10}" />
 						<Label bxml:id="stationCreationDate" textKey="%creation" />
 						<Label bxml:id="stationGenres" textKey="%genre" />
 					</BoxPane>

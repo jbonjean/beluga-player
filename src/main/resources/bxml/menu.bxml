@@ -1,5 +1,7 @@
-<local:MenuUI bxml:id="menuUI" styles="{verticalSpacing:1,horizontalSpacing:1}" xmlns:bxml="http://pivot.apache.org/bxml"
-	xmlns:local="info.bonjean.beluga.gui.pivot" xmlns="org.apache.pivot.wtk" xmlns:content="org.apache.pivot.wtk.content">
+<local:MenuUI bxml:id="menuUI"
+	styles="{verticalSpacing:1,horizontalSpacing:1}" xmlns:bxml="http://pivot.apache.org/bxml"
+	xmlns:local="info.bonjean.beluga.gui.pivot" xmlns="org.apache.pivot.wtk"
+	xmlns:content="org.apache.pivot.wtk.content">
 	<columns>
 		<TablePane.Column width="1*" />
 		<TablePane.Column width="-1" />
@@ -12,6 +14,7 @@
 			<MenuBar.Item buttonData="%file">
 				<Menu>
 					<Menu.Section>
+						<Menu.Item buttonData="%showMainScreen" action="back" />
 						<Menu.Item buttonData="%preferences" action="load">
 							<userData bxml="preferences" />
 						</Menu.Item>
@@ -21,25 +24,23 @@
 					</Menu.Section>
 				</Menu>
 			</MenuBar.Item>
-			<MenuBar.Item bxml:id="pandoraMenu" buttonData="%pandora">
+			<MenuBar.Item bxml:id="pandoraMenu" buttonData="%pandora"
+				enabled="false">
 				<Menu>
-					<Menu.Section>
-						<Menu.Item buttonData="%showMainScreen" action="load">
-							<userData bxml="song" />
-						</Menu.Item>
-					</Menu.Section>
 					<Menu.Section>
 						<Menu.Item buttonData="%createStation" action="load">
 							<userData bxml="search" />
 						</Menu.Item>
-						<Menu.Item bxml:id="deleteStationButton" buttonData="%deleteStation" action="deleteStation" />
-						<Menu.Item bxml:id="stationDetailsButton" buttonData="%stationDetails" action="load">
+						<Menu.Item bxml:id="deleteStationButton" buttonData="%deleteStation"
+							action="delete-station" />
+						<Menu.Item bxml:id="stationDetailsButton" buttonData="%stationDetails"
+							action="load">
 							<userData bxml="station" />
 						</Menu.Item>
 					</Menu.Section>
 					<Menu.Section>
-						<Menu.Item buttonData="%bookmarkSong" action="bookmarkSong" />
-						<Menu.Item buttonData="%bookmarkArtist" action="bookmarkArtist" />
+						<Menu.Item buttonData="%bookmarkSong" action="bookmark-song" />
+						<Menu.Item buttonData="%bookmarkArtist" action="bookmark-artist" />
 						<Menu.Item buttonData="%showBookmarks" action="load">
 							<userData bxml="bookmarks" />
 						</Menu.Item>
@@ -50,8 +51,8 @@
 						</Menu.Item>
 					</Menu.Section>
 					<Menu.Section>
-						<Menu.Item bxml:id="pandoraConnectButton" buttonData="%connectReconnect" action="startPandora" />
-						<Menu.Item bxml:id="pandoraDisconnectButton" buttonData="%disconnect" action="stopPandora" />
+						<Menu.Item bxml:id="pandoraDisconnectButton" buttonData="%disconnect"
+							action="stop-pandora" />
 					</Menu.Section>
 				</Menu>
 			</MenuBar.Item>
@@ -68,12 +69,22 @@
 				</Menu>
 			</MenuBar.Item>
 		</MenuBar>
-		<MenuButton bxml:id="stations" buttonData="%stations" styles="{toolbar:true,font:{bold:true}}" enabled="false">
+		<MenuButton bxml:id="stations" buttonData="%stations"
+			styles="{toolbar:true,font:{bold:true}}" enabled="false">
 			<Menu>
 				<Menu.Section>
 				</Menu.Section>
 			</Menu>
 		</MenuButton>
+		<LinkButton bxml:id="backButton" action="back" tooltipText="Home">
+			<dataRenderer>
+				<content:ButtonDataRenderer orientation="vertical"
+					iconWidth="13" iconHeight="13" fillIcon="true" />
+			</dataRenderer>
+			<buttonData>
+				<content:ButtonData icon="/img/house.svg" />
+			</buttonData>
+		</LinkButton>
 	</TablePane.Row>
 
 </local:MenuUI>

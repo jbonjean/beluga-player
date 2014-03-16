@@ -20,19 +20,23 @@
 package info.bonjean.beluga.util;
 
 import info.bonjean.beluga.exception.CommunicationException;
-import info.bonjean.beluga.gui.pivot.SongUI;
+import info.bonjean.beluga.gui.notification.Notification;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-
-import javax.imageio.ImageIO;
+import java.net.URI;
 
 import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.io.FilenameUtils;
+import org.apache.pivot.wtk.media.Drawing;
 import org.apache.pivot.wtk.media.Image;
-import org.apache.pivot.wtk.media.Picture;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.kitfox.svg.SVGCache;
+import com.kitfox.svg.SVGUniverse;
+import com.kitfox.svg.app.beans.SVGIcon;
 
 /**
  * 
@@ -42,25 +46,31 @@ import org.slf4j.LoggerFactory;
 public class HTMLUtil
 {
 	private static Logger log = LoggerFactory.getLogger(HTMLUtil.class);
-
-	public static Image getDefaultCover()
-	{
-		try
-		{
-			return new Picture(ImageIO.read(SongUI.class.getResourceAsStream("/img/beluga.200x200.png")));
-		}
-		catch (IOException e)
-		{
-			log.error(e.getMessage(), e);
-		}
-		return null;
-	}
+	private static final String SVG_NAME_PREFIX = "beluga_player_";
 
 	public static String shorten(String str, int length)
 	{
 		if (str.length() > length)
 			return str.substring(0, length - 3) + "...";
 		return str;
+	}
+
+	public static SVGIcon getSVGIcon(String resource) throws IOException
+	{
+		SVGUniverse universe = SVGCache.getSVGUniverse();
+		URI uri = universe.loadSVG(Notification.class.getResourceAsStream(resource),
+				SVG_NAME_PREFIX + FilenameUtils.getBaseName(resource));
+		SVGIcon svgIcon = new SVGIcon();
+		svgIcon.setSvgURI(uri);
+		return svgIcon;
+	}
+	
+	public static Image getSVGImage(String resource) throws IOException
+	{
+		SVGUniverse universe = SVGCache.getSVGUniverse();
+		URI uri = universe.loadSVG(Notification.class.getResourceAsStream(resource),
+				SVG_NAME_PREFIX + FilenameUtils.getBaseName(resource));
+		return new Drawing(universe.getDiagram(uri, true));
 	}
 
 	private static byte[] getResourceAsByteArray(String resource)

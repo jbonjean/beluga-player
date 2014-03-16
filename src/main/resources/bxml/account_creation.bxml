@@ -1,49 +1,54 @@
-<local:AccountCreationUI xmlns:bxml="http://pivot.apache.org/bxml" xmlns:local="info.bonjean.beluga.gui.pivot"
-	xmlns="org.apache.pivot.wtk" styles="{padding:6}">
+<local:AccountCreationUI xmlns:bxml="http://pivot.apache.org/bxml"
+	xmlns:local="info.bonjean.beluga.gui.pivot" xmlns="org.apache.pivot.wtk"
+	styles="{padding:6}">
 	<columns>
 		<TablePane.Column width="1*" />
 	</columns>
 
 	<TablePane.Row height="-1">
-		<Label text="%userCreationWarning" styles="{padding:{left:10,right:10,top:5,bottom:2},color:22,wrapText:'true',font:{bold:true}}" />
+		<Label text="%userCreationWarning"
+			styles="{padding:{left:10,right:10,top:5,bottom:2},color:22,wrapText:'true',font:{bold:true}}" />
 	</TablePane.Row>
 
 	<TablePane.Row height="-1">
-			<Form>
-				<Form.Section heading="%newPandoraAccount">
-					<BoxPane Form.label="%emailAddress">
-						<TextInput bxml:id="emailAddressInput" textSize="24" />
-					</BoxPane>
-					<BoxPane Form.label="%password">
-						<TextInput bxml:id="passwordInput" textSize="24" password="true" />
-					</BoxPane>
-					<BoxPane Form.label="%birthYear">
-						<TextInput bxml:id="birthYearInput" textSize="4" />
-					</BoxPane>
-					<BoxPane Form.label="%zipCode">
-						<TextInput bxml:id="zipCodeInput" textSize="5" />
-					</BoxPane>
+		<Form>
+			<Form.Section heading="%newPandoraAccount">
+				<BoxPane Form.label="%emailAddress">
+					<TextInput bxml:id="emailAddressInput" textSize="24" />
+				</BoxPane>
+				<BoxPane Form.label="%password">
+					<TextInput bxml:id="passwordInput" textSize="24"
+						password="true" />
+				</BoxPane>
+				<BoxPane Form.label="%birthYear">
+					<TextInput bxml:id="birthYearInput" textSize="4" />
+				</BoxPane>
+				<BoxPane Form.label="%zipCode">
+					<TextInput bxml:id="zipCodeInput" textSize="5" />
+				</BoxPane>
 
-					<BoxPane Form.label="%gender">
-						<bxml:define>
-							<ButtonGroup bxml:id="genderGroup" />
-						</bxml:define>
-						<RadioButton buttonData="%male" buttonGroup="$genderGroup" selected="true">
-							<userData value="male" />
-						</RadioButton>
-						<RadioButton buttonData="%female" buttonGroup="$genderGroup">
-							<userData value="female" />
-						</RadioButton>
-					</BoxPane>
-					<BoxPane Form.label="%emailOptIn">
-						<Checkbox bxml:id="emailOptInInput" />
-					</BoxPane>
-				</Form.Section>
-			</Form>
+				<BoxPane Form.label="%gender">
+					<bxml:define>
+						<ButtonGroup bxml:id="genderGroup" />
+					</bxml:define>
+					<RadioButton buttonData="%male" buttonGroup="$genderGroup"
+						selected="true">
+						<userData value="male" />
+					</RadioButton>
+					<RadioButton buttonData="%female" buttonGroup="$genderGroup">
+						<userData value="female" />
+					</RadioButton>
+				</BoxPane>
+				<BoxPane Form.label="%emailOptIn">
+					<Checkbox bxml:id="emailOptInInput" />
+				</BoxPane>
+			</Form.Section>
+		</Form>
 	</TablePane.Row>
 
 	<TablePane.Row height="-1">
-		<Label text="%acceptTermsOfUse" styles="{padding:{left:10,right:10,top:0,bottom:5},color:'#555555',wrapText:'true'}" />
+		<Label text="%acceptTermsOfUse"
+			styles="{padding:{left:10,right:10,top:0,bottom:5},color:'#555555',wrapText:'true'}" />
 	</TablePane.Row>
 
 	<TablePane.Row height="1*">
@@ -68,7 +73,8 @@
 					<Label bxml:id="errorArea" styles="{color:22}" />
 				</BoxPane>
 				<BoxPane styles="{horizontalAlignment:'right', verticalAlignment:'center'}">
-					<PushButton bxml:id="submitButton" buttonData="%create" styles="{minimumAspectRatio:3}" action="submit" />
+					<PushButton bxml:id="submitButton" buttonData="%create"
+						styles="{minimumAspectRatio:3}" action="create-account" />
 				</BoxPane>
 			</TablePane.Row>
 		</TablePane>
