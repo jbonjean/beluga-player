@@ -202,11 +202,6 @@
 		</dependency>
 		<dependency>
 			<groupId>org.apache.pivot</groupId>
-			<artifactId>pivot-web</artifactId>
-			<version>${pivot.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.pivot</groupId>
 			<artifactId>pivot-wtk-terra</artifactId>
 			<version>${pivot.version}</version>
 		</dependency>
