@@ -83,6 +83,7 @@ public class MP3Player
 		{
 			audio.flush();
 			audio.close();
+			audio = null;
 		}
 	}
 
@@ -134,13 +135,15 @@ public class MP3Player
 
 		// calculate the duration
 		duration = (songSize * 1000) / (bitrate / 8);
+
+		silence = false;
+		close = true;
+		pause = false;
+		active = false;
 	}
 
 	public FloatControl getVolumeControl()
 	{
-		if (close)
-			return null;
-
 		if (volumeControl == null && audio != null && audio instanceof JavaSoundAudioDevice)
 			volumeControl = ((JavaSoundAudioDevice) audio).getFloatControl();
 
