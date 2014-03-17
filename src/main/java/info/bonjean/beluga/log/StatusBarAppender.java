@@ -100,6 +100,10 @@ public final class StatusBarAppender extends AbstractAppender
 	@Override
 	public void append(LogEvent event)
 	{
+		// stop if we didn't receive the UI information
+		if (statusBarText == null || resources == null)
+			return;
+
 		display(event);
 	}
 
@@ -111,10 +115,6 @@ public final class StatusBarAppender extends AbstractAppender
 		// if no key, something bad happened
 		if (key == null)
 			key = "unknownMessage";
-
-		// we may not have received the resources yet
-		if (resources == null)
-			return ResourcesUtil.shorten(key, 80);
 
 		// try to translate it
 		String message = (String) resources.get(key);
