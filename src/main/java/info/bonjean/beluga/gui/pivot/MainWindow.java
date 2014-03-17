@@ -95,14 +95,14 @@ public class MainWindow extends Window implements Bindable
 
 		// give a reference of the status bar to the logger
 		StatusBarAppender.setLabel(statusBarText);
-		StatusBarAppender.setIcon(statusBarIcon);
+
 		// also give resource for message translation
 		StatusBarAppender.setResources(resources);
 
 		// load temporary screen
 		loadPage("welcome");
 
-		// ensure states aare up-to-date
+		// ensure states are up-to-date
 		setEnabled(true);
 
 		uiDispatcher.initialize();

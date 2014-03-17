@@ -21,7 +21,7 @@ package info.bonjean.beluga.gui.pivot;
 
 import info.bonjean.beluga.client.BelugaState;
 import info.bonjean.beluga.gui.PivotUI;
-import info.bonjean.beluga.util.HTMLUtil;
+import info.bonjean.beluga.util.ResourcesUtil;
 
 import java.net.URL;
 
@@ -69,7 +69,7 @@ public class SongUI extends TablePane implements Bindable
 	public void initialize(Map<String, Object> namespace, URL location, Resources resources)
 	{
 		songTitle.setText(state.getSong().getSongName());
-		albumTitle.setText(HTMLUtil.shorten(state.getSong().getAlbumName(), 80));
+		albumTitle.setText(ResourcesUtil.shorten(state.getSong().getAlbumName(), 80));
 		artistName.setText("by " + state.getSong().getArtistName());
 
 		StringBuffer focusTraits = new StringBuffer();

@@ -1,0 +1,28 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<configuration status='OFF' packages="info.bonjean.beluga.log">
+	<properties>
+		<property name="log.level">error</property>
+	</properties>
+	<appenders>
+		<Console name='Console' target='SYSTEM_OUT'>
+			<PatternLayout pattern='%d{HH:mm:ss} %-5level %logger{0} - %msg%n' />
+		</Console>
+		<StatusBar name="StatusBar">
+			<PatternLayout pattern='%d{HH:mm:ss} %-5level %logger{0} - %msg%n' />
+		</StatusBar>
+		<File name="LogFile" fileName="${sys:user.home}/.log/beluga/beluga-player.log">
+			<PatternLayout pattern='%d{HH:mm:ss} %-5level %logger{0} - %msg%n' />
+		</File>
+		<Async name="AsyncLogFile">
+			<AppenderRef ref="LogFile" />
+		</Async>
+	</appenders>
+	<loggers>
+		<logger name="info.bonjean.beluga.util.HTTPUtil" level="warn" />
+		<root level="debug">
+			<appender-ref ref='Console' level='${sys:log.level}'/>
+			<appender-ref ref='StatusBar' level="info" />
+			<appender-ref ref='AsyncLogFile' level="warn" />
+		</root>
+	</loggers>
+</configuration>

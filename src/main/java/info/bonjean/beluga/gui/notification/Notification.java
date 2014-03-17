@@ -20,7 +20,7 @@
 package info.bonjean.beluga.gui.notification;
 
 import info.bonjean.beluga.response.Song;
-import info.bonjean.beluga.util.HTMLUtil;
+import info.bonjean.beluga.util.ResourcesUtil;
 
 import java.awt.Dimension;
 import java.awt.Image;
@@ -75,7 +75,7 @@ public class Notification
 		{
 			try
 			{
-				SVGIcon svgIcon = HTMLUtil.getSVGIcon("/img/beluga-player.svg");
+				SVGIcon svgIcon = ResourcesUtil.getSVGIcon("/img/beluga-player.svg");
 				svgIcon.setPreferredSize(new Dimension(80, 80));
 				svgIcon.setScaleToFit(true);
 				icon = svgIcon;
@@ -89,7 +89,7 @@ public class Notification
 		INotificationStyle style = new LightDefaultNotification();
 
 		new NotificationBuilder().withStyle(style)
-				.withTitle(HTMLUtil.shorten(song.getSongName(), 60))
+				.withTitle(ResourcesUtil.shorten(song.getSongName(), 60))
 				.withMessage(song.getArtistName()).withIcon(icon).withDisplayTime(TIMEOUT)
 				.withPosition(Positions.NORTH_EAST).showNotification();
 	}

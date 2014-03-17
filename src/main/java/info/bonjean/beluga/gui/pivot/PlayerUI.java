@@ -26,7 +26,7 @@ import info.bonjean.beluga.event.PlaybackEvent;
 import info.bonjean.beluga.gui.PivotUI;
 import info.bonjean.beluga.player.MP3Player;
 import info.bonjean.beluga.response.Song;
-import info.bonjean.beluga.util.HTMLUtil;
+import info.bonjean.beluga.util.ResourcesUtil;
 
 import java.io.IOException;
 import java.net.URL;
@@ -154,7 +154,7 @@ public class PlayerUI extends TablePane implements Bindable
 			{
 				try
 				{
-					pauseButton.setButtonData(HTMLUtil.getSVGImage(mp3Player.isPaused() ? "/img/play.svg"
+					pauseButton.setButtonData(ResourcesUtil.getSVGImage(mp3Player.isPaused() ? "/img/play.svg"
 							: "/img/pause.svg"));
 				}
 				catch (IOException e)

@@ -43,9 +43,9 @@ import com.kitfox.svg.app.beans.SVGIcon;
  * @author Julien Bonjean <julien@bonjean.info>
  * 
  */
-public class HTMLUtil
+public class ResourcesUtil
 {
-	private static Logger log = LoggerFactory.getLogger(HTMLUtil.class);
+	private static Logger log = LoggerFactory.getLogger(ResourcesUtil.class);
 	private static final String SVG_NAME_PREFIX = "beluga_player_";
 
 	public static String shorten(String str, int length)
@@ -64,7 +64,7 @@ public class HTMLUtil
 		svgIcon.setSvgURI(uri);
 		return svgIcon;
 	}
-	
+
 	public static Image getSVGImage(String resource) throws IOException
 	{
 		SVGUniverse universe = SVGCache.getSVGUniverse();
@@ -79,7 +79,7 @@ public class HTMLUtil
 		InputStream bais;
 		try
 		{
-			bais = HTMLUtil.class.getResourceAsStream(resource);
+			bais = ResourcesUtil.class.getResourceAsStream(resource);
 			int c;
 			while ((c = bais.read()) != -1)
 			{

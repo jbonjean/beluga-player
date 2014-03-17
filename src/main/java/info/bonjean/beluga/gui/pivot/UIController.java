@@ -70,7 +70,7 @@ import org.slf4j.LoggerFactory;
  */
 public class UIController implements EventSubscriber<PlaybackEvent>
 {
-	private static Logger log = LoggerFactory.getLogger(SongUI.class);
+	private static Logger log = LoggerFactory.getLogger(UIController.class);
 	private static final BelugaState state = BelugaState.getInstance();
 	private static final PandoraClient pandoraClient = PandoraClient.getInstance();
 	private static final BelugaConfiguration configuration = BelugaConfiguration.getInstance();

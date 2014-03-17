@@ -1,152 +1,42 @@
-/*
- * Copyright (C) 2012, 2013, 2014 Julien Bonjean <julien@bonjean.info>
- * 
- * This file is part of Beluga Player.
- * 
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation; either version 3 of the License, or (at your option) any later
- * version.
- * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
- * 
- * You should have received a copy of the GNU General Public License along with
- * this program; if not, write to the Free Software Foundation, Inc., 51
- * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
- */
 package info.bonjean.beluga.log;
 
-import info.bonjean.beluga.exception.BelugaException;
 import info.bonjean.beluga.gui.pivot.ThreadPools;
-import info.bonjean.beluga.util.HTMLUtil;
+import info.bonjean.beluga.util.ResourcesUtil;
 
+import java.io.Serializable;
 import java.util.Date;
 
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.core.Filter;
+import org.apache.logging.log4j.core.Layout;
+import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.appender.AbstractAppender;
+import org.apache.logging.log4j.core.config.plugins.Plugin;
+import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
+import org.apache.logging.log4j.core.config.plugins.PluginElement;
+import org.apache.logging.log4j.core.config.plugins.PluginFactory;
+import org.apache.logging.log4j.core.helpers.Booleans;
+import org.apache.logging.log4j.core.layout.HTMLLayout;
 import org.apache.pivot.util.Resources;
 import org.apache.pivot.wtk.ApplicationContext;
-import org.apache.pivot.wtk.ImageView;
 import org.apache.pivot.wtk.Label;
 
-import ch.qos.logback.classic.Level;
-import ch.qos.logback.classic.spi.LoggingEvent;
-import ch.qos.logback.core.AppenderBase;
-
-/**
- * 
- * @author Julien Bonjean <julien@bonjean.info>
- * 
- */
-public class StatusBarAppender<E> extends AppenderBase<E>
+@Plugin(name = "StatusBar", category = "Core", elementType = "appender", printObject = true)
+public final class StatusBarAppender extends AbstractAppender
 {
 	private static final long LOG_MESSAGE_DURATION = 3 * 1000;
 
-	private static Label label = null;
-	@SuppressWarnings("unused")
-	private static ImageView icon = null;
-	private static Resources resources = null;
-
+	private static Label statusBarText;
+	private static Resources resources;
 	private long lastMessageDisplayTime = 0L;
-	private LoggingEvent messageDisplayed = null;
+	private LogEvent messageDisplayed = null;
 
-	private synchronized void doDisplayMessage(final LoggingEvent event)
+	protected StatusBarAppender(String name, Filter filter, Layout<? extends Serializable> layout,
+			boolean ignoreExceptions)
 	{
-		// add to the queue for the UI but we do not wait
-		// logging should not slow down everything
-		ApplicationContext.queueCallback(new Runnable()
-		{
-			@Override
-			public void run()
-			{
-				String message = formatMessage(event);
-				if (message != null)
-				{
-					label.setText(message);
-					if (event.getLevel().isGreaterOrEqual(Level.ERROR))
-						label.getStyles().put("color", "#ff0000");
-					else
-						label.getStyles().put("color", "#000000");
-				}
-			}
-		}, false);
+		super(name, filter, layout, ignoreExceptions);
 
-		lastMessageDisplayTime = new Date().getTime();
-		messageDisplayed = event;
-	}
-
-	private String formatMessage(LoggingEvent event)
-	{
-		String message = null;
-
-		// if we got resources, we try to translate it
-		if (resources != null)
-		{
-			// if we received an exception
-			if (event.getThrowableProxy() != null)
-			{
-				try
-				{
-					@SuppressWarnings("rawtypes")
-					Class clazz = Class.forName(event.getThrowableProxy().getClassName());
-
-					// use BelugaException message as key and translate it
-					if (BelugaException.class.isAssignableFrom(clazz))
-					{
-						String key = event.getThrowableProxy().getMessage();
-						message = (String) resources.get(key);
-					}
-				}
-				catch (ClassNotFoundException e)
-				{
-				}
-			}
-			// no exception, this is a single text key and should be
-			// translatable
-			else
-				message = (String) resources.get(event.getMessage());
-		}
-
-		// if no message yet, use the default
-		if (message == null)
-			message = event.getMessage();
-
-		if (message != null)
-			message = HTMLUtil.shorten(message, 80);
-
-		return message;
-	}
-
-	public synchronized boolean displayMessage(LoggingEvent event)
-	{
-		// if no message currently displayed
-		if (messageDisplayed == null)
-		{
-			doDisplayMessage(event);
-			return true;
-		}
-
-		// if this is at least as important as what we currently display
-		if (event.getLevel().isGreaterOrEqual(messageDisplayed.getLevel()))
-		{
-			doDisplayMessage(event);
-			return true;
-		}
-
-		// if current message expired
-		if (lastMessageDisplayTime + LOG_MESSAGE_DURATION < new Date().getTime())
-		{
-			doDisplayMessage(event);
-			return true;
-		}
-
-		// the message is discarded
-		return false;
-	}
-
-	public StatusBarAppender()
-	{
+		// start the messages expiration thread
 		ThreadPools.statusPool.execute(new Runnable()
 		{
 			@Override
@@ -165,7 +55,7 @@ public class StatusBarAppender<E> extends AppenderBase<E>
 					// if there is a message currently displayed and it's not an
 					// error
 					if (messageDisplayed != null
-							&& !messageDisplayed.getLevel().isGreaterOrEqual(Level.ERROR))
+							&& !messageDisplayed.getLevel().isAtLeastAsSpecificAs(Level.ERROR))
 					{
 						// and it is expired
 						if (lastMessageDisplayTime + LOG_MESSAGE_DURATION < new Date().getTime())
@@ -176,7 +66,7 @@ public class StatusBarAppender<E> extends AppenderBase<E>
 								@Override
 								public void run()
 								{
-									label.setText("");
+									statusBarText.setText("");
 								}
 							}, true);
 						}
@@ -186,32 +76,114 @@ public class StatusBarAppender<E> extends AppenderBase<E>
 		});
 	}
 
-	@Override
-	protected void append(final E eventObject)
+	@PluginFactory
+	public static StatusBarAppender createAppender(@PluginAttribute("name") final String name,
+			@PluginElement("Layout") Layout<? extends Serializable> layout,
+			@PluginElement("Filter") Filter filter,
+			@PluginAttribute("ignoreExceptions") final String ignore)
 	{
-		// UI not ready
-		if (label == null)
-			return;
+		if (name == null)
+		{
+			LOGGER.error("No name provided for SMTPAppender");
+			return null;
+		}
 
-		// if not a loggingevent, what is it?
-		if (!(eventObject instanceof LoggingEvent))
-			return;
+		if (layout == null)
+		{
+			layout = HTMLLayout.createLayout(null, null, null, null, null, null);
+		}
+		final boolean ignoreExceptions = Booleans.parseBoolean(ignore, true);
 
-		displayMessage((LoggingEvent) eventObject);
+		return new StatusBarAppender(name, filter, layout, ignoreExceptions);
 	}
 
-	public static void setLabel(Label label)
+	@Override
+	public void append(LogEvent event)
 	{
-		StatusBarAppender.label = label;
+		display(event);
+	}
+
+	private String formatMessage(LogEvent event)
+	{
+		// retrieve the original message
+		String key = event.getMessage().getFormattedMessage();
+
+		// if no key, something bad happened
+		if (key == null)
+			key = "unknownMessage";
+
+		// we may not have received the resources yet
+		if (resources == null)
+			return ResourcesUtil.shorten(key, 80);
+
+		// try to translate it
+		String message = (String) resources.get(key);
+
+		// if the translation failed, use the original message
+		if (message == null)
+			message = key;
+
+		// return the shorten the message
+		return ResourcesUtil.shorten(message, 80);
+	}
+
+	public boolean display(LogEvent event)
+	{
+		// if no message currently displayed
+		if (messageDisplayed == null)
+		{
+			doDisplay(event);
+			return true;
+		}
+
+		// if this is at least as important as what we currently display
+		if (event.getLevel().isAtLeastAsSpecificAs(messageDisplayed.getLevel()))
+		{
+			doDisplay(event);
+			return true;
+		}
+
+		// if current message expired
+		if (lastMessageDisplayTime + LOG_MESSAGE_DURATION < new Date().getTime())
+		{
+			doDisplay(event);
+			return true;
+		}
+
+		// the message is discarded
+		return false;
+	}
+
+	public void doDisplay(final LogEvent event)
+	{
+		lastMessageDisplayTime = new Date().getTime();
+		messageDisplayed = event;
+
+		ApplicationContext.queueCallback(new Runnable()
+		{
+			@Override
+			public void run()
+			{
+				String message = formatMessage(event);
+				if (message != null)
+				{
+					statusBarText.setText(message);
+					if (event.getLevel().isAtLeastAsSpecificAs(Level.ERROR))
+						statusBarText.getStyles().put("color", "#ff0000");
+					else
+						statusBarText.getStyles().put("color", "#000000");
+				}
+			}
+		}, false);
+	}
+
+	public static void setLabel(Label statusBarText)
+	{
+		StatusBarAppender.statusBarText = statusBarText;
 	}
 
 	public static void setResources(Resources resources)
 	{
 		StatusBarAppender.resources = resources;
-	}
-
-	public static void setIcon(ImageView icon)
-	{
-		StatusBarAppender.icon = icon;
 	}
 }

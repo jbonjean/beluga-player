@@ -54,7 +54,7 @@ public class BelugaDNSResolver implements DnsResolver
 
 	public BelugaDNSResolver(DNSProxy dnsProxy)
 	{
-		if (System.getProperty("debug") != null)
+		if ("debug".equals(System.getProperty("log.level")))
 			Options.set("verbose", "true");
 		try
 		{
