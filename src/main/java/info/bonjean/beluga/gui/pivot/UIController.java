@@ -808,7 +808,7 @@ public class UIController implements EventSubscriber<PlaybackEvent>
 		Song song = playbackEvent.getSong();
 		switch (playbackEvent.getType())
 		{
-			case SONG_STARTED:
+			case SONG_START:
 				// reload song page only if currently displayed
 				if (state.getPage().getName().equals("song")
 						|| state.getPage().getName().equals("welcome"))
@@ -816,7 +816,7 @@ public class UIController implements EventSubscriber<PlaybackEvent>
 				// send a desktop notification
 				new Notification(state.getSong());
 				break;
-			case SONG_FINISHED:
+			case SONG_FINISH:
 				log.debug("Played " + song.getPosition() + " of " + song.getDuration());
 				// scrobble with last.fm
 				LastFMSession.getInstance().scrobbleTrack(song);

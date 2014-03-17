@@ -32,6 +32,8 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.concurrent.TimeUnit;
 
+import javazoom.jl.decoder.JavaLayerException;
+
 import org.apache.pivot.beans.BXML;
 import org.apache.pivot.beans.Bindable;
 import org.apache.pivot.collections.Map;
@@ -52,6 +54,7 @@ import org.slf4j.LoggerFactory;
  * @author Julien Bonjean <julien@bonjean.info>
  * 
  * TODO: use more events to reduce coupling (play/pause).
+ * TODO: redesign the main thread integration with the player.
  * 
  */
 public class PlayerUI extends TablePane implements Bindable
@@ -78,7 +81,7 @@ public class PlayerUI extends TablePane implements Bindable
 
 	private final BelugaState state = BelugaState.getInstance();
 	private final BelugaConfiguration configuration = BelugaConfiguration.getInstance();
-	private MP3Player mp3Player;
+	private final MP3Player mp3Player = new MP3Player();
 	private long duration;
 
 	@Override
@@ -97,7 +100,7 @@ public class PlayerUI extends TablePane implements Bindable
 			@Override
 			public void valueChanged(Slider slider, int previousValue)
 			{
-				if (mp3Player != null && mp3Player.getVolumeControl() != null)
+				if (mp3Player.isActive() && mp3Player.getVolumeControl() != null)
 					mp3Player.getVolumeControl().setValue(
 							(int) mp3Player.getVolumeControl().getMaximum() - slider.getValue());
 			}
@@ -127,22 +130,22 @@ public class PlayerUI extends TablePane implements Bindable
 
 	public void stopPlayer()
 	{
-		if (mp3Player != null)
-			mp3Player.close();
+		if (mp3Player.isActive())
+			mp3Player.release();
 	}
 
 	public boolean isPaused()
 	{
-		return mp3Player != null && mp3Player.isPaused();
+		return mp3Player.isActive() && mp3Player.isPaused();
 	}
 
 	public void pausePlayer()
 	{
-		if (mp3Player != null)
+		if (mp3Player.isActive())
 			mp3Player.pause();
 
-		EventBus.publish(new PlaybackEvent(mp3Player.isPaused() ? PlaybackEvent.Type.SONG_PAUSED
-				: PlaybackEvent.Type.SONG_RESUMED, null));
+		EventBus.publish(new PlaybackEvent(mp3Player.isPaused() ? PlaybackEvent.Type.SONG_PAUSE
+				: PlaybackEvent.Type.SONG_RESUME, null));
 
 		ApplicationContext.queueCallback(new Runnable()
 		{
@@ -169,6 +172,14 @@ public class PlayerUI extends TablePane implements Bindable
 		public void run()
 		{
 			int successiveFailures = 0;
+			try
+			{
+				mp3Player.openAudioDevice();
+			}
+			catch (JavaLayerException e)
+			{
+				log.error("cannotOpenAudioDevice", e);
+			}
 			while (true)
 			{
 				Song song = null;
@@ -192,7 +203,7 @@ public class PlayerUI extends TablePane implements Bindable
 					try
 					{
 						log.info("openingAudioStream");
-						mp3Player = new MP3Player(song.getAdditionalAudioUrl());
+						mp3Player.loadSong(song.getAdditionalAudioUrl());
 						successiveFailures = 0;
 					}
 					catch (Exception e)
@@ -225,7 +236,7 @@ public class PlayerUI extends TablePane implements Bindable
 					{
 						log.error("pandoraSkipProtection");
 						state.reset();
-						mp3Player.close();
+						mp3Player.release();
 						EventBus.publish(new PlaybackEvent(PlaybackEvent.Type.PLAYBACK_STOP, null));
 						continue;
 					}
@@ -247,7 +258,7 @@ public class PlayerUI extends TablePane implements Bindable
 					}
 
 					// notify song started
-					EventBus.publish(new PlaybackEvent(PlaybackEvent.Type.SONG_STARTED, song));
+					EventBus.publish(new PlaybackEvent(PlaybackEvent.Type.SONG_START, song));
 
 					// update UI
 					ApplicationContext.queueCallback(new Runnable()
@@ -280,18 +291,16 @@ public class PlayerUI extends TablePane implements Bindable
 				}
 				finally
 				{
-					if (mp3Player != null && song != null)
+					if (mp3Player.isActive())
 					{
 						song.setPosition(mp3Player.getPosition());
 
 						// notify song finished
-						EventBus.publish(new PlaybackEvent(PlaybackEvent.Type.SONG_FINISHED, song));
+						EventBus.publish(new PlaybackEvent(PlaybackEvent.Type.SONG_FINISH, song));
 					}
 
 					// always stop the player when done
-					if (mp3Player != null)
-						mp3Player.close();
-					mp3Player = null;
+					mp3Player.release();
 				}
 			}
 		}
@@ -313,7 +322,7 @@ public class PlayerUI extends TablePane implements Bindable
 					e.printStackTrace();
 				}
 
-				if (mp3Player == null)
+				if (!mp3Player.isActive())
 					continue;
 
 				final long position = mp3Player.getPosition();

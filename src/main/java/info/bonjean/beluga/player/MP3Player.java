@@ -48,8 +48,6 @@ import org.slf4j.LoggerFactory;
  * 
  * @author Julien Bonjean <julien@bonjean.info>
  * 
- * TODO: keep audio device open between songs.
- * 
  */
 public class MP3Player
 {
@@ -61,14 +59,38 @@ public class MP3Player
 	private AudioDevice audio;
 	private boolean close = true;
 	private boolean pause = false;
-	private boolean started = false;
+	private boolean active = false;
 	private long duration;
 	private HttpGet httpGet;
 	private int bitrate;
 	private FloatControl volumeControl;
 	private boolean silence = false;
 
-	public MP3Player(String url) throws JavaLayerException, MalformedURLException, IOException,
+	public void openAudioDevice() throws JavaLayerException
+	{
+		if (audio != null)
+		{
+			log.error("audioDeviceAlreadyOpen");
+			return;
+		}
+		FactoryRegistry r = FactoryRegistry.systemRegistry();
+		audio = r.createAudioDevice();
+	}
+
+	public void closeAudioDevice()
+	{
+		if (audio != null)
+		{
+			audio.flush();
+			audio.close();
+		}
+	}
+
+	public MP3Player()
+	{
+	}
+
+	public void loadSong(String url) throws JavaLayerException, MalformedURLException, IOException,
 			CommunicationException
 	{
 		httpGet = new HttpGet(url);
@@ -76,7 +98,7 @@ public class MP3Player
 
 		if (httpResponse.getStatusLine().getStatusCode() != HttpStatus.SC_OK)
 		{
-			close();
+			release();
 			log.debug("Got response: " + httpResponse.getStatusLine().getReasonPhrase());
 
 			if (httpResponse.getStatusLine().getStatusCode() == HttpStatus.SC_FORBIDDEN)
@@ -99,12 +121,6 @@ public class MP3Player
 		cachedInputStream = new CachedInputStream(httpResponse.getEntity());
 
 		bitstream = new Bitstream(cachedInputStream);
-		decoder = new Decoder();
-
-		FactoryRegistry r = FactoryRegistry.systemRegistry();
-		audio = r.createAudioDevice();
-
-		audio.open(decoder);
 
 		// get the first frame header to get bitrate
 		Header frame = bitstream.readFrame();
@@ -134,48 +150,57 @@ public class MP3Player
 	public void play() throws JavaLayerException
 	{
 		close = false;
-		started = true;
-		while (decodeFrame())
+		active = true;
+		decoder = new Decoder();
+		audio.open(decoder);
+		try
 		{
-			while (pause)
+			while (decodeFrame())
 			{
-				try
+				while (pause)
 				{
-					Thread.sleep(100);
-				}
-				catch (InterruptedException e)
-				{
-					break;
+					try
+					{
+						Thread.sleep(100);
+					}
+					catch (InterruptedException e)
+					{
+						break;
+					}
 				}
 			}
 		}
+		catch (JavaLayerException e)
+		{
+			active = false;
+			throw e;
+		}
+		audio.flush();
 		cleanResources();
 	}
 
 	private void cleanResources()
 	{
-		if (audio != null)
-		{
-			audio.flush();
-			audio.close();
-		}
+		active = false;
 		try
 		{
-			bitstream.close();
+			if (bitstream != null)
+				bitstream.close();
 		}
 		catch (BitstreamException e)
 		{
 			log.debug(e.getMessage());
 		}
 		// clean up http connection
-		httpGet.releaseConnection();
+		if (httpGet != null)
+			httpGet.releaseConnection();
 	}
 
-	public void close()
+	public void release()
 	{
 		close = true;
 		pause = false;
-		if (!started)
+		if (!active)
 			cleanResources();
 	}
 
@@ -255,5 +280,10 @@ public class MP3Player
 	public void setSilence(boolean silence)
 	{
 		this.silence = silence;
+	}
+
+	public boolean isActive()
+	{
+		return active;
 	}
 }

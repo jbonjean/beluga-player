@@ -30,7 +30,7 @@ public class PlaybackEvent
 {
 	public enum Type
 	{
-		SONG_STARTED, SONG_PAUSED, SONG_RESUMED, SONG_FINISHED, PLAYBACK_STOP;
+		SONG_START, SONG_PAUSE, SONG_RESUME, SONG_FINISH, PLAYBACK_STOP;
 	}
 
 	private Song song;
