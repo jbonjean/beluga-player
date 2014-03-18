@@ -36,7 +36,7 @@ public class Main
 	{
 		String version = Main.class.getPackage().getImplementationVersion();
 		if (version == null)
-			version = "(dev)";
+			version = BelugaConfiguration.CONFIGURATION_DEFAULT_VERSION;
 
 		System.out.println("Beluga Player " + version);
 		if (args.length == 1 && args[0].equals("-version"))

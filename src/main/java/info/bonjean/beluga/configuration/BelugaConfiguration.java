@@ -39,6 +39,7 @@ import org.slf4j.LoggerFactory;
 public class BelugaConfiguration
 {
 	private static Logger log = LoggerFactory.getLogger(BelugaConfiguration.class);
+	public static final String CONFIGURATION_DEFAULT_VERSION = "(dev)";
 	private static final String CONFIGURATION_DIRECTORY = System.getProperty("user.home")
 			+ "/.config/beluga";
 	private static final String CONFIGURATION_FILE = CONFIGURATION_DIRECTORY
@@ -141,7 +142,7 @@ public class BelugaConfiguration
 		}
 
 		// do properties migration if necessary
-		if (!BelugaState.getInstance().getVersion().equals("(dev)"))
+		if (!BelugaState.getInstance().getVersion().equals(CONFIGURATION_DEFAULT_VERSION))
 		{
 			float configurationVersion = 0.5f;
 			float belugaVersion = 0.1f;

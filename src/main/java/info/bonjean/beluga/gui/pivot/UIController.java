@@ -637,7 +637,11 @@ public class UIController implements EventSubscriber<PlaybackEvent>
 						.isSelected());
 				configuration.setAdsSilenceEnabled(preferencesUI.adsEnableSilentCheckbox
 						.isSelected());
-				configuration.setConfigurationVersion(BelugaState.getInstance().getVersion());
+
+				if (!BelugaState.getInstance().getVersion()
+						.equals(BelugaConfiguration.CONFIGURATION_DEFAULT_VERSION))
+					configuration.setConfigurationVersion(BelugaState.getInstance().getVersion());
+
 				configuration.store();
 
 				log.info("preferencesUpdated");
