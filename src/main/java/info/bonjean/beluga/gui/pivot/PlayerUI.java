@@ -83,9 +83,10 @@ public class PlayerUI extends TablePane implements Bindable, EventSubscriber<Pan
 	private final BelugaState state = BelugaState.getInstance();
 	private final BelugaConfiguration configuration = BelugaConfiguration.getInstance();
 	private final MP3Player mp3Player = new MP3Player();
+	private static final int UI_REFRESH_INTERVAL = 200;
 	private long duration;
-	private Future<?> playerUISyncThread;
-	private Future<?> playbackThread;
+	private Future<?> playerUISyncFuture;
+	private Future<?> playbackThreadFuture;
 	private boolean active;
 
 	@Override
@@ -126,8 +127,8 @@ public class PlayerUI extends TablePane implements Bindable, EventSubscriber<Pan
 			active = true;
 
 			// start the playback thread
-			if (playbackThread == null || playbackThread.isDone())
-				playbackThread = ThreadPools.playbackPool.submit(new Playback());
+			if (playbackThreadFuture == null || playbackThreadFuture.isDone())
+				playbackThreadFuture = ThreadPools.playbackPool.submit(new Playback());
 		}
 		else
 		{
@@ -139,13 +140,13 @@ public class PlayerUI extends TablePane implements Bindable, EventSubscriber<Pan
 			// stop the playback thread
 			try
 			{
-				if (playbackThread != null)
-					playbackThread.get(5, TimeUnit.SECONDS);
+				if (playbackThreadFuture != null)
+					playbackThreadFuture.get(5, TimeUnit.SECONDS);
 			}
 			catch (Exception e)
 			{
 				log.error(e.getMessage(), e);
-				playbackThread.cancel(true);
+				playbackThreadFuture.cancel(true);
 			}
 		}
 
@@ -196,6 +197,40 @@ public class PlayerUI extends TablePane implements Bindable, EventSubscriber<Pan
 
 	}
 
+	private Runnable syncUI = new Runnable()
+	{
+		@Override
+		public void run()
+		{
+			if (!mp3Player.isActive())
+				return;
+
+			final long position = mp3Player.getPosition();
+			final float progressValue = position / (float) duration;
+			final float cacheProgressValue = mp3Player.getCachePosition() / (float) duration;
+
+			// update song position (playback can stop anytime)
+			state.getSong().setPosition(position);
+
+			ApplicationContext.queueCallback(new Runnable()
+			{
+				@Override
+				public void run()
+				{
+					// update volume value (may have been changed from
+					// outside)
+					volumeControl.setValue((int) mp3Player.getVolumeControl().getMaximum()
+							- (int) mp3Player.getVolumeControl().getValue());
+
+					// update progress bar
+					currentTime.setText(formatTime(position));
+					progress.setPercentage(progressValue);
+					progressCache.setPercentage(cacheProgressValue);
+				}
+			}, true);
+		}
+	};
+
 	private class Playback implements Runnable
 	{
 		@Override
@@ -205,8 +240,8 @@ public class PlayerUI extends TablePane implements Bindable, EventSubscriber<Pan
 			int successiveFailures = 0;
 
 			// start the UI synchronization thread
-			if (playerUISyncThread == null || playerUISyncThread.isDone())
-				playerUISyncThread = ThreadPools.playerUISyncPool.submit(new SyncUI());
+			playerUISyncFuture = ThreadPools.playerUIScheduler.scheduleAtFixedRate(syncUI, 0,
+					UI_REFRESH_INTERVAL, TimeUnit.MILLISECONDS);
 
 			while (true)
 			{
@@ -355,66 +390,7 @@ public class PlayerUI extends TablePane implements Bindable, EventSubscriber<Pan
 				EventBus.publish(new PlaybackEvent(PlaybackEvent.Type.PLAYBACK_STOP, null));
 
 			// stop the UI thread
-			try
-			{
-				if (playerUISyncThread != null)
-					playerUISyncThread.get(1, TimeUnit.SECONDS);
-			}
-			catch (Exception e)
-			{
-				// ignore error, cancel the task
-				playerUISyncThread.cancel(true);
-			}
-		}
-	}
-
-	private class SyncUI implements Runnable
-	{
-		@Override
-		public void run()
-		{
-			log.debug("Entering SyncUI thread");
-			while (true)
-			{
-				if (active == false)
-					break;
-				try
-				{
-					Thread.sleep(200);
-				}
-				catch (InterruptedException e)
-				{
-					break;
-				}
-
-				if (!mp3Player.isActive())
-					continue;
-
-				final long position = mp3Player.getPosition();
-				final float progressValue = position / (float) duration;
-				final float cacheProgressValue = mp3Player.getCachePosition() / (float) duration;
-
-				// update song position (playback can stop anytime)
-				state.getSong().setPosition(position);
-
-				ApplicationContext.queueCallback(new Runnable()
-				{
-					@Override
-					public void run()
-					{
-						// update volume value (may have been changed from
-						// outside)
-						volumeControl.setValue((int) mp3Player.getVolumeControl().getMaximum()
-								- (int) mp3Player.getVolumeControl().getValue());
-
-						// update progress bar
-						currentTime.setText(formatTime(position));
-						progress.setPercentage(progressValue);
-						progressCache.setPercentage(cacheProgressValue);
-					}
-				}, true);
-			}
-			log.debug("Exiting SyncUI thread");
+			playerUISyncFuture.cancel(false);
 		}
 	}
 }

@@ -35,15 +35,10 @@ public class ThreadPools
 {
 	public static ExecutorService playbackPool = new ThreadPoolExecutor(1, 1, 0L,
 			TimeUnit.MILLISECONDS, new SynchronousQueue<Runnable>());
-	public static ExecutorService playerUISyncPool = new ThreadPoolExecutor(1, 1, 0L,
-			TimeUnit.MILLISECONDS, new SynchronousQueue<Runnable>());
 	public static ExecutorService actionPool = new ThreadPoolExecutor(1, 1, 0L,
 			TimeUnit.MILLISECONDS, new SynchronousQueue<Runnable>());
 	public static ExecutorService streamPool = new ThreadPoolExecutor(1, 1, 0L,
 			TimeUnit.MILLISECONDS, new SynchronousQueue<Runnable>());
-	public static ExecutorService statusPool = new ThreadPoolExecutor(1, 1, 0L,
-			TimeUnit.MILLISECONDS, new SynchronousQueue<Runnable>());
-	public static ExecutorService animationPool = new ThreadPoolExecutor(1, 1, 0L,
-			TimeUnit.MILLISECONDS, new SynchronousQueue<Runnable>());
 	public static ScheduledExecutorService statusBarScheduler = new ScheduledThreadPoolExecutor(1);
+	public static ScheduledExecutorService playerUIScheduler = new ScheduledThreadPoolExecutor(1);
 }
