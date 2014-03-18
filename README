@@ -25,9 +25,4 @@ Supported features:
  * Display song traits
  * Last.fm scrobbling
 
-Follow the instructions on the wiki to install the required dependencies:
-https://code.google.com/p/beluga-player/wiki/Installation
-
-Starting Beluga Player:
- * Linux: java -jar beluga-player-VERSION.jar
- * Windows: double click on the file beluga-player-VERSION.jar
+More information on the project page: https://code.google.com/p/beluga-player/
