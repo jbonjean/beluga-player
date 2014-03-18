@@ -4,7 +4,8 @@ import info.bonjean.beluga.gui.pivot.ThreadPools;
 import info.bonjean.beluga.util.ResourcesUtil;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Filter;
@@ -28,52 +29,13 @@ public final class StatusBarAppender extends AbstractAppender
 
 	private static Label statusBarText;
 	private static Resources resources;
-	private long lastMessageDisplayTime = 0L;
-	private LogEvent messageDisplayed = null;
+	private LogEvent messageDisplayed;
+	private ScheduledFuture<?> expirationTaskFuture;
 
 	protected StatusBarAppender(String name, Filter filter, Layout<? extends Serializable> layout,
 			boolean ignoreExceptions)
 	{
 		super(name, filter, layout, ignoreExceptions);
-
-		// start the messages expiration thread
-		ThreadPools.statusPool.execute(new Runnable()
-		{
-			@Override
-			public void run()
-			{
-				while (true)
-				{
-					try
-					{
-						Thread.sleep(1000);
-					}
-					catch (InterruptedException e)
-					{
-						break;
-					}
-					// if there is a message currently displayed and it's not an
-					// error
-					if (messageDisplayed != null
-							&& !messageDisplayed.getLevel().isAtLeastAsSpecificAs(Level.ERROR))
-					{
-						// and it is expired
-						if (lastMessageDisplayTime + LOG_MESSAGE_DURATION < new Date().getTime())
-						{
-							// clear the status bar
-							ApplicationContext.queueCallback(new Runnable()
-							{
-								@Override
-								public void run()
-								{
-									statusBarText.setText("");
-								}
-							}, true);
-						}
-					}
-				}
-			}
-		});
 	}
 
 	@PluginFactory
@@ -106,6 +68,25 @@ public final class StatusBarAppender extends AbstractAppender
 
 		display(event);
 	}
+
+	private final Runnable expirationTask = new Runnable()
+	{
+		@Override
+		public void run()
+		{
+			messageDisplayed = null;
+
+			// clear the status bar
+			ApplicationContext.queueCallback(new Runnable()
+			{
+				@Override
+				public void run()
+				{
+					statusBarText.setText("");
+				}
+			}, true);
+		}
+	};
 
 	private String formatMessage(LogEvent event)
 	{
@@ -143,20 +124,15 @@ public final class StatusBarAppender extends AbstractAppender
 			return true;
 		}
 
-		// if current message expired
-		if (lastMessageDisplayTime + LOG_MESSAGE_DURATION < new Date().getTime())
-		{
-			doDisplay(event);
-			return true;
-		}
-
 		// the message is discarded
 		return false;
 	}
 
 	public void doDisplay(final LogEvent event)
 	{
-		lastMessageDisplayTime = new Date().getTime();
+		if (!event.getLevel().isAtLeastAsSpecificAs(Level.ERROR))
+			scheduleMessageExpiration();
+
 		messageDisplayed = event;
 
 		ApplicationContext.queueCallback(new Runnable()
@@ -175,6 +151,16 @@ public final class StatusBarAppender extends AbstractAppender
 				}
 			}
 		}, false);
+	}
+
+	public void scheduleMessageExpiration()
+	{
+		if (expirationTaskFuture != null && !expirationTaskFuture.isDone())
+			expirationTaskFuture.cancel(true);
+
+		// schedule the expiration task
+		expirationTaskFuture = ThreadPools.statusBarScheduler.schedule(expirationTask,
+				LOG_MESSAGE_DURATION, TimeUnit.MILLISECONDS);
 	}
 
 	public static void setLabel(Label statusBarText)

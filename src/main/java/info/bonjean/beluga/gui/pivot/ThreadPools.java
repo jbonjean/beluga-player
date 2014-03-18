@@ -20,6 +20,8 @@
 package info.bonjean.beluga.gui.pivot;
 
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.SynchronousQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -43,4 +45,5 @@ public class ThreadPools
 			TimeUnit.MILLISECONDS, new SynchronousQueue<Runnable>());
 	public static ExecutorService animationPool = new ThreadPoolExecutor(1, 1, 0L,
 			TimeUnit.MILLISECONDS, new SynchronousQueue<Runnable>());
+	public static ScheduledExecutorService statusBarScheduler = new ScheduledThreadPoolExecutor(1);
 }
