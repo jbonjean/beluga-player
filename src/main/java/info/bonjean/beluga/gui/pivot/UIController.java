@@ -26,6 +26,7 @@ import info.bonjean.beluga.client.PandoraPlaylist;
 import info.bonjean.beluga.configuration.BelugaConfiguration;
 import info.bonjean.beluga.configuration.DNSProxy;
 import info.bonjean.beluga.connection.BelugaHTTPClient;
+import info.bonjean.beluga.event.PandoraEvent;
 import info.bonjean.beluga.event.PlaybackEvent;
 import info.bonjean.beluga.exception.BelugaException;
 import info.bonjean.beluga.exception.InternalException;
@@ -266,6 +267,9 @@ public class UIController implements EventSubscriber<PlaybackEvent>
 				}
 
 				selectStation(null);
+
+				// notify the player we are ready
+				EventBus.publish(new PandoraEvent(PandoraEvent.Type.CONNECT));
 
 				// enable/update Pandora menus
 				ApplicationContext.queueCallback(new Runnable()
@@ -688,6 +692,9 @@ public class UIController implements EventSubscriber<PlaybackEvent>
 		// invalidate playlist
 		PandoraPlaylist.getInstance().clear();
 
+		// notify the player to stop
+		EventBus.publish(new PandoraEvent(PandoraEvent.Type.DISCONNECT));
+
 		ApplicationContext.queueCallback(new Runnable()
 		{
 			@Override
@@ -698,8 +705,6 @@ public class UIController implements EventSubscriber<PlaybackEvent>
 				mainWindow.loadPage("welcome");
 			}
 		}, false);
-
-		playerUI.stopPlayer();
 	}
 
 	private void selectStation(Station newStation) throws BelugaException
@@ -824,7 +829,6 @@ public class UIController implements EventSubscriber<PlaybackEvent>
 			case PLAYBACK_STOP:
 				state.reset();
 				disconnect();
-				System.out.println("IIIIIIIII");
 				mainWindow.loadPage("welcome");
 				break;
 			default:

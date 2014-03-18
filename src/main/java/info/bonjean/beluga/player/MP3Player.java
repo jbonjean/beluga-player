@@ -34,7 +34,6 @@ import javazoom.jl.decoder.Decoder;
 import javazoom.jl.decoder.Header;
 import javazoom.jl.decoder.JavaLayerException;
 import javazoom.jl.decoder.SampleBuffer;
-import javazoom.jl.player.AudioDevice;
 import javazoom.jl.player.FactoryRegistry;
 import javazoom.jl.player.JavaSoundAudioDevice;
 
@@ -56,39 +55,19 @@ public class MP3Player
 	private Bitstream bitstream;
 	private CachedInputStream cachedInputStream;
 	private Decoder decoder;
-	private AudioDevice audio;
+	private FactoryRegistry factoryRegistry;
+	private JavaSoundAudioDevice audio;
 	private boolean close = true;
 	private boolean pause = false;
-	private boolean active = false;
 	private long duration;
 	private HttpGet httpGet;
 	private int bitrate;
 	private FloatControl volumeControl;
 	private boolean silence = false;
 
-	public void openAudioDevice() throws JavaLayerException
-	{
-		if (audio != null)
-		{
-			log.error("audioDeviceAlreadyOpen");
-			return;
-		}
-		FactoryRegistry r = FactoryRegistry.systemRegistry();
-		audio = r.createAudioDevice();
-	}
-
-	public void closeAudioDevice()
-	{
-		if (audio != null)
-		{
-			audio.flush();
-			audio.close();
-			audio = null;
-		}
-	}
-
 	public MP3Player()
 	{
+		factoryRegistry = FactoryRegistry.systemRegistry();
 	}
 
 	public void loadSong(String url) throws JavaLayerException, MalformedURLException, IOException,
@@ -99,7 +78,6 @@ public class MP3Player
 
 		if (httpResponse.getStatusLine().getStatusCode() != HttpStatus.SC_OK)
 		{
-			release();
 			log.debug("Got response: " + httpResponse.getStatusLine().getReasonPhrase());
 
 			if (httpResponse.getStatusLine().getStatusCode() == HttpStatus.SC_FORBIDDEN)
@@ -116,6 +94,7 @@ public class MP3Player
 				}
 			}
 
+			cleanResources();
 			throw new IOException("Server reply: " + httpResponse.getStatusLine().getReasonPhrase());
 		}
 
@@ -126,7 +105,10 @@ public class MP3Player
 		// get the first frame header to get bitrate
 		Header frame = bitstream.readFrame();
 		if (frame == null)
+		{
+			cleanResources();
 			throw new IOException("noAudioStream");
+		}
 		bitrate = frame.bitrate();
 		bitstream.unreadFrame();
 
@@ -136,26 +118,41 @@ public class MP3Player
 		// calculate the duration
 		duration = (songSize * 1000) / (bitrate / 8);
 
+		// prepare the audio device (need to be done each time because Java
+		// sound stack does not support codec change)
+
+		// create audio device
+		audio = (JavaSoundAudioDevice) factoryRegistry.createAudioDevice();
+
+		// set the decoder
+		decoder = new Decoder();
+		audio.open(decoder);
+
+		// decode the first frame to initialize the decoder
+		SampleBuffer output = (SampleBuffer) decoder.decodeFrame(frame, bitstream);
+		int frameSize = output.getBufferLength();
+
+		// write a small silent to trigger device initialization
+		// ensure we write 1 frame
+		audio.write(new short[frameSize], 0, frameSize);
+
+		// store the volume control
+		volumeControl = audio.getFloatControl();
+
+		// init environment variables
 		silence = false;
 		close = true;
 		pause = false;
-		active = false;
 	}
 
 	public FloatControl getVolumeControl()
 	{
-		if (volumeControl == null && audio != null && audio instanceof JavaSoundAudioDevice)
-			volumeControl = ((JavaSoundAudioDevice) audio).getFloatControl();
-
 		return volumeControl;
 	}
 
 	public void play() throws JavaLayerException
 	{
 		close = false;
-		active = true;
-		decoder = new Decoder();
-		audio.open(decoder);
 		try
 		{
 			while (decodeFrame())
@@ -175,16 +172,28 @@ public class MP3Player
 		}
 		catch (JavaLayerException e)
 		{
-			active = false;
 			throw e;
 		}
-		audio.flush();
-		cleanResources();
+		finally
+		{
+			close = true;
+			audio.flush();
+			cleanResources();
+		}
 	}
 
 	private void cleanResources()
 	{
-		active = false;
+		// cleanup audio stack
+		if (audio != null)
+		{
+			audio.flush();
+			audio.close();
+			audio = null;
+			volumeControl = null;
+		}
+
+		// cleanup bitstream
 		try
 		{
 			if (bitstream != null)
@@ -194,25 +203,19 @@ public class MP3Player
 		{
 			log.debug(e.getMessage());
 		}
-		// clean up http connection
+
+		// cleanup http connection
 		if (httpGet != null)
 			httpGet.releaseConnection();
 	}
 
-	public void release()
+	public void stop()
 	{
 		close = true;
 		pause = false;
-		if (!active)
-			cleanResources();
 	}
 
 	public void pause()
-	{
-		pause = !pause;
-	}
-
-	public void mute()
 	{
 		pause = !pause;
 	}
@@ -287,6 +290,6 @@ public class MP3Player
 
 	public boolean isActive()
 	{
-		return active;
+		return !close;
 	}
 }
