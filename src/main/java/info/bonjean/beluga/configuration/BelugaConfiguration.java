@@ -133,14 +133,6 @@ public class BelugaConfiguration
 			System.exit(-1);
 		}
 
-		// check everything is there
-		for (Property property : Property.values())
-		{
-			String key = property.getKey();
-			if (properties.get(key) == null)
-				properties.put(key, "");
-		}
-
 		// do properties migration if necessary
 		if (!BelugaState.getInstance().getVersion().equals(CONFIGURATION_DEFAULT_VERSION))
 		{
@@ -217,7 +209,7 @@ public class BelugaConfiguration
 
 	public String getUserName()
 	{
-		return getString(Property.USER);
+		return getString(Property.USER, "");
 	}
 
 	public void setUserName(String userName)
@@ -227,7 +219,7 @@ public class BelugaConfiguration
 
 	public String getPassword()
 	{
-		return CryptoUtil.passwordDecrypt(getString(Property.PASSWORD), Property.PASSWORD.getKey());
+		return CryptoUtil.passwordDecrypt(getString(Property.PASSWORD, ""), Property.PASSWORD.getKey());
 	}
 
 	public void setPassword(String password)
@@ -237,7 +229,7 @@ public class BelugaConfiguration
 
 	public String getProxyHost()
 	{
-		return getString(Property.PROXY_HOST);
+		return getString(Property.PROXY_HOST, "");
 	}
 
 	public void setProxyHost(String proxyServer)
@@ -262,7 +254,7 @@ public class BelugaConfiguration
 
 	public String getDefaultStationId()
 	{
-		return getString(Property.DEFAULT_STATION);
+		return getString(Property.DEFAULT_STATION, "");
 	}
 
 	public void setDefaultStationId(String defaultStationId)
@@ -272,7 +264,7 @@ public class BelugaConfiguration
 
 	public String getDNSProxy()
 	{
-		return getString(Property.PROXY_DNS);
+		return getString(Property.PROXY_DNS, "");
 	}
 
 	public void setDNSProxy(String proxyDNS)
@@ -280,19 +272,9 @@ public class BelugaConfiguration
 		set(Property.PROXY_DNS, proxyDNS);
 	}
 
-	public String getThemeId()
-	{
-		return getString(Property.THEME, "classic");
-	}
-
-	public void setThemeId(String themeId)
-	{
-		set(Property.THEME, themeId);
-	}
-
 	public String getLastFMUsername()
 	{
-		return getString(Property.LAST_FM_USERNAME);
+		return getString(Property.LAST_FM_USERNAME, "");
 	}
 
 	public void setLastFMUsername(String emailAddress)
@@ -302,7 +284,7 @@ public class BelugaConfiguration
 
 	public String getLastFMPassword()
 	{
-		return CryptoUtil.passwordDecrypt(getString(Property.LAST_FM_PASSWORD),
+		return CryptoUtil.passwordDecrypt(getString(Property.LAST_FM_PASSWORD, ""),
 				Property.LAST_FM_PASSWORD.getKey());
 	}
 
@@ -344,7 +326,7 @@ public class BelugaConfiguration
 
 	public String getConfigurationVersion()
 	{
-		return getString(Property.CONFIGURATION_VERSION);
+		return getString(Property.CONFIGURATION_VERSION, "0.5f");
 	}
 
 	public void setConfigurationVersion(String version)
