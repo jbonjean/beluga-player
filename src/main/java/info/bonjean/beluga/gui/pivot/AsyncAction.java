@@ -20,6 +20,7 @@
 package info.bonjean.beluga.gui.pivot;
 
 import info.bonjean.beluga.exception.BelugaException;
+import info.bonjean.beluga.log.StatusBarAppender;
 
 import org.apache.pivot.wtk.Action;
 import org.apache.pivot.wtk.ApplicationContext;
@@ -75,6 +76,7 @@ public abstract class AsyncAction extends Action
 			@Override
 			public void run()
 			{
+				StatusBarAppender.clearErrorMessage();
 				try
 				{
 					if (disableUI)

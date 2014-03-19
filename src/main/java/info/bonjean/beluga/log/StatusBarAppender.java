@@ -31,11 +31,13 @@ public final class StatusBarAppender extends AbstractAppender
 	private static Resources resources;
 	private LogEvent messageDisplayed;
 	private ScheduledFuture<?> expirationTaskFuture;
+	private static StatusBarAppender instance;
 
 	protected StatusBarAppender(String name, Filter filter, Layout<? extends Serializable> layout,
 			boolean ignoreExceptions)
 	{
 		super(name, filter, layout, ignoreExceptions);
+		instance = this;
 	}
 
 	@PluginFactory
@@ -69,22 +71,41 @@ public final class StatusBarAppender extends AbstractAppender
 		display(event);
 	}
 
+	private void clearMessage()
+	{
+		// clear the status bar
+		ApplicationContext.queueCallback(new Runnable()
+		{
+			@Override
+			public void run()
+			{
+				statusBarText.setText("");
+			}
+		}, true);
+
+		messageDisplayed = null;
+	}
+
+	public static void clearErrorMessage()
+	{
+		if (instance == null)
+			return;
+
+		if (instance.messageDisplayed == null)
+			return;
+
+		if (instance.messageDisplayed.getLevel().isAtLeastAsSpecificAs(Level.ERROR))
+			instance.clearMessage();
+	}
+
 	private final Runnable expirationTask = new Runnable()
 	{
 		@Override
 		public void run()
 		{
-			messageDisplayed = null;
-
-			// clear the status bar
-			ApplicationContext.queueCallback(new Runnable()
-			{
-				@Override
-				public void run()
-				{
-					statusBarText.setText("");
-				}
-			}, true);
+			// ensure we don't clear an error message
+			if (!instance.messageDisplayed.getLevel().isAtLeastAsSpecificAs(Level.ERROR))
+				clearMessage();
 		}
 	};
 
@@ -132,6 +153,8 @@ public final class StatusBarAppender extends AbstractAppender
 	{
 		if (!event.getLevel().isAtLeastAsSpecificAs(Level.ERROR))
 			scheduleMessageExpiration();
+		else
+			unscheduleMessageExpiration();
 
 		messageDisplayed = event;
 
@@ -153,10 +176,15 @@ public final class StatusBarAppender extends AbstractAppender
 		}, false);
 	}
 
-	public void scheduleMessageExpiration()
+	public void unscheduleMessageExpiration()
 	{
 		if (expirationTaskFuture != null && !expirationTaskFuture.isDone())
 			expirationTaskFuture.cancel(true);
+	}
+
+	public void scheduleMessageExpiration()
+	{
+		unscheduleMessageExpiration();
 
 		// schedule the expiration task
 		expirationTaskFuture = ThreadPools.statusBarScheduler.schedule(expirationTask,
