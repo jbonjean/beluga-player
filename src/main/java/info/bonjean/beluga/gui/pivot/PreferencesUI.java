@@ -35,6 +35,7 @@ import org.apache.pivot.wtk.ListButton;
 import org.apache.pivot.wtk.PushButton;
 import org.apache.pivot.wtk.TablePane;
 import org.apache.pivot.wtk.TextInput;
+import org.apache.pivot.wtk.content.ListItem;
 
 /**
  * 
@@ -65,6 +66,8 @@ public class PreferencesUI extends TablePane implements Bindable
 	protected Checkbox adsEnableSilentCheckbox;
 	@BXML
 	protected PushButton submitButton;
+	@BXML
+	protected ListButton notificationsStyle;
 
 	private final BelugaConfiguration configuration = BelugaConfiguration.getInstance();
 
@@ -89,6 +92,12 @@ public class PreferencesUI extends TablePane implements Bindable
 		lastFMEnableCheckbox.setSelected(configuration.getLastFMEnabled());
 		adsEnableDetectionCheckbox.setSelected(configuration.getAdsDetectionEnabled());
 		adsEnableSilentCheckbox.setSelected(configuration.getAdsSilenceEnabled());
+		String style = configuration.getNotificationsStyle();
+		@SuppressWarnings("unchecked")
+		List<ListItem> styleListData = (List<ListItem>) notificationsStyle.getListData();
+		for (ListItem listItem : styleListData)
+			if (listItem.getUserData().equals(style))
+				notificationsStyle.setSelectedItem(listItem);
 	}
 
 	@Override
@@ -103,5 +112,8 @@ public class PreferencesUI extends TablePane implements Bindable
 		lastFMEnableCheckbox.setEnabled(enabled);
 		lastFMUsernameInput.setEnabled(enabled);
 		lastFMPasswordInput.setEnabled(enabled);
+		adsEnableDetectionCheckbox.setEnabled(enabled);
+		adsEnableSilentCheckbox.setEnabled(enabled);
+		notificationsStyle.setEnabled(enabled);
 	}
 }

@@ -95,7 +95,7 @@ public class BelugaDNSResolver implements DnsResolver
 				}
 			}
 			if (addresses.isEmpty())
-				throw new UnknownHostException("dns.proxy.error");
+				throw new UnknownHostException("dnsProxyError");
 
 			log.debug("Resolved Pandora address using DNS proxy");
 

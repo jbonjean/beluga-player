@@ -351,4 +351,14 @@ public class BelugaConfiguration
 	{
 		set(Property.CONFIGURATION_VERSION, version);
 	}
+
+	public String getNotificationsStyle()
+	{
+		return getString(Property.NOTIFICATIONS_STYLE, "light");
+	}
+
+	public void setNotificationsStyle(String notificationsStyle)
+	{
+		set(Property.NOTIFICATIONS_STYLE, notificationsStyle);
+	}
 }

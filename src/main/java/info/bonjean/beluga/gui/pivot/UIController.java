@@ -53,6 +53,7 @@ import org.apache.pivot.wtk.Menu.Section;
 import org.apache.pivot.wtk.MenuButton;
 import org.apache.pivot.wtk.Sheet;
 import org.apache.pivot.wtk.SheetCloseListener;
+import org.apache.pivot.wtk.content.ListItem;
 import org.bushe.swing.event.EventBus;
 import org.bushe.swing.event.EventSubscriber;
 import org.slf4j.Logger;
@@ -637,6 +638,9 @@ public class UIController implements EventSubscriber<PlaybackEvent>
 						.isSelected());
 				configuration.setAdsSilenceEnabled(preferencesUI.adsEnableSilentCheckbox
 						.isSelected());
+				configuration
+						.setNotificationsStyle((String) ((ListItem) preferencesUI.notificationsStyle
+								.getSelectedItem()).getUserData());
 
 				if (!BelugaState.getInstance().getVersion()
 						.equals(BelugaConfiguration.CONFIGURATION_DEFAULT_VERSION))

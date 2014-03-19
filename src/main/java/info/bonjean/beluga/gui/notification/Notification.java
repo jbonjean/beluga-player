@@ -19,6 +19,7 @@
  */
 package info.bonjean.beluga.gui.notification;
 
+import info.bonjean.beluga.configuration.BelugaConfiguration;
 import info.bonjean.beluga.response.Song;
 import info.bonjean.beluga.util.ResourcesUtil;
 
@@ -37,6 +38,7 @@ import org.slf4j.LoggerFactory;
 
 import ch.swingfx.twinkle.NotificationBuilder;
 import ch.swingfx.twinkle.style.INotificationStyle;
+import ch.swingfx.twinkle.style.theme.DarkDefaultNotification;
 import ch.swingfx.twinkle.style.theme.LightDefaultNotification;
 import ch.swingfx.twinkle.window.Positions;
 
@@ -86,7 +88,8 @@ public class Notification
 			}
 		}
 
-		INotificationStyle style = new LightDefaultNotification();
+		INotificationStyle style = BelugaConfiguration.getInstance().getNotificationsStyle()
+				.equals("dark") ? new DarkDefaultNotification() : new LightDefaultNotification();
 
 		new NotificationBuilder().withStyle(style)
 				.withTitle(ResourcesUtil.shorten(song.getSongName(), 60))
