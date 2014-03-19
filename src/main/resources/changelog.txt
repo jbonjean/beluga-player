@@ -4,6 +4,7 @@ Beluga Player 0.8
 * Fix reconnection bug
 * Enable anti-aliasing
 * Reduce CPU usage
+* Add new style for notifications
 
 Beluga Player 0.7
 
