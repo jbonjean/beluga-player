@@ -52,7 +52,7 @@ public class PandoraPlaylist
 		return instance;
 	}
 
-	public Song getNext()
+	public Song getNext() throws BelugaException
 	{
 		// queue empty, feed with pandora data
 		if (queue.isEmpty())
@@ -70,7 +70,7 @@ public class PandoraPlaylist
 		return song;
 	}
 
-	public synchronized void feedQueue()
+	public synchronized void feedQueue() throws BelugaException
 	{
 		// check if Pandora client is ready
 		if (!pandoraClient.isLoggedIn() || state.getStation() == null)
@@ -80,24 +80,15 @@ public class PandoraPlaylist
 		if (!queue.isEmpty())
 			return;
 
-		try
-		{
-			log.info("retrievingPlaylist");
+		log.info("retrievingPlaylist");
 
-			List<Song> playlist = pandoraClient.getPlaylist(state.getStation());
+		List<Song> playlist = pandoraClient.getPlaylist(state.getStation());
 
-			// populate additional data
-			for (Song song : playlist)
-				song.setFocusTraits(pandoraClient.retrieveFocusTraits(song));
+		// populate additional data
+		for (Song song : playlist)
+			song.setFocusTraits(pandoraClient.retrieveFocusTraits(song));
 
-			queue.addAll(playlist);
-		}
-		catch (BelugaException e)
-		{
-			log.error(e.getMessage(), e);
-			// XXX: this code should not be here, the exception should be thrown
-			// MainWindow.getInstance().disconnect();
-		}
+		queue.addAll(playlist);
 	}
 
 	public void clear()
