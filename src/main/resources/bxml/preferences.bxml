@@ -91,6 +91,19 @@
 						</ListButton>
 					</BoxPane>
 				</Form.Section>
+				<Form.Section heading="%stationList">
+					<BoxPane Form.label="%orderBy">
+						<ListButton bxml:id="stationsOrderBy" xmlns="org.apache.pivot.wtk"
+							xmlns:collections="org.apache.pivot.collections" xmlns:content="org.apache.pivot.wtk.content">
+							<listData>
+								<collections:ArrayList>
+									<content:ListItem text="%creationDate" userData="date" />
+									<content:ListItem text="%name" userData="name" />
+								</collections:ArrayList>
+							</listData>
+						</ListButton>
+					</BoxPane>
+				</Form.Section>
 			</Form>
 		</TabPane>
 	</TablePane.Row>

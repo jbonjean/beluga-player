@@ -42,6 +42,8 @@ import info.bonjean.beluga.response.Station;
 import java.awt.Desktop;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import org.apache.pivot.wtk.Action;
@@ -641,6 +643,8 @@ public class UIController implements EventSubscriber<PlaybackEvent>
 				configuration
 						.setNotificationsStyle((String) ((ListItem) preferencesUI.notificationsStyle
 								.getSelectedItem()).getUserData());
+				configuration.setStationsOrderBy((String) ((ListItem) preferencesUI.stationsOrderBy
+						.getSelectedItem()).getUserData());
 
 				if (!BelugaState.getInstance().getVersion()
 						.equals(BelugaConfiguration.CONFIGURATION_DEFAULT_VERSION))
@@ -788,7 +792,19 @@ public class UIController implements EventSubscriber<PlaybackEvent>
 	private void updateStationsList() throws BelugaException
 	{
 		log.info("retrievingStations");
-		state.setStationList(pandoraClient.getStationList());
+		List<Station> stationList = pandoraClient.getStationList();
+		if (configuration.getStationsOrderBy().equals("name"))
+		{
+			Collections.sort(stationList, new Comparator<Station>()
+			{
+				@Override
+				public int compare(Station station1, Station station2)
+				{
+					return station1.getStationName().compareTo(station2.getStationName());
+				}
+			});
+		}
+		state.setStationList(stationList);
 		updateStationControlButtons();
 	}
 

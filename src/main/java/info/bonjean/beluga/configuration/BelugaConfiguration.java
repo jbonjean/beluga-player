@@ -219,7 +219,8 @@ public class BelugaConfiguration
 
 	public String getPassword()
 	{
-		return CryptoUtil.passwordDecrypt(getString(Property.PASSWORD, ""), Property.PASSWORD.getKey());
+		return CryptoUtil.passwordDecrypt(getString(Property.PASSWORD, ""),
+				Property.PASSWORD.getKey());
 	}
 
 	public void setPassword(String password)
@@ -342,5 +343,15 @@ public class BelugaConfiguration
 	public void setNotificationsStyle(String notificationsStyle)
 	{
 		set(Property.NOTIFICATIONS_STYLE, notificationsStyle);
+	}
+
+	public String getStationsOrderBy()
+	{
+		return getString(Property.STATIONS_ORDER_BY, "date");
+	}
+
+	public void setStationsOrderBy(String stationsOrderBy)
+	{
+		set(Property.STATIONS_ORDER_BY, stationsOrderBy);
 	}
 }

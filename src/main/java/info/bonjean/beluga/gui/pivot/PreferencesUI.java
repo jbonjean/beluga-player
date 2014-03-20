@@ -68,11 +68,22 @@ public class PreferencesUI extends TablePane implements Bindable
 	protected PushButton submitButton;
 	@BXML
 	protected ListButton notificationsStyle;
+	@BXML
+	protected ListButton stationsOrderBy;
 
 	private final BelugaConfiguration configuration = BelugaConfiguration.getInstance();
 
 	public PreferencesUI()
 	{
+	}
+
+	private void setListButtonSelected(ListButton button, String value)
+	{
+		@SuppressWarnings("unchecked")
+		List<ListItem> styleListData = (List<ListItem>) button.getListData();
+		for (ListItem listItem : styleListData)
+			if (listItem.getUserData().equals(value))
+				button.setSelectedItem(listItem);
 	}
 
 	@Override
@@ -92,12 +103,8 @@ public class PreferencesUI extends TablePane implements Bindable
 		lastFMEnableCheckbox.setSelected(configuration.getLastFMEnabled());
 		adsEnableDetectionCheckbox.setSelected(configuration.getAdsDetectionEnabled());
 		adsEnableSilentCheckbox.setSelected(configuration.getAdsSilenceEnabled());
-		String style = configuration.getNotificationsStyle();
-		@SuppressWarnings("unchecked")
-		List<ListItem> styleListData = (List<ListItem>) notificationsStyle.getListData();
-		for (ListItem listItem : styleListData)
-			if (listItem.getUserData().equals(style))
-				notificationsStyle.setSelectedItem(listItem);
+		setListButtonSelected(notificationsStyle, configuration.getNotificationsStyle());
+		setListButtonSelected(stationsOrderBy, configuration.getStationsOrderBy());
 	}
 
 	@Override
