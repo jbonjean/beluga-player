@@ -105,9 +105,7 @@ public class PlayerUI extends TablePane implements Bindable, EventSubscriber<Pan
 			@Override
 			public void valueChanged(Slider slider, int previousValue)
 			{
-				if (mp3Player.getVolumeControl() != null)
-					mp3Player.getVolumeControl().setValue(
-							(int) mp3Player.getVolumeControl().getMaximum() - slider.getValue());
+				mp3Player.setVolume((int) mp3Player.getVolumeMax() - slider.getValue());
 			}
 		});
 
@@ -219,8 +217,7 @@ public class PlayerUI extends TablePane implements Bindable, EventSubscriber<Pan
 				{
 					// update volume value (may have been changed from
 					// outside)
-					volumeControl.setValue((int) mp3Player.getVolumeControl().getMaximum()
-							- (int) mp3Player.getVolumeControl().getValue());
+					volumeControl.setValue(mp3Player.getVolumeMax() - mp3Player.getVolume());
 
 					// update progress bar
 					currentTime.setText(formatTime(position));
@@ -314,7 +311,7 @@ public class PlayerUI extends TablePane implements Bindable, EventSubscriber<Pan
 						// if ad silence configuration is enabled, notify the
 						// player
 						if (configuration.getAdsSilenceEnabled())
-							mp3Player.setSilence(true);
+							mp3Player.mute(true);
 					}
 
 					// notify song started
@@ -327,8 +324,8 @@ public class PlayerUI extends TablePane implements Bindable, EventSubscriber<Pan
 						public void run()
 						{
 							// calibrate volume control
-							volumeControl.setStart((int) mp3Player.getVolumeControl().getMinimum());
-							volumeControl.setEnd((int) mp3Player.getVolumeControl().getMaximum());
+							volumeControl.setStart(mp3Player.getVolumeMin());
+							volumeControl.setEnd(mp3Player.getVolumeMax());
 
 							// enable controls
 							volumeControl.setEnabled(true);

@@ -22,11 +22,10 @@ package info.bonjean.beluga.player;
 import info.bonjean.beluga.connection.BelugaHTTPClient;
 import info.bonjean.beluga.connection.CachedInputStream;
 import info.bonjean.beluga.exception.CommunicationException;
+import info.bonjean.beluga.exception.InternalException;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
-
-import javax.sound.sampled.FloatControl;
 
 import javazoom.jl.decoder.Bitstream;
 import javazoom.jl.decoder.BitstreamException;
@@ -34,8 +33,6 @@ import javazoom.jl.decoder.Decoder;
 import javazoom.jl.decoder.Header;
 import javazoom.jl.decoder.JavaLayerException;
 import javazoom.jl.decoder.SampleBuffer;
-import javazoom.jl.player.FactoryRegistry;
-import javazoom.jl.player.JavaSoundAudioDevice;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
@@ -55,23 +52,19 @@ public class MP3Player
 	private Bitstream bitstream;
 	private CachedInputStream cachedInputStream;
 	private Decoder decoder;
-	private FactoryRegistry factoryRegistry;
-	private JavaSoundAudioDevice audio;
+	private AudioDevice audioDeviceManager;
 	private boolean close = true;
 	private boolean pause = false;
 	private long duration;
 	private HttpGet httpGet;
 	private int bitrate;
-	private FloatControl volumeControl;
-	private boolean silence = false;
 
 	public MP3Player()
 	{
-		factoryRegistry = FactoryRegistry.systemRegistry();
 	}
 
 	public void loadSong(String url) throws JavaLayerException, MalformedURLException, IOException,
-			CommunicationException
+			CommunicationException, InternalException
 	{
 		httpGet = new HttpGet(url);
 		HttpResponse httpResponse = BelugaHTTPClient.getInstance().getClient().execute(httpGet);
@@ -121,33 +114,18 @@ public class MP3Player
 		// prepare the audio device (need to be done each time because Java
 		// sound stack does not support codec change)
 
-		// create audio device
-		audio = (JavaSoundAudioDevice) factoryRegistry.createAudioDevice();
-
 		// set the decoder
 		decoder = new Decoder();
-		audio.open(decoder);
 
 		// decode the first frame to initialize the decoder
-		SampleBuffer output = (SampleBuffer) decoder.decodeFrame(frame, bitstream);
-		int frameSize = output.getBufferLength();
+		decoder.decodeFrame(frame, bitstream);
 
-		// write a small silent to trigger device initialization
-		// ensure we write 1 frame
-		audio.write(new short[frameSize], 0, frameSize);
-
-		// store the volume control
-		volumeControl = audio.getFloatControl();
+		// create audio device
+		audioDeviceManager = new AudioDevice(decoder);
 
 		// init environment variables
-		silence = false;
 		close = true;
 		pause = false;
-	}
-
-	public FloatControl getVolumeControl()
-	{
-		return volumeControl;
 	}
 
 	public void play() throws JavaLayerException
@@ -177,7 +155,6 @@ public class MP3Player
 		finally
 		{
 			close = true;
-			audio.flush();
 			cleanResources();
 		}
 	}
@@ -185,13 +162,8 @@ public class MP3Player
 	private void cleanResources()
 	{
 		// cleanup audio stack
-		if (audio != null)
-		{
-			audio.flush();
-			audio.close();
-			audio = null;
-			volumeControl = null;
-		}
+		if (audioDeviceManager != null)
+			audioDeviceManager.close();
 
 		// cleanup bitstream
 		try
@@ -252,13 +224,7 @@ public class MP3Player
 				return false;
 
 			SampleBuffer output = (SampleBuffer) decoder.decodeFrame(h, bitstream);
-			/*
-			 * This is where we handle silenced song.
-			 * We don't change audio device settings, and read the stream
-			 * as we were really playing it.
-			 */
-			short[] buffer = silence ? new short[output.getBufferLength()] : output.getBuffer();
-			audio.write(buffer, 0, output.getBufferLength());
+			audioDeviceManager.write(output);
 			bitstream.closeFrame();
 		}
 		catch (RuntimeException ex)
@@ -283,13 +249,38 @@ public class MP3Player
 		return bitrate;
 	}
 
-	public void setSilence(boolean silence)
+	public void mute(boolean silence)
 	{
-		this.silence = silence;
+		audioDeviceManager.mute();
 	}
 
 	public boolean isActive()
 	{
 		return !close;
+	}
+
+	public boolean isVolumeControlAvailable()
+	{
+		return audioDeviceManager.isVolumeControlAvailable();
+	}
+
+	public int getVolume()
+	{
+		return audioDeviceManager.getVolume();
+	}
+
+	public void setVolume(int value)
+	{
+		audioDeviceManager.setVolume(value);
+	}
+
+	public int getVolumeMin()
+	{
+		return audioDeviceManager.getVolumeMin();
+	}
+
+	public int getVolumeMax()
+	{
+		return audioDeviceManager.getVolumeMax();
 	}
 }
