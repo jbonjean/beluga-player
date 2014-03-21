@@ -52,7 +52,7 @@ public class AudioDevice
 	private SourceDataLine sourceDataLine;
 	private static Port port;
 	private FloatControl floatControl;
-	private byte[] preallocatedBuffer = new byte[4096];
+	private static final byte[] byteBuffer = new byte[SampleBuffer.OBUFFERSIZE * 2];
 	private boolean mute;
 
 	public AudioDevice(Decoder decoder) throws InternalException
@@ -170,32 +170,24 @@ public class AudioDevice
 		sourceDataLine.close();
 	}
 
-	protected byte[] getPreallocatedBuffer(int length)
+	protected byte[] toByteArray(short[] samples, int offset, int length)
 	{
-		if (preallocatedBuffer.length < length)
-			preallocatedBuffer = new byte[length + 1024];
-		return preallocatedBuffer;
-	}
-
-	protected byte[] toByteArray(short[] samples, int offs, int len)
-	{
-		byte[] buffer = getPreallocatedBuffer(len * 2);
 		if (mute)
 			// TODO: avoid decoding instead of doing everything to finally
-			// fill with zeros...
-			Arrays.fill(buffer, (byte) 0);
+			// fill with zeros... (Maybe implementing a DummySampleBuffer)
+			Arrays.fill(byteBuffer, 0, length, (byte) 0);
 		else
 		{
 			int idx = 0;
 			short s;
-			while (len-- > 0)
+			while (length-- > 0)
 			{
-				s = samples[offs++];
-				buffer[idx++] = (byte) s;
-				buffer[idx++] = (byte) (s >>> 8);
+				s = samples[offset++];
+				byteBuffer[idx++] = (byte) s;
+				byteBuffer[idx++] = (byte) (s >>> 8);
 			}
 		}
-		return buffer;
+		return byteBuffer;
 	}
 
 	public void write(SampleBuffer output)
