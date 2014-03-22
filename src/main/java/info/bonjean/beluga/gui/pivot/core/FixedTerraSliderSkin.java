@@ -1,12 +1,3 @@
-package info.bonjean.beluga.gui.pivot.core;
-
-/**
- * 
- * @author Julien Bonjean <julien@bonjean.info>
- * 
- * Fixes the missing disabled state color changes.
- * 
- */
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements. See the NOTICE file distributed with
@@ -22,6 +13,15 @@ package info.bonjean.beluga.gui.pivot.core;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ */
+package info.bonjean.beluga.gui.pivot.core;
+
+/**
+ * 
+ * @author Julien Bonjean <julien@bonjean.info>
+ * 
+ * Fixes the missing disabled state color changes.
+ * 
  */
 import java.awt.BasicStroke;
 import java.awt.Color;
