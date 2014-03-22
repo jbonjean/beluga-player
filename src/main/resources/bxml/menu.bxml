@@ -76,7 +76,7 @@
 				</Menu.Section>
 			</Menu>
 		</MenuButton>
-		<LinkButton bxml:id="backButton" action="back" tooltipText="Home">
+		<LinkButton bxml:id="backButton" action="back" tooltipText="%home">
 			<dataRenderer>
 				<content:ButtonDataRenderer orientation="vertical"
 					iconWidth="13" iconHeight="13" fillIcon="true" />

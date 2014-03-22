@@ -35,7 +35,7 @@
 			</TablePane.Row>
 		</TablePane>
 		<LinkButton bxml:id="pauseButton" action="pause-song"
-			tooltipText="Pause this song">
+			tooltipText="%pause">
 			<dataRenderer>
 				<content:ButtonDataRenderer orientation="vertical"
 					iconWidth="30" iconHeight="30" fillIcon="true" />
@@ -45,7 +45,7 @@
 			</buttonData>
 		</LinkButton>
 		<LinkButton bxml:id="nextButton" action="next-song"
-			tooltipText="Skip this song">
+			tooltipText="%skip">
 			<dataRenderer>
 				<content:ButtonDataRenderer orientation="vertical"
 					iconWidth="30" iconHeight="30" fillIcon="true" />

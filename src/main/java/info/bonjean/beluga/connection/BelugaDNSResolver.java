@@ -110,7 +110,7 @@ public class BelugaDNSResolver implements DnsResolver
 	public void blacklistAddress(InetAddress address)
 	{
 		String strAddress = address.getHostAddress();
-		log.info("Add " + strAddress + " to blacklist");
+		log.debug("Add " + strAddress + " to blacklist");
 		backlistedAddresses.add(strAddress);
 	}
 }

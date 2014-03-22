@@ -126,8 +126,8 @@ public class StationUI extends TablePane implements Bindable
 		link.setButtonData(sb.toString());
 		Menu menu = new Menu();
 		Menu.Section menuSection = new Menu.Section();
-		Menu.Item menuItem = new Menu.Item(
-				resources.get(feedback.isPositive() ? "unlike" : "unban"));
+		Menu.Item menuItem = new Menu.Item(feedback.isPositive() ? resources.get("unlike")
+				: resources.get("unban"));
 		menuItem.setAction("delete-feedback");
 		menuItem.getUserData().put("feedback", feedback);
 		menuItem.getUserData().put("item", link);

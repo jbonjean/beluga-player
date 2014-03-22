@@ -24,10 +24,10 @@
 			<Label bxml:id="songTitle" styles="{font:{bold:true, size:14},wrapText:true}" />
 			<Label bxml:id="artistName" styles="{font:{bold:true, size:13},wrapText:true}" />
 			<FillPane styles="{padding:10}">
-				<PushButton bxml:id="likeButton" buttonData="Like"
+				<PushButton bxml:id="likeButton" buttonData="%like"
 					action="like" />
-				<PushButton bxml:id="banButton" buttonData="Ban" action="ban" />
-				<PushButton bxml:id="sleepButton" buttonData="Sleep"
+				<PushButton bxml:id="banButton" buttonData="%ban" action="ban" />
+				<PushButton bxml:id="sleepButton" buttonData="%sleep"
 					action="sleep" />
 			</FillPane>
 			<ScrollPane horizontalScrollBarPolicy="fill"
