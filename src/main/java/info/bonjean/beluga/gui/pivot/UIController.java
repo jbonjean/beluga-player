@@ -38,6 +38,7 @@ import info.bonjean.beluga.response.SearchArtist;
 import info.bonjean.beluga.response.SearchSong;
 import info.bonjean.beluga.response.Song;
 import info.bonjean.beluga.response.Station;
+import info.bonjean.beluga.util.LastFMUtil;
 
 import java.awt.Desktop;
 import java.net.URI;
@@ -847,8 +848,9 @@ public class UIController implements EventSubscriber<PlaybackEvent>
 				break;
 			case SONG_FINISH:
 				log.debug("Played " + song.getPosition() + " of " + song.getDuration());
-				// scrobble with last.fm
-				LastFMSession.getInstance().scrobbleTrack(song);
+				if (configuration.getLastFMEnabled())
+					// scrobble with last.fm
+					LastFMUtil.asyncScrobble(song);
 				break;
 			case PLAYBACK_STOP:
 				state.reset();

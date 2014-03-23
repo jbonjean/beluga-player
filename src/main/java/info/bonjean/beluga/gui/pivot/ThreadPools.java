@@ -39,6 +39,8 @@ public class ThreadPools
 			TimeUnit.MILLISECONDS, new SynchronousQueue<Runnable>());
 	public static ExecutorService streamPool = new ThreadPoolExecutor(1, 1, 0L,
 			TimeUnit.MILLISECONDS, new SynchronousQueue<Runnable>());
+	public static ExecutorService scrobblerPool = new ThreadPoolExecutor(1, 1, 0L,
+			TimeUnit.MILLISECONDS, new SynchronousQueue<Runnable>());
 	public static ScheduledExecutorService statusBarScheduler = new ScheduledThreadPoolExecutor(1);
 	public static ScheduledExecutorService playerUIScheduler = new ScheduledThreadPoolExecutor(1);
 }

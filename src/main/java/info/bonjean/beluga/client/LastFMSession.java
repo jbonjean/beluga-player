@@ -47,13 +47,6 @@ public class LastFMSession
 
 	private LastFMSession()
 	{
-		if (configuration.getLastFMEnabled())
-		{
-			session = Authenticator.getMobileSession(configuration.getLastFMUsername(),
-					configuration.getLastFMPassword(), API_KEY, API_SECRET);
-			if (session == null)
-				log.error("Authentication with last.fm failed");
-		}
 	}
 
 	public static void reset()
@@ -68,24 +61,41 @@ public class LastFMSession
 		return instance;
 	}
 
+	private Session getSession()
+	{
+		if (session == null)
+		{
+			log.debug("Creating last.fm session");
+
+			session = Authenticator.getMobileSession(configuration.getLastFMUsername(),
+					configuration.getLastFMPassword(), API_KEY, API_SECRET);
+
+			if (session == null)
+				log.warn("Authentication with last.fm failed");
+		}
+
+		return session;
+	}
+
 	public void scrobbleTrack(Song song)
 	{
-		if (session == null || song.getDuration() == 0)
-			return;
-
-		if (song.getPosition() / (float) song.getDuration() < 0.9f)
+		// don't scrobble if less than 90%
+		if (song.getDuration() == 0 || song.getPosition() / (float) song.getDuration() < 0.9f)
 		{
 			log.debug("Played less than 90%, will no be scrobbled with last.fm");
 			return;
 		}
 
-		// 41952 of 42569
+		// check if we got a valid session
+		if (getSession() == null)
+			return;
 
+		// send data to last.fm
 		int now = (int) (System.currentTimeMillis() / 1000);
 		ScrobbleResult TrackScrobbleResult = Track.scrobble(song.getArtistName(),
-				song.getSongName(), now, session);
-		boolean success = TrackScrobbleResult.isSuccessful() && !TrackScrobbleResult.isIgnored();
-		if (success)
+				song.getSongName(), now, getSession());
+
+		if (TrackScrobbleResult.isSuccessful() && !TrackScrobbleResult.isIgnored())
 			log.info("lastfmScrobbleSuccess");
 		else
 			log.warn("lastfmScrobbleFailure");
@@ -93,12 +103,13 @@ public class LastFMSession
 
 	public void loveTrack(Song song)
 	{
-		if (session == null)
+		if (getSession() == null)
 			return;
 
-		Result TrackScrobbleResult = Track.love(song.getArtistName(), song.getSongName(), session);
-		boolean success = TrackScrobbleResult.isSuccessful();
-		if (success)
+		Result TrackScrobbleResult = Track.love(song.getArtistName(), song.getSongName(),
+				getSession());
+
+		if (TrackScrobbleResult.isSuccessful())
 			log.info("lastfmLoveTrackSuccess");
 		else
 			log.warn("lastfmLoveTrackFailure");
@@ -106,13 +117,13 @@ public class LastFMSession
 
 	public void updateNowPlaying(Song song)
 	{
-		if (session == null)
+		if (getSession() == null)
 			return;
 
 		ScrobbleResult nowPlayingResult = Track.updateNowPlaying(song.getArtistName(),
-				song.getSongName(), session);
-		boolean success = nowPlayingResult.isSuccessful() && !nowPlayingResult.isIgnored();
-		if (success)
+				song.getSongName(), getSession());
+
+		if (nowPlayingResult.isSuccessful() && !nowPlayingResult.isIgnored())
 			log.info("lastfmNowPlayingSuccess");
 		else
 			log.warn("lastfmNowPlayingFailure");
