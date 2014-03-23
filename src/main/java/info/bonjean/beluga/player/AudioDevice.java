@@ -47,7 +47,7 @@ public class AudioDevice
 {
 	private static final Logger log = LoggerFactory.getLogger(AudioDevice.class);
 
-	private static final int MAX_VOLUME = Integer.MAX_VALUE;
+	private static final int MAX_VOLUME = 65536;
 
 	private SourceDataLine sourceDataLine;
 	private static Port port;
