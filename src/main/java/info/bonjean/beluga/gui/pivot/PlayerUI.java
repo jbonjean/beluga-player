@@ -240,9 +240,10 @@ public class PlayerUI extends TablePane implements Bindable, EventSubscriber<Pan
 			playerUISyncFuture = ThreadPools.playerUIScheduler.scheduleAtFixedRate(syncUI, 0,
 					UI_REFRESH_INTERVAL, TimeUnit.MILLISECONDS);
 
+			Song song;
 			while (true)
 			{
-				Song song = null;
+				song = null;
 
 				if (!active)
 					break;
@@ -371,11 +372,13 @@ public class PlayerUI extends TablePane implements Bindable, EventSubscriber<Pan
 				catch (Exception e)
 				{
 					log.error(e.getMessage(), e);
+					break;
 				}
 				finally
 				{
-					// notify song finished
-					EventBus.publish(new PlaybackEvent(PlaybackEvent.Type.SONG_FINISH, song));
+					if (song != null && song.getDuration() > 0)
+						// notify song finished
+						EventBus.publish(new PlaybackEvent(PlaybackEvent.Type.SONG_FINISH, song));
 				}
 			}
 
