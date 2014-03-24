@@ -32,14 +32,14 @@ import org.apache.pivot.util.Resources;
 import org.apache.pivot.wtk.ImageView;
 import org.apache.pivot.wtk.Label;
 import org.apache.pivot.wtk.PushButton;
-import org.apache.pivot.wtk.TablePane;
+import org.apache.pivot.wtk.SplitPane;
 
 /**
  * 
  * @author Julien Bonjean <julien@bonjean.info>
  * 
  */
-public class SongUI extends TablePane implements Bindable
+public class SongUI extends SplitPane implements Bindable
 {
 	@BXML
 	protected Label songTitle;

@@ -5,6 +5,7 @@ Beluga Player 0.8
 * Enable anti-aliasing
 * Reduce CPU usage
 * Add new style for notifications
+* Add new logo
 
 Beluga Player 0.7
 
