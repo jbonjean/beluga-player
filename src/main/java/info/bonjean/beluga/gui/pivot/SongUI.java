@@ -21,6 +21,7 @@ package info.bonjean.beluga.gui.pivot;
 
 import info.bonjean.beluga.client.BelugaState;
 import info.bonjean.beluga.gui.PivotUI;
+import info.bonjean.beluga.gui.pivot.core.SplitPaneExtended;
 import info.bonjean.beluga.util.ResourcesUtil;
 
 import java.net.URL;
@@ -39,7 +40,7 @@ import org.apache.pivot.wtk.SplitPane;
  * @author Julien Bonjean <julien@bonjean.info>
  * 
  */
-public class SongUI extends SplitPane implements Bindable
+public class SongUI extends SplitPane implements Bindable, SplitPaneExtended
 {
 	@BXML
 	protected Label songTitle;
@@ -109,5 +110,11 @@ public class SongUI extends SplitPane implements Bindable
 		PivotUI.setEnable(banButton, enabled);
 		PivotUI.setEnable(sleepButton, enabled);
 		PivotUI.setEnable(likeButton, likeButtonEnabled && enabled);
+	}
+
+	@Override
+	public int getOffset()
+	{
+		return 45;
 	}
 }

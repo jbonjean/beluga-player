@@ -19,26 +19,12 @@
  */
 package info.bonjean.beluga.gui.pivot.core;
 
-import org.apache.pivot.wtk.SplitPane;
-import org.apache.pivot.wtk.skin.terra.TerraSplitPaneSkin;
-
 /**
  * 
  * @author Julien Bonjean <julien@bonjean.info>
  * 
- * Add support for ratio keep of the left side.
- * 
  */
-public class BelugaSplitPaneSkin extends TerraSplitPaneSkin
+public interface SplitPaneExtended
 {
-	@Override
-	public void layout()
-	{
-		SplitPane splitPane = (SplitPane) getComponent();
-		int offset = 0;
-		if (splitPane instanceof SplitPaneExtended)
-			offset = ((SplitPaneExtended) splitPane).getOffset();
-		splitPane.setSplitRatio((float) (getHeight() - offset) / getWidth());
-		super.layout();
-	}
+	public int getOffset();
 }

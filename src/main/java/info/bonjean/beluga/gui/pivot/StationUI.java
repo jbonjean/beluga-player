@@ -20,6 +20,7 @@
 package info.bonjean.beluga.gui.pivot;
 
 import info.bonjean.beluga.client.BelugaState;
+import info.bonjean.beluga.gui.pivot.core.SplitPaneExtended;
 import info.bonjean.beluga.response.Feedback;
 
 import java.net.URL;
@@ -35,7 +36,7 @@ import org.apache.pivot.wtk.ImageView;
 import org.apache.pivot.wtk.Label;
 import org.apache.pivot.wtk.Menu;
 import org.apache.pivot.wtk.MenuButton;
-import org.apache.pivot.wtk.TablePane;
+import org.apache.pivot.wtk.SplitPane;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,7 +45,7 @@ import org.slf4j.LoggerFactory;
  * @author Julien Bonjean <julien@bonjean.info>
  * 
  */
-public class StationUI extends TablePane implements Bindable
+public class StationUI extends SplitPane implements Bindable, SplitPaneExtended
 {
 	private static Logger log = LoggerFactory.getLogger(StationUI.class);
 	@BXML
@@ -168,5 +169,11 @@ public class StationUI extends TablePane implements Bindable
 	@Override
 	public void setEnabled(boolean enabled)
 	{
+	}
+
+	@Override
+	public int getOffset()
+	{
+		return 0;
 	}
 }
