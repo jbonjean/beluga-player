@@ -19,6 +19,8 @@
  */
 package info.bonjean.beluga.gui.pivot.core;
 
+import org.apache.pivot.wtk.ImageView;
+
 /**
  * 
  * @author Julien Bonjean <julien@bonjean.info>
@@ -26,5 +28,11 @@ package info.bonjean.beluga.gui.pivot.core;
  */
 public interface SplitPaneExtended
 {
-	public int getOffset();
+	public ImageView getImageView();
+
+	public int getPrimaryRegionReserved();
+
+	public int getPrimaryRegionPadding();
+
+	public void setPrimaryRegionWidth(int width);
 }

@@ -172,8 +172,25 @@ public class StationUI extends SplitPane implements Bindable, SplitPaneExtended
 	}
 
 	@Override
-	public int getOffset()
+	public ImageView getImageView()
+	{
+		return stationCover;
+	}
+
+	@Override
+	public int getPrimaryRegionReserved()
 	{
 		return 0;
+	}
+
+	@Override
+	public int getPrimaryRegionPadding()
+	{
+		return 10;
+	}
+
+	@Override
+	public void setPrimaryRegionWidth(int width)
+	{
 	}
 }

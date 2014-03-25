@@ -19,6 +19,7 @@
  */
 package info.bonjean.beluga.gui.pivot.core;
 
+import org.apache.pivot.wtk.ImageView;
 import org.apache.pivot.wtk.SplitPane;
 import org.apache.pivot.wtk.skin.terra.TerraSplitPaneSkin;
 
@@ -35,10 +36,38 @@ public class BelugaSplitPaneSkin extends TerraSplitPaneSkin
 	public void layout()
 	{
 		SplitPane splitPane = (SplitPane) getComponent();
-		int offset = 0;
+		int splitPaneHeight = getHeight();
+		int splitPaneWidth = getWidth();
+		int leftWidth = splitPaneHeight;
 		if (splitPane instanceof SplitPaneExtended)
-			offset = ((SplitPaneExtended) splitPane).getOffset();
-		splitPane.setSplitRatio((float) (getHeight() - offset) / getWidth());
+		{
+			SplitPaneExtended splitPaneExtended = (SplitPaneExtended) splitPane;
+			ImageView imageView = splitPaneExtended.getImageView();
+			if (imageView != null && imageView.getImage() != null)
+			{
+				int imageHeight = splitPaneHeight - splitPaneExtended.getPrimaryRegionReserved()
+						- 2 * splitPaneExtended.getPrimaryRegionPadding();
+				int imageMaxHeight = imageView.getImage().getHeight();
+
+				// ensure we don't exceed the image original size
+				if (imageMaxHeight > 0)
+					imageHeight = Math.min(imageHeight, imageMaxHeight);
+
+				// ensure the image don't take too much width
+				imageHeight = Math.min(imageHeight, splitPaneWidth / 2);
+
+				// ensure image respect the expected size
+				imageView.setPreferredHeight(imageHeight);
+				imageView.setPreferredWidth(imageHeight);
+
+				// give the width information to parent component
+				splitPaneExtended.setPrimaryRegionWidth(imageHeight);
+
+				// calculate effective width, considering the padding
+				leftWidth = imageHeight + 2 * splitPaneExtended.getPrimaryRegionPadding();
+			}
+		}
+		splitPane.setSplitRatio((float) leftWidth / getWidth());
 		super.layout();
 	}
 }

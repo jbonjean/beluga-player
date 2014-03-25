@@ -2,12 +2,13 @@
 	xmlns:local="info.bonjean.beluga.gui.pivot" xmlns="org.apache.pivot.wtk"
 	xmlns:content="org.apache.pivot.wtk.content" locked="true" resizeMode="primary_region">
 	<left>
-		<Border styles="{color:'#eeeeee',padding:10}">
+		<BoxPane orientation="vertical"
+			styles="{horizontalAlignment:'center', padding:10}">
 			<ImageView bxml:id="stationCover" styles="{fill: 'true'}" />
-		</Border>
+		</BoxPane>
 	</left>
 	<right>
-		<Border styles="{padding:{top:5,bottom:5}, thickness: 0}">
+		<Border styles="{padding:{top:5,bottom:5},thickness: 0}">
 			<TabPane bxml:id="searchTabPane">
 				<TablePane TabPane.tabData="%details">
 					<columns>

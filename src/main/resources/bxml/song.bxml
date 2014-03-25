@@ -2,21 +2,13 @@
 	xmlns:local="info.bonjean.beluga.gui.pivot" xmlns="org.apache.pivot.wtk"
 	xmlns:content="org.apache.pivot.wtk.content" locked="true" resizeMode="primary_region">
 	<left>
-		<TablePane>
-			<columns>
-				<TablePane.Column width="1*" />
-			</columns>
-			<TablePane.Row height="1*">
-				<Border styles="{color:'#eeeeee',padding:10}">
-					<ImageView bxml:id="albumCover"
-						styles="{fill: 'true', horizontalAlignment:'left'}" />
-				</Border>
-			</TablePane.Row>
-			<TablePane.Row height="50">
-				<Label bxml:id="albumTitle"
-					styles="{horizontalAlignment:'center', font:{bold:true},wrapText:true, padding:{left:10,right:10}}" />
-			</TablePane.Row>
-		</TablePane>
+		<BoxPane orientation="vertical"
+			styles="{horizontalAlignment:'center', padding:10}">
+			<ImageView bxml:id="albumCover"
+				styles="{fill: 'true', horizontalAlignment:'left'}" />
+			<Label bxml:id="albumTitle"
+				styles="{horizontalAlignment:'center', font:{bold:true},wrapText:true, padding:{left:10,right:10}}" />
+		</BoxPane>
 	</left>
 	<right>
 		<BoxPane orientation="vertical"

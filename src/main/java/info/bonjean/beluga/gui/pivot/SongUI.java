@@ -113,8 +113,28 @@ public class SongUI extends SplitPane implements Bindable, SplitPaneExtended
 	}
 
 	@Override
-	public int getOffset()
+	public int getPrimaryRegionReserved()
 	{
-		return 45;
+		// space reserved for the album title
+		return 35;
+	}
+
+	@Override
+	public ImageView getImageView()
+	{
+		return albumCover;
+	}
+
+	@Override
+	public void setPrimaryRegionWidth(int width)
+	{
+		// set width to trigger text wrap
+		albumTitle.setWidthLimits(0, width);
+	}
+
+	@Override
+	public int getPrimaryRegionPadding()
+	{
+		return 10;
 	}
 }
