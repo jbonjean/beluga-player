@@ -136,6 +136,18 @@ public class MainWindow extends Window implements Bindable
 		}
 	}
 
+	public void reloadResources()
+	{
+		try
+		{
+			resources = new Resources("i18n.messages");
+		}
+		catch (Exception e)
+		{
+			log.debug(e.getMessage());
+		}
+	}
+
 	public static MainWindow getInstance()
 	{
 		return instance;

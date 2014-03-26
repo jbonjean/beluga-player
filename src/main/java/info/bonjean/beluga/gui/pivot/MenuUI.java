@@ -58,7 +58,7 @@ public class MenuUI extends TablePane implements Bindable
 		if (System.getProperty("debug") != null)
 		{
 			Menu.Item debugEntry = new Menu.Item("Refresh");
-			debugEntry.setAction(Action.getNamedActions().get("load"));
+			debugEntry.setAction(Action.getNamedActions().get("debug-refresh"));
 			menubar.getItems().get(0).getMenu().getSections().get(0).insert(debugEntry, 0);
 		}
 	}

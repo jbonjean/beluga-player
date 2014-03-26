@@ -14,9 +14,14 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-I18N_FILE="../src/main/resources/i18n/messages.properties"
+set -e
 
-find ../src -name "*.java" -or -name "*.bxml" | while read file
+BASEDIR="$(dirname $0)/.."
+I18N_FILE="$BASEDIR/src/main/resources/i18n/messages.properties"
+CONV_CLASS_PATH="$BASEDIR/target/test-classes/info/bonjean/beluga/misc/ResourceBundleToResources.class"
+CONV_CLASS="info.bonjean.beluga.misc.ResourceBundleToResources"
+
+find "$BASEDIR/src" -name "*.java" -or -name "*.bxml" | while read file
 do
 	extension=${file##*.}
 
@@ -42,4 +47,15 @@ do
 done | sort | uniq | while read key
 do
 	grep "^$key=" $I18N_FILE || echo "$key="
-done
+done > /tmp/messages.properties
+
+diff -u "$I18N_FILE" /tmp/messages.properties |
+	awk 'BEGIN{del=0;add=0} /^-[^-]/ {del++} /^+[^+]/ {add++} END{print "+"add" -"del}'
+
+mv /tmp/messages.properties "$I18N_FILE"
+
+if [ -f "$CONV_CLASS_PATH" ]; then
+	 java -cp "$BASEDIR/target/test-classes/" "$CONV_CLASS" "$(dirname $I18N_FILE)/"
+else
+	echo "conv class not compiled"
+fi

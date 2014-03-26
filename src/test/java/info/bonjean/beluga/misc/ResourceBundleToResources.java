@@ -28,24 +28,27 @@ import java.util.Properties;
  * 
  * @author Julien Bonjean
  * 
- * I don't understand the choice of Apache Pivot to use JSON format for message
- * bundles. I like JSON but I don't see any advantage in this
- * case. I find it a lot hardier to maintain and less flexible.
+ * I find it a lot easier to maintain a properties file.
  * 
  */
 public class ResourceBundleToResources
 {
-	private static final String RESOURCES_PATH = "/home/jb/dev/beluga-player/src/main/resources/i18n/";
 	private static final String[] RESOURCES = { "messages" };
 
 	public static void main(String[] args)
 	{
+		if (args.length != 1)
+		{
+			System.err.println("Invalid arguments");
+			System.exit(1);
+		}
+		String resourcesPath = args[0];
 		for (String resourceName : RESOURCES)
 		{
 			try
 			{
-				String inputFile = RESOURCES_PATH + resourceName + ".properties";
-				String outputFile = RESOURCES_PATH + resourceName + ".json";
+				String inputFile = resourcesPath + resourceName + ".properties";
+				String outputFile = resourcesPath + resourceName + ".json";
 
 				FileInputStream input = new FileInputStream(inputFile);
 				PrintWriter output = new PrintWriter(outputFile);

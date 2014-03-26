@@ -130,6 +130,23 @@ public class UIController implements EventSubscriber<PlaybackEvent>
 				}, true);
 			}
 		});
+		Action.getNamedActions().put("debug-refresh", new AsyncAction(mainWindow)
+		{
+			@Override
+			public void asyncPerform(Component source) throws BelugaException
+			{
+				ApplicationContext.queueCallback(new Runnable()
+				{
+					@Override
+					public void run()
+					{
+						mainWindow.reloadResources();
+						mainWindow.loadPage(state.getPage().getName());
+					}
+				}, true);
+			}
+
+		});
 		Action.getNamedActions().put("back", new AsyncAction(mainWindow)
 		{
 			@Override
