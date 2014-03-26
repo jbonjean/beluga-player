@@ -354,4 +354,14 @@ public class BelugaConfiguration
 	{
 		set(Property.STATIONS_ORDER_BY, stationsOrderBy);
 	}
+
+	public Boolean getWindowRestoreEnabled()
+	{
+		return getBoolean(Property.WINDOW_RESTORE, false);
+	}
+
+	public void setWindowRestoreEnabled(Boolean enabled)
+	{
+		set(Property.WINDOW_RESTORE, enabled.toString());
+	}
 }

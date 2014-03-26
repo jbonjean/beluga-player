@@ -78,8 +78,8 @@
 			</BoxPane>
 
 			<Form TabPane.tabData="%interface">
-				<Form.Section heading="%notifications">
-					<BoxPane Form.label="%style">
+				<Form.Section heading="%uiSettings">
+					<BoxPane Form.label="%notificationsStyle">
 						<ListButton bxml:id="notificationsStyle" xmlns="org.apache.pivot.wtk"
 							xmlns:collections="org.apache.pivot.collections" xmlns:content="org.apache.pivot.wtk.content">
 							<listData>
@@ -90,18 +90,20 @@
 							</listData>
 						</ListButton>
 					</BoxPane>
-				</Form.Section>
-				<Form.Section heading="%stationList">
-					<BoxPane Form.label="%orderBy">
+					<BoxPane Form.label="%orderStationListBy">
 						<ListButton bxml:id="stationsOrderBy" xmlns="org.apache.pivot.wtk"
 							xmlns:collections="org.apache.pivot.collections" xmlns:content="org.apache.pivot.wtk.content">
 							<listData>
 								<collections:ArrayList>
-									<content:ListItem text="%creationDate" userData="date" />
+									<content:ListItem text="%creationDate"
+										userData="date" />
 									<content:ListItem text="%name" userData="name" />
 								</collections:ArrayList>
 							</listData>
 						</ListButton>
+					</BoxPane>
+					<BoxPane Form.label="%restoreWindow">
+						<Checkbox bxml:id="windowRestoreCheckbox" />
 					</BoxPane>
 				</Form.Section>
 			</Form>

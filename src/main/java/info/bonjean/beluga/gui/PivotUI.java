@@ -19,6 +19,7 @@
  */
 package info.bonjean.beluga.gui;
 
+import info.bonjean.beluga.configuration.BelugaConfiguration;
 import info.bonjean.beluga.gui.pivot.MainWindow;
 import info.bonjean.beluga.gui.pivot.core.BelugaMenuButtonSkin;
 import info.bonjean.beluga.gui.pivot.core.BelugaSliderSkin;
@@ -59,9 +60,12 @@ public class PivotUI implements Application
 			Preferences preferences = Preferences
 					.userNodeForPackage(DesktopApplicationContext.class);
 			preferences = preferences.node(PivotUI.class.getName());
-			preferences.clear();
-			preferences.putInt("width", 600);
-			preferences.putInt("height", 415);
+			if (!BelugaConfiguration.getInstance().getWindowRestoreEnabled())
+			{
+				preferences.clear();
+				preferences.putInt("width", 600);
+				preferences.putInt("height", 415);
+			}
 			preferences.putBoolean("resizable", false);
 			preferences.flush();
 		}

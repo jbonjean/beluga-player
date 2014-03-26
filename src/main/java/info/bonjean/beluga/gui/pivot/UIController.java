@@ -663,6 +663,8 @@ public class UIController implements EventSubscriber<PlaybackEvent>
 								.getSelectedItem()).getUserData());
 				configuration.setStationsOrderBy((String) ((ListItem) preferencesUI.stationsOrderBy
 						.getSelectedItem()).getUserData());
+				configuration.setWindowRestoreEnabled(preferencesUI.windowRestoreCheckbox
+						.isSelected());
 
 				if (!BelugaState.getInstance().getVersion()
 						.equals(BelugaConfiguration.CONFIGURATION_DEFAULT_VERSION))

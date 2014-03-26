@@ -70,6 +70,8 @@ public class PreferencesUI extends TablePane implements Bindable
 	protected ListButton notificationsStyle;
 	@BXML
 	protected ListButton stationsOrderBy;
+	@BXML
+	protected Checkbox windowRestoreCheckbox;
 
 	private final BelugaConfiguration configuration = BelugaConfiguration.getInstance();
 
@@ -105,6 +107,7 @@ public class PreferencesUI extends TablePane implements Bindable
 		adsEnableSilentCheckbox.setSelected(configuration.getAdsSilenceEnabled());
 		setListButtonSelected(notificationsStyle, configuration.getNotificationsStyle());
 		setListButtonSelected(stationsOrderBy, configuration.getStationsOrderBy());
+		windowRestoreCheckbox.setSelected(configuration.getWindowRestoreEnabled());
 	}
 
 	@Override
@@ -122,5 +125,6 @@ public class PreferencesUI extends TablePane implements Bindable
 		adsEnableDetectionCheckbox.setEnabled(enabled);
 		adsEnableSilentCheckbox.setEnabled(enabled);
 		notificationsStyle.setEnabled(enabled);
+		windowRestoreCheckbox.setEnabled(enabled);
 	}
 }

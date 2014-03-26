@@ -31,7 +31,8 @@ public enum Property
 			"default.station"), LAST_FM_USERNAME("last.fm.username"), LAST_FM_PASSWORD(
 			"last.fm.password"), LAST_FM_ENABLED("last.fm.enabled"), ADS_DETECTION_ENABLED(
 			"ads.detection.enabled"), ADS_SILENCE_ENABLED("ads.silence.enabled"), NOTIFICATIONS_STYLE(
-			"notifications.style"), STATIONS_ORDER_BY("stations.order.by");
+			"notifications.style"), STATIONS_ORDER_BY("stations.order.by"), WINDOW_RESTORE(
+			"window.restore");
 
 	private final String key;
 
