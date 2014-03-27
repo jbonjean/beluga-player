@@ -35,7 +35,6 @@ import javazoom.jl.decoder.JavaLayerException;
 import javazoom.jl.decoder.SampleBuffer;
 
 import org.apache.http.HttpResponse;
-import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.HttpGet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -56,7 +55,6 @@ public class MP3Player
 	private boolean close = true;
 	private boolean pause = false;
 	private long duration;
-	private HttpGet httpGet;
 	private int bitrate;
 
 	public MP3Player()
@@ -66,32 +64,10 @@ public class MP3Player
 	public void loadSong(String url) throws JavaLayerException, MalformedURLException, IOException,
 			CommunicationException, InternalException
 	{
-		httpGet = new HttpGet(url);
-		HttpResponse httpResponse = BelugaHTTPClient.getInstance().getClient().execute(httpGet);
+		HttpResponse httpResponse = BelugaHTTPClient.getInstance().requestGetStream(
+				new HttpGet(url));
 
-		if (httpResponse.getStatusLine().getStatusCode() != HttpStatus.SC_OK)
-		{
-			log.debug("Got response: " + httpResponse.getStatusLine().getReasonPhrase());
-
-			if (httpResponse.getStatusLine().getStatusCode() == HttpStatus.SC_FORBIDDEN)
-			{
-				try
-				{
-					// blacklist address used for this request
-					BelugaHTTPClient.getInstance().blacklist(httpResponse);
-				}
-				catch (Exception e)
-				{
-					// not critical, we just didn't blacklist it
-					log.info(e.getMessage(), e);
-				}
-			}
-
-			cleanResources();
-			throw new IOException("Server reply: " + httpResponse.getStatusLine().getReasonPhrase());
-		}
-
-		cachedInputStream = new CachedInputStream(httpResponse.getEntity());
+		cachedInputStream = new CachedInputStream(httpResponse.getEntity().getContent());
 
 		bitstream = new Bitstream(cachedInputStream);
 
@@ -177,8 +153,7 @@ public class MP3Player
 		}
 
 		// cleanup http connection
-		if (httpGet != null)
-			httpGet.releaseConnection();
+		BelugaHTTPClient.getInstance().release();
 	}
 
 	public void stop()

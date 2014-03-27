@@ -33,7 +33,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.StringTokenizer;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.utils.URLEncodedUtils;
@@ -63,7 +62,6 @@ public class HTTPUtil
 		String urlStr = createRequestUrl(method, params);
 		String data = gson.toJson(jsonData);
 
-		log.debug("===============================================");
 		log.debug("Request: " + urlStr);
 		log.debug("Data: " + data);
 
@@ -109,7 +107,7 @@ public class HTTPUtil
 			HttpPost post = new HttpPost(urlStr);
 			post.addHeader("Content-Type", "application/json");
 			post.setEntity(json);
-			return IOUtils.toString(BelugaHTTPClient.getInstance().httpRequest(post));
+			return BelugaHTTPClient.getInstance().requestPost(post);
 		}
 		catch (Exception e)
 		{
@@ -121,8 +119,7 @@ public class HTTPUtil
 	{
 		try
 		{
-			HttpGet get = new HttpGet(urlStr);
-			return IOUtils.toByteArray(BelugaHTTPClient.getInstance().httpRequest(get));
+			return BelugaHTTPClient.getInstance().requestGet(new HttpGet(urlStr));
 		}
 		catch (IOException e)
 		{

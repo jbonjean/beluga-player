@@ -23,11 +23,11 @@ import info.bonjean.beluga.gui.pivot.ThreadPools;
 
 import java.io.FilterInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
 import java.util.concurrent.Future;
 
-import org.apache.http.HttpEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -45,7 +45,7 @@ public class CachedInputStream extends FilterInputStream
 	private Future<?> future;
 	private boolean closed = false;
 
-	public CachedInputStream(final HttpEntity entity)
+	public CachedInputStream(final InputStream inputstream)
 	{
 		super(new PipedInputStream(CACHE_SIZE));
 
@@ -69,7 +69,7 @@ public class CachedInputStream extends FilterInputStream
 					// really need it.
 					byte[] buffer = new byte[8192];
 					int length;
-					while ((length = entity.getContent().read(buffer)) != -1)
+					while ((length = inputstream.read(buffer)) != -1)
 						pipe.write(buffer, 0, length);
 
 					log.debug("producer: stream finished");

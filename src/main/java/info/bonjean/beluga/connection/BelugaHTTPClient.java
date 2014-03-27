@@ -24,24 +24,30 @@ import info.bonjean.beluga.configuration.DNSProxy;
 import info.bonjean.beluga.exception.CommunicationException;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.lang.reflect.Field;
-import java.net.Socket;
 
+import org.apache.commons.io.IOUtils;
+import org.apache.http.HttpException;
 import org.apache.http.HttpHost;
+import org.apache.http.HttpInetConnection;
 import org.apache.http.HttpResponse;
+import org.apache.http.HttpResponseInterceptor;
+import org.apache.http.HttpStatus;
+import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpUriRequest;
-import org.apache.http.conn.EofSensorInputStream;
-import org.apache.http.conn.params.ConnRouteParams;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.impl.conn.PoolingClientConnectionManager;
-import org.apache.http.impl.conn.SchemeRegistryFactory;
-import org.apache.http.impl.io.ContentLengthInputStream;
-import org.apache.http.io.SessionInputBuffer;
-import org.apache.http.params.BasicHttpParams;
-import org.apache.http.params.HttpConnectionParams;
-import org.apache.http.params.HttpParams;
+import org.apache.http.client.config.RequestConfig;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.config.Registry;
+import org.apache.http.config.RegistryBuilder;
+import org.apache.http.conn.socket.ConnectionSocketFactory;
+import org.apache.http.conn.socket.PlainConnectionSocketFactory;
+import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
+import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
+import org.apache.http.protocol.HttpContext;
+import org.apache.http.protocol.HttpCoreContext;
+import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -53,38 +59,64 @@ import org.slf4j.LoggerFactory;
 public class BelugaHTTPClient
 {
 	private static final Logger log = LoggerFactory.getLogger(BelugaHTTPClient.class);
-	private static final int CONNECTION_TIMEOUT = 4000;
-	private static final int SOCKET_TIMEOUT = 10000;
-	private static final int MAX_RETRIES = 2;
-
-	private HttpClient client;
-	private BelugaDNSResolver dnsOverrider;
+	private static final int TIMEOUT = 4000;
 	private static BelugaHTTPClient instance;
+
+	private HttpClient httpClient;
+	private PoolingHttpClientConnectionManager connectionManager;
+	private HttpResponse streamResponse;
 
 	private BelugaHTTPClient()
 	{
 		BelugaConfiguration configuration = BelugaConfiguration.getInstance();
+		HttpClientBuilder clientBuilder = HttpClients.custom();
 
-		HttpParams httpParameters = new BasicHttpParams();
-		HttpConnectionParams.setConnectionTimeout(httpParameters, CONNECTION_TIMEOUT);
-		HttpConnectionParams.setSoTimeout(httpParameters, SOCKET_TIMEOUT);
+		// timeout
+		RequestConfig config = RequestConfig.custom().setConnectTimeout(TIMEOUT)
+				.setSocketTimeout(TIMEOUT).setConnectionRequestTimeout(TIMEOUT).build();
+		clientBuilder.setDefaultRequestConfig(config);
 
-		PoolingClientConnectionManager poolingClientConnectionManager = null;
-		if (configuration.getDNSProxy().isEmpty())
-			poolingClientConnectionManager = new PoolingClientConnectionManager(
-					SchemeRegistryFactory.createDefault());
-		else
+		// DNS proxy
+		if (!configuration.getDNSProxy().isEmpty())
 		{
+			Registry<ConnectionSocketFactory> registry = RegistryBuilder
+					.<ConnectionSocketFactory> create()
+					.register("http", PlainConnectionSocketFactory.getSocketFactory())
+					.register("https", SSLConnectionSocketFactory.getSocketFactory()).build();
 			DNSProxy dnsProxy = DNSProxy.get(configuration.getDNSProxy());
-			dnsOverrider = new BelugaDNSResolver(dnsProxy);
-			poolingClientConnectionManager = new PoolingClientConnectionManager(
-					SchemeRegistryFactory.createDefault(), dnsOverrider);
+			BelugaDNSResolver dnsOverrider = new BelugaDNSResolver(dnsProxy);
+			connectionManager = new PoolingHttpClientConnectionManager(registry, dnsOverrider);
 		}
-		client = new DefaultHttpClient(poolingClientConnectionManager, httpParameters);
-		if (configuration.getDNSProxy().isEmpty() && !configuration.getProxyHost().isEmpty())
-			ConnRouteParams
-					.setDefaultProxy(client.getParams(), new HttpHost(configuration.getProxyHost(),
-							configuration.getProxyPort(), "http"));
+		// HTTP proxy
+		else if (!configuration.getProxyHost().isEmpty())
+		{
+			HttpHost proxy = new HttpHost(configuration.getProxyHost(),
+					configuration.getProxyPort(), "http");
+			clientBuilder.setProxy(proxy);
+		}
+
+		// limit the pool size
+		connectionManager.setDefaultMaxPerRoute(2);
+
+		// add interceptor, currently for debugging only
+		clientBuilder.addInterceptorFirst(new HttpResponseInterceptor()
+		{
+			@Override
+			public void process(HttpResponse response, HttpContext context) throws HttpException,
+					IOException
+			{
+				HttpInetConnection connection = (HttpInetConnection) context
+						.getAttribute(HttpCoreContext.HTTP_CONNECTION);
+				log.debug("Remote address: " + connection.getRemoteAddress());
+				// TODO: reimplement blacklisting for DNS proxy by maintaining a
+				// map [DNS IP,RESOLVED IP] in the DNS resolver for reverse
+				// lookup
+			}
+		});
+
+		// finally create the HTTP client
+		clientBuilder.setConnectionManager(connectionManager);
+		httpClient = clientBuilder.build();
 	}
 
 	public static BelugaHTTPClient getInstance()
@@ -94,59 +126,58 @@ public class BelugaHTTPClient
 		return instance;
 	}
 
-	public HttpClient getClient()
-	{
-		return client;
-	}
-
 	public static void reset()
 	{
+		instance.connectionManager.close();
 		instance = null;
 	}
 
-	public InputStream httpRequest(HttpUriRequest request) throws CommunicationException
+	public String requestPost(HttpPost post) throws CommunicationException,
+			ClientProtocolException, IOException
 	{
-		Exception e = null;
-		for (int i = 0; i < MAX_RETRIES; i++)
-		{
-			try
-			{
-				HttpResponse httpResponse = client.execute(request);
-				return httpResponse.getEntity().getContent();
-			}
-			catch (Exception e1)
-			{
-				e = e1;
-				log.error("connectionProblem");
-			}
-		}
-		throw new CommunicationException("communicationProblem", e);
+		HttpResponse httpResponse = httpClient.execute(post);
+		String result = IOUtils.toString(httpResponse.getEntity().getContent());
+		EntityUtils.consume(httpResponse.getEntity());
+		return result;
 	}
 
-	public void blacklist(HttpResponse httpResponse) throws NoSuchFieldException,
-			SecurityException, IllegalArgumentException, IllegalAccessException,
-			IllegalStateException, IOException
+	public byte[] requestGet(HttpGet get) throws ClientProtocolException, IOException
 	{
-		// this piece of code is not very reliable (reflection) but not critical
-		EofSensorInputStream eofSensorInputStream = (EofSensorInputStream) httpResponse.getEntity()
-				.getContent();
+		HttpResponse httpResponse = httpClient.execute(get);
+		byte[] result = IOUtils.toByteArray(httpResponse.getEntity().getContent());
+		EntityUtils.consume(httpResponse.getEntity());
+		return result;
+	}
 
-		Field wrappedStreamField = eofSensorInputStream.getClass()
-				.getDeclaredField("wrappedStream");
-		wrappedStreamField.setAccessible(true);
-		ContentLengthInputStream contentLengthInputStream = (ContentLengthInputStream) wrappedStreamField
-				.get(eofSensorInputStream);
+	public HttpResponse requestGetStream(HttpGet get) throws ClientProtocolException, IOException
+	{
+		// TODO: use a difference client with BasicHttpClientConnectionManager
+		// for the streaming connection
 
-		Field inField = contentLengthInputStream.getClass().getDeclaredField("in");
-		inField.setAccessible(true);
-		SessionInputBuffer sessionInputBuffer = (SessionInputBuffer) inField
-				.get(contentLengthInputStream);
+		// no socket timeout, this may improve pause support
+		// TODO: check if it is working as expected (also depends of the server)
+		RequestConfig config = RequestConfig.custom().setConnectTimeout(TIMEOUT)
+				.setConnectionRequestTimeout(TIMEOUT).build();
+		get.setConfig(config);
+		HttpResponse httpResponse = httpClient.execute(get);
+		if (httpResponse.getStatusLine().getStatusCode() != HttpStatus.SC_OK)
+			throw new IOException("Server reply: " + httpResponse.getStatusLine().getReasonPhrase());
+		return httpResponse;
+	}
 
-		Field socketField = sessionInputBuffer.getClass().getDeclaredField("socket");
-		socketField.setAccessible(true);
-		Socket socket = (Socket) socketField.get(sessionInputBuffer);
-
-		// blacklist address in the DNS resolver
-		dnsOverrider.blacklistAddress(socket.getInetAddress());
+	public void release()
+	{
+		try
+		{
+			if (streamResponse != null)
+			{
+				EntityUtils.consume(streamResponse.getEntity());
+				streamResponse = null;
+			}
+		}
+		catch (IOException e)
+		{
+			// ignore the exception, nothing to do
+		}
 	}
 }
