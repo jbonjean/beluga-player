@@ -39,15 +39,16 @@ public class CachedInputStream extends FilterInputStream
 {
 	private static Logger log = LoggerFactory.getLogger(CachedInputStream.class);
 
-	private static final int CACHE_SIZE = 512 * 1024;
+	private static final int OUTPUT_CACHE_SIZE = 512 * 1024;
 	private static final int INITIAL_CACHE_SIZE = 100 * 1024;
+	private static final byte[] buffer = new byte[8192];
 	private PipedOutputStream pipe;
 	private Future<?> future;
 	private boolean closed = false;
 
 	public CachedInputStream(final InputStream inputstream)
 	{
-		super(new PipedInputStream(CACHE_SIZE));
+		super(new PipedInputStream(OUTPUT_CACHE_SIZE));
 
 		future = ThreadPools.streamPool.submit(new Runnable()
 		{
@@ -60,14 +61,11 @@ public class CachedInputStream extends FilterInputStream
 					pipe = new PipedOutputStream((PipedInputStream) in);
 					log.debug("producer: pipe created");
 
-					// feed stream to the pipe
-					// we do it manually because the method writeTo from
-					// HttpEntity calls
-					// the close method of ChunkedInputStream that do some work
-					// to prepare
-					// for the next response but this can be slow and we don't
-					// really need it.
-					byte[] buffer = new byte[8192];
+					// feed stream to the pipe we do it manually because the
+					// method writeTo from HttpEntity calls the close method of
+					// ChunkedInputStream that do some work to prepare for the
+					// next response but this can be slow and we don't really
+					// need it.
 					int length;
 					while ((length = inputstream.read(buffer)) != -1)
 						pipe.write(buffer, 0, length);
