@@ -64,7 +64,7 @@ public class BelugaHTTPClient
 
 	private HttpClient httpClient;
 	private PoolingHttpClientConnectionManager connectionManager;
-	private HttpResponse streamResponse;
+	private HttpGet streamRequest;
 
 	private BelugaHTTPClient()
 	{
@@ -154,7 +154,11 @@ public class BelugaHTTPClient
 
 	public HttpResponse requestGetStream(HttpGet get) throws ClientProtocolException, IOException
 	{
-		// TODO: use a difference client with BasicHttpClientConnectionManager
+		// we keep track of the request, as the only way to interrupt it cleanly
+		// is by using #abort()
+		streamRequest = get;
+
+		// TODO: use a different client with BasicHttpClientConnectionManager
 		// for the streaming connection
 
 		// no socket timeout, this may improve pause support
@@ -170,17 +174,12 @@ public class BelugaHTTPClient
 
 	public void release()
 	{
-		try
+		if (streamRequest != null)
 		{
-			if (streamResponse != null)
-			{
-				EntityUtils.consume(streamResponse.getEntity());
-				streamResponse = null;
-			}
-		}
-		catch (IOException e)
-		{
-			// ignore the exception, nothing to do
+			// shut down the underlying connection and remove it from the
+			// connection pool
+			streamRequest.abort();
+			streamRequest = null;
 		}
 	}
 }
