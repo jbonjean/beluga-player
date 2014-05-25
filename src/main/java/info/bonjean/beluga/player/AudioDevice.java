@@ -57,7 +57,6 @@ public class AudioDevice
 
 	public AudioDevice(Decoder decoder) throws InternalException
 	{
-
 		try
 		{
 			AudioFormat audioFormat = new AudioFormat(decoder.getOutputFrequency(), 16,
@@ -72,41 +71,38 @@ public class AudioDevice
 			sourceDataLine = (SourceDataLine) line;
 			sourceDataLine.open(audioFormat);
 
-			if (System.getProperty("os.name").toLowerCase().indexOf("win") >= 0 && port == null)
+			// first try to find an audio port
+			if (port == null)
 			{
-				/*
-				 * JavaSound is a bit messy, if we are on windows, try to find a
-				 * Port to control the volume
-				 */
 				if (AudioSystem.isLineSupported(Port.Info.LINE_OUT))
 					port = (Port) AudioSystem.getLine(Port.Info.LINE_OUT);
 				else if (AudioSystem.isLineSupported(Port.Info.HEADPHONE))
 					port = (Port) AudioSystem.getLine(Port.Info.HEADPHONE);
 				else if (AudioSystem.isLineSupported(Port.Info.SPEAKER))
 					port = (Port) AudioSystem.getLine(Port.Info.SPEAKER);
-				else
-					log.error("cannotFindAudioPort");
-
-				if (port != null)
-				{
-					log.debug("Found control port");
-					port.open();
-					floatControl = (FloatControl) port.getControl(FloatControl.Type.VOLUME);
-					return;
-				}
 			}
 
-			if (sourceDataLine.isControlSupported(FloatControl.Type.VOLUME))
+			// if we got an audio port, return the control
+			if (port != null)
 			{
-				log.debug("Found volume control");
-				floatControl = (FloatControl) sourceDataLine.getControl(FloatControl.Type.VOLUME);
+				if (!port.isOpen())
+				{
+					log.debug("Opening control port");
+					port.open();
+				}
+				floatControl = (FloatControl) port.getControl(FloatControl.Type.VOLUME);
 				return;
 			}
 
-			if (sourceDataLine.isControlSupported(FloatControl.Type.MASTER_GAIN))
+			// no audio port found, try with the data line control
+			if (sourceDataLine.isControlSupported(FloatControl.Type.VOLUME))
+			{
+				floatControl = (FloatControl) sourceDataLine.getControl(FloatControl.Type.VOLUME);
+				return;
+			}
+			else if (sourceDataLine.isControlSupported(FloatControl.Type.MASTER_GAIN))
 			{
 				// XXX: this probably won't work, gain needs to be linearized
-				log.debug("Found gain control");
 				floatControl = (FloatControl) sourceDataLine
 						.getControl(FloatControl.Type.MASTER_GAIN);
 				return;
