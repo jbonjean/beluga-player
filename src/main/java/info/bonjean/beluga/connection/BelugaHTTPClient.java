@@ -128,8 +128,11 @@ public class BelugaHTTPClient
 
 	public static void reset()
 	{
-		instance.connectionManager.close();
-		instance = null;
+		if (instance != null)
+		{
+			instance.connectionManager.close();
+			instance = null;
+		}
 	}
 
 	public String requestPost(HttpPost post) throws CommunicationException,
