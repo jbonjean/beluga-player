@@ -37,6 +37,7 @@ import org.apache.pivot.wtk.Label;
 import org.apache.pivot.wtk.LinkButton;
 import org.apache.pivot.wtk.Menu;
 import org.apache.pivot.wtk.MenuBar;
+import org.apache.pivot.wtk.MenuButton;
 import org.apache.pivot.wtk.Prompt;
 import org.apache.pivot.wtk.TablePane;
 import org.apache.pivot.wtk.Window;
@@ -57,6 +58,8 @@ public class MainWindow extends Window implements Bindable
 	protected PlayerUI playerUI;
 	@BXML
 	protected MenuBar.Item pandoraMenu;
+	@BXML
+	protected MenuButton stations;
 	@BXML
 	protected Menu.Item deleteStationButton;
 	@BXML
@@ -102,21 +105,13 @@ public class MainWindow extends Window implements Bindable
 		// load temporary screen
 		loadPage("welcome");
 
-		// ensure states are up-to-date
-		setEnabled(true);
-
 		uiDispatcher.initialize();
+		uiDispatcher.enableUI(true);
 	}
 
-	@Override
-	public synchronized void setEnabled(boolean enabled)
+	public void enableUI(boolean enabled)
 	{
-		menuUI.setEnabled(enabled);
-		state.getPage().getComponent().setEnabled(enabled);
-		playerUI.setEnabled(enabled);
-		loader.setVisible(!enabled);
-		PivotUI.setEnable(backButton, enabled && !state.getPage().getName().equals("welcome")
-				&& !state.getPage().getName().equals("song"));
+		uiDispatcher.enableUI(enabled);
 	}
 
 	public synchronized void loadPage(String bxml)

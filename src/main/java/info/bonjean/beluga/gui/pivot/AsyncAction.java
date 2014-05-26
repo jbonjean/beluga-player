@@ -85,7 +85,7 @@ public abstract class AsyncAction extends Action
 							@Override
 							public void run()
 							{
-								mainWindow.setEnabled(false);
+								mainWindow.enableUI(false);
 							}
 						}, true);
 
@@ -103,7 +103,7 @@ public abstract class AsyncAction extends Action
 							@Override
 							public void run()
 							{
-								mainWindow.setEnabled(true);
+								mainWindow.enableUI(true);
 							}
 						}, true);
 					afterPerform();

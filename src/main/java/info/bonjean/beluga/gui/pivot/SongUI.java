@@ -60,7 +60,6 @@ public class SongUI extends SplitPane implements Bindable, SplitPaneExtended
 	protected PushButton sleepButton;
 
 	private final BelugaState state = BelugaState.getInstance();
-	protected boolean likeButtonEnabled = true;
 
 	public SongUI()
 	{
@@ -100,16 +99,13 @@ public class SongUI extends SplitPane implements Bindable, SplitPaneExtended
 		{
 			albumCover.setImage("/img/beluga-player.svg");
 		}
-
-		likeButtonEnabled = state.getSong().getSongRating() > 0 ? false : true;
 	}
 
 	@Override
 	public void setEnabled(boolean enabled)
 	{
-		PivotUI.setEnable(banButton, enabled);
-		PivotUI.setEnable(sleepButton, enabled);
-		PivotUI.setEnable(likeButton, likeButtonEnabled && enabled);
+		super.setEnabled(enabled);
+		PivotUI.enableComponent(likeButton, state.getSong().getSongRating() > 0 ? false : enabled);
 	}
 
 	@Override

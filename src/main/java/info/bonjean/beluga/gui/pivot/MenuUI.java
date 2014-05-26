@@ -19,10 +19,6 @@
  */
 package info.bonjean.beluga.gui.pivot;
 
-import info.bonjean.beluga.client.BelugaState;
-import info.bonjean.beluga.gui.PivotUI;
-import info.bonjean.beluga.response.Station;
-
 import java.net.URL;
 
 import org.apache.pivot.beans.BXML;
@@ -31,9 +27,7 @@ import org.apache.pivot.collections.Map;
 import org.apache.pivot.util.Resources;
 import org.apache.pivot.wtk.Action;
 import org.apache.pivot.wtk.Menu;
-import org.apache.pivot.wtk.Menu.Section;
 import org.apache.pivot.wtk.MenuBar;
-import org.apache.pivot.wtk.MenuBar.Item;
 import org.apache.pivot.wtk.MenuButton;
 import org.apache.pivot.wtk.TablePane;
 
@@ -45,12 +39,9 @@ import org.apache.pivot.wtk.TablePane;
 public class MenuUI extends TablePane implements Bindable
 {
 	@BXML
-	private MenuBar menubar;
+	protected MenuBar menubar;
 	@BXML
-	private MenuButton stations;
-
-	private final BelugaState state = BelugaState.getInstance();
-	boolean pandoraEnabled = false;
+	protected MenuButton stations;
 
 	@Override
 	public void initialize(Map<String, Object> namespace, URL location, Resources resources)
@@ -60,42 +51,6 @@ public class MenuUI extends TablePane implements Bindable
 			Menu.Item debugEntry = new Menu.Item("Refresh");
 			debugEntry.setAction(Action.getNamedActions().get("debug-refresh"));
 			menubar.getItems().get(0).getMenu().getSections().get(0).insert(debugEntry, 0);
-		}
-	}
-
-	@Override
-	public void setEnabled(boolean enabled)
-	{
-		for (Item item : menubar.getItems())
-		{
-			if ("pandoraMenu".equals(item.getName()))
-				item.setEnabled(pandoraEnabled && enabled);
-			else
-				item.setEnabled(enabled);
-		}
-
-		stations.setEnabled(pandoraEnabled && enabled);
-	}
-
-	public void setPandoraEnabled(boolean enabled)
-	{
-		pandoraEnabled = enabled;
-	}
-
-	public void updateStationsListMenu()
-	{
-		// rebuild menu entry
-		Section section = stations.getMenu().getSections().get(0);
-		section.remove(0, section.getLength());
-		for (Station station : state.getStationList())
-		{
-			Menu.Item item = new Menu.Item(station.getStationName());
-			item.getUserData().put("station", station);
-			item.setAction(Action.getNamedActions().get("select-station"));
-			if (state.getStation() != null
-					&& state.getStation().getStationId().equals(station.getStationId()))
-				PivotUI.setEnable(item, false);
-			section.add(item);
 		}
 	}
 }

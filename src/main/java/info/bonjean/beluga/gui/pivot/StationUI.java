@@ -167,11 +167,6 @@ public class StationUI extends SplitPane implements Bindable, SplitPaneExtended
 	}
 
 	@Override
-	public void setEnabled(boolean enabled)
-	{
-	}
-
-	@Override
 	public ImageView getImageView()
 	{
 		return stationCover;

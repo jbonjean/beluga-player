@@ -34,6 +34,7 @@ import org.apache.pivot.collections.Map;
 import org.apache.pivot.util.Resources;
 import org.apache.pivot.wtk.Application;
 import org.apache.pivot.wtk.Button;
+import org.apache.pivot.wtk.Component;
 import org.apache.pivot.wtk.DesktopApplicationContext;
 import org.apache.pivot.wtk.Display;
 import org.apache.pivot.wtk.LinkButton;
@@ -80,17 +81,23 @@ public class PivotUI implements Application
 		DesktopApplicationContext.main(PivotUI.class, new String[] {});
 	}
 
-	public static void setEnable(Button button, boolean enabled)
+	public static void enableComponent(Component component, boolean enabled)
 	{
-		// sync action to prevent the inconsistent exception
-		if (button.getAction() != null)
-			button.getAction().setEnabled(enabled);
+		if (component instanceof Button)
+		{
+			Button button = (Button) component;
+			// sync action to prevent the inconsistent exception
+			if (button.getAction() != null)
+				button.getAction().setEnabled(enabled);
 
-		button.setEnabled(enabled);
+			button.setEnabled(enabled);
 
-		// re-enable the action, it could be used by other buttons!
-		if (button.getAction() != null)
-			button.getAction().setEnabled(true);
+			// re-enable the action, it could be used by other buttons!
+			if (button.getAction() != null)
+				button.getAction().setEnabled(true);
+		}
+		else
+			component.setEnabled(enabled);
 	}
 
 	@Override

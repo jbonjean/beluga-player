@@ -20,7 +20,6 @@
 package info.bonjean.beluga.gui.pivot;
 
 import info.bonjean.beluga.configuration.BelugaConfiguration;
-import info.bonjean.beluga.gui.PivotUI;
 
 import java.net.URL;
 
@@ -69,18 +68,5 @@ public class AccountCreationUI extends TablePane implements Bindable
 	{
 		emailAddressInput.setText(configuration.getUserName());
 		passwordInput.setText(configuration.getPassword());
-	}
-
-	@Override
-	public void setEnabled(boolean enabled)
-	{
-		PivotUI.setEnable(submitButton, enabled);
-		emailAddressInput.setEnabled(enabled);
-		passwordInput.setEnabled(enabled);
-
-		birthYearInput.setEnabled(enabled);
-		zipCodeInput.setEnabled(enabled);
-		emailOptInInput.setEnabled(enabled);
-		termsOfUseInput.setEnabled(enabled);
 	}
 }

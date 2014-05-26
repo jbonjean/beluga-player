@@ -20,7 +20,6 @@
 package info.bonjean.beluga.gui.pivot;
 
 import info.bonjean.beluga.client.BelugaState;
-import info.bonjean.beluga.gui.PivotUI;
 
 import java.io.InputStream;
 import java.net.URL;
@@ -98,11 +97,5 @@ public class WelcomeUI extends TablePane implements Bindable
 				}
 			}
 		}.start();
-	}
-
-	@Override
-	public void setEnabled(boolean enabled)
-	{
-		PivotUI.setEnable(startPandoraButton, enabled);
 	}
 }

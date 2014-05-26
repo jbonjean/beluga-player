@@ -24,7 +24,6 @@ import info.bonjean.beluga.client.PandoraPlaylist;
 import info.bonjean.beluga.configuration.BelugaConfiguration;
 import info.bonjean.beluga.event.PandoraEvent;
 import info.bonjean.beluga.event.PlaybackEvent;
-import info.bonjean.beluga.gui.PivotUI;
 import info.bonjean.beluga.player.MP3Player;
 import info.bonjean.beluga.response.Song;
 import info.bonjean.beluga.util.ResourcesUtil;
@@ -74,11 +73,11 @@ public class PlayerUI extends TablePane implements Bindable, EventSubscriber<Pan
 	@BXML
 	private Meter progressCache;
 	@BXML
-	private LinkButton nextButton;
+	protected LinkButton nextButton;
 	@BXML
-	private LinkButton pauseButton;
+	protected LinkButton pauseButton;
 	@BXML
-	private Slider volumeControl;
+	protected Slider volumeControl;
 
 	private final BelugaState state = BelugaState.getInstance();
 	private final BelugaConfiguration configuration = BelugaConfiguration.getInstance();
@@ -92,9 +91,6 @@ public class PlayerUI extends TablePane implements Bindable, EventSubscriber<Pan
 	@Override
 	public void initialize(Map<String, Object> namespace, URL location, Resources resources)
 	{
-		PivotUI.setEnable(nextButton, false);
-		PivotUI.setEnable(pauseButton, false);
-
 		currentTime.setText("00:00");
 		totalTime.setText("00:00");
 		progress.setPercentage(0);
@@ -110,11 +106,6 @@ public class PlayerUI extends TablePane implements Bindable, EventSubscriber<Pan
 		});
 
 		EventBus.subscribe(PandoraEvent.class, this);
-	}
-
-	@Override
-	public void setEnabled(boolean enabled)
-	{
 	}
 
 	@Override
@@ -166,7 +157,12 @@ public class PlayerUI extends TablePane implements Bindable, EventSubscriber<Pan
 
 	public boolean isPaused()
 	{
-		return mp3Player.isActive() && mp3Player.isPaused();
+		return mp3Player.isPaused();
+	}
+
+	public boolean isActive()
+	{
+		return mp3Player.isActive();
 	}
 
 	public void pausePlayer()
@@ -215,8 +211,7 @@ public class PlayerUI extends TablePane implements Bindable, EventSubscriber<Pan
 				@Override
 				public void run()
 				{
-					// update volume value (may have been changed from
-					// outside)
+					// update volume value (may have been changed from outside)
 					volumeControl.setValue(mp3Player.getVolumeMax() - mp3Player.getVolume());
 
 					// update progress bar
@@ -328,11 +323,6 @@ public class PlayerUI extends TablePane implements Bindable, EventSubscriber<Pan
 							volumeControl.setStart(mp3Player.getVolumeMin());
 							volumeControl.setEnd(mp3Player.getVolumeMax());
 
-							// enable controls
-							volumeControl.setEnabled(true);
-							PivotUI.setEnable(nextButton, true);
-							PivotUI.setEnable(pauseButton, true);
-
 							// update song duration
 							totalTime.setText(formatTime(duration));
 
@@ -359,11 +349,6 @@ public class PlayerUI extends TablePane implements Bindable, EventSubscriber<Pan
 							// set progress bar to full
 							currentTime.setText(formatTime(duration));
 							progress.setPercentage(1);
-
-							// disable controls
-							volumeControl.setEnabled(false);
-							PivotUI.setEnable(nextButton, false);
-							PivotUI.setEnable(pauseButton, false);
 						}
 					}, false);
 

@@ -45,13 +45,15 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Iterator;
 import java.util.List;
 
 import org.apache.pivot.wtk.Action;
 import org.apache.pivot.wtk.ApplicationContext;
 import org.apache.pivot.wtk.Checkbox;
 import org.apache.pivot.wtk.Component;
-import org.apache.pivot.wtk.Menu.Item;
+import org.apache.pivot.wtk.Container;
+import org.apache.pivot.wtk.Menu;
 import org.apache.pivot.wtk.Menu.Section;
 import org.apache.pivot.wtk.MenuButton;
 import org.apache.pivot.wtk.Sheet;
@@ -215,7 +217,6 @@ public class UIController implements EventSubscriber<PlaybackEvent>
 												log.info("stationDeleted");
 												updateStationsList();
 												selectStation(null);
-												menuUI.updateStationsListMenu();
 												playerUI.stopPlayer();
 											}
 											catch (BelugaException e)
@@ -291,18 +292,6 @@ public class UIController implements EventSubscriber<PlaybackEvent>
 
 				// notify the player we are ready
 				EventBus.publish(new PandoraEvent(PandoraEvent.Type.CONNECT));
-
-				// enable/update Pandora menus
-				ApplicationContext.queueCallback(new Runnable()
-				{
-					@Override
-					public void run()
-					{
-						menuUI.updateStationsListMenu();
-						setEnablePandoraMenu(true);
-						mainWindow.statusBarIconDiconnected.setVisible(false);
-					}
-				}, true);
 			}
 		});
 
@@ -349,14 +338,6 @@ public class UIController implements EventSubscriber<PlaybackEvent>
 				Station station = (Station) source.getUserData().get("station");
 				selectStation(station);
 				playerUI.stopPlayer();
-				ApplicationContext.queueCallback(new Runnable()
-				{
-					@Override
-					public void run()
-					{
-						menuUI.updateStationsListMenu();
-					}
-				}, true);
 			}
 		});
 		Action.getNamedActions().put("like", new AsyncAction(mainWindow)
@@ -364,10 +345,8 @@ public class UIController implements EventSubscriber<PlaybackEvent>
 			@Override
 			public void asyncPerform(final Component source) throws BelugaException
 			{
-				SongUI songUI = getPage(SongUI.class);
 				log.info("sendingFeedback");
 				pandoraClient.addFeedback(state.getSong(), true);
-				songUI.likeButtonEnabled = false;
 				log.info("feedbackSent");
 			}
 		});
@@ -415,16 +394,6 @@ public class UIController implements EventSubscriber<PlaybackEvent>
 
 				// update stations list
 				updateStationsList();
-
-				// update stations list menu
-				ApplicationContext.queueCallback(new Runnable()
-				{
-					@Override
-					public void run()
-					{
-						menuUI.updateStationsListMenu();
-					}
-				}, true);
 			}
 		});
 
@@ -700,22 +669,6 @@ public class UIController implements EventSubscriber<PlaybackEvent>
 		throw new InternalException("invalidActionCall");
 	}
 
-	private void setEnablePandoraMenu(boolean enabled)
-	{
-		for (Section section : mainWindow.pandoraMenu.getMenu().getSections())
-		{
-			for (int i = 0; i < section.getLength(); i++)
-			{
-				Item item = section.get(i);
-				if (item.getName() == null || !item.getName().equals("pandoraConnectButton"))
-					PivotUI.setEnable(item, enabled);
-			}
-		}
-		menuUI.setPandoraEnabled(enabled);
-		if (enabled)
-			updateStationControlButtons();
-	}
-
 	private void disconnect()
 	{
 		state.reset();
@@ -732,11 +685,9 @@ public class UIController implements EventSubscriber<PlaybackEvent>
 			@Override
 			public void run()
 			{
-				mainWindow.statusBarIconDiconnected.setVisible(true);
-				setEnablePandoraMenu(false);
 				mainWindow.loadPage("welcome");
 			}
-		}, false);
+		}, true);
 	}
 
 	private void selectStation(Station newStation) throws BelugaException
@@ -800,9 +751,6 @@ public class UIController implements EventSubscriber<PlaybackEvent>
 
 		state.setStation(newStation);
 
-		// disable some buttons, depending on the station
-		updateStationControlButtons();
-
 		log.debug("Station selected: " + state.getStation().getStationName());
 
 		// initially feed the playlist
@@ -825,29 +773,90 @@ public class UIController implements EventSubscriber<PlaybackEvent>
 			});
 		}
 		state.setStationList(stationList);
-		updateStationControlButtons();
-	}
-
-	private void updateStationControlButtons()
-	{
-		// disable delete station button if only 1 station (+quickmix) or
-		// quickmix is selected
-		if (state.getStationList().size() < 3
-				|| (state.getStation() != null && state.getStation().isQuickMix()))
-			PivotUI.setEnable(mainWindow.deleteStationButton, false);
-		else
-			PivotUI.setEnable(mainWindow.deleteStationButton, true);
-
-		// there is no station details for the quickmix
-		if (state.getStation() != null && state.getStation().isQuickMix())
-			PivotUI.setEnable(mainWindow.stationDetailsButton, false);
-		else
-			PivotUI.setEnable(mainWindow.stationDetailsButton, true);
 	}
 
 	private boolean isPlaybackStarted()
 	{
 		return pandoraClient.isLoggedIn() && state.getSong() != null;
+	}
+
+	public void recursiveEnableComponent(Component component, boolean enabled)
+	{
+		// disable the parent component first to prevent any user interaction
+		if (!enabled)
+			PivotUI.enableComponent(component, false);
+
+		// if it's a container, handle the children (except for menu)
+		if (component instanceof Container && !(component instanceof Menu))
+		{
+			Iterator<Component> iterator = ((Container) component).iterator();
+			while (iterator.hasNext())
+				recursiveEnableComponent(iterator.next(), enabled);
+		}
+
+		// enable the parent component
+		if (enabled)
+			PivotUI.enableComponent(component, true);
+	}
+
+	/*
+	 * Keep everything related to enabled/disabled state here, it make it easier
+	 * to ensure consistency between screens
+	 */
+	public void enableUI(boolean enabled)
+	{
+		if (menuUI == null || mainWindow == null || playerUI == null)
+			return;
+
+		// because of the Component class sealing, we cannot override it
+		// so we need to manually update enable state of all components
+		recursiveEnableComponent(menuUI, enabled);
+		recursiveEnableComponent(mainWindow.contentWrapper.get(0), enabled);
+
+		// get Pandora status
+		boolean connected = pandoraClient.isLoggedIn();
+
+		// enable/disable the loading and disconnected icons
+		mainWindow.statusBarIconDiconnected.setVisible(!connected);
+		mainWindow.loader.setVisible(!enabled);
+
+		// enable/disable Pandora related features if connected
+		if (enabled && connected)
+		{
+			// disable delete station button if only 1 station (quickmix) or
+			// if quickmix is selected
+			if (state.getStationList().size() < 3
+					|| (state.getStation() != null && state.getStation().isQuickMix()))
+				PivotUI.enableComponent(mainWindow.deleteStationButton, false);
+			else
+				PivotUI.enableComponent(mainWindow.deleteStationButton, true);
+
+			// there is no station details for the quickmix
+			if (state.getStation() != null && state.getStation().isQuickMix())
+				PivotUI.enableComponent(mainWindow.stationDetailsButton, false);
+			else
+				PivotUI.enableComponent(mainWindow.stationDetailsButton, true);
+
+			// update stations list
+			Section section = mainWindow.stations.getMenu().getSections().get(0);
+			section.remove(0, section.getLength());
+			for (Station station : state.getStationList())
+			{
+				Menu.Item item = new Menu.Item(station.getStationName());
+				item.getUserData().put("station", station);
+				item.setAction(Action.getNamedActions().get("select-station"));
+				// disable selected station
+				if (state.getStation() != null
+						&& state.getStation().getStationId().equals(station.getStationId()))
+					PivotUI.enableComponent(item, true);
+				section.add(item);
+			}
+		}
+		mainWindow.pandoraMenu.setEnabled(connected);
+		mainWindow.stations.setEnabled(connected);
+
+		// update player UI
+		recursiveEnableComponent(playerUI, playerUI.isActive());
 	}
 
 	@Override
@@ -879,5 +888,8 @@ public class UIController implements EventSubscriber<PlaybackEvent>
 			default:
 				break;
 		}
+
+		// update player UI
+		recursiveEnableComponent(playerUI, playerUI.isActive());
 	}
 }

@@ -20,7 +20,6 @@
 package info.bonjean.beluga.gui.pivot;
 
 import info.bonjean.beluga.client.BelugaState;
-import info.bonjean.beluga.gui.PivotUI;
 import info.bonjean.beluga.response.Song;
 
 import java.net.URL;
@@ -34,12 +33,12 @@ import org.apache.pivot.wtk.BoxPane;
 import org.apache.pivot.wtk.Component;
 import org.apache.pivot.wtk.ComponentKeyListener;
 import org.apache.pivot.wtk.Keyboard;
-import org.apache.pivot.wtk.Menu;
-import org.apache.pivot.wtk.MenuButton;
-import org.apache.pivot.wtk.TabPane;
 import org.apache.pivot.wtk.Keyboard.KeyLocation;
 import org.apache.pivot.wtk.Label;
+import org.apache.pivot.wtk.Menu;
+import org.apache.pivot.wtk.MenuButton;
 import org.apache.pivot.wtk.PushButton;
+import org.apache.pivot.wtk.TabPane;
 import org.apache.pivot.wtk.TablePane;
 import org.apache.pivot.wtk.TextInput;
 
@@ -152,14 +151,5 @@ public class SearchUI extends TablePane implements Bindable
 	protected void setFocus()
 	{
 		searchInput.requestFocus();
-	}
-
-	@Override
-	public void setEnabled(boolean enabled)
-	{
-		PivotUI.setEnable(submitButton, enabled);
-		searchInput.setEnabled(enabled);
-		artistsPane.setEnabled(enabled);
-		songsPane.setEnabled(enabled);
 	}
 }

@@ -21,7 +21,6 @@ package info.bonjean.beluga.gui.pivot;
 
 import info.bonjean.beluga.configuration.BelugaConfiguration;
 import info.bonjean.beluga.configuration.DNSProxy;
-import info.bonjean.beluga.gui.PivotUI;
 
 import java.net.URL;
 
@@ -108,23 +107,5 @@ public class PreferencesUI extends TablePane implements Bindable
 		setListButtonSelected(notificationsStyle, configuration.getNotificationsStyle());
 		setListButtonSelected(stationsOrderBy, configuration.getStationsOrderBy());
 		windowRestoreCheckbox.setSelected(configuration.getWindowRestoreEnabled());
-	}
-
-	@Override
-	public void setEnabled(boolean enabled)
-	{
-		PivotUI.setEnable(submitButton, enabled);
-		emailAddressInput.setEnabled(enabled);
-		passwordInput.setEnabled(enabled);
-		httpProxyHostInput.setEnabled(enabled);
-		httpProxyPortInput.setEnabled(enabled);
-		dnsProxyInput.setEnabled(enabled);
-		lastFMEnableCheckbox.setEnabled(enabled);
-		lastFMUsernameInput.setEnabled(enabled);
-		lastFMPasswordInput.setEnabled(enabled);
-		adsEnableDetectionCheckbox.setEnabled(enabled);
-		adsEnableSilentCheckbox.setEnabled(enabled);
-		notificationsStyle.setEnabled(enabled);
-		windowRestoreCheckbox.setEnabled(enabled);
 	}
 }

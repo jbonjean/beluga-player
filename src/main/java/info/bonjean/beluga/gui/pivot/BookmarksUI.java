@@ -101,9 +101,4 @@ public class BookmarksUI extends TablePane implements Bindable
 		link.setMenu(menu);
 		return link;
 	}
-
-	@Override
-	public void setEnabled(boolean enabled)
-	{
-	}
 }

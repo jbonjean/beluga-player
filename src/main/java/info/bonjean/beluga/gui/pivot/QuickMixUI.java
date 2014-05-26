@@ -90,11 +90,11 @@ public class QuickMixUI extends TablePane implements Bindable
 						Checkbox checkbox = (Checkbox) stationsPane.get(i);
 						if (checkbox.isSelected())
 						{
-							PivotUI.setEnable(submitButton, true);
+							PivotUI.enableComponent(submitButton, true);
 							return;
 						}
 					}
-					PivotUI.setEnable(submitButton, false);
+					PivotUI.enableComponent(submitButton, false);
 				}
 			});
 
@@ -111,7 +111,7 @@ public class QuickMixUI extends TablePane implements Bindable
 					Checkbox checkbox = (Checkbox) stationsPane.get(i);
 					checkbox.setSelected(true);
 				}
-				PivotUI.setEnable(submitButton, true);
+				PivotUI.enableComponent(submitButton, true);
 			}
 		});
 
@@ -125,14 +125,8 @@ public class QuickMixUI extends TablePane implements Bindable
 					Checkbox checkbox = (Checkbox) stationsPane.get(i);
 					checkbox.setSelected(false);
 				}
-				PivotUI.setEnable(submitButton, false);
+				PivotUI.enableComponent(submitButton, false);
 			}
 		});
-	}
-
-	@Override
-	public void setEnabled(boolean enabled)
-	{
-		PivotUI.setEnable(submitButton, enabled);
 	}
 }
