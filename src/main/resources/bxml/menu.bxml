@@ -59,6 +59,9 @@
 			<MenuBar.Item buttonData="%help">
 				<Menu>
 					<Menu.Section>
+						<Menu.Item buttonData="%logs" action="load">
+							<userData bxml="logs" />
+						</Menu.Item>
 						<Menu.Item buttonData="%credits" action="load">
 							<userData bxml="credits" />
 						</Menu.Item>

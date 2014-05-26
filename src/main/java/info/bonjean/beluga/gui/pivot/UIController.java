@@ -680,14 +680,7 @@ public class UIController implements EventSubscriber<PlaybackEvent>
 		// notify the player to stop
 		EventBus.publish(new PandoraEvent(PandoraEvent.Type.DISCONNECT));
 
-		ApplicationContext.queueCallback(new Runnable()
-		{
-			@Override
-			public void run()
-			{
-				mainWindow.loadPage("welcome");
-			}
-		}, true);
+		mainWindow.loadPage("welcome");
 	}
 
 	private void selectStation(Station newStation) throws BelugaException

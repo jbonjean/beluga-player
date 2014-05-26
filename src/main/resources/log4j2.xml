@@ -10,7 +10,7 @@
 		<StatusBar name="StatusBar">
 			<PatternLayout pattern='%d{HH:mm:ss} %-5level %logger{0} - %msg%n' />
 		</StatusBar>
-		<File name="LogFile" fileName="${sys:user.home}/.log/beluga/beluga-player.log">
+		<File name="LogFile" fileName="${sys:user.home}/.log/beluga-player.log">
 			<PatternLayout pattern='%d{HH:mm:ss} %-5level %logger{0} - %msg%n' />
 		</File>
 		<Async name="AsyncLogFile">

@@ -1,0 +1,25 @@
+<local:LogsUI styles="{verticalSpacing:1,horizontalSpacing:1,padding:10}"
+	xmlns:bxml="http://pivot.apache.org/bxml" xmlns:local="info.bonjean.beluga.gui.pivot"
+	xmlns="org.apache.pivot.wtk" xmlns:content="org.apache.pivot.wtk.content">
+	<columns>
+		<TablePane.Column width="1*" />
+	</columns>
+	<TablePane.Row height="1*">
+		<Border title="beluga-player.log">
+			<ScrollPane horizontalScrollBarPolicy="fill">
+				<TextArea bxml:id="displayArea" enabled="false" />
+			</ScrollPane>
+		</Border>
+	</TablePane.Row>
+	<TablePane.Row height="-1">
+		<BoxPane orientation="horizontal" styles="{padding:10}">
+			<Label text="%reportIssue" />
+			<Label text=":" />
+			<LinkButton action="open-url">
+				<content:ButtonData
+					text="https://github.com/jbonjean/beluga-player/issues" />
+				<userData url="https://github.com/jbonjean/beluga-player/issues" />
+			</LinkButton>
+		</BoxPane>
+	</TablePane.Row>
+</local:LogsUI>
