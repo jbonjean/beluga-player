@@ -21,6 +21,7 @@ package info.bonjean.beluga.gui.pivot.core;
 
 import org.apache.pivot.wtk.ImageView;
 import org.apache.pivot.wtk.SplitPane;
+import org.apache.pivot.wtk.media.Drawing;
 import org.apache.pivot.wtk.skin.terra.TerraSplitPaneSkin;
 
 /**
@@ -32,6 +33,9 @@ import org.apache.pivot.wtk.skin.terra.TerraSplitPaneSkin;
  */
 public class BelugaSplitPaneSkin extends TerraSplitPaneSkin
 {
+	// fix for SVG (no max size)
+	private static final int DRAWING_MAX_HEIGHT = 500;
+
 	@Override
 	public void layout()
 	{
@@ -47,7 +51,8 @@ public class BelugaSplitPaneSkin extends TerraSplitPaneSkin
 			{
 				int imageHeight = splitPaneHeight - splitPaneExtended.getPrimaryRegionReserved()
 						- 2 * splitPaneExtended.getPrimaryRegionPadding();
-				int imageMaxHeight = imageView.getImage().getHeight();
+				int imageMaxHeight = imageView.getImage() instanceof Drawing ? DRAWING_MAX_HEIGHT
+						: imageView.getImage().getHeight();
 
 				// ensure we don't exceed the image original size
 				if (imageMaxHeight > 0)
