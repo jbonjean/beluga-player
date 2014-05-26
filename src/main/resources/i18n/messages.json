@@ -1,6 +1,7 @@
 {
 accountCreated:"Account created",
 artists:"Artists",
+connected:"Connected",
 retrievingStations:"Retrieving stations",
 createStation:"Create Station",
 like:"Like",

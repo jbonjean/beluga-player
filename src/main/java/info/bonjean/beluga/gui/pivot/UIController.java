@@ -290,6 +290,15 @@ public class UIController implements EventSubscriber<PlaybackEvent>
 
 				selectStation(null);
 
+				ApplicationContext.queueCallback(new Runnable()
+				{
+					@Override
+					public void run()
+					{
+						mainWindow.loadPage("connected");
+					}
+				}, true);
+
 				// notify the player we are ready
 				EventBus.publish(new PandoraEvent(PandoraEvent.Type.CONNECT));
 			}
@@ -871,7 +880,7 @@ public class UIController implements EventSubscriber<PlaybackEvent>
 			case SONG_START:
 				// reload song page only if currently displayed
 				if (state.getPage().getName().equals("song")
-						|| state.getPage().getName().equals("welcome"))
+						|| state.getPage().getName().equals("connected"))
 					mainWindow.loadPage("song");
 				// send a desktop notification
 				new Notification(state.getSong());
