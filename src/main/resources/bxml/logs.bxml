@@ -5,7 +5,7 @@
 		<TablePane.Column width="1*" />
 	</columns>
 	<TablePane.Row height="1*">
-		<Border title="beluga-player.log">
+		<Border title="beluga-player.log" styles="{padding:5}">
 			<ScrollPane horizontalScrollBarPolicy="fill">
 				<TextArea bxml:id="displayArea" enabled="false" />
 			</ScrollPane>

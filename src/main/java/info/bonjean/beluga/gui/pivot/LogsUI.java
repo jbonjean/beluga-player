@@ -51,5 +51,7 @@ public class LogsUI extends TablePane implements Bindable
 		{
 			// do nothing, we just have nothing to display
 		}
+		if (displayArea.getText().isEmpty())
+			displayArea.setText((String) resources.get("logFileEmpty"));
 	}
 }
