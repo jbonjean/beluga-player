@@ -300,7 +300,14 @@ public class UIController implements EventSubscriber<PlaybackEvent>
 			@Override
 			public void asyncPerform(Component source) throws BelugaException
 			{
-				disconnect();
+				ApplicationContext.queueCallback(new Runnable()
+				{
+					@Override
+					public void run()
+					{
+						disconnect();
+					}
+				}, true);
 				log.info("disconnectedFromPandora");
 			}
 		});
@@ -804,7 +811,9 @@ public class UIController implements EventSubscriber<PlaybackEvent>
 		// because of the Component class sealing, we cannot override it
 		// so we need to manually update enable state of all components
 		recursiveEnableComponent(menuUI, enabled);
-		recursiveEnableComponent(mainWindow.contentWrapper.get(0), enabled);
+		Iterator<Component> contentIterator = mainWindow.contentWrapper.iterator();
+		while (contentIterator.hasNext())
+			recursiveEnableComponent(contentIterator.next(), enabled);
 
 		// get Pandora status
 		boolean connected = pandoraClient.isLoggedIn();
