@@ -9,7 +9,8 @@ ROOT=".."
 
 echo "initialize root"
 mkdir -p "$ROOT"
-rsync -a --delete --exclude "/src/" --exclude "/img-extra/" --exclude "/.git/" --exclude "/CNAME" \
+rsync -a --delete --exclude "/src/" --exclude "/img-extra/" --exclude "/.git*" --exclude "/CNAME" \
+	--exclude "/favicon" --exclude "apple-touch-icon-precomposed.png" --exclude "favicon.ico" \
 	"$TEMPLATE/." "$ROOT/."
 
 echo "generate index"
@@ -30,7 +31,8 @@ echo "install favicons"
 mkdir -p "$ROOT/favicon"
 rsync -a --delete "favicon/." "$ROOT/favicon/."
 
-awk -v data="$(cat favicon.html)" '
+sed -i '/<title><.*/d' "$ROOT/index.html"
+awk -v data="$(cat head.html)" '
 	/<\/head>/ {print data}
 	/.*/ {print $0}
 	' "$ROOT/index.html" > "$ROOT/index.html.1"
