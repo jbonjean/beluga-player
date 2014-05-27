@@ -17,7 +17,7 @@ Supported features:
 
 ## Windows
 
-You just need *Java JRE* installed to run *Beluga Player*
+You just need *Java JRE* installed to run *Beluga Player*:
 
 * Download it from the official website: http://java.com/download
 * Start Beluga Player by double clicking on the file beluga-player-VERSION.jar
@@ -25,8 +25,6 @@ You just need *Java JRE* installed to run *Beluga Player*
 ## Linux
 
 ### Debian/Ubuntu
-
-A package is available.
 
 * First, install the Java JRE:
 
@@ -39,10 +37,6 @@ sudo apt-get install default-jre
 ```
 dpkg -i beluga-player-VERSION_all.deb
 ```
-
-### Arch Linux
-
-The package is available in the [Arch User Repository](https://aur.archlinux.org/packages/beluga-player/) (thanks to [@vivien](https://github.com/vivien))
 
 ### Other Linux distributions
 
@@ -63,7 +57,7 @@ Sources are available on [GitHub](http://github.com/jbonjean/beluga-player).
 
 ### Install dependencies
 
-Dependencies: Maven and Java JDK >= 6
+Dependencies: Maven and Java JDK >= 6.
 
 For Debian/Ubuntu:
 
