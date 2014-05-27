@@ -38,3 +38,4 @@ awk -v data="$(cat head.html)" '
 	' "$ROOT/index.html" > "$ROOT/index.html.1"
 mv "$ROOT/index.html.1" "$ROOT/index.html"
 
+cp -f "VERSION" "$ROOT/"
