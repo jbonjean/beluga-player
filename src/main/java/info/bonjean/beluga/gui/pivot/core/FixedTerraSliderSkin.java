@@ -18,8 +18,6 @@ package info.bonjean.beluga.gui.pivot.core;
 
 /**
  * 
- * @author Julien Bonjean <julien@bonjean.info>
- * 
  * Fixes the missing disabled state color changes.
  * 
  */
