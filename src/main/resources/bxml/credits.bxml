@@ -1,6 +1,6 @@
-<BoxPane styles="{fill:true,padding:10}" xmlns:bxml="http://pivot.apache.org/bxml"
-	xmlns="org.apache.pivot.wtk" xmlns:content="org.apache.pivot.wtk.content"
-	orientation="vertical">
+<ScrollPane horizontalScrollBarPolicy="fill"
+	styles="{fill:true,padding:10}" xmlns:bxml="http://pivot.apache.org/bxml"
+	xmlns="org.apache.pivot.wtk" xmlns:content="org.apache.pivot.wtk.content">
 	<BoxPane orientation="vertical" styles="{padding:10}">
 		<Label text="Pandora API Wiki" styles="{font:{bold:true}}" />
 		<LinkButton action="open-url">
@@ -42,4 +42,4 @@
 			<userData url="http://thenounproject.com/kikajasso" />
 		</LinkButton>
 	</BoxPane>
-</BoxPane>
+</ScrollPane>

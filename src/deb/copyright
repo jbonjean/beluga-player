@@ -1,7 +1,7 @@
 Format: http://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
 Upstream-Name: Beluga Player
 Upstream-Contact: Julien Bonjean <julien@bonjean.info>
-Source: http://code.google.com/p/beluga-player/source/checkout
+Source: http://jbonjean.github.io/beluga-player/
 
 Files: *
 Copyright: 2012-2013 Julien Bonjean
