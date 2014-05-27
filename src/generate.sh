@@ -25,4 +25,14 @@ for area in article aside header footer; do
 	' "$ROOT/index.html" > "$ROOT/index.html.1"
 	mv "$ROOT/index.html.1" "$ROOT/index.html"
 done
-# 
+
+echo "install favicons"
+mkdir -p "$ROOT/favicon"
+rsync -a --delete "favicon/." "$ROOT/favicon/."
+
+awk -v data="$(cat favicon.html)" '
+	/<\/head>/ {print data}
+	/.*/ {print $0}
+	' "$ROOT/index.html" > "$ROOT/index.html.1"
+mv "$ROOT/index.html.1" "$ROOT/index.html"
+
