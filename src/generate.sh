@@ -9,7 +9,8 @@ ROOT=".."
 
 echo "initialize root"
 mkdir -p "$ROOT"
-rsync -a --delete --exclude "/src/" --exclude "/img-extra/" "$TEMPLATE/." "$ROOT/."
+rsync -a --delete --exclude "/src/" --exclude "/img-extra/" --exclude "/.git/" --exclude "/CNAME" \
+	"$TEMPLATE/." "$ROOT/."
 
 echo "generate index"
 for area in article aside header footer; do
