@@ -12,7 +12,7 @@ echo "initialize root"
 mkdir -p "$ROOT"
 rsync -a --delete --exclude "/src/" --exclude "/img-extra/" --exclude "/.git*" --exclude "/CNAME" \
 	--exclude "/favicon" --exclude "apple-touch-icon-precomposed.png" --exclude "favicon.ico" \
-	"$TEMPLATE/." "$ROOT/."
+	--exclude "/VERSION" "$TEMPLATE/." "$ROOT/."
 
 echo "generate index"
 for area in article aside header footer; do
@@ -28,10 +28,6 @@ for area in article aside header footer; do
 	mv "$ROOT/index.html.1" "$ROOT/index.html"
 done
 
-echo "install favicons"
-mkdir -p "$ROOT/favicon"
-rsync -a --delete "favicon/." "$ROOT/favicon/."
-
 sed -i '/<title><.*/d' "$ROOT/index.html"
 awk -v data="$(cat head.html)" '
 	/<\/head>/ {print data}
@@ -41,4 +37,3 @@ mv "$ROOT/index.html.1" "$ROOT/index.html"
 
 sed -i "s/UA-XXXXX-X/$ANALYTICS/" "$ROOT/index.html"
 
-cp -f "VERSION" "$ROOT/"
