@@ -6,6 +6,7 @@ TEMPLATE="initializr"
 TEMPLATE_SRC=""
 SOURCE="index.md"
 ROOT=".."
+ANALYTICS="UA-40011310-2"
 
 echo "initialize root"
 mkdir -p "$ROOT"
@@ -37,5 +38,7 @@ awk -v data="$(cat head.html)" '
 	/.*/ {print $0}
 	' "$ROOT/index.html" > "$ROOT/index.html.1"
 mv "$ROOT/index.html.1" "$ROOT/index.html"
+
+sed -i "s/UA-XXXXX-X/$ANALYTICS/" "$ROOT/index.html"
 
 cp -f "VERSION" "$ROOT/"
