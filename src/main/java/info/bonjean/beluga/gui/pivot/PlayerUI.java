@@ -22,7 +22,6 @@ package info.bonjean.beluga.gui.pivot;
 import info.bonjean.beluga.client.BelugaState;
 import info.bonjean.beluga.client.PandoraPlaylist;
 import info.bonjean.beluga.configuration.BelugaConfiguration;
-import info.bonjean.beluga.event.PandoraEvent;
 import info.bonjean.beluga.event.PlaybackEvent;
 import info.bonjean.beluga.player.MP3Player;
 import info.bonjean.beluga.response.Song;
@@ -45,7 +44,6 @@ import org.apache.pivot.wtk.Slider;
 import org.apache.pivot.wtk.SliderValueListener;
 import org.apache.pivot.wtk.TablePane;
 import org.bushe.swing.event.EventBus;
-import org.bushe.swing.event.EventSubscriber;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -53,11 +51,8 @@ import org.slf4j.LoggerFactory;
  * 
  * @author Julien Bonjean <julien@bonjean.info>
  * 
- * TODO: use more events to reduce coupling (play/pause).
- * TODO: redesign the main thread integration with the player.
- * 
  */
-public class PlayerUI extends TablePane implements Bindable, EventSubscriber<PandoraEvent>
+public class PlayerUI extends TablePane implements Bindable
 {
 	private static Logger log = LoggerFactory.getLogger(PlayerUI.class);
 	@BXML
@@ -86,7 +81,7 @@ public class PlayerUI extends TablePane implements Bindable, EventSubscriber<Pan
 	private long duration;
 	private Future<?> playerUISyncFuture;
 	private Future<?> playbackThreadFuture;
-	private boolean active;
+	private boolean closed;
 
 	@Override
 	public void initialize(Map<String, Object> namespace, URL location, Resources resources)
@@ -104,41 +99,6 @@ public class PlayerUI extends TablePane implements Bindable, EventSubscriber<Pan
 				mp3Player.setVolume((int) mp3Player.getVolumeMax() - slider.getValue());
 			}
 		});
-
-		EventBus.subscribe(PandoraEvent.class, this);
-	}
-
-	@Override
-	public void onEvent(PandoraEvent event)
-	{
-		if (event.getType().equals(PandoraEvent.Type.CONNECT))
-		{
-			active = true;
-
-			// start the playback thread
-			if (playbackThreadFuture == null || playbackThreadFuture.isDone())
-				playbackThreadFuture = ThreadPools.playbackPool.submit(new Playback());
-		}
-		else
-		{
-			active = false;
-
-			// stop the player
-			mp3Player.stop();
-
-			// stop the playback thread
-			try
-			{
-				if (playbackThreadFuture != null)
-					playbackThreadFuture.get(5, TimeUnit.SECONDS);
-			}
-			catch (Exception e)
-			{
-				log.error(e.getMessage(), e);
-				playbackThreadFuture.cancel(true);
-			}
-		}
-
 	}
 
 	private String formatTime(long ms)
@@ -150,28 +110,25 @@ public class PlayerUI extends TablePane implements Bindable, EventSubscriber<Pan
 						- TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(ms)));
 	}
 
-	public void stopPlayer()
+	public void open()
 	{
-		mp3Player.stop();
+		closed = false;
+
+		// ensure the thread is running
+		if (playbackThreadFuture == null || playbackThreadFuture.isDone() || closed)
+			playbackThreadFuture = ThreadPools.playbackPool.submit(new Playback());
+
+		// playback will start automatically
 	}
 
-	public boolean isPaused()
-	{
-		return mp3Player.isPaused();
-	}
-
-	public boolean isActive()
-	{
-		return mp3Player.isActive();
-	}
-
-	public void pausePlayer()
+	public void playPause()
 	{
 		mp3Player.pause();
 
 		EventBus.publish(new PlaybackEvent(mp3Player.isPaused() ? PlaybackEvent.Type.SONG_PAUSE
 				: PlaybackEvent.Type.SONG_RESUME, null));
 
+		// replace play/pause button
 		ApplicationContext.queueCallback(new Runnable()
 		{
 			@Override
@@ -189,6 +146,45 @@ public class PlayerUI extends TablePane implements Bindable, EventSubscriber<Pan
 			}
 		}, false);
 
+	}
+
+	public void skip()
+	{
+		// stop the player to skip the song
+		mp3Player.stop();
+	}
+
+	public void close()
+	{
+		if (playbackThreadFuture == null || playbackThreadFuture.isDone() || closed)
+			return;
+
+		closed = true;
+
+		// stop the player
+		mp3Player.stop();
+
+		// stop the playback thread
+		try
+		{
+			if (playbackThreadFuture != null)
+				playbackThreadFuture.get(5, TimeUnit.SECONDS);
+		}
+		catch (Exception e)
+		{
+			log.error(e.getMessage(), e);
+			playbackThreadFuture.cancel(true);
+		}
+	}
+
+	public boolean isPaused()
+	{
+		return mp3Player.isPaused();
+	}
+
+	public boolean isClosed()
+	{
+		return closed;
 	}
 
 	private Runnable syncUI = new Runnable()
@@ -240,7 +236,7 @@ public class PlayerUI extends TablePane implements Bindable, EventSubscriber<Pan
 			{
 				song = null;
 
-				if (!active)
+				if (closed)
 					break;
 
 				try
@@ -369,10 +365,11 @@ public class PlayerUI extends TablePane implements Bindable, EventSubscriber<Pan
 
 			log.debug("Exiting playback thread");
 
-			// notify we are stopping the playback (if active, meaning the stop
-			// has not been requested)
-			if (active)
-				EventBus.publish(new PlaybackEvent(PlaybackEvent.Type.PLAYBACK_STOP, null));
+			// if closed has not been requested, we are disconnected
+			if (!closed)
+				EventBus.publish(new PlaybackEvent(PlaybackEvent.Type.PANDORA_DISCONNECTED, null));
+
+			closed = true;
 
 			// stop the UI thread
 			playerUISyncFuture.cancel(false);

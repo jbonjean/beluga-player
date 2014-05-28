@@ -26,7 +26,6 @@ import info.bonjean.beluga.client.PandoraPlaylist;
 import info.bonjean.beluga.configuration.BelugaConfiguration;
 import info.bonjean.beluga.configuration.DNSProxy;
 import info.bonjean.beluga.connection.BelugaHTTPClient;
-import info.bonjean.beluga.event.PandoraEvent;
 import info.bonjean.beluga.event.PlaybackEvent;
 import info.bonjean.beluga.exception.BelugaException;
 import info.bonjean.beluga.exception.InternalException;
@@ -217,7 +216,7 @@ public class UIController implements EventSubscriber<PlaybackEvent>
 												log.info("stationDeleted");
 												updateStationsList();
 												selectStation(null);
-												playerUI.stopPlayer();
+												playerUI.skip();
 											}
 											catch (BelugaException e)
 											{
@@ -269,10 +268,10 @@ public class UIController implements EventSubscriber<PlaybackEvent>
 			{
 				log.info("connectionToPandora");
 
-				pandoraClient.reset();
-				state.reset();
-				playlist.clear();
-				playerUI.stopPlayer();
+				// ensure the initial state is clear
+				clearResources();
+				playerUI.close();
+
 				pandoraClient.partnerLogin();
 				pandoraClient.userLogin();
 
@@ -300,7 +299,10 @@ public class UIController implements EventSubscriber<PlaybackEvent>
 				}, true);
 
 				// notify the player we are ready
-				EventBus.publish(new PandoraEvent(PandoraEvent.Type.CONNECT));
+				EventBus.publish(new PlaybackEvent(PlaybackEvent.Type.PANDORA_CONNECTED, null));
+
+				// start the player
+				playerUI.open();
 			}
 		});
 
@@ -314,10 +316,12 @@ public class UIController implements EventSubscriber<PlaybackEvent>
 					@Override
 					public void run()
 					{
-						disconnect();
+						clearResources();
+						playerUI.close();
+						mainWindow.loadPage("welcome");
+						log.info("disconnectedFromPandora");
 					}
 				}, true);
-				log.info("disconnectedFromPandora");
 			}
 		});
 
@@ -327,7 +331,7 @@ public class UIController implements EventSubscriber<PlaybackEvent>
 			public void asyncPerform(Component source) throws BelugaException
 			{
 				log.info("skippingSong");
-				playerUI.stopPlayer();
+				playerUI.skip();
 			}
 		});
 
@@ -341,7 +345,7 @@ public class UIController implements EventSubscriber<PlaybackEvent>
 				else
 					log.info("pausingSong");
 
-				playerUI.pausePlayer();
+				playerUI.playPause();
 			}
 		});
 
@@ -353,7 +357,7 @@ public class UIController implements EventSubscriber<PlaybackEvent>
 				log.info("changingStation");
 				Station station = (Station) source.getUserData().get("station");
 				selectStation(station);
-				playerUI.stopPlayer();
+				playerUI.skip();
 			}
 		});
 		Action.getNamedActions().put("like", new AsyncAction(mainWindow)
@@ -374,7 +378,7 @@ public class UIController implements EventSubscriber<PlaybackEvent>
 				log.info("sendingFeedback");
 				pandoraClient.addFeedback(state.getSong(), false);
 				log.info("feedbackSent");
-				playerUI.stopPlayer();
+				playerUI.skip();
 			}
 		});
 		Action.getNamedActions().put("sleep", new AsyncAction(mainWindow)
@@ -385,7 +389,7 @@ public class UIController implements EventSubscriber<PlaybackEvent>
 				log.info("sendingFeedback");
 				pandoraClient.sleepSong(state.getSong());
 				log.info("feedbackSent");
-				playerUI.stopPlayer();
+				playerUI.skip();
 			}
 		});
 		Action.getNamedActions().put("create", new AsyncAction(mainWindow)
@@ -685,18 +689,13 @@ public class UIController implements EventSubscriber<PlaybackEvent>
 		throw new InternalException("invalidActionCall");
 	}
 
-	private void disconnect()
+	private void clearResources()
 	{
 		state.reset();
 		pandoraClient.reset();
-
-		// invalidate playlist
-		PandoraPlaylist.getInstance().clear();
-
-		// notify the player to stop
-		EventBus.publish(new PandoraEvent(PandoraEvent.Type.DISCONNECT));
-
-		mainWindow.loadPage("welcome");
+		playlist.clear();
+		BelugaHTTPClient.reset();
+		LastFMSession.reset();
 	}
 
 	private void selectStation(Station newStation) throws BelugaException
@@ -867,7 +866,7 @@ public class UIController implements EventSubscriber<PlaybackEvent>
 		mainWindow.stations.setEnabled(connected);
 
 		// update player UI
-		recursiveEnableComponent(playerUI, playerUI.isActive());
+		recursiveEnableComponent(playerUI, !playerUI.isClosed());
 	}
 
 	@Override
@@ -891,16 +890,17 @@ public class UIController implements EventSubscriber<PlaybackEvent>
 					// scrobble with last.fm
 					LastFMUtil.asyncScrobble(song);
 				break;
-			case PLAYBACK_STOP:
-				state.reset();
-				disconnect();
+			case PANDORA_DISCONNECTED:
+				clearResources();
 				mainWindow.loadPage("welcome");
+				log.info("disconnectedFromPandora");
 				break;
-			default:
-				break;
+			case PANDORA_CONNECTED:
+			case SONG_PAUSE:
+			case SONG_RESUME:
 		}
 
 		// update player UI
-		recursiveEnableComponent(playerUI, playerUI.isActive());
+		recursiveEnableComponent(playerUI, !playerUI.isClosed());
 	}
 }
