@@ -158,7 +158,7 @@ public class UIController implements EventSubscriber<PlaybackEvent>
 					@Override
 					public void run()
 					{
-						MainWindow.getInstance().loadPage(isPlaybackStarted() ? "song" : "welcome");
+						mainWindow.loadPage(isPlaybackStarted() ? "song" : "welcome");
 					}
 				}, false);
 			}
@@ -199,32 +199,30 @@ public class UIController implements EventSubscriber<PlaybackEvent>
 					@Override
 					public void run()
 					{
-						mainWindow.confirmStationDelete.open(MainWindow.getInstance(),
-								new SheetCloseListener()
+						mainWindow.confirmStationDelete.open(mainWindow, new SheetCloseListener()
+						{
+							@Override
+							public void sheetClosed(Sheet sheet)
+							{
+								if (mainWindow.confirmStationDelete.getResult()
+										&& mainWindow.confirmStationDelete.getSelectedOptionIndex() == 1)
 								{
-									@Override
-									public void sheetClosed(Sheet sheet)
+									try
 									{
-										if (mainWindow.confirmStationDelete.getResult()
-												&& mainWindow.confirmStationDelete
-														.getSelectedOptionIndex() == 1)
-										{
-											try
-											{
-												log.info("deletingStation");
-												pandoraClient.deleteStation(state.getStation());
-												log.info("stationDeleted");
-												updateStationsList();
-												selectStation(null);
-												playerUI.skip();
-											}
-											catch (BelugaException e)
-											{
-												log.error(e.getMessage(), e);
-											}
-										}
+										log.info("deletingStation");
+										pandoraClient.deleteStation(state.getStation());
+										log.info("stationDeleted");
+										updateStationsList();
+										selectStation(null);
+										playerUI.skip();
 									}
-								});
+									catch (BelugaException e)
+									{
+										log.error(e.getMessage(), e);
+									}
+								}
+							}
+						});
 					}
 				}, true);
 			}
@@ -482,7 +480,7 @@ public class UIController implements EventSubscriber<PlaybackEvent>
 				}, true);
 			}
 		});
-		Action.getNamedActions().put("update-quickmix", new AsyncAction(MainWindow.getInstance())
+		Action.getNamedActions().put("update-quickmix", new AsyncAction(mainWindow)
 		{
 			@Override
 			public void asyncPerform(final Component source) throws BelugaException
@@ -513,13 +511,13 @@ public class UIController implements EventSubscriber<PlaybackEvent>
 					}
 				}, true);
 
-				PandoraClient.getInstance().setQuickMix(quickMixStationIds);
+				pandoraClient.setQuickMix(quickMixStationIds);
+
+				// update stations to get the new quickmix station configuration
+				updateStationsList();
 
 				if (state.getStation().isQuickMix())
-				{
-					PandoraPlaylist.getInstance().clear();
-					updateStationsList();
-				}
+					playlist.clear();
 
 				// redirect to the main screen
 				ApplicationContext.queueCallback(new Runnable()
@@ -527,7 +525,7 @@ public class UIController implements EventSubscriber<PlaybackEvent>
 					@Override
 					public void run()
 					{
-						MainWindow.getInstance().loadPage("song");
+						mainWindow.loadPage("song");
 					}
 				}, false);
 			}
@@ -557,7 +555,7 @@ public class UIController implements EventSubscriber<PlaybackEvent>
 				log.info("accountCreated");
 				configuration.setUserName(accountCreationUI.emailAddressInput.getText());
 				configuration.setPassword(accountCreationUI.passwordInput.getText());
-				configuration.setConfigurationVersion(BelugaState.getInstance().getVersion());
+				configuration.setConfigurationVersion(state.getVersion());
 				configuration.store();
 			}
 		});
@@ -655,9 +653,8 @@ public class UIController implements EventSubscriber<PlaybackEvent>
 				configuration.setWindowRestoreEnabled(preferencesUI.windowRestoreCheckbox
 						.isSelected());
 
-				if (!BelugaState.getInstance().getVersion()
-						.equals(BelugaConfiguration.CONFIGURATION_DEFAULT_VERSION))
-					configuration.setConfigurationVersion(BelugaState.getInstance().getVersion());
+				if (!state.getVersion().equals(BelugaConfiguration.CONFIGURATION_DEFAULT_VERSION))
+					configuration.setConfigurationVersion(state.getVersion());
 
 				configuration.store();
 
@@ -673,7 +670,7 @@ public class UIController implements EventSubscriber<PlaybackEvent>
 					@Override
 					public void run()
 					{
-						MainWindow.getInstance().loadPage(isPlaybackStarted() ? "song" : "welcome");
+						mainWindow.loadPage(isPlaybackStarted() ? "song" : "welcome");
 					}
 				}, false);
 			}
@@ -750,7 +747,7 @@ public class UIController implements EventSubscriber<PlaybackEvent>
 				|| !newStation.getStationId().equals(state.getStation().getStationId()))
 		{
 			// invalidate playlist
-			PandoraPlaylist.getInstance().clear();
+			playlist.clear();
 
 			// update the configuration
 			configuration.setDefaultStationId(newStation.getStationId());
@@ -762,7 +759,7 @@ public class UIController implements EventSubscriber<PlaybackEvent>
 		log.debug("Station selected: " + state.getStation().getStationName());
 
 		// initially feed the playlist
-		PandoraPlaylist.getInstance().feedQueue();
+		playlist.feedQueue();
 	}
 
 	private void updateStationsList() throws BelugaException

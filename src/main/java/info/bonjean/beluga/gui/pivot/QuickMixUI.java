@@ -62,16 +62,15 @@ public class QuickMixUI extends TablePane implements Bindable
 		// find the quickmix station, should be the first one but better be safe
 		Station quickmixStation = null;
 		for (Station station : BelugaState.getInstance().getStationList())
-		{
 			if (station.isQuickMix())
 				quickmixStation = station;
-		}
 
 		// create the checkboxes
 		for (Station station : BelugaState.getInstance().getStationList())
 		{
 			if (station.isQuickMix())
 				continue;
+
 			Checkbox checkbox = new Checkbox(station.getStationName());
 			checkbox.getUserData().put("stationId", station.getStationId());
 
