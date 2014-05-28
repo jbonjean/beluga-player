@@ -1,45 +1,63 @@
-<ScrollPane horizontalScrollBarPolicy="fill"
-	styles="{fill:true,padding:10}" xmlns:bxml="http://pivot.apache.org/bxml"
+<TablePane styles="{verticalSpacing:1,horizontalSpacing:1,padding:10}"
+	xmlns:bxml="http://pivot.apache.org/bxml" xmlns:local="info.bonjean.beluga.gui.pivot"
 	xmlns="org.apache.pivot.wtk" xmlns:content="org.apache.pivot.wtk.content">
-	<BoxPane orientation="vertical" styles="{padding:10}">
-		<Label text="Pandora API Wiki" styles="{font:{bold:true}}" />
-		<LinkButton action="open-url">
-			<content:ButtonData
-				text="http://pan-do-ra-api.wikia.com/wiki/Pan-do-ra_API_Wiki" />
-			<userData url="http://pan-do-ra-api.wikia.com/wiki/Pan-do-ra_API_Wiki" />
-		</LinkButton>
-	</BoxPane>
-	<BoxPane orientation="vertical" styles="{padding:10}">
-		<Label
-			text="Skip Forward, Play and Pause designed by Alex Fuller from the Noun Project "
-			styles="{font:{bold:true}}" />
-		<LinkButton action="open-url">
-			<content:ButtonData text="http://thenounproject.com/alexfuller" />
-			<userData url="http://thenounproject.com/alexfuller" />
-		</LinkButton>
-	</BoxPane>
-	<BoxPane orientation="vertical" styles="{padding:10}">
-		<Label text="Disconnect designed by Danny Amacher from the Noun Project "
-			styles="{font:{bold:true}}" />
-		<LinkButton action="open-url">
-			<content:ButtonData text="http://thenounproject.com/dannyamacher" />
-			<userData url="http://thenounproject.com/dannyamacher" />
-		</LinkButton>
-	</BoxPane>
-	<BoxPane orientation="vertical" styles="{padding:10}">
-		<Label text="Home designed by Edward Boatman from the Noun Project "
-			styles="{font:{bold:true}}" />
-		<LinkButton action="open-url">
-			<content:ButtonData text="http://thenounproject.com/edward" />
-			<userData url="http://thenounproject.com/edward" />
-		</LinkButton>
-	</BoxPane>
-	<BoxPane orientation="vertical" styles="{padding:10}">
-		<Label text="Pisces designed by Erika Jasso from the Noun Project "
-			styles="{font:{bold:true}}" />
-		<LinkButton action="open-url">
-			<content:ButtonData text="http://thenounproject.com/kikajasso" />
-			<userData url="http://thenounproject.com/kikajasso" />
-		</LinkButton>
-	</BoxPane>
-</ScrollPane>
+	<columns>
+		<TablePane.Column width="1*" />
+	</columns>
+	<TablePane.Row height="-1">
+		<Label text="%credits"
+			styles="{horizontalAlignment:'center',font:{bold:true,size:16},padding:{bottom:10}}" />
+	</TablePane.Row>
+	<TablePane.Row height="1*">
+		<Border styles="{padding:5}">
+			<ScrollPane horizontalScrollBarPolicy="fill">
+				<BoxPane orientation="vertical">
+					<Label text="Pandora API Wiki" styles="{font:{bold:true}}" />
+					<LinkButton action="open-url">
+						<content:ButtonData
+							text="http://pan-do-ra-api.wikia.com/wiki/Pan-do-ra_API_Wiki" />
+						<userData url="http://pan-do-ra-api.wikia.com/wiki/Pan-do-ra_API_Wiki" />
+					</LinkButton>
+				</BoxPane>
+
+				<BoxPane orientation="vertical" styles="{padding:{top:15}}">
+					<Label
+						text="Skip Forward, Play and Pause designed by Alex Fuller from the Noun Project "
+						styles="{font:{bold:true}}" />
+					<LinkButton action="open-url">
+						<content:ButtonData text="http://thenounproject.com/alexfuller" />
+						<userData url="http://thenounproject.com/alexfuller" />
+					</LinkButton>
+				</BoxPane>
+
+				<BoxPane orientation="vertical" styles="{padding:{top:15}}">
+					<Label
+						text="Disconnect designed by Danny Amacher from the Noun Project "
+						styles="{font:{bold:true}}" />
+					<LinkButton action="open-url">
+						<content:ButtonData text="http://thenounproject.com/dannyamacher" />
+						<userData url="http://thenounproject.com/dannyamacher" />
+					</LinkButton>
+				</BoxPane>
+
+				<BoxPane orientation="vertical" styles="{padding:{top:15}}">
+					<Label text="Home designed by Edward Boatman from the Noun Project "
+						styles="{font:{bold:true}}" />
+					<LinkButton action="open-url">
+						<content:ButtonData text="http://thenounproject.com/edward" />
+						<userData url="http://thenounproject.com/edward" />
+					</LinkButton>
+				</BoxPane>
+
+				<BoxPane orientation="vertical" styles="{padding:{top:15}}">
+					<Label text="Pisces designed by Erika Jasso from the Noun Project "
+						styles="{font:{bold:true}}" />
+					<LinkButton action="open-url">
+						<content:ButtonData text="http://thenounproject.com/kikajasso" />
+						<userData url="http://thenounproject.com/kikajasso" />
+					</LinkButton>
+				</BoxPane>
+			</ScrollPane>
+		</Border>
+	</TablePane.Row>
+</TablePane>
