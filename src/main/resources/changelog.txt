@@ -6,6 +6,8 @@ Beluga Player 0.8
 * Reduce CPU usage
 * Add new style for notifications
 * Add new logo
+* Better resize support
+* Add logs screen
 
 Beluga Player 0.7
 
