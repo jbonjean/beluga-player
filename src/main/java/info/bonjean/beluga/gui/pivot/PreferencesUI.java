@@ -20,12 +20,13 @@
 package info.bonjean.beluga.gui.pivot;
 
 import info.bonjean.beluga.configuration.BelugaConfiguration;
-import info.bonjean.beluga.configuration.DNSProxy;
+import info.bonjean.beluga.configuration.ConnectionType;
 
 import java.net.URL;
 
 import org.apache.pivot.beans.BXML;
 import org.apache.pivot.beans.Bindable;
+import org.apache.pivot.collections.EnumList;
 import org.apache.pivot.collections.List;
 import org.apache.pivot.collections.Map;
 import org.apache.pivot.util.Resources;
@@ -54,11 +55,11 @@ public class PreferencesUI extends TablePane implements Bindable
 	@BXML
 	protected Checkbox lastFMEnableCheckbox;
 	@BXML
+	protected ListButton connectionType;
+	@BXML
 	protected TextInput httpProxyHostInput;
 	@BXML
 	protected TextInput httpProxyPortInput;
-	@BXML
-	protected ListButton dnsProxyInput;
 	@BXML
 	protected Checkbox adsEnableDetectionCheckbox;
 	@BXML
@@ -87,18 +88,17 @@ public class PreferencesUI extends TablePane implements Bindable
 				button.setSelectedItem(listItem);
 	}
 
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
 	public void initialize(Map<String, Object> namespace, URL location, Resources resources)
 	{
 		emailAddressInput.setText(configuration.getUserName());
 		passwordInput.setText(configuration.getPassword());
+		setListButtonSelected(stationsOrderBy, configuration.getStationsOrderBy());
+		connectionType.setListData(new EnumList(ConnectionType.class));
+		connectionType.setSelectedItem(configuration.getConnectionType());
 		httpProxyHostInput.setText(configuration.getProxyHost());
 		httpProxyPortInput.setText(configuration.getProxyPortStr());
-		@SuppressWarnings("unchecked")
-		List<Object> listData = (List<Object>) dnsProxyInput.getListData();
-		for (DNSProxy dnsProxy : DNSProxy.values())
-			listData.add(dnsProxy);
-		dnsProxyInput.setSelectedItem(DNSProxy.get(configuration.getDNSProxy()));
 		lastFMUsernameInput.setText(configuration.getLastFMUsername());
 		lastFMPasswordInput.setText(configuration.getLastFMPassword());
 		lastFMEnableCheckbox.setSelected(configuration.getLastFMEnabled());

@@ -28,47 +28,35 @@ import java.util.Map;
  * @author Julien Bonjean <julien@bonjean.info>
  * 
  */
-public enum DNSProxy
+public enum ConnectionType
 {
-	PROXY_DNS("proxydns", "Proxy DNS", "74.207.242.213", "50.116.28.138");
+	// TODO: handle i18n
+	DIRECT("direct", "No Proxy"), PROXY_DNS("proxy-dns", "Proxy DNS"), HTTP_PROXY("http-proxy",
+			"HTTP Proxy");
 	private String id;
 	private String name;
-	private String primaryServer;
-	private String secondaryServer;
-	private static final Map<String, DNSProxy> lookup = new HashMap<String, DNSProxy>();
+	private static final Map<String, ConnectionType> lookup = new HashMap<String, ConnectionType>();
 
 	static
 	{
-		for (DNSProxy s : EnumSet.allOf(DNSProxy.class))
+		for (ConnectionType s : EnumSet.allOf(ConnectionType.class))
 			lookup.put(s.getId(), s);
 	}
 
-	public static DNSProxy get(String id)
+	public static ConnectionType get(String id)
 	{
 		return lookup.get(id);
 	}
 
-	private DNSProxy(String id, String name, String primaryServer, String secondaryServer)
+	private ConnectionType(String id, String name)
 	{
 		this.id = id;
 		this.name = name;
-		this.primaryServer = primaryServer;
-		this.secondaryServer = secondaryServer;
 	}
 
 	public String getId()
 	{
 		return id;
-	}
-
-	public String getPrimaryServer()
-	{
-		return primaryServer;
-	}
-
-	public String getSecondaryServer()
-	{
-		return secondaryServer;
 	}
 
 	public String toString()

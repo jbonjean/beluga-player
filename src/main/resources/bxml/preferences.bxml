@@ -8,6 +8,12 @@
 		stateToBoolean(value) {
 		return value == Button.State.SELECTED;
 		}
+
+		function
+		isHTTPProxyVisible(value) {
+		return value != null &amp;&amp;
+		value.getId().equals("http-proxy");
+		}
 	</bxml:script>
 
 	<columns>
@@ -31,15 +37,15 @@
 					</LinkButton>
 				</Form.Section>
 				<Form.Section heading="%connection">
-					<BoxPane Form.label="%httpProxy">
+					<BoxPane Form.label="%proxyConfiguration">
+						<ListButton bxml:id="connectionType" />
+					</BoxPane>
+					<BoxPane Form.label="%httpProxy"
+						visible="${isHTTPProxyVisible:connectionType.selectedItem}">
 						<TextInput bxml:id="httpProxyHostInput" textSize="17"
 							prompt="%hostname" />
 						<TextInput bxml:id="httpProxyPortInput" textSize="5"
 							prompt="%port" />
-					</BoxPane>
-					<Label text="%or" />
-					<BoxPane Form.label="%dnsProxy">
-						<ListButton bxml:id="dnsProxyInput" />
 					</BoxPane>
 				</Form.Section>
 			</Form>
@@ -71,7 +77,7 @@
 						</BoxPane>
 						<BoxPane>
 							<Checkbox bxml:id="adsEnableSilentCheckbox" buttonData="%enableAdsSilent"
-								enabled="${stateToBoolean:adsEnableDetectionCheckbox.state}" />
+								visible="${stateToBoolean:adsEnableDetectionCheckbox.state}" />
 						</BoxPane>
 					</Form.Section>
 				</Form>

@@ -76,23 +76,22 @@ public class BelugaHTTPClient
 				.setSocketTimeout(TIMEOUT).setConnectionRequestTimeout(TIMEOUT).build();
 		clientBuilder.setDefaultRequestConfig(config);
 
-		// DNS proxy
-		if (!configuration.getDNSProxy().isEmpty())
+		switch (configuration.getConnectionType())
 		{
-			Registry<ConnectionSocketFactory> registry = RegistryBuilder
-					.<ConnectionSocketFactory> create()
-					.register("http", PlainConnectionSocketFactory.getSocketFactory())
-					.register("https", SSLConnectionSocketFactory.getSocketFactory()).build();
-			DNSProxy dnsProxy = DNSProxy.get(configuration.getDNSProxy());
-			BelugaDNSResolver dnsOverrider = new BelugaDNSResolver(dnsProxy);
-			connectionManager = new PoolingHttpClientConnectionManager(registry, dnsOverrider);
-		}
-		// HTTP proxy
-		else if (!configuration.getProxyHost().isEmpty())
-		{
-			HttpHost proxy = new HttpHost(configuration.getProxyHost(),
-					configuration.getProxyPort(), "http");
-			clientBuilder.setProxy(proxy);
+			case PROXY_DNS:
+				Registry<ConnectionSocketFactory> registry = RegistryBuilder
+						.<ConnectionSocketFactory> create()
+						.register("http", PlainConnectionSocketFactory.getSocketFactory())
+						.register("https", SSLConnectionSocketFactory.getSocketFactory()).build();
+				BelugaDNSResolver dnsOverrider = new BelugaDNSResolver(DNSProxy.PROXY_DNS);
+				connectionManager = new PoolingHttpClientConnectionManager(registry, dnsOverrider);
+				break;
+			case HTTP_PROXY:
+				HttpHost proxy = new HttpHost(configuration.getProxyHost(),
+						configuration.getProxyPort(), "http");
+				clientBuilder.setProxy(proxy);
+				break;
+			default:
 		}
 
 		// limit the pool size

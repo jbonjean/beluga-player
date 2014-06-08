@@ -26,8 +26,8 @@ package info.bonjean.beluga.configuration;
  */
 public enum Property
 {
-	CONFIGURATION_VERSION("configuration.version"), USER("user"), PASSWORD("password"), PROXY_HOST(
-			"proxy.host"), PROXY_PORT("proxy.port"), PROXY_DNS("proxy.dns"), DEFAULT_STATION(
+	CONFIGURATION_VERSION("configuration.version"), USER("user"), PASSWORD("password"), CONNECTION_TYPE(
+			"connection.type"), PROXY_HOST("proxy.host"), PROXY_PORT("proxy.port"), DEFAULT_STATION(
 			"default.station"), LAST_FM_USERNAME("last.fm.username"), LAST_FM_PASSWORD(
 			"last.fm.password"), LAST_FM_ENABLED("last.fm.enabled"), ADS_DETECTION_ENABLED(
 			"ads.detection.enabled"), ADS_SILENCE_ENABLED("ads.silence.enabled"), NOTIFICATIONS_STYLE(

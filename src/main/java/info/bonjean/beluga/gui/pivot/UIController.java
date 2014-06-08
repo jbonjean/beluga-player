@@ -24,7 +24,7 @@ import info.bonjean.beluga.client.LastFMSession;
 import info.bonjean.beluga.client.PandoraClient;
 import info.bonjean.beluga.client.PandoraPlaylist;
 import info.bonjean.beluga.configuration.BelugaConfiguration;
-import info.bonjean.beluga.configuration.DNSProxy;
+import info.bonjean.beluga.configuration.ConnectionType;
 import info.bonjean.beluga.connection.BelugaHTTPClient;
 import info.bonjean.beluga.event.PlaybackEvent;
 import info.bonjean.beluga.exception.BelugaException;
@@ -634,10 +634,10 @@ public class UIController implements EventSubscriber<PlaybackEvent>
 
 				configuration.setUserName(preferencesUI.emailAddressInput.getText());
 				configuration.setPassword(preferencesUI.passwordInput.getText());
+				configuration.setConnectionType((ConnectionType) preferencesUI.connectionType
+						.getSelectedItem());
 				configuration.setProxyHost(preferencesUI.httpProxyHostInput.getText());
 				configuration.setProxyPort(preferencesUI.httpProxyPortInput.getText());
-				configuration.setDNSProxy(((DNSProxy) preferencesUI.dnsProxyInput.getSelectedItem())
-						.getId());
 				configuration.setLastFMEnabled(preferencesUI.lastFMEnableCheckbox.isSelected());
 				configuration.setLastFMUsername(preferencesUI.lastFMUsernameInput.getText());
 				configuration.setLastFMPassword(preferencesUI.lastFMPasswordInput.getText());

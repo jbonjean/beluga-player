@@ -52,17 +52,8 @@ public class BelugaConfiguration
 	{
 	}
 
-	// for migration from 0.* to 0.6
 	private void propertiesMigrationV0_6()
 	{
-		// dns proxy format changed
-		if (DNSProxy.get(getDNSProxy()) == null)
-		{
-			log.debug("Migrating DNS proxy settings");
-			// if proxy invalid (IP address), we set proxy DNS
-			setDNSProxy(DNSProxy.PROXY_DNS.getId());
-		}
-
 		// passwords are now obfuscated
 		// we use the property key as encryption key, this is not secure at all
 		// but this is not the purpose here
@@ -70,6 +61,23 @@ public class BelugaConfiguration
 				Property.PASSWORD.getKey()));
 		set(Property.LAST_FM_PASSWORD, CryptoUtil.passwordEncrypt(
 				getString(Property.LAST_FM_PASSWORD), Property.LAST_FM_PASSWORD.getKey()));
+	}
+
+	private void propertiesMigrationV0_8()
+	{
+		// update to the new connection management
+		String proxyDNS = (String) properties.get("proxy.dns");
+		if (proxyDNS != null && !proxyDNS.isEmpty())
+			setConnectionType(ConnectionType.PROXY_DNS);
+		else
+		{
+			String httpProxyHost = getProxyHost();
+			Integer httpProxyPort = getProxyPort();
+			if (httpProxyHost != null && !httpProxyHost.isEmpty() && httpProxyPort != null)
+				setConnectionType(ConnectionType.HTTP_PROXY);
+			else
+				setConnectionType(ConnectionType.DIRECT);
+		}
 	}
 
 	public static BelugaConfiguration getInstance()
@@ -156,6 +164,12 @@ public class BelugaConfiguration
 					log.info("migratingConfiguration");
 					log.debug("Configuration file migration to 0.6");
 					propertiesMigrationV0_6();
+				}
+				if (configurationVersion < 0.8f)
+				{
+					log.info("migratingConfiguration");
+					log.debug("Configuration file migration to 0.8");
+					propertiesMigrationV0_8();
 				}
 				// update configuration version
 				setConfigurationVersion(BelugaState.getInstance().getVersion());
@@ -263,16 +277,6 @@ public class BelugaConfiguration
 		set(Property.DEFAULT_STATION, defaultStationId);
 	}
 
-	public String getDNSProxy()
-	{
-		return getString(Property.PROXY_DNS, "");
-	}
-
-	public void setDNSProxy(String proxyDNS)
-	{
-		set(Property.PROXY_DNS, proxyDNS);
-	}
-
 	public String getLastFMUsername()
 	{
 		return getString(Property.LAST_FM_USERNAME, "");
@@ -363,5 +367,16 @@ public class BelugaConfiguration
 	public void setWindowRestoreEnabled(Boolean enabled)
 	{
 		set(Property.WINDOW_RESTORE, enabled.toString());
+	}
+
+	public ConnectionType getConnectionType()
+	{
+		return ConnectionType
+				.get(getString(Property.CONNECTION_TYPE, ConnectionType.DIRECT.getId()));
+	}
+
+	public void setConnectionType(ConnectionType connectionType)
+	{
+		set(Property.CONNECTION_TYPE, connectionType.getId());
 	}
 }
