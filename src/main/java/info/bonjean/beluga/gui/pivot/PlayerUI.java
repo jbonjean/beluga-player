@@ -78,10 +78,10 @@ public class PlayerUI extends TablePane implements Bindable
 	private final BelugaConfiguration configuration = BelugaConfiguration.getInstance();
 	private final MP3Player mp3Player = new MP3Player();
 	private static final int UI_REFRESH_INTERVAL = 200;
-	private long duration;
 	private Future<?> playerUISyncFuture;
 	private Future<?> playbackThreadFuture;
-	private boolean closed;
+	private volatile long duration;
+	private volatile boolean closed;
 
 	@Override
 	public void initialize(Map<String, Object> namespace, URL location, Resources resources)
