@@ -42,6 +42,9 @@ public class LastFMUtil
 
 	public static void asyncScrobble(final Song song)
 	{
+		if (song.isAd())
+			return;
+
 		if (scrobbleFuture != null && !scrobbleFuture.isDone())
 		{
 			log.error("lastFMTimeout");
