@@ -233,29 +233,4 @@ public class MP3Player
 	{
 		return !close;
 	}
-
-	public boolean isVolumeControlAvailable()
-	{
-		return audioDeviceManager.isVolumeControlAvailable();
-	}
-
-	public int getVolume()
-	{
-		return audioDeviceManager.getVolume();
-	}
-
-	public void setVolume(int value)
-	{
-		audioDeviceManager.setVolume(value);
-	}
-
-	public int getVolumeMin()
-	{
-		return audioDeviceManager.getVolumeMin();
-	}
-
-	public int getVolumeMax()
-	{
-		return audioDeviceManager.getVolumeMax();
-	}
 }

@@ -22,7 +22,6 @@ package info.bonjean.beluga.gui;
 import info.bonjean.beluga.configuration.BelugaConfiguration;
 import info.bonjean.beluga.gui.pivot.MainWindow;
 import info.bonjean.beluga.gui.pivot.core.BelugaMenuButtonSkin;
-import info.bonjean.beluga.gui.pivot.core.BelugaSliderSkin;
 import info.bonjean.beluga.gui.pivot.core.BelugaSplitPaneSkin;
 import info.bonjean.beluga.gui.pivot.core.FixedTerraLinkButtonSkin;
 
@@ -39,7 +38,6 @@ import org.apache.pivot.wtk.DesktopApplicationContext;
 import org.apache.pivot.wtk.Display;
 import org.apache.pivot.wtk.LinkButton;
 import org.apache.pivot.wtk.MenuButton;
-import org.apache.pivot.wtk.Slider;
 import org.apache.pivot.wtk.SplitPane;
 import org.apache.pivot.wtk.Theme;
 import org.apache.pivot.wtk.Window;
@@ -76,7 +74,6 @@ public class PivotUI implements Application
 
 		Theme.getTheme().set(LinkButton.class, FixedTerraLinkButtonSkin.class);
 		Theme.getTheme().set(MenuButton.class, BelugaMenuButtonSkin.class);
-		Theme.getTheme().set(Slider.class, BelugaSliderSkin.class);
 		Theme.getTheme().set(SplitPane.class, BelugaSplitPaneSkin.class);
 		DesktopApplicationContext.main(PivotUI.class, new String[] {});
 	}

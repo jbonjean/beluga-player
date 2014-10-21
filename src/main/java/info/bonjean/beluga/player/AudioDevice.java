@@ -19,21 +19,16 @@
  */
 package info.bonjean.beluga.player;
 
-import java.util.Arrays;
-
 import info.bonjean.beluga.exception.InternalException;
+
+import java.util.Arrays;
 
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.DataLine;
-import javax.sound.sampled.FloatControl;
 import javax.sound.sampled.Line;
 import javax.sound.sampled.LineUnavailableException;
-import javax.sound.sampled.Port;
 import javax.sound.sampled.SourceDataLine;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javazoom.jl.decoder.Decoder;
 import javazoom.jl.decoder.SampleBuffer;
@@ -45,14 +40,8 @@ import javazoom.jl.decoder.SampleBuffer;
  */
 public class AudioDevice
 {
-	private static final Logger log = LoggerFactory.getLogger(AudioDevice.class);
-
-	private static final int MAX_VOLUME = 65536;
-
-	private SourceDataLine sourceDataLine;
-	private static Port port;
-	private FloatControl floatControl;
 	private static final byte[] byteBuffer = new byte[SampleBuffer.OBUFFERSIZE * 2];
+	private SourceDataLine sourceDataLine;
 	private boolean mute;
 
 	public AudioDevice(Decoder decoder) throws InternalException
@@ -65,99 +54,22 @@ public class AudioDevice
 			Line line = AudioSystem.getLine(dataLineInfo);
 
 			if (!(line instanceof SourceDataLine))
-				return;
+				throw new InternalException("cannotGetSourceDataLine");
 
 			// open the dataline
 			sourceDataLine = (SourceDataLine) line;
 			sourceDataLine.open(audioFormat);
-
-			// first try to find an audio port
-			if (port == null)
-			{
-				if (AudioSystem.isLineSupported(Port.Info.LINE_OUT))
-					port = (Port) AudioSystem.getLine(Port.Info.LINE_OUT);
-				else if (AudioSystem.isLineSupported(Port.Info.HEADPHONE))
-					port = (Port) AudioSystem.getLine(Port.Info.HEADPHONE);
-				else if (AudioSystem.isLineSupported(Port.Info.SPEAKER))
-					port = (Port) AudioSystem.getLine(Port.Info.SPEAKER);
-			}
-
-			// if we got an audio port, return the control
-			if (port != null)
-			{
-				if (!port.isOpen())
-				{
-					log.debug("Opening control port");
-					port.open();
-				}
-				floatControl = (FloatControl) port.getControl(FloatControl.Type.VOLUME);
-				return;
-			}
-
-			// no audio port found, try with the data line control
-			if (sourceDataLine.isControlSupported(FloatControl.Type.VOLUME))
-			{
-				floatControl = (FloatControl) sourceDataLine.getControl(FloatControl.Type.VOLUME);
-				return;
-			}
-			else if (sourceDataLine.isControlSupported(FloatControl.Type.MASTER_GAIN))
-			{
-				// XXX: this probably won't work, gain needs to be linearized
-				floatControl = (FloatControl) sourceDataLine
-						.getControl(FloatControl.Type.MASTER_GAIN);
-				return;
-			}
+			sourceDataLine.start();
 		}
 		catch (LineUnavailableException e)
 		{
-			// nothing to do, handle everything in the finally block
-		}
-		finally
-		{
-			if (sourceDataLine == null)
-				throw new InternalException("cannotGetSourceDataLine");
-
-			if (floatControl == null)
-			{
-				log.error("cannotGetFloatControl");
-				return;
-			}
-
-			sourceDataLine.start();
+			throw new InternalException("cannotGetSourceDataLine");
 		}
 	}
 
 	public SourceDataLine getSourceDataLine()
 	{
 		return sourceDataLine;
-	}
-
-	public boolean isVolumeControlAvailable()
-	{
-		return floatControl != null;
-	}
-
-	public int getVolume()
-	{
-		if (floatControl == null)
-			return 0;
-
-		return (int) Math.floor(MAX_VOLUME * (floatControl.getValue() / floatControl.getMaximum()));
-	}
-
-	public void setVolume(int value)
-	{
-		floatControl.setValue(value * floatControl.getMaximum() / MAX_VOLUME);
-	}
-
-	public int getVolumeMin()
-	{
-		return 0;
-	}
-
-	public int getVolumeMax()
-	{
-		return MAX_VOLUME;
 	}
 
 	public void close()
