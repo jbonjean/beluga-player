@@ -99,6 +99,8 @@ public class SongUI extends SplitPane implements Bindable, SplitPaneExtended
 		{
 			albumCover.setImage("/img/beluga-player.svg");
 		}
+
+		PivotUI.enableComponent(likeButton, state.getSong().getSongRating() > 0);
 	}
 
 	@Override
