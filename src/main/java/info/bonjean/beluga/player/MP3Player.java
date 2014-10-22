@@ -87,25 +87,22 @@ public class MP3Player
 		// calculate the duration
 		duration = (songSize * 1000) / (bitrate / 8);
 
-		// prepare the audio device (need to be done each time because Java
-		// sound stack does not support codec change)
-
 		// set the decoder
 		decoder = new Decoder();
 
 		// decode the first frame to initialize the decoder
 		decoder.decodeFrame(frame, bitstream);
 
-		// create audio device
-		audioDeviceManager = new AudioDevice(decoder);
-
 		// init environment variables
 		close = true;
 		pause = false;
 	}
 
-	public void play() throws JavaLayerException
+	public void play(boolean dummy) throws JavaLayerException, InternalException
 	{
+		// create audio device
+		audioDeviceManager = dummy ? new DummyAudioDevice(decoder) : new SimpleAudioDevice(decoder);
+
 		close = false;
 		try
 		{
@@ -222,11 +219,6 @@ public class MP3Player
 	public int getBitrate()
 	{
 		return bitrate;
-	}
-
-	public void mute(boolean silence)
-	{
-		audioDeviceManager.mute();
 	}
 
 	public boolean isActive()

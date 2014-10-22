@@ -283,11 +283,6 @@ public class PlayerUI extends TablePane implements Bindable
 						// set the ad flag on the song, for the display and to
 						// skip scrobbling
 						song.setAd(true);
-
-						// if ad silence configuration is enabled, notify the
-						// player
-						if (configuration.getAdsSilenceEnabled())
-							mp3Player.mute(true);
 					}
 
 					// notify song started
@@ -311,7 +306,7 @@ public class PlayerUI extends TablePane implements Bindable
 					Thread.currentThread().setPriority(Thread.MAX_PRIORITY);
 
 					// start playback
-					mp3Player.play();
+					mp3Player.play(configuration.getAdsSilenceEnabled() && song.isAd());
 
 					// restore thread priority to normal
 					Thread.currentThread().setPriority(Thread.NORM_PRIORITY);
