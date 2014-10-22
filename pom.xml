@@ -31,7 +31,6 @@
 		<lastfm-java.version>0.1.2</lastfm-java.version>
 		<jlayer.version>1.0.1-1</jlayer.version>
 		<svg-salamander.version>1.0</svg-salamander.version>
-		<eventbus.version>1.4</eventbus.version>
 		<jdeb-plugin.version>1.1.1</jdeb-plugin.version>
 		<maven-shade-plugin.version>2.2</maven-shade-plugin.version>
 		<maven-compiler-plugin.version>3.1</maven-compiler-plugin.version>
@@ -208,11 +207,6 @@
 			<groupId>org.apache.logging.log4j</groupId>
 			<artifactId>log4j-slf4j-impl</artifactId>
 			<version>${log4j.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.bushe</groupId>
-			<artifactId>eventbus</artifactId>
-			<version>${eventbus.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>de.u-mass</groupId>

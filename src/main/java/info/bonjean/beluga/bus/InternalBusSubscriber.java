@@ -17,27 +17,14 @@
  * this program; if not, write to the Free Software Foundation, Inc., 51
  * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
-package info.bonjean.beluga.gui.pivot;
-
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledThreadPoolExecutor;
+package info.bonjean.beluga.bus;
 
 /**
  * 
  * @author Julien Bonjean <julien@bonjean.info>
  * 
  */
-public class ThreadPools
+public interface InternalBusSubscriber
 {
-	public static final int INTERNAL_BUS_POOL_SIZE = 2;
-
-	public static ExecutorService playbackPool = Executors.newFixedThreadPool(1);
-	public static ExecutorService actionPool = Executors.newFixedThreadPool(1);
-	public static ExecutorService streamPool = Executors.newFixedThreadPool(1);
-	public static ExecutorService internalBusPool = Executors
-			.newFixedThreadPool(INTERNAL_BUS_POOL_SIZE);
-	public static ScheduledExecutorService statusBarScheduler = new ScheduledThreadPoolExecutor(1);
-	public static ScheduledExecutorService playerUIScheduler = new ScheduledThreadPoolExecutor(1);
+	public void receive(PlaybackEvent event);
 }

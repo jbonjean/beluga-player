@@ -19,10 +19,11 @@
  */
 package info.bonjean.beluga.gui.pivot;
 
+import info.bonjean.beluga.bus.InternalBus;
+import info.bonjean.beluga.bus.PlaybackEvent;
 import info.bonjean.beluga.client.BelugaState;
 import info.bonjean.beluga.client.PandoraPlaylist;
 import info.bonjean.beluga.configuration.BelugaConfiguration;
-import info.bonjean.beluga.event.PlaybackEvent;
 import info.bonjean.beluga.player.MP3Player;
 import info.bonjean.beluga.response.Song;
 import info.bonjean.beluga.util.ResourcesUtil;
@@ -41,7 +42,6 @@ import org.apache.pivot.wtk.Label;
 import org.apache.pivot.wtk.LinkButton;
 import org.apache.pivot.wtk.Meter;
 import org.apache.pivot.wtk.TablePane;
-import org.bushe.swing.event.EventBus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -112,7 +112,7 @@ public class PlayerUI extends TablePane implements Bindable
 	{
 		mp3Player.pause();
 
-		EventBus.publish(new PlaybackEvent(mp3Player.isPaused() ? PlaybackEvent.Type.SONG_PAUSE
+		InternalBus.publish(new PlaybackEvent(mp3Player.isPaused() ? PlaybackEvent.Type.SONG_PAUSE
 				: PlaybackEvent.Type.SONG_RESUME, null));
 
 		// replace play/pause button
@@ -286,7 +286,7 @@ public class PlayerUI extends TablePane implements Bindable
 					}
 
 					// notify song started
-					EventBus.publish(new PlaybackEvent(PlaybackEvent.Type.SONG_START, song));
+					InternalBus.publish(new PlaybackEvent(PlaybackEvent.Type.SONG_START, song));
 
 					// initialize controls
 					ApplicationContext.queueCallback(new Runnable()
@@ -334,7 +334,8 @@ public class PlayerUI extends TablePane implements Bindable
 				{
 					if (song != null && song.getDuration() > 0)
 						// notify song finished
-						EventBus.publish(new PlaybackEvent(PlaybackEvent.Type.SONG_FINISH, song));
+						InternalBus
+								.publish(new PlaybackEvent(PlaybackEvent.Type.SONG_FINISH, song));
 				}
 			}
 
@@ -342,7 +343,8 @@ public class PlayerUI extends TablePane implements Bindable
 
 			// if closed has not been requested, we are disconnected
 			if (!closed)
-				EventBus.publish(new PlaybackEvent(PlaybackEvent.Type.PANDORA_DISCONNECTED, null));
+				InternalBus
+						.publish(new PlaybackEvent(PlaybackEvent.Type.PANDORA_DISCONNECTED, null));
 
 			closed = true;
 

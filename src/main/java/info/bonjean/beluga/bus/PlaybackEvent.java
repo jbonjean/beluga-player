@@ -17,7 +17,7 @@
  * this program; if not, write to the Free Software Foundation, Inc., 51
  * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
-package info.bonjean.beluga.event;
+package info.bonjean.beluga.bus;
 
 import info.bonjean.beluga.response.Song;
 

@@ -19,6 +19,9 @@
  */
 package info.bonjean.beluga.gui.pivot;
 
+import info.bonjean.beluga.bus.InternalBus;
+import info.bonjean.beluga.bus.InternalBusSubscriber;
+import info.bonjean.beluga.bus.PlaybackEvent;
 import info.bonjean.beluga.client.BelugaState;
 import info.bonjean.beluga.client.LastFMSession;
 import info.bonjean.beluga.client.PandoraClient;
@@ -26,7 +29,6 @@ import info.bonjean.beluga.client.PandoraPlaylist;
 import info.bonjean.beluga.configuration.BelugaConfiguration;
 import info.bonjean.beluga.configuration.ConnectionType;
 import info.bonjean.beluga.connection.BelugaHTTPClient;
-import info.bonjean.beluga.event.PlaybackEvent;
 import info.bonjean.beluga.exception.BelugaException;
 import info.bonjean.beluga.exception.InternalException;
 import info.bonjean.beluga.gui.PivotUI;
@@ -37,7 +39,6 @@ import info.bonjean.beluga.response.SearchArtist;
 import info.bonjean.beluga.response.SearchSong;
 import info.bonjean.beluga.response.Song;
 import info.bonjean.beluga.response.Station;
-import info.bonjean.beluga.util.LastFMUtil;
 
 import java.awt.Desktop;
 import java.net.URI;
@@ -58,8 +59,6 @@ import org.apache.pivot.wtk.MenuButton;
 import org.apache.pivot.wtk.Sheet;
 import org.apache.pivot.wtk.SheetCloseListener;
 import org.apache.pivot.wtk.content.ListItem;
-import org.bushe.swing.event.EventBus;
-import org.bushe.swing.event.EventSubscriber;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -74,7 +73,7 @@ import org.slf4j.LoggerFactory;
  * TODO: more cleanup to do...
  * 
  */
-public class UIController implements EventSubscriber<PlaybackEvent>
+public class UIController implements InternalBusSubscriber
 {
 	private static Logger log = LoggerFactory.getLogger(UIController.class);
 	private static final BelugaState state = BelugaState.getInstance();
@@ -88,7 +87,7 @@ public class UIController implements EventSubscriber<PlaybackEvent>
 
 	public UIController(MainWindow mainWindow)
 	{
-		EventBus.subscribe(PlaybackEvent.class, this);
+		InternalBus.subscribe(this);
 		this.mainWindow = mainWindow;
 	}
 
@@ -297,7 +296,7 @@ public class UIController implements EventSubscriber<PlaybackEvent>
 				}, true);
 
 				// notify the player we are ready
-				EventBus.publish(new PlaybackEvent(PlaybackEvent.Type.PANDORA_CONNECTED, null));
+				InternalBus.publish(new PlaybackEvent(PlaybackEvent.Type.PANDORA_CONNECTED, null));
 
 				// start the player
 				playerUI.open();
@@ -867,7 +866,7 @@ public class UIController implements EventSubscriber<PlaybackEvent>
 	}
 
 	@Override
-	public void onEvent(PlaybackEvent playbackEvent)
+	public void receive(PlaybackEvent playbackEvent)
 	{
 		log.debug("Received event: " + playbackEvent.getType());
 		Song song = playbackEvent.getSong();
@@ -877,7 +876,16 @@ public class UIController implements EventSubscriber<PlaybackEvent>
 				// reload song page only if currently displayed
 				if (state.getPage().getName().equals("song")
 						|| state.getPage().getName().equals("connected"))
-					mainWindow.loadPage("song");
+				{
+					ApplicationContext.queueCallback(new Runnable()
+					{
+						@Override
+						public void run()
+						{
+							mainWindow.loadPage("song");
+						}
+					}, false);
+				}
 				// send a desktop notification
 				new Notification(state.getSong());
 				break;
@@ -885,11 +893,18 @@ public class UIController implements EventSubscriber<PlaybackEvent>
 				log.debug("Played " + song.getPosition() + " of " + song.getDuration());
 				if (configuration.getLastFMEnabled())
 					// scrobble with last.fm
-					LastFMUtil.asyncScrobble(song);
+					LastFMSession.getInstance().scrobbleTrack(song);
 				break;
 			case PANDORA_DISCONNECTED:
 				clearResources();
-				mainWindow.loadPage("welcome");
+				ApplicationContext.queueCallback(new Runnable()
+				{
+					@Override
+					public void run()
+					{
+						mainWindow.loadPage("welcome");
+					}
+				}, true);
 				log.info("disconnectedFromPandora");
 				break;
 			case PANDORA_CONNECTED:
@@ -897,7 +912,14 @@ public class UIController implements EventSubscriber<PlaybackEvent>
 			case SONG_RESUME:
 		}
 
-		// update player UI
-		recursiveEnableComponent(playerUI, !playerUI.isClosed());
+		ApplicationContext.queueCallback(new Runnable()
+		{
+			@Override
+			public void run()
+			{
+				// update player UI
+				recursiveEnableComponent(playerUI, !playerUI.isClosed());
+			}
+		}, false);
 	}
 }

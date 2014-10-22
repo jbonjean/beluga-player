@@ -19,6 +19,7 @@
  */
 package info.bonjean.beluga;
 
+import info.bonjean.beluga.bus.InternalBus;
 import info.bonjean.beluga.client.BelugaState;
 import info.bonjean.beluga.configuration.BelugaConfiguration;
 import info.bonjean.beluga.gui.PivotUI;
@@ -48,6 +49,9 @@ public class Main
 		// enable anti-aliased text:
 		System.setProperty("awt.useSystemAAFontSettings", "on");
 		System.setProperty("swing.aatext", "true");
+
+		// start the events bus
+		InternalBus.start();
 
 		PivotUI.startDesktopUI();
 	}
