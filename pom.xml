@@ -21,7 +21,6 @@
 		<log4j.version>2.0.2</log4j.version>
 		<dnsjava.version>2.1.6</dnsjava.version>
 		<twinkle.version>1.0.1</twinkle.version>
-		<sax.version>2.0.1</sax.version>
 		<gson.version>2.3</gson.version>
 		<httpclient.version>4.3.5</httpclient.version>
 		<commons-io.version>2.4</commons-io.version>
@@ -238,11 +237,6 @@
 			<groupId>ch.swingfx</groupId>
 			<artifactId>twinkle</artifactId>
 			<version>${twinkle.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>sax</groupId>
-			<artifactId>sax</artifactId>
-			<version>${sax.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.google.code.gson</groupId>

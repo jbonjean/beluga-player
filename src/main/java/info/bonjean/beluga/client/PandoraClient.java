@@ -184,7 +184,6 @@ public class PandoraClient
 				stationRequest, true, new TypeToken<Response<Station>>()
 				{
 				});
-		// stationFull.setArtBase64(retrieveCover(stationFull.getArtUrl()));
 		return stationFull;
 	}
 
