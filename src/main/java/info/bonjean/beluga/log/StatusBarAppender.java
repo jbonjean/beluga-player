@@ -35,8 +35,8 @@ import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
-import org.apache.logging.log4j.core.helpers.Booleans;
-import org.apache.logging.log4j.core.layout.HTMLLayout;
+import org.apache.logging.log4j.core.layout.PatternLayout;
+import org.apache.logging.log4j.core.util.Booleans;
 import org.apache.pivot.util.Resources;
 import org.apache.pivot.wtk.ApplicationContext;
 import org.apache.pivot.wtk.Label;
@@ -68,17 +68,16 @@ public final class StatusBarAppender extends AbstractAppender
 	public static StatusBarAppender createAppender(@PluginAttribute("name") final String name,
 			@PluginElement("Layout") Layout<? extends Serializable> layout,
 			@PluginElement("Filter") Filter filter,
-			@PluginAttribute("ignoreExceptions") final String ignore)
+			@PluginAttribute(value = "ignoreExceptions", defaultBoolean = true) final String ignore)
 	{
 		if (name == null)
 		{
-			LOGGER.error("No name provided for SMTPAppender");
+			LOGGER.error("No name provided for StatusBarAppender");
 			return null;
 		}
-
 		if (layout == null)
 		{
-			layout = HTMLLayout.createLayout(null, null, null, null, null, null);
+			layout = PatternLayout.createDefaultLayout();
 		}
 		final boolean ignoreExceptions = Booleans.parseBoolean(ignore, true);
 
@@ -118,7 +117,7 @@ public final class StatusBarAppender extends AbstractAppender
 		if (instance.messageDisplayed == null)
 			return;
 
-		if (instance.messageDisplayed.getLevel().isAtLeastAsSpecificAs(Level.ERROR))
+		if (instance.messageDisplayed.getLevel().isMoreSpecificThan(Level.ERROR))
 			instance.clearMessage();
 	}
 
@@ -128,7 +127,7 @@ public final class StatusBarAppender extends AbstractAppender
 		public void run()
 		{
 			// ensure we don't clear an error message
-			if (!instance.messageDisplayed.getLevel().isAtLeastAsSpecificAs(Level.ERROR))
+			if (!instance.messageDisplayed.getLevel().isMoreSpecificThan(Level.ERROR))
 				clearMessage();
 		}
 	};
@@ -163,7 +162,7 @@ public final class StatusBarAppender extends AbstractAppender
 		}
 
 		// if this is at least as important as what we currently display
-		if (event.getLevel().isAtLeastAsSpecificAs(messageDisplayed.getLevel()))
+		if (event.getLevel().isMoreSpecificThan(messageDisplayed.getLevel()))
 		{
 			doDisplay(event);
 			return true;
@@ -175,7 +174,7 @@ public final class StatusBarAppender extends AbstractAppender
 
 	public void doDisplay(final LogEvent event)
 	{
-		if (!event.getLevel().isAtLeastAsSpecificAs(Level.ERROR))
+		if (!event.getLevel().isMoreSpecificThan(Level.ERROR))
 			scheduleMessageExpiration();
 		else
 			unscheduleMessageExpiration();
@@ -191,7 +190,7 @@ public final class StatusBarAppender extends AbstractAppender
 				if (message != null)
 				{
 					statusBarText.setText(message);
-					if (event.getLevel().isAtLeastAsSpecificAs(Level.ERROR))
+					if (event.getLevel().isMoreSpecificThan(Level.ERROR))
 						statusBarText.getStyles().put("color", "#ff0000");
 					else
 						statusBarText.getStyles().put("color", "#000000");
