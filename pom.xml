@@ -55,6 +55,12 @@
 				<configuration>
 					<filters>
 						<filter>
+							<artifact>com.googlecode.soundlibs:jlayer</artifact>
+							<excludes>
+								<exclude>javazoom/jl/decoder/Bitstream.class</exclude>
+							</excludes>
+						</filter>
+						<filter>
 							<artifact>*:*</artifact>
 							<excludes>
 								<exclude>META-INF/*.SF</exclude>
