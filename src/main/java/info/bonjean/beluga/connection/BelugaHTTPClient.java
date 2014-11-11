@@ -90,8 +90,8 @@ public class BelugaHTTPClient
 				HttpHost proxy = new HttpHost(configuration.getProxyHost(),
 						configuration.getProxyPort(), "http");
 				clientBuilder.setProxy(proxy);
-				break;
 			default:
+				connectionManager = new PoolingHttpClientConnectionManager();
 		}
 
 		// limit the pool size
