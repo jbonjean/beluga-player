@@ -50,6 +50,8 @@ public class WelcomeUI extends TablePane implements Bindable
 	@BXML
 	private StackPane newVersionPane;
 	@BXML
+	private StackPane javaVersionWarningPane;
+	@BXML
 	private PushButton startPandoraButton;
 
 	private final BelugaState state = BelugaState.getInstance();
@@ -58,6 +60,10 @@ public class WelcomeUI extends TablePane implements Bindable
 	public void initialize(Map<String, Object> namespace, URL location, Resources resources)
 	{
 		belugaVersion.setText("Beluga Player " + state.getVersion());
+
+		if ("Linux".equals(System.getProperty("os.name")) &&
+				"Java(TM) SE Runtime Environment".equals(System.getProperty("java.runtime.name")))
+			javaVersionWarningPane.setVisible(true);
 
 		new Thread()
 		{

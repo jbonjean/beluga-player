@@ -29,6 +29,17 @@
 	</TablePane.Row>
 
 	<TablePane.Row height="-1">
+		<StackPane styles="{padding:{top:10}}" bxml:id="javaVersionWarningPane"
+			visible="false">
+			<Border styles="{color:'#7c7b00',backgroundColor:'#fffc00',padding:5}">
+				<BoxPane orientation="horizontal">
+					<Label text="%javaVersionWarning" />
+				</BoxPane>
+			</Border>
+		</StackPane>
+	</TablePane.Row>
+
+	<TablePane.Row height="-1">
 		<Label text="%belugaDescription"
 			styles="{padding:{top:10,bottom:10},color:'#999999',wrapText:'true',font:{bold:true}}" />
 	</TablePane.Row>
