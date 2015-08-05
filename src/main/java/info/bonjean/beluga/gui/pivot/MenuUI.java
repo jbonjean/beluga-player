@@ -28,20 +28,10 @@ import org.apache.pivot.beans.BXML;
 import org.apache.pivot.beans.Bindable;
 import org.apache.pivot.collections.Map;
 import org.apache.pivot.util.Resources;
-import org.apache.pivot.util.Vote;
 import org.apache.pivot.wtk.Action;
 import org.apache.pivot.wtk.Component;
 import org.apache.pivot.wtk.ComponentKeyListener;
-import org.apache.pivot.wtk.ComponentListener;
 import org.apache.pivot.wtk.ComponentMouseButtonListener;
-import org.apache.pivot.wtk.Container;
-import org.apache.pivot.wtk.Cursor;
-import org.apache.pivot.wtk.Display;
-import org.apache.pivot.wtk.DragSource;
-import org.apache.pivot.wtk.DropTarget;
-import org.apache.pivot.wtk.MenuHandler;
-import org.apache.pivot.wtk.Window;
-import org.apache.pivot.wtk.WindowStateListener;
 import org.apache.pivot.wtk.Keyboard.KeyLocation;
 import org.apache.pivot.wtk.Menu;
 import org.apache.pivot.wtk.MenuBar;
@@ -126,6 +116,7 @@ public class MenuUI extends TablePane implements Bindable
 	private void showPopup()
 	{
 		String text = stationsSearch.getText();
+		String[] textParts = text.replaceAll("\\s+", " ").trim().toLowerCase().split(" ");
 		org.apache.pivot.collections.ArrayList<Station> suggestions = new org.apache.pivot.collections.ArrayList<Station>();
 
 		for (Station station : state.getStationList())
@@ -134,12 +125,18 @@ public class MenuUI extends TablePane implements Bindable
 					&& state.getStation().getStationId().equals(station.getStationId()))
 				continue;
 
-			if (!station.getStationName().toUpperCase().startsWith(text.toUpperCase()))
+			boolean contained = true;
+			for (String textPart : textParts)
 			{
-				continue;
+				if (!station.getStationName().toLowerCase().contains(textPart))
+				{
+					contained = false;
+					break;
+				}
 			}
 
-			suggestions.add(station);
+			if (contained)
+				suggestions.add(station);
 		}
 
 		if (suggestions.getLength() > 0)
