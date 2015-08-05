@@ -543,5 +543,6 @@ public class BelugaSuggestionPopupSkin extends WindowSkin
         listViewBorder.setEnabled(true);
         closeTransition = null;
         width = 0;
+        textInput.transferFocus(FocusTraversalDirection.BACKWARD);
     }
 }
