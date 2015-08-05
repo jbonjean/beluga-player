@@ -870,8 +870,9 @@ public class UIController implements InternalBusSubscriber
 						}
 					}, false);
 				}
-				// send a desktop notification
-				new Notification(state.getSong());
+				if (!configuration.getNotificationsStyle().equals("disabled"))
+					// send a desktop notification
+					new Notification(state.getSong());
 				break;
 			case SONG_FINISH:
 				log.debug("Played " + song.getPosition() + " of " + song.getDuration());
