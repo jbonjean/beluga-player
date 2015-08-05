@@ -1,4 +1,5 @@
 {
+stationsPrompt:"> Stations",
 accountCreated:"Account created",
 artists:"Artists",
 connected:"Connected",

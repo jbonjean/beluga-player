@@ -6,7 +6,6 @@
 		<TablePane.Column width="1*" />
 		<TablePane.Column width="-1" />
 		<TablePane.Column width="-1" />
-		<TablePane.Column width="-1" />
 	</columns>
 
 	<TablePane.Row height="-1">
@@ -72,13 +71,10 @@
 				</Menu>
 			</MenuBar.Item>
 		</MenuBar>
-		<MenuButton bxml:id="stations" buttonData="%stations"
-			styles="{toolbar:true,font:{bold:true}}" enabled="false">
-			<Menu>
-				<Menu.Section>
-				</Menu.Section>
-			</Menu>
-		</MenuButton>
+		<BoxPane styles="{padding: 2}">
+			<TextInput bxml:id="stationsSearch" textSize="12"
+				prompt="%stationsPrompt" styles="{borderColor: 7, backgroundColor: 4, }" />
+		</BoxPane>
 		<LinkButton bxml:id="backButton" action="back" tooltipText="%home">
 			<dataRenderer>
 				<content:ButtonDataRenderer orientation="vertical"

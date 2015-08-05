@@ -1,18 +1,18 @@
 /*
  * Copyright (C) 2012, 2013, 2014 Julien Bonjean <julien@bonjean.info>
- * 
+ *
  * This file is part of Beluga Player.
- * 
+ *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
  * Foundation; either version 3 of the License, or (at your option) any later
  * version.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
  * details.
- * 
+ *
  * You should have received a copy of the GNU General Public License along with
  * this program; if not, write to the Free Software Foundation, Inc., 51
  * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
@@ -54,7 +54,6 @@ import org.apache.pivot.wtk.Checkbox;
 import org.apache.pivot.wtk.Component;
 import org.apache.pivot.wtk.Container;
 import org.apache.pivot.wtk.Menu;
-import org.apache.pivot.wtk.Menu.Section;
 import org.apache.pivot.wtk.MenuButton;
 import org.apache.pivot.wtk.Sheet;
 import org.apache.pivot.wtk.SheetCloseListener;
@@ -63,15 +62,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * 
+ *
  * @author Julien Bonjean <julien@bonjean.info>
- * 
+ *
  * This is the main controller, that acts as a "glue" between the UI and the
  * backend.
  * Any idea to improve this design is welcome.
- * 
+ *
  * TODO: more cleanup to do...
- * 
+ *
  */
 public class UIController implements InternalBusSubscriber
 {
@@ -784,7 +783,7 @@ public class UIController implements InternalBusSubscriber
 		return pandoraClient.isLoggedIn() && state.getSong() != null;
 	}
 
-	public void recursiveEnableComponent(Component component, boolean enabled)
+	private void recursiveEnableComponent(Component component, boolean enabled)
 	{
 		// disable the parent component first to prevent any user interaction
 		if (!enabled)
@@ -842,24 +841,9 @@ public class UIController implements InternalBusSubscriber
 				PivotUI.enableComponent(mainWindow.stationDetailsButton, false);
 			else
 				PivotUI.enableComponent(mainWindow.stationDetailsButton, true);
-
-			// update stations list
-			Section section = mainWindow.stations.getMenu().getSections().get(0);
-			section.remove(0, section.getLength());
-			for (Station station : state.getStationList())
-			{
-				Menu.Item item = new Menu.Item(station.getStationName());
-				item.getUserData().put("station", station);
-				item.setAction(Action.getNamedActions().get("select-station"));
-				// disable selected station
-				if (state.getStation() != null
-						&& state.getStation().getStationId().equals(station.getStationId()))
-					PivotUI.enableComponent(item, true);
-				section.add(item);
-			}
 		}
 		mainWindow.pandoraMenu.setEnabled(connected);
-		mainWindow.stations.setEnabled(connected);
+		mainWindow.stationsSearch.setEnabled(connected);
 
 		// update player UI
 		recursiveEnableComponent(playerUI, !playerUI.isClosed());
