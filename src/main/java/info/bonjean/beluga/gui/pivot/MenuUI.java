@@ -139,23 +139,20 @@ public class MenuUI extends TablePane implements Bindable
 				suggestions.add(station);
 		}
 
-		if (suggestions.getLength() > 0)
+		stationsPopup.setSuggestionData(suggestions);
+		stationsPopup.open(stationsSearch, new SuggestionPopupCloseListener()
 		{
-			stationsPopup.setSuggestionData(suggestions);
-			stationsPopup.open(stationsSearch, new SuggestionPopupCloseListener()
+			@Override
+			public void suggestionPopupClosed(SuggestionPopup suggestionPopup)
 			{
-				@Override
-				public void suggestionPopupClosed(SuggestionPopup suggestionPopup)
-				{
-					stationsSearch.setText("");
-					Station station = (Station) suggestionPopup.getSelectedSuggestion();
-					if (station == null)
-						return;
+				stationsSearch.setText("");
+				Station station = (Station) suggestionPopup.getSelectedSuggestion();
+				if (station == null)
+					return;
 
-					suggestionPopup.getUserData().put("station", station);
-					Action.getNamedActions().get("select-station").perform(suggestionPopup);
-				}
-			});
-		}
+				suggestionPopup.getUserData().put("station", station);
+				Action.getNamedActions().get("select-station").perform(suggestionPopup);
+			}
+		});
 	}
 }
