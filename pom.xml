@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>info.bonjean</groupId>
 	<artifactId>beluga-player</artifactId>
-	<version>0.8</version>
+	<version>0.9</version>
 	<name>Beluga Player</name>
 	<description>Beluga Player</description>
 	<url>http://jbonjean.github.io/beluga-player/</url>

@@ -1,10 +1,10 @@
 Beluga Player 0.9
-* Remove volume control
 * Prevent ads scrobbling
 * Fix Like button
 * Fix notification window type
 * Allow to disable notifications
 * Improve station selection (search)
+* Remove volume control
 
 Beluga Player 0.8
 * Add basic ads detection
