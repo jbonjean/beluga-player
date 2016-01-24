@@ -1,18 +1,18 @@
 /*
  * Copyright (C) 2012, 2013, 2014 Julien Bonjean <julien@bonjean.info>
- * 
+ *
  * This file is part of Beluga Player.
- * 
+ *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
  * Foundation; either version 3 of the License, or (at your option) any later
  * version.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
  * details.
- * 
+ *
  * You should have received a copy of the GNU General Public License along with
  * this program; if not, write to the Free Software Foundation, Inc., 51
  * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
@@ -38,11 +38,11 @@ import org.xbill.DNS.TextParseException;
 import org.xbill.DNS.Type;
 
 /**
- * 
+ *
  * @author Julien Bonjean <julien@bonjean.info>
- * 
+ *
  * Custom DNS resolver
- * 
+ *
  */
 public class BelugaDNSResolver implements DnsResolver
 {
@@ -50,10 +50,12 @@ public class BelugaDNSResolver implements DnsResolver
 	private static final int MAX_RETRIES = 1;
 	private static final int TIMEOUT_SECONDS = 2;
 	private ExtendedResolver resolver;
-	private List<String> backlistedAddresses = new ArrayList<String>();
+	private final List<String> backlistedAddresses = new ArrayList<String>();
+	private final DNSProxy dnsProxy;
 
 	public BelugaDNSResolver(DNSProxy dnsProxy)
 	{
+		this.dnsProxy = dnsProxy;
 		if ("debug".equals(System.getProperty("log.level")))
 			Options.set("verbose", "true");
 		try
@@ -97,7 +99,7 @@ public class BelugaDNSResolver implements DnsResolver
 			if (addresses.isEmpty())
 				throw new UnknownHostException("dnsProxyError");
 
-			log.debug("Resolved Pandora address using DNS proxy");
+			log.debug("Resolved Pandora address using " + dnsProxy.getName());
 
 			return addresses.toArray(new InetAddress[addresses.size()]);
 		}
