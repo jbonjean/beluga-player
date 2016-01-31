@@ -30,6 +30,8 @@ import org.apache.http.conn.DnsResolver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xbill.DNS.ARecord;
+import org.xbill.DNS.Cache;
+import org.xbill.DNS.DClass;
 import org.xbill.DNS.ExtendedResolver;
 import org.xbill.DNS.Lookup;
 import org.xbill.DNS.Options;
@@ -70,6 +72,8 @@ public class BelugaDNSResolver implements DnsResolver
 			// XXX
 			// throw new InternalException(e);
 		}
+		// (re)initialize the cache
+		Lookup.setDefaultCache(new Cache(DClass.IN), DClass.IN);
 	}
 
 	@Override
