@@ -64,7 +64,6 @@ public class BelugaHTTPClient
 
 	private HttpClient httpClient;
 	private PoolingHttpClientConnectionManager connectionManager;
-	private HttpGet streamRequest;
 
 	private BelugaHTTPClient()
 	{
@@ -155,10 +154,6 @@ public class BelugaHTTPClient
 
 	public HttpResponse requestGetStream(HttpGet get) throws ClientProtocolException, IOException
 	{
-		// we keep track of the request, as the only way to interrupt it cleanly
-		// is by using #abort()
-		streamRequest = get;
-
 		// TODO: use a different client with BasicHttpClientConnectionManager
 		// for the streaming connection
 
@@ -171,16 +166,5 @@ public class BelugaHTTPClient
 		if (httpResponse.getStatusLine().getStatusCode() != HttpStatus.SC_OK)
 			throw new IOException("Server reply: " + httpResponse.getStatusLine().getReasonPhrase());
 		return httpResponse;
-	}
-
-	public void release()
-	{
-		if (streamRequest != null)
-		{
-			// shut down the underlying connection and remove it from the
-			// connection pool
-			streamRequest.abort();
-			streamRequest = null;
-		}
 	}
 }

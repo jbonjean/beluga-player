@@ -1,18 +1,18 @@
 /*
  * Copyright (C) 2012, 2013, 2014 Julien Bonjean <julien@bonjean.info>
- * 
+ *
  * This file is part of Beluga Player.
- * 
+ *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
  * Foundation; either version 3 of the License, or (at your option) any later
  * version.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
  * details.
- * 
+ *
  * You should have received a copy of the GNU General Public License along with
  * this program; if not, write to the Free Software Foundation, Inc., 51
  * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
@@ -40,9 +40,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * 
+ *
  * @author Julien Bonjean <julien@bonjean.info>
- * 
+ *
  */
 public class MP3Player
 {
@@ -56,6 +56,7 @@ public class MP3Player
 	private boolean pause = false;
 	private long duration;
 	private int bitrate;
+	private HttpGet streamRequest;
 
 	public MP3Player()
 	{
@@ -64,8 +65,8 @@ public class MP3Player
 	public void loadSong(String url) throws JavaLayerException, MalformedURLException, IOException,
 			CommunicationException, InternalException
 	{
-		HttpResponse httpResponse = BelugaHTTPClient.getInstance().requestGetStream(
-				new HttpGet(url));
+		streamRequest = new HttpGet(url);
+		HttpResponse httpResponse = BelugaHTTPClient.getInstance().requestGetStream(streamRequest);
 
 		cachedInputStream = new CachedInputStream(httpResponse.getEntity().getContent());
 
@@ -149,8 +150,13 @@ public class MP3Player
 			log.debug(e.getMessage());
 		}
 
-		// cleanup http connection
-		BelugaHTTPClient.getInstance().release();
+		if (streamRequest != null)
+		{
+			// shut down the underlying connection and remove it from the
+			// connection pool
+			streamRequest.abort();
+			streamRequest = null;
+		}
 	}
 
 	public void stop()
