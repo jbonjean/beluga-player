@@ -1,4 +1,11 @@
+Beluga Player 0.10
+
+* Add portaller support
+* Fix race condition
+* Fix DNS cache invalidation
+
 Beluga Player 0.9
+
 * Prevent ads scrobbling
 * Fix Like button
 * Fix notification window type
@@ -7,6 +14,7 @@ Beluga Player 0.9
 * Remove volume control
 
 Beluga Player 0.8
+
 * Add basic ads detection
 * Add Home button
 * Fix reconnection bug
