@@ -1,18 +1,18 @@
 /*
  * Copyright (C) 2012, 2013, 2014 Julien Bonjean <julien@bonjean.info>
- * 
+ *
  * This file is part of Beluga Player.
- * 
+ *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
  * Foundation; either version 3 of the License, or (at your option) any later
  * version.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
  * details.
- * 
+ *
  * You should have received a copy of the GNU General Public License along with
  * this program; if not, write to the Free Software Foundation, Inc., 51
  * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
@@ -21,6 +21,7 @@ package info.bonjean.beluga.configuration;
 
 import info.bonjean.beluga.client.BelugaState;
 import info.bonjean.beluga.util.CryptoUtil;
+import info.bonjean.beluga.util.StringUtil;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -32,9 +33,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * 
+ *
  * @author Julien Bonjean <julien@bonjean.info>
- * 
+ *
  */
 public class BelugaConfiguration
 {
@@ -144,28 +145,18 @@ public class BelugaConfiguration
 		// do properties migration if necessary
 		if (!BelugaState.getInstance().getVersion().equals(CONFIGURATION_DEFAULT_VERSION))
 		{
-			float configurationVersion = 0.5f;
-			float belugaVersion = 0.1f;
-			try
-			{
-				belugaVersion = Float.parseFloat(BelugaState.getInstance().getVersion());
-				configurationVersion = Float.parseFloat(getConfigurationVersion());
-			}
-			catch (NumberFormatException e)
-			{
-			}
+			log.debug("Configuration file version is " + getConfigurationVersion());
 
-			log.debug("Configuration file version is " + configurationVersion);
-
-			if (belugaVersion > configurationVersion)
+			if (StringUtil.compareVersions(BelugaState.getInstance().getVersion(),
+					getConfigurationVersion()) > 0)
 			{
-				if (configurationVersion < 0.6f)
+				if (StringUtil.compareVersions(getConfigurationVersion(), "0.6") < 0)
 				{
 					log.info("migratingConfiguration");
 					log.debug("Configuration file migration to 0.6");
 					propertiesMigrationV0_6();
 				}
-				if (configurationVersion < 0.8f)
+				if (StringUtil.compareVersions(getConfigurationVersion(), "0.8") < 0)
 				{
 					log.info("migratingConfiguration");
 					log.debug("Configuration file migration to 0.8");
@@ -174,10 +165,10 @@ public class BelugaConfiguration
 				// update configuration version
 				setConfigurationVersion(BelugaState.getInstance().getVersion());
 			}
-			else if (belugaVersion < configurationVersion)
+			else
 			{
 				// TODO: display an error message, the GUI is not loaded yet...
-				log.error("Your configuration file is for a newer version of Beluga");
+				log.error("Your configuration file is for a newer version of Beluga Player");
 			}
 		}
 
