@@ -147,8 +147,10 @@ public class BelugaConfiguration
 		{
 			log.debug("Configuration file version is " + getConfigurationVersion());
 
-			if (StringUtil.compareVersions(BelugaState.getInstance().getVersion(),
-					getConfigurationVersion()) > 0)
+			int versionComparison = StringUtil.compareVersions(BelugaState.getInstance()
+					.getVersion(), getConfigurationVersion());
+
+			if (versionComparison > 0)
 			{
 				if (StringUtil.compareVersions(getConfigurationVersion(), "0.6") < 0)
 				{
@@ -165,7 +167,7 @@ public class BelugaConfiguration
 				// update configuration version
 				setConfigurationVersion(BelugaState.getInstance().getVersion());
 			}
-			else
+			else if (versionComparison < 0)
 			{
 				// TODO: display an error message, the GUI is not loaded yet...
 				log.error("Your configuration file is for a newer version of Beluga Player");
