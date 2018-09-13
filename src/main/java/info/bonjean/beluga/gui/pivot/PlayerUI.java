@@ -1,18 +1,18 @@
 /*
  * Copyright (C) 2012-2018 Julien Bonjean <julien@bonjean.info>
- * 
+ *
  * This file is part of Beluga Player.
- * 
+ *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
  * Foundation; either version 3 of the License, or (at your option) any later
  * version.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
  * details.
- * 
+ *
  * You should have received a copy of the GNU General Public License along with
  * this program; if not, write to the Free Software Foundation, Inc., 51
  * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
@@ -23,16 +23,17 @@ import info.bonjean.beluga.bus.InternalBus;
 import info.bonjean.beluga.bus.PlaybackEvent;
 import info.bonjean.beluga.client.BelugaState;
 import info.bonjean.beluga.client.PandoraPlaylist;
+import info.bonjean.beluga.configuration.AudioQuality;
 import info.bonjean.beluga.configuration.BelugaConfiguration;
+import info.bonjean.beluga.player.AACPlayer;
+import info.bonjean.beluga.player.AudioPlayer;
 import info.bonjean.beluga.player.MP3Player;
+import info.bonjean.beluga.response.Audio;
 import info.bonjean.beluga.response.Song;
-import info.bonjean.beluga.util.ResourcesUtil;
-
-import java.io.IOException;
 import java.net.URL;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
-
+import org.apache.commons.lang3.StringUtils;
 import org.apache.pivot.beans.BXML;
 import org.apache.pivot.beans.Bindable;
 import org.apache.pivot.collections.Map;
@@ -46,9 +47,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * 
+ *
  * @author Julien Bonjean <julien@bonjean.info>
- * 
+ *
  */
 public class PlayerUI extends TablePane implements Bindable {
 	private static Logger log = LoggerFactory.getLogger(PlayerUI.class);
@@ -71,10 +72,11 @@ public class PlayerUI extends TablePane implements Bindable {
 
 	private final BelugaState state = BelugaState.getInstance();
 	private final BelugaConfiguration configuration = BelugaConfiguration.getInstance();
-	private final MP3Player mp3Player = new MP3Player();
 	private static final int UI_REFRESH_INTERVAL = 200;
 	private Future<?> playerUISyncFuture;
 	private Future<?> playbackThreadFuture;
+
+	private volatile AudioPlayer audioPlayer;
 	private volatile long duration;
 	private volatile boolean closed;
 
@@ -97,34 +99,11 @@ public class PlayerUI extends TablePane implements Bindable {
 		// ensure the thread is running
 		if (playbackThreadFuture == null || playbackThreadFuture.isDone() || closed)
 			playbackThreadFuture = ThreadPools.playbackPool.submit(new Playback());
-
-		// playback will start automatically
-	}
-
-	public void playPause() {
-		mp3Player.pause();
-
-		InternalBus.publish(new PlaybackEvent(
-				mp3Player.isPaused() ? PlaybackEvent.Type.SONG_PAUSE : PlaybackEvent.Type.SONG_RESUME, null));
-
-		// replace play/pause button
-		ApplicationContext.queueCallback(new Runnable() {
-			@Override
-			public void run() {
-				try {
-					pauseButton.setButtonData(
-							ResourcesUtil.getSVGImage(mp3Player.isPaused() ? "/img/play.svg" : "/img/pause.svg"));
-				} catch (IOException e) {
-					log.debug(e.getMessage());
-				}
-			}
-		}, false);
-
 	}
 
 	public void skip() {
 		// stop the player to skip the song
-		mp3Player.stop();
+		audioPlayer.stop();
 	}
 
 	public void close() {
@@ -134,7 +113,7 @@ public class PlayerUI extends TablePane implements Bindable {
 		closed = true;
 
 		// stop the player
-		mp3Player.stop();
+		audioPlayer.stop();
 
 		// stop the playback thread
 		try {
@@ -146,10 +125,6 @@ public class PlayerUI extends TablePane implements Bindable {
 		}
 	}
 
-	public boolean isPaused() {
-		return mp3Player.isPaused();
-	}
-
 	public boolean isClosed() {
 		return closed;
 	}
@@ -157,29 +132,46 @@ public class PlayerUI extends TablePane implements Bindable {
 	private Runnable syncUI = new Runnable() {
 		@Override
 		public void run() {
-			if (!mp3Player.isActive())
+			if (audioPlayer == null || !audioPlayer.isActive())
 				return;
 
-			final long position = mp3Player.getPosition();
-			final float progressValue = position / (float) duration;
-			final float cacheProgressValue = mp3Player.getCachePosition() / (float) duration;
-
 			// update song position (playback can stop anytime)
-			state.getSong().setPosition(position);
+			state.getSong().setPosition(audioPlayer.getPosition());
 
 			ApplicationContext.queueCallback(new Runnable() {
 				@Override
 				public void run() {
 					// update progress bar
-					currentTime.setText(formatTime(position));
-					progress.setPercentage(progressValue);
-					progressCache.setPercentage(cacheProgressValue);
+					currentTime.setText(formatTime(audioPlayer.getPosition()));
+					progress.setPercentage(audioPlayer.getProgressRatio());
+					progressCache.setPercentage(audioPlayer.getCacheProgressRatio());
 				}
 			}, true);
 		}
 	};
 
 	private class Playback implements Runnable {
+		private String resolveSongURL(Song song, AudioQuality audioQuality) {
+			Audio audio = null;
+			switch (audioQuality) {
+			case HIGH:
+				audio = song.getAudioUrlMap().get("highQuality");
+				if (audio != null && !StringUtils.isBlank(audio.getAudioUrl()))
+					return audio.getAudioUrl();
+			case MEDIUM:
+				audio = song.getAudioUrlMap().get("mediumQuality");
+				if (audio != null && !StringUtils.isBlank(audio.getAudioUrl()))
+					return audio.getAudioUrl();
+			case LOW:
+				audio = song.getAudioUrlMap().get("lowQuality");
+				if (audio != null)
+					return audio.getAudioUrl();
+			case MP3:
+				return song.getAdditionalAudioUrl();
+			}
+			return null;
+		}
+
 		@Override
 		public void run() {
 			// init failure counter
@@ -208,12 +200,23 @@ public class PlayerUI extends TablePane implements Bindable {
 						continue;
 					}
 
-					log.debug("New song: " + song.getAdditionalAudioUrl());
+					String songURL = resolveSongURL(song, configuration.getAudioQuality());
+					if (StringUtils.isBlank(songURL)) {
+						log.error("resolvingAudioURL");
+						Thread.sleep(500);
+						continue;
+					}
+
+					log.debug("New song: " + songURL);
 
 					// initialize the player
 					try {
+						audioPlayer = configuration.getAudioQuality().equals(AudioQuality.MP3) ? new MP3Player()
+								: new AACPlayer();
 						log.info("openingAudioStream");
-						mp3Player.loadSong(song.getAdditionalAudioUrl());
+						audioPlayer.loadSong(songURL);
+						log.debug("Audio format: {}", configuration.getAudioQuality().toString());
+						log.debug("Bitrate: {}", audioPlayer.getBitrate());
 						successiveFailures = 0;
 					} catch (Exception e) {
 						successiveFailures++;
@@ -228,18 +231,18 @@ public class PlayerUI extends TablePane implements Bindable {
 						continue;
 					}
 
-					duration = mp3Player.getDuration();
+					duration = audioPlayer.getDuration();
 					song.setDuration(duration);
 
 					// is there a better way to detect the Pandora skip
 					// protection (42sec length mp3)?
-					if (duration == 42569 && mp3Player.getBitrate() == 64000) {
+					if (duration == 42569 && audioPlayer.getBitrate() == 64000) {
 						log.error("pandoraSkipProtection");
 						break;
 					}
 
 					// guess if it's an ad (not very reliable)
-					if (configuration.getAdsDetectionEnabled() && mp3Player.getBitrate() == 128000
+					if (configuration.getAdsDetectionEnabled() && audioPlayer.getBitrate() == 128000
 							&& duration < 45000) {
 						log.debug("Ad detected");
 
@@ -267,7 +270,7 @@ public class PlayerUI extends TablePane implements Bindable {
 					Thread.currentThread().setPriority(Thread.MAX_PRIORITY);
 
 					// start playback
-					mp3Player.play(configuration.getAdsSilenceEnabled() && song.isAd());
+					audioPlayer.play(configuration.getAdsSilenceEnabled() && song.isAd());
 
 					// restore thread priority to normal
 					Thread.currentThread().setPriority(Thread.NORM_PRIORITY);
@@ -287,6 +290,10 @@ public class PlayerUI extends TablePane implements Bindable {
 					log.error(e.getMessage(), e);
 					break;
 				} finally {
+					// close player, we don't reuse it
+					if (audioPlayer != null)
+						audioPlayer.close();
+
 					if (song != null && song.getDuration() > 0)
 						// notify song finished
 						InternalBus.publish(new PlaybackEvent(PlaybackEvent.Type.SONG_FINISH, song));

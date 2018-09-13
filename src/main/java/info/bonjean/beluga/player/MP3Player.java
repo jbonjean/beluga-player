@@ -19,23 +19,16 @@
  */
 package info.bonjean.beluga.player;
 
-import info.bonjean.beluga.connection.BelugaHTTPClient;
-import info.bonjean.beluga.connection.CachedInputStream;
 import info.bonjean.beluga.exception.CommunicationException;
 import info.bonjean.beluga.exception.InternalException;
-
 import java.io.IOException;
 import java.net.MalformedURLException;
-
 import javazoom.jl.decoder.Bitstream;
 import javazoom.jl.decoder.BitstreamException;
 import javazoom.jl.decoder.Decoder;
 import javazoom.jl.decoder.Header;
 import javazoom.jl.decoder.JavaLayerException;
 import javazoom.jl.decoder.SampleBuffer;
-
-import org.apache.http.HttpResponse;
-import org.apache.http.client.methods.HttpGet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,85 +37,69 @@ import org.slf4j.LoggerFactory;
  * @author Julien Bonjean <julien@bonjean.info>
  *
  */
-public class MP3Player {
+public class MP3Player extends AudioPlayer {
 	private static final Logger log = LoggerFactory.getLogger(MP3Player.class);
 
+	private static final byte[] byteBuffer = new byte[SampleBuffer.OBUFFERSIZE * 2];
+
 	private Bitstream bitstream;
-	private CachedInputStream cachedInputStream;
 	private Decoder decoder;
-	private AudioDevice audioDeviceManager;
-	private boolean close = true;
-	private boolean pause = false;
-	private long duration;
-	private int bitrate;
-	private HttpGet streamRequest;
 
-	public MP3Player() {
-	}
-
+	@Override
 	public void loadSong(String url)
 			throws JavaLayerException, MalformedURLException, IOException, CommunicationException, InternalException {
-		streamRequest = new HttpGet(url);
-		HttpResponse httpResponse = BelugaHTTPClient.getInstance().requestGetStream(streamRequest);
+		bitstream = new Bitstream(openStream(url));
 
-		cachedInputStream = new CachedInputStream(httpResponse.getEntity().getContent());
-
-		bitstream = new Bitstream(cachedInputStream);
-
-		// get the first frame header to get bitrate
+		// get the first frame header to get bitrate and compute duration
 		Header frame = bitstream.readFrame();
 		if (frame == null) {
-			cleanResources();
+			close();
 			throw new IOException("noAudioStream");
 		}
-		bitrate = frame.bitrate();
+		setBitrate(frame.bitrate());
 		bitstream.unreadFrame();
-
-		// get file size from HTTP headers
-		long songSize = Long.parseLong(httpResponse.getFirstHeader("Content-Length").getValue());
-
-		// calculate the duration
-		duration = (songSize * 1000) / (bitrate / 8);
+		setDuration((getContentLength() * 1000) / (getBitrate() / 8));
 
 		// set the decoder
 		decoder = new Decoder();
 
 		// decode the first frame to initialize the decoder
 		decoder.decodeFrame(frame, bitstream);
-
-		// init environment variables
-		close = true;
-		pause = false;
 	}
 
+	@Override
 	public void play(boolean dummy) throws JavaLayerException, InternalException {
-		// create audio device
-		audioDeviceManager = dummy ? new DummyAudioDevice(decoder) : new SimpleAudioDevice(decoder);
+		audioInit(dummy, decoder.getOutputFrequency(), 16, decoder.getOutputChannels(), true, false);
 
-		close = false;
 		try {
-			while (decodeFrame()) {
-				while (pause) {
-					try {
-						Thread.sleep(100);
-					} catch (InterruptedException e) {
-						break;
-					}
+			while (active) {
+				Header h = bitstream.readFrame();
+				if (h == null)
+					continue;
+
+				try {
+					SampleBuffer output = (SampleBuffer) decoder.decodeFrame(h, bitstream);
+					int length = output.getBufferLength();
+					audioWrite(toByteArray(output.getBuffer(), 0, length), length * 2);
+				} finally {
+					bitstream.closeFrame();
 				}
 			}
 		} catch (JavaLayerException e) {
 			throw e;
 		} finally {
-			close = true;
-			cleanResources();
+			close();
 		}
 	}
 
-	private void cleanResources() {
-		// cleanup audio stack
-		if (audioDeviceManager != null)
-			audioDeviceManager.close();
+	@Override
+	public long getPosition() {
+		return (bitstream.getPosition() * 1000) / (getBitrate() / 8);
+	}
 
+	@Override
+	public void close() {
+		super.close();
 		// cleanup bitstream
 		try {
 			if (bitstream != null)
@@ -130,69 +107,16 @@ public class MP3Player {
 		} catch (BitstreamException e) {
 			log.debug(e.getMessage());
 		}
+	}
 
-		if (streamRequest != null) {
-			// shut down the underlying connection and remove it from the
-			// connection pool
-			streamRequest.abort();
-			streamRequest = null;
+	private byte[] toByteArray(short[] samples, int offset, int length) {
+		int idx = 0;
+		short s;
+		while (length-- > 0) {
+			s = samples[offset++];
+			byteBuffer[idx++] = (byte) s;
+			byteBuffer[idx++] = (byte) (s >>> 8);
 		}
-	}
-
-	public void stop() {
-		close = true;
-		pause = false;
-	}
-
-	public void pause() {
-		pause = !pause;
-	}
-
-	public long getCachePosition() {
-		try {
-			return ((cachedInputStream.available() + bitstream.getPosition()) * 1000) / (bitrate / 8);
-		} catch (IOException e) {
-			log.debug(e.getMessage());
-			return 0;
-		}
-	}
-
-	public long getPosition() {
-		return (bitstream.getPosition() * 1000) / (bitrate / 8);
-	}
-
-	protected boolean decodeFrame() throws JavaLayerException {
-		if (close)
-			return false;
-
-		try {
-			Header h = bitstream.readFrame();
-
-			if (h == null)
-				return false;
-
-			SampleBuffer output = (SampleBuffer) decoder.decodeFrame(h, bitstream);
-			audioDeviceManager.write(output);
-			bitstream.closeFrame();
-		} catch (RuntimeException ex) {
-			throw new JavaLayerException("Exception decoding audio frame", ex);
-		}
-		return true;
-	}
-
-	public long getDuration() {
-		return duration;
-	}
-
-	public boolean isPaused() {
-		return pause;
-	}
-
-	public int getBitrate() {
-		return bitrate;
-	}
-
-	public boolean isActive() {
-		return !close;
+		return byteBuffer;
 	}
 }

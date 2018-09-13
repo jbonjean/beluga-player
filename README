@@ -1,27 +1,13 @@
-  ____       _                     _____  _                       
- |  _ \     | |                   |  __ \| |                      
- | |_) | ___| |_   _  __ _  __ _  | |__) | | __ _ _   _  ___ _ __ 
+  ____       _                     _____  _
+ |  _ \     | |                   |  __ \| |
+ | |_) | ___| |_   _  __ _  __ _  | |__) | | __ _ _   _  ___ _ __
  |  _ < / _ \ | | | |/ _` |/ _` | |  ___/| |/ _` | | | |/ _ \ '__|
- | |_) |  __/ | |_| | (_| | (_| | | |    | | (_| | |_| |  __/ |   
- |____/ \___|_|\__,_|\__, |\__,_| |_|    |_|\__,_|\__, |\___|_|   
-                      __/ |                        __/ |          
-                     |___/                        |___/           
+ | |_) |  __/ | |_| | (_| | (_| | | |    | | (_| | |_| |  __/ |
+ |____/ \___|_|\__,_|\__, |\__,_| |_|    |_|\__,_|\__, |\___|_|
+                      __/ |                        __/ |
+                     |___/                        |___/
 
 
 Project main page: http://jbonjean.github.io/beluga-player/
 
 *Beluga Player* is a cross-platform Pandora (pandora.com) player released under GPL3.
-
-Supported features:
-
- * HTTP proxy and DNS proxy
- * Play / Pause / Next Song
- * Switch stations
- * Cover Art
- * Thumbs Up / Thumbs Down / Tired of this song
- * Create / Delete stations
- * Create / Delete / Manage song and artist bookmarks
- * Manage QuickMix stations
- * Display song traits
- * Last.fm scrobbling
-

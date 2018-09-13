@@ -22,13 +22,11 @@ package info.bonjean.beluga.configuration;
 import info.bonjean.beluga.client.BelugaState;
 import info.bonjean.beluga.util.CryptoUtil;
 import info.bonjean.beluga.util.StringUtil;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Properties;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -247,6 +245,14 @@ public class BelugaConfiguration {
 
 	public void setLastFMEnabled(Boolean enabled) {
 		set(Property.LAST_FM_ENABLED, enabled.toString());
+	}
+
+	public AudioQuality getAudioQuality() {
+		return AudioQuality.get(getString(Property.AUDIO_QUALITY, AudioQuality.MP3.getId()));
+	}
+
+	public void setAudioQuality(AudioQuality audioQuality) {
+		set(Property.AUDIO_QUALITY, audioQuality.getId());
 	}
 
 	public Boolean getAdsDetectionEnabled() {

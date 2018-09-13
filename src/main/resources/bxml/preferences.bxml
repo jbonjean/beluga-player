@@ -65,23 +65,25 @@
 				</Form.Section>
 			</Form>
 
-			<BoxPane TabPane.tabData="%ads" styles="{fill:true}"
-				orientation="vertical">
-				<Label text="%adsDetectionWarning"
-					styles="{padding:{left:10,right:10,top:5,bottom:2},color:'#999999',wrapText:'true',font:{bold:true}}" />
-				<Form>
-					<Form.Section heading="%adsDetection">
-						<BoxPane>
-							<Checkbox bxml:id="adsEnableDetectionCheckbox"
-								buttonData="%enableAdsDetection" />
-						</BoxPane>
-						<BoxPane>
-							<Checkbox bxml:id="adsEnableSilentCheckbox" buttonData="%enableAdsSilent"
-								visible="${stateToBoolean:adsEnableDetectionCheckbox.state}" />
-						</BoxPane>
-					</Form.Section>
-				</Form>
-			</BoxPane>
+			<Form TabPane.tabData="%playback" styles="{fill:true}">
+				<Form.Section heading="%audio">
+					<BoxPane Form.label="%quality" styles="{padding:{bottom:15}}">
+						<ListButton bxml:id="audioQuality" />
+					</BoxPane>
+				</Form.Section>
+				<Form.Section heading="%adsDetection">
+					<Label text="%adsDetectionWarning"
+						styles="{color:'#999999',wrapText:'true',font:{bold:true}}" />
+					<BoxPane>
+						<Checkbox bxml:id="adsEnableDetectionCheckbox"
+							buttonData="%enableAdsDetection" />
+					</BoxPane>
+					<BoxPane>
+						<Checkbox bxml:id="adsEnableSilentCheckbox" buttonData="%enableAdsSilent"
+							visible="${stateToBoolean:adsEnableDetectionCheckbox.state}" />
+					</BoxPane>
+				</Form.Section>
+			</Form>
 
 			<Form TabPane.tabData="%interface">
 				<Form.Section heading="%uiSettings">

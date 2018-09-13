@@ -34,16 +34,6 @@
 				<TablePane.Filler />
 			</TablePane.Row>
 		</TablePane>
-		<LinkButton bxml:id="pauseButton" action="pause-song"
-			tooltipText="%pause">
-			<dataRenderer>
-				<content:ButtonDataRenderer orientation="vertical"
-					iconWidth="30" iconHeight="30" fillIcon="true" />
-			</dataRenderer>
-			<buttonData>
-				<content:ButtonData icon="/img/pause.svg" />
-			</buttonData>
-		</LinkButton>
 		<LinkButton bxml:id="nextButton" action="next-song"
 			tooltipText="%skip">
 			<dataRenderer>

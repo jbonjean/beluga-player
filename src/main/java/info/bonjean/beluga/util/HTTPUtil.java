@@ -1,24 +1,27 @@
 /*
  * Copyright (C) 2012-2018 Julien Bonjean <julien@bonjean.info>
- * 
+ *
  * This file is part of Beluga Player.
- * 
+ *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
  * Foundation; either version 3 of the License, or (at your option) any later
  * version.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
  * details.
- * 
+ *
  * You should have received a copy of the GNU General Public License along with
  * this program; if not, write to the Free Software Foundation, Inc., 51
  * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 package info.bonjean.beluga.util;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
+import com.google.gson.reflect.TypeToken;
 import info.bonjean.beluga.connection.BelugaHTTPClient;
 import info.bonjean.beluga.exception.BelugaException;
 import info.bonjean.beluga.exception.CommunicationException;
@@ -27,12 +30,10 @@ import info.bonjean.beluga.request.JsonRequest;
 import info.bonjean.beluga.request.Method;
 import info.bonjean.beluga.request.ParameterMap;
 import info.bonjean.beluga.response.Response;
-
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.StringTokenizer;
-
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.utils.URLEncodedUtils;
@@ -40,14 +41,10 @@ import org.apache.http.entity.StringEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonSyntaxException;
-import com.google.gson.reflect.TypeToken;
-
 /**
- * 
+ *
  * @author Julien Bonjean <julien@bonjean.info>
- * 
+ *
  */
 public class HTTPUtil {
 	private static final Logger log = LoggerFactory.getLogger(HTTPUtil.class);
@@ -99,7 +96,7 @@ public class HTTPUtil {
 			HttpPost post = new HttpPost(urlStr);
 			post.addHeader("Content-Type", "application/json");
 			post.setEntity(json);
-			return BelugaHTTPClient.getInstance().requestPost(post);
+			return BelugaHTTPClient.PANDORA_API_INSTANCE.post(post);
 		} catch (Exception e) {
 			throw new CommunicationException("communicationProblem", e);
 		}
@@ -107,7 +104,7 @@ public class HTTPUtil {
 
 	public static byte[] request(String urlStr) throws CommunicationException {
 		try {
-			return BelugaHTTPClient.getInstance().requestGet(new HttpGet(urlStr));
+			return BelugaHTTPClient.PANDORA_API_INSTANCE.get(new HttpGet(urlStr));
 		} catch (IOException e) {
 			throw new CommunicationException("communicationProblem", e);
 		}

@@ -27,6 +27,8 @@ import org.apache.pivot.wtk.skin.ContainerSkin;
 
 /**
  * Fill pane skin.
+ *
+ * Prevent negative values on resize.
  */
 public class BelugaFillPaneSkin extends ContainerSkin
     implements FillPaneListener {

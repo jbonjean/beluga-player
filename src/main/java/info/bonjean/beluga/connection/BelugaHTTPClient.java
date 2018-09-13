@@ -57,40 +57,50 @@ import org.slf4j.LoggerFactory;
  */
 public class BelugaHTTPClient {
 	private static final Logger log = LoggerFactory.getLogger(BelugaHTTPClient.class);
-	private static final int TIMEOUT = 4000;
-	private static BelugaHTTPClient instance;
+	public static final BelugaHTTPClient PANDORA_API_INSTANCE = new BelugaHTTPClient(4000, 4000, 4000, 2);
+	public static final BelugaHTTPClient AUDIO_STREAM_INSTANCE = new BelugaHTTPClient(4000, 4000, 4000, 2);
 
 	private HttpClient httpClient;
 	private PoolingHttpClientConnectionManager connectionManager;
+	private final int connectTimeout;
+	private final int socketTimeout;
+	private final int connectionRequestTimeout;
+	private final int poolSize;
 
-	private BelugaHTTPClient() {
-		BelugaConfiguration configuration = BelugaConfiguration.getInstance();
+	public BelugaHTTPClient(int connectTimeout, int socketTimeout, int connectionRequestTimeout, int poolSize) {
+		this.connectTimeout = connectTimeout;
+		this.socketTimeout = socketTimeout;
+		this.connectionRequestTimeout = connectionRequestTimeout;
+		this.poolSize = poolSize;
+		init();
+	}
+
+	private void init() {
 		HttpClientBuilder clientBuilder = HttpClients.custom();
 
-		// timeout
-		RequestConfig config = RequestConfig.custom().setConnectTimeout(TIMEOUT).setSocketTimeout(TIMEOUT)
-				.setConnectionRequestTimeout(TIMEOUT).build();
+		RequestConfig config = RequestConfig.custom().setConnectTimeout(connectTimeout).setSocketTimeout(socketTimeout)
+				.setConnectionRequestTimeout(connectionRequestTimeout).build();
 		clientBuilder.setDefaultRequestConfig(config);
 
-		switch (configuration.getConnectionType()) {
+		switch (BelugaConfiguration.getInstance().getConnectionType()) {
 		case DIRECT:
 			connectionManager = new PoolingHttpClientConnectionManager();
 			break;
 		case HTTP_PROXY:
-			HttpHost proxy = new HttpHost(configuration.getProxyHost(), configuration.getProxyPort(), "http");
+			HttpHost proxy = new HttpHost(BelugaConfiguration.getInstance().getProxyHost(),
+					BelugaConfiguration.getInstance().getProxyPort(), "http");
 			clientBuilder.setProxy(proxy);
 		default:
 			Registry<ConnectionSocketFactory> registry = RegistryBuilder.<ConnectionSocketFactory> create()
 					.register("http", PlainConnectionSocketFactory.getSocketFactory())
 					.register("https", SSLConnectionSocketFactory.getSocketFactory()).build();
 			BelugaDNSResolver dnsOverrider = new BelugaDNSResolver(
-					DNSProxy.get(configuration.getConnectionType().getId()));
+					DNSProxy.get(BelugaConfiguration.getInstance().getConnectionType().getId()));
 			connectionManager = new PoolingHttpClientConnectionManager(registry, dnsOverrider);
 			break;
 		}
 
-		// limit the pool size
-		connectionManager.setDefaultMaxPerRoute(2);
+		connectionManager.setDefaultMaxPerRoute(poolSize);
 
 		// add interceptor, currently for debugging only
 		clientBuilder.addInterceptorFirst(new HttpResponseInterceptor() {
@@ -110,42 +120,32 @@ public class BelugaHTTPClient {
 		httpClient = clientBuilder.build();
 	}
 
-	public static BelugaHTTPClient getInstance() {
-		if (instance == null)
-			instance = new BelugaHTTPClient();
-		return instance;
+	public void close() {
+		if (connectionManager != null)
+			connectionManager.close();
 	}
 
-	public static void reset() {
-		if (instance != null) {
-			instance.connectionManager.close();
-			instance = null;
-		}
+	public void reset() {
+		if (connectionManager != null)
+			connectionManager.close();
+		init();
 	}
 
-	public String requestPost(HttpPost post) throws CommunicationException, ClientProtocolException, IOException {
+	public String post(HttpPost post) throws CommunicationException, ClientProtocolException, IOException {
 		HttpResponse httpResponse = httpClient.execute(post);
 		String result = IOUtils.toString(httpResponse.getEntity().getContent(), StandardCharsets.UTF_8);
 		EntityUtils.consume(httpResponse.getEntity());
 		return result;
 	}
 
-	public byte[] requestGet(HttpGet get) throws ClientProtocolException, IOException {
+	public byte[] get(HttpGet get) throws ClientProtocolException, IOException {
 		HttpResponse httpResponse = httpClient.execute(get);
 		byte[] result = IOUtils.toByteArray(httpResponse.getEntity().getContent());
 		EntityUtils.consume(httpResponse.getEntity());
 		return result;
 	}
 
-	public HttpResponse requestGetStream(HttpGet get) throws ClientProtocolException, IOException {
-		// TODO: use a different client with BasicHttpClientConnectionManager
-		// for the streaming connection
-
-		// no socket timeout, this may improve pause support
-		// TODO: check if it is working as expected (also depends of the server)
-		RequestConfig config = RequestConfig.custom().setConnectTimeout(TIMEOUT).setConnectionRequestTimeout(TIMEOUT)
-				.build();
-		get.setConfig(config);
+	public HttpResponse getStream(HttpGet get) throws ClientProtocolException, IOException {
 		HttpResponse httpResponse = httpClient.execute(get);
 		if (httpResponse.getStatusLine().getStatusCode() != HttpStatus.SC_OK)
 			throw new IOException("Server reply: " + httpResponse.getStatusLine().getReasonPhrase());

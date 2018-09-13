@@ -33,6 +33,7 @@
 		<lastfm-java.version>0.1.2</lastfm-java.version>
 		<jlayer.version>1.0.1.4</jlayer.version>
 		<svg-salamander.version>1.0</svg-salamander.version>
+		<jaad.version>0.8.6-SNAPSHOT</jaad.version>
 		<jdeb-plugin.version>1.4</jdeb-plugin.version>
 		<maven-artifact.version>3.5.4</maven-artifact.version>
 		<maven-shade-plugin.version>3.1.0</maven-shade-plugin.version>
@@ -264,6 +265,12 @@
 			<groupId>commons-io</groupId>
 			<artifactId>commons-io</artifactId>
 			<version>${commons-io.version}</version>
+		</dependency>
+		<!-- AAC support, custom version built from https://github.com/dieterstueken/JAADec -->
+		<dependency>
+			<groupId>net.sourceforge.jaadec</groupId>
+			<artifactId>jaad</artifactId>
+			<version>${jaad.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.maven</groupId>

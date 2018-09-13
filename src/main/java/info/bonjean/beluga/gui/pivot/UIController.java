@@ -26,6 +26,7 @@ import info.bonjean.beluga.client.BelugaState;
 import info.bonjean.beluga.client.LastFMSession;
 import info.bonjean.beluga.client.PandoraClient;
 import info.bonjean.beluga.client.PandoraPlaylist;
+import info.bonjean.beluga.configuration.AudioQuality;
 import info.bonjean.beluga.configuration.BelugaConfiguration;
 import info.bonjean.beluga.configuration.ConnectionType;
 import info.bonjean.beluga.connection.BelugaHTTPClient;
@@ -39,7 +40,6 @@ import info.bonjean.beluga.response.SearchArtist;
 import info.bonjean.beluga.response.SearchSong;
 import info.bonjean.beluga.response.Song;
 import info.bonjean.beluga.response.Station;
-
 import java.awt.Desktop;
 import java.net.URI;
 import java.util.ArrayList;
@@ -47,7 +47,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
-
 import org.apache.pivot.wtk.Action;
 import org.apache.pivot.wtk.ApplicationContext;
 import org.apache.pivot.wtk.Checkbox;
@@ -276,18 +275,6 @@ public class UIController implements InternalBusSubscriber {
 			public void asyncPerform(Component source) throws BelugaException {
 				log.info("skippingSong");
 				playerUI.skip();
-			}
-		});
-
-		Action.getNamedActions().put("pause-song", new AsyncAction(mainWindow) {
-			@Override
-			public void asyncPerform(Component source) throws BelugaException {
-				if (playerUI.isPaused())
-					log.info("unpausingSong");
-				else
-					log.info("pausingSong");
-
-				playerUI.playPause();
 			}
 		});
 
@@ -533,6 +520,7 @@ public class UIController implements InternalBusSubscriber {
 				configuration.setLastFMEnabled(preferencesUI.lastFMEnableCheckbox.isSelected());
 				configuration.setLastFMUsername(preferencesUI.lastFMUsernameInput.getText());
 				configuration.setLastFMPassword(preferencesUI.lastFMPasswordInput.getText());
+				configuration.setAudioQuality((AudioQuality) preferencesUI.audioQuality.getSelectedItem());
 				configuration.setAdsDetectionEnabled(preferencesUI.adsEnableDetectionCheckbox.isSelected());
 				configuration.setAdsSilenceEnabled(preferencesUI.adsEnableSilentCheckbox.isSelected());
 				configuration.setNotificationsStyle(
@@ -548,7 +536,7 @@ public class UIController implements InternalBusSubscriber {
 
 				log.info("preferencesUpdated");
 
-				BelugaHTTPClient.reset();
+				BelugaHTTPClient.PANDORA_API_INSTANCE.reset();
 				LastFMSession.reset();
 
 				// redirect to the main screen: song if playback started,
@@ -575,7 +563,7 @@ public class UIController implements InternalBusSubscriber {
 		state.reset();
 		pandoraClient.reset();
 		playlist.clear();
-		BelugaHTTPClient.reset();
+		BelugaHTTPClient.PANDORA_API_INSTANCE.reset();
 		LastFMSession.reset();
 	}
 
@@ -749,7 +737,6 @@ public class UIController implements InternalBusSubscriber {
 			log.info("disconnectedFromPandora");
 			break;
 		case PANDORA_CONNECTED:
-		case SONG_PAUSE:
 		case SONG_RESUME:
 		}
 

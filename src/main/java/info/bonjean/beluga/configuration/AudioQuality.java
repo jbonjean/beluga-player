@@ -28,26 +28,22 @@ import java.util.Map;
  * @author Julien Bonjean <julien@bonjean.info>
  *
  */
-public enum ConnectionType {
-	// TODO: handle i18n
-	DIRECT("direct", "No Proxy"),
-	PROXY_DNS("proxy-dns", "Proxy DNS"),
-	PORTALLER("portaller", "Portaller"),
-	HTTP_PROXY("http-proxy", "HTTP Proxy");
+public enum AudioQuality {
+	LOW("low", "AAC Low"), MEDIUM("medium", "AAC Medium"), HIGH("high", "AAC High"), MP3("mp3", "MP3");
 	private final String id;
 	private final String name;
-	private static final Map<String, ConnectionType> lookup = new HashMap<String, ConnectionType>();
+	private static final Map<String, AudioQuality> lookup = new HashMap<String, AudioQuality>();
 
 	static {
-		for (ConnectionType s : EnumSet.allOf(ConnectionType.class))
+		for (AudioQuality s : EnumSet.allOf(AudioQuality.class))
 			lookup.put(s.getId(), s);
 	}
 
-	public static ConnectionType get(String id) {
+	public static AudioQuality get(String id) {
 		return lookup.get(id);
 	}
 
-	private ConnectionType(String id, String name) {
+	private AudioQuality(String id, String name) {
 		this.id = id;
 		this.name = name;
 	}

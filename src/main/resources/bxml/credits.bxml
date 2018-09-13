@@ -22,7 +22,7 @@
 
 				<BoxPane orientation="vertical" styles="{padding:{top:15}}">
 					<Label
-						text="Skip Forward, Play and Pause designed by Alex Fuller from the Noun Project "
+						text="Skip Forward and Play designed by Alex Fuller from the Noun Project "
 						styles="{font:{bold:true}}" />
 					<LinkButton action="open-url">
 						<content:ButtonData text="http://thenounproject.com/alexfuller" />
