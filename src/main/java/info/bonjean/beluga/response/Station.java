@@ -26,8 +26,7 @@ import java.util.List;
  * @author Julien Bonjean <julien@bonjean.info>
  *
  */
-public class Station
-{
+public class Station {
 	private String stationId;
 	private boolean isQuickMix;
 	private String stationDetailUrl;
@@ -49,179 +48,144 @@ public class Station
 
 	private String artBase64;
 
-	public boolean isQuickMix()
-	{
+	public boolean isQuickMix() {
 		return isQuickMix;
 	}
 
-	public void setQuickMix(boolean isQuickMix)
-	{
+	public void setQuickMix(boolean isQuickMix) {
 		this.isQuickMix = isQuickMix;
 	}
 
-	public String getStationDetailUrl()
-	{
+	public String getStationDetailUrl() {
 		return stationDetailUrl;
 	}
 
-	public void setStationDetailUrl(String stationDetailUrl)
-	{
+	public void setStationDetailUrl(String stationDetailUrl) {
 		this.stationDetailUrl = stationDetailUrl;
 	}
 
-	public String getStationToken()
-	{
+	public String getStationToken() {
 		return stationToken;
 	}
 
-	public void setStationToken(String stationToken)
-	{
+	public void setStationToken(String stationToken) {
 		this.stationToken = stationToken;
 	}
 
-	public String getStationName()
-	{
+	public String getStationName() {
 		return stationName;
 	}
 
-	public void setStationName(String stationName)
-	{
+	public void setStationName(String stationName) {
 		this.stationName = stationName;
 	}
 
-	public String getStationId()
-	{
+	public String getStationId() {
 		return stationId;
 	}
 
-	public void setStationId(String stationId)
-	{
+	public void setStationId(String stationId) {
 		this.stationId = stationId;
 	}
 
-	public boolean isAllowAddMusic()
-	{
+	public boolean isAllowAddMusic() {
 		return allowAddMusic;
 	}
 
-	public void setAllowAddMusic(boolean allowAddMusic)
-	{
+	public void setAllowAddMusic(boolean allowAddMusic) {
 		this.allowAddMusic = allowAddMusic;
 	}
 
-	public Date getDateCreated()
-	{
+	public Date getDateCreated() {
 		return dateCreated;
 	}
 
-	public void setDateCreated(Date dateCreated)
-	{
+	public void setDateCreated(Date dateCreated) {
 		this.dateCreated = dateCreated;
 	}
 
-	public String getArtUrl()
-	{
+	public String getArtUrl() {
 		return artUrl;
 	}
 
-	public void setArtUrl(String artUrl)
-	{
+	public void setArtUrl(String artUrl) {
 		this.artUrl = artUrl;
 	}
 
-	public StationMusic getMusic()
-	{
+	public StationMusic getMusic() {
 		return music;
 	}
 
-	public void setMusic(StationMusic music)
-	{
+	public void setMusic(StationMusic music) {
 		this.music = music;
 	}
 
-	public boolean isShared()
-	{
+	public boolean isShared() {
 		return isShared;
 	}
 
-	public void setShared(boolean isShared)
-	{
+	public void setShared(boolean isShared) {
 		this.isShared = isShared;
 	}
 
-	public boolean isAllowDelete()
-	{
+	public boolean isAllowDelete() {
 		return allowDelete;
 	}
 
-	public void setAllowDelete(boolean allowDelete)
-	{
+	public void setAllowDelete(boolean allowDelete) {
 		this.allowDelete = allowDelete;
 	}
 
-	public List<String> getGenre()
-	{
+	public List<String> getGenre() {
 		return genre;
 	}
 
-	public void setGenre(List<String> genre)
-	{
+	public void setGenre(List<String> genre) {
 		this.genre = genre;
 	}
 
-	public boolean isAllowRename()
-	{
+	public boolean isAllowRename() {
 		return allowRename;
 	}
 
-	public void setAllowRename(boolean allowRename)
-	{
+	public void setAllowRename(boolean allowRename) {
 		this.allowRename = allowRename;
 	}
 
-	public String getStationSharingUrl()
-	{
+	public String getStationSharingUrl() {
 		return stationSharingUrl;
 	}
 
-	public void setStationSharingUrl(String stationSharingUrl)
-	{
+	public void setStationSharingUrl(String stationSharingUrl) {
 		this.stationSharingUrl = stationSharingUrl;
 	}
 
-	public StationFeedback getFeedback()
-	{
+	public StationFeedback getFeedback() {
 		return feedback;
 	}
 
-	public void setFeedback(StationFeedback feedback)
-	{
+	public void setFeedback(StationFeedback feedback) {
 		this.feedback = feedback;
 	}
 
-	public String getArtBase64()
-	{
+	public String getArtBase64() {
 		return artBase64;
 	}
 
-	public void setArtBase64(String artBase64)
-	{
+	public void setArtBase64(String artBase64) {
 		this.artBase64 = artBase64;
 	}
 
-	public List<String> getQuickMixStationIds()
-	{
+	public List<String> getQuickMixStationIds() {
 		return quickMixStationIds;
 	}
 
-	public void setQuickMixStationIds(List<String> quickMixStationIds)
-	{
+	public void setQuickMixStationIds(List<String> quickMixStationIds) {
 		this.quickMixStationIds = quickMixStationIds;
 	}
 
 	@Override
-	public String toString()
-	{
+	public String toString() {
 		return stationName == null ? "" : stationName;
 	}
 }

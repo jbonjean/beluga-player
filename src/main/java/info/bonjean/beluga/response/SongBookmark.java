@@ -24,8 +24,7 @@ package info.bonjean.beluga.response;
  * @author Julien Bonjean <julien@bonjean.info>
  * 
  */
-public class SongBookmark
-{
+public class SongBookmark {
 	private String musicToken;
 	private String artistName;
 	private String artUrl;
@@ -36,93 +35,75 @@ public class SongBookmark
 	private String albumName;
 	private String songName;
 
-	public String getMusicToken()
-	{
+	public String getMusicToken() {
 		return musicToken;
 	}
 
-	public void setMusicToken(String musicToken)
-	{
+	public void setMusicToken(String musicToken) {
 		this.musicToken = musicToken;
 	}
 
-	public String getArtistName()
-	{
+	public String getArtistName() {
 		return artistName;
 	}
 
-	public void setArtistName(String artistName)
-	{
+	public void setArtistName(String artistName) {
 		this.artistName = artistName;
 	}
 
-	public String getArtUrl()
-	{
+	public String getArtUrl() {
 		return artUrl;
 	}
 
-	public void setArtUrl(String artUrl)
-	{
+	public void setArtUrl(String artUrl) {
 		this.artUrl = artUrl;
 	}
 
-	public String getBookmarkToken()
-	{
+	public String getBookmarkToken() {
 		return bookmarkToken;
 	}
 
-	public void setBookmarkToken(String bookmarkToken)
-	{
+	public void setBookmarkToken(String bookmarkToken) {
 		this.bookmarkToken = bookmarkToken;
 	}
 
-	public Date getDateCreated()
-	{
+	public Date getDateCreated() {
 		return dateCreated;
 	}
 
-	public void setDateCreated(Date dateCreated)
-	{
+	public void setDateCreated(Date dateCreated) {
 		this.dateCreated = dateCreated;
 	}
 
-	public String getSampleUrl()
-	{
+	public String getSampleUrl() {
 		return sampleUrl;
 	}
 
-	public void setSampleUrl(String sampleUrl)
-	{
+	public void setSampleUrl(String sampleUrl) {
 		this.sampleUrl = sampleUrl;
 	}
 
-	public String getSampleGain()
-	{
+	public String getSampleGain() {
 		return sampleGain;
 	}
 
-	public void setSampleGain(String sampleGain)
-	{
+	public void setSampleGain(String sampleGain) {
 		this.sampleGain = sampleGain;
 	}
 
-	public String getAlbumName()
-	{
+	public String getAlbumName() {
 		return albumName;
 	}
 
-	public void setAlbumName(String albumName)
-	{
+	public void setAlbumName(String albumName) {
 		this.albumName = albumName;
 	}
 
-	public String getSongName()
-	{
+	public String getSongName() {
 		return songName;
 	}
 
-	public void setSongName(String songName)
-	{
+	public void setSongName(String songName) {
 		this.songName = songName;
 	}
 }

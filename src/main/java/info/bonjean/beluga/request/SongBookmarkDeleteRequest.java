@@ -24,17 +24,14 @@ package info.bonjean.beluga.request;
  * @author Julien Bonjean <julien@bonjean.info>
  * 
  */
-public class SongBookmarkDeleteRequest extends AuthentifiedJsonRequest
-{
+public class SongBookmarkDeleteRequest extends AuthentifiedJsonRequest {
 	private String bookmarkToken;
 
-	public String getBookmarkToken()
-	{
+	public String getBookmarkToken() {
 		return bookmarkToken;
 	}
 
-	public void setBookmarkToken(String bookmarkToken)
-	{
+	public void setBookmarkToken(String bookmarkToken) {
 		this.bookmarkToken = bookmarkToken;
 	}
 }

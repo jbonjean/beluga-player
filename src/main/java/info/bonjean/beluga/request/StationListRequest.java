@@ -24,6 +24,5 @@ package info.bonjean.beluga.request;
  * @author Julien Bonjean <julien@bonjean.info>
  * 
  */
-public class StationListRequest extends AuthentifiedJsonRequest
-{
+public class StationListRequest extends AuthentifiedJsonRequest {
 }

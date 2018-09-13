@@ -24,6 +24,5 @@ package info.bonjean.beluga.request;
  * @author Julien Bonjean <julien@bonjean.info>
  * 
  */
-public abstract class JsonRequest
-{
+public abstract class JsonRequest {
 }

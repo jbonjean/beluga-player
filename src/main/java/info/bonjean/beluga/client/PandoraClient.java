@@ -67,8 +67,7 @@ import com.google.gson.reflect.TypeToken;
  * @author Julien Bonjean <julien@bonjean.info>
  * 
  */
-public class PandoraClient
-{
+public class PandoraClient {
 	private static final Logger log = LoggerFactory.getLogger(PandoraClient.class);
 	private static PandoraClient instance;
 	private String partnerId;
@@ -78,37 +77,31 @@ public class PandoraClient
 
 	private static final BelugaConfiguration configuration = BelugaConfiguration.getInstance();
 
-	private PandoraClient()
-	{
+	private PandoraClient() {
 	}
 
-	public static PandoraClient getInstance()
-	{
+	public static PandoraClient getInstance() {
 		if (instance == null)
 			instance = new PandoraClient();
 		return instance;
 	}
 
-	public void reset()
-	{
+	public void reset() {
 		partnerId = null;
 		userId = null;
 		partnerAuthToken = null;
 		userAuthToken = null;
 	}
 
-	public boolean isPandoraReachable()
-	{
+	public boolean isPandoraReachable() {
 		return partnerAuthToken != null && partnerAuthToken.length() > 0;
 	}
 
-	public boolean isLoggedIn()
-	{
+	public boolean isLoggedIn() {
 		return userAuthToken != null && userAuthToken.length() > 0;
 	}
 
-	private ParameterMap getDefaultParameterMap()
-	{
+	private ParameterMap getDefaultParameterMap() {
 		ParameterMap params = new ParameterMap();
 		params.add("partner_id", partnerId);
 		params.add("auth_token", userAuthToken);
@@ -117,22 +110,19 @@ public class PandoraClient
 		return params;
 	}
 
-	public void partnerLogin() throws BelugaException
-	{
+	public void partnerLogin() throws BelugaException {
 		partnerId = null;
 		partnerAuthToken = null;
 
-		Result result = HTTPUtil.<Result> request(Method.PARTNER_LOGIN, null,
-				new PartnerAuthRequest(), false, new TypeToken<Response<Result>>()
-				{
+		Result result = HTTPUtil.<Result> request(Method.PARTNER_LOGIN, null, new PartnerAuthRequest(), false,
+				new TypeToken<Response<Result>>() {
 				});
 
 		partnerId = result.getPartnerId();
 		partnerAuthToken = result.getPartnerAuthToken();
 	}
 
-	public void userLogin() throws BelugaException
-	{
+	public void userLogin() throws BelugaException {
 		userId = null;
 		userAuthToken = null;
 
@@ -147,32 +137,28 @@ public class PandoraClient
 		userLogin.setPassword(configuration.getPassword());
 
 		Result result = HTTPUtil.<Result> request(Method.USER_LOGIN, params, userLogin, true,
-				new TypeToken<Response<Result>>()
-				{
+				new TypeToken<Response<Result>>() {
 				});
 
 		userId = result.getUserId();
 		userAuthToken = result.getUserAuthToken();
 	}
 
-	public List<Station> getStationList() throws BelugaException
-	{
+	public List<Station> getStationList() throws BelugaException {
 		ParameterMap params = getDefaultParameterMap();
 
 		StationListRequest stationList = new StationListRequest();
 		stationList.setSyncTime(PandoraUtil.getSyncTime());
 		stationList.setUserAuthToken(userAuthToken);
 
-		Result result = HTTPUtil.<Result> request(Method.GET_STATION_LIST, params, stationList,
-				true, new TypeToken<Response<Result>>()
-				{
+		Result result = HTTPUtil.<Result> request(Method.GET_STATION_LIST, params, stationList, true,
+				new TypeToken<Response<Result>>() {
 				});
 
 		return result.getStations();
 	}
 
-	public Station getStation(Station station) throws BelugaException
-	{
+	public Station getStation(Station station) throws BelugaException {
 		ParameterMap params = getDefaultParameterMap();
 		StationRequest stationRequest = new StationRequest();
 		stationRequest.setSyncTime(PandoraUtil.getSyncTime());
@@ -180,35 +166,27 @@ public class PandoraClient
 		stationRequest.setStationToken(station.getStationToken());
 		stationRequest.setIncludeExtendedAttributes(true);
 
-		Station stationFull = HTTPUtil.<Station> request(Method.GET_STATION, params,
-				stationRequest, true, new TypeToken<Response<Station>>()
-				{
+		Station stationFull = HTTPUtil.<Station> request(Method.GET_STATION, params, stationRequest, true,
+				new TypeToken<Response<Station>>() {
 				});
 		return stationFull;
 	}
 
-	public List<String> retrieveFocusTraits(Song song)
-	{
+	public List<String> retrieveFocusTraits(Song song) {
 		List<String> traits = new ArrayList<String>();
-		try
-		{
-			Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder()
-					.parse(song.getSongExplorerUrl());
+		try {
+			Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(song.getSongExplorerUrl());
 			NodeList nodes = doc.getElementsByTagName("focusTrait");
-			for (int i = 0; i < nodes.getLength(); i++)
-			{
+			for (int i = 0; i < nodes.getLength(); i++) {
 				traits.add(nodes.item(i).getTextContent());
 			}
-		}
-		catch (Exception ex)
-		{
+		} catch (Exception ex) {
 			log.debug("Cannot retrieve focus traits for song " + song.getSongName());
 		}
 		return traits;
 	}
 
-	public List<Song> getPlaylist(Station station) throws BelugaException
-	{
+	public List<Song> getPlaylist(Station station) throws BelugaException {
 		ParameterMap params = getDefaultParameterMap();
 
 		PlayListRequest playlist = new PlayListRequest();
@@ -218,8 +196,7 @@ public class PandoraClient
 		playlist.setAdditionalAudioUrl("HTTP_128_MP3");
 
 		Result result = HTTPUtil.<Result> request(Method.GET_PLAYLIST, params, playlist, true,
-				new TypeToken<Response<Result>>()
-				{
+				new TypeToken<Response<Result>>() {
 				});
 
 		List<Song> currentPlaylist = result.getItems();
@@ -230,8 +207,7 @@ public class PandoraClient
 		return currentPlaylist;
 	}
 
-	public Bookmarks getBookmarks() throws BelugaException
-	{
+	public Bookmarks getBookmarks() throws BelugaException {
 		ParameterMap params = getDefaultParameterMap();
 
 		BookmarksRequest playlist = new BookmarksRequest();
@@ -239,13 +215,11 @@ public class PandoraClient
 		playlist.setUserAuthToken(userAuthToken);
 
 		return HTTPUtil.<Bookmarks> request(Method.GET_BOOKMARKS, params, playlist, true,
-				new TypeToken<Response<Bookmarks>>()
-				{
+				new TypeToken<Response<Bookmarks>>() {
 				});
 	}
 
-	public Feedback addFeedback(Song song, boolean isPositive) throws BelugaException
-	{
+	public Feedback addFeedback(Song song, boolean isPositive) throws BelugaException {
 		ParameterMap params = getDefaultParameterMap();
 
 		FeedbackRequest feedbackRequest = new FeedbackRequest();
@@ -254,9 +228,8 @@ public class PandoraClient
 		feedbackRequest.setPositive(isPositive);
 		feedbackRequest.setTrackToken(song.getTrackToken());
 
-		Feedback feedback = HTTPUtil.<Feedback> request(Method.ADD_FEEDBACK, params,
-				feedbackRequest, true, new TypeToken<Response<Feedback>>()
-				{
+		Feedback feedback = HTTPUtil.<Feedback> request(Method.ADD_FEEDBACK, params, feedbackRequest, true,
+				new TypeToken<Response<Feedback>>() {
 				});
 
 		if (isPositive)
@@ -265,8 +238,7 @@ public class PandoraClient
 		return feedback;
 	}
 
-	public void deleteSongBookmark(String bookmarkToken) throws BelugaException
-	{
+	public void deleteSongBookmark(String bookmarkToken) throws BelugaException {
 		ParameterMap params = getDefaultParameterMap();
 
 		SongBookmarkDeleteRequest songBookmarkDeleteRequest = new SongBookmarkDeleteRequest();
@@ -274,14 +246,12 @@ public class PandoraClient
 		songBookmarkDeleteRequest.setUserAuthToken(userAuthToken);
 		songBookmarkDeleteRequest.setBookmarkToken(bookmarkToken);
 
-		HTTPUtil.<Result> request(Method.DELETE_SONG_BOOKMARK, params, songBookmarkDeleteRequest,
-				true, new TypeToken<Response<Result>>()
-				{
+		HTTPUtil.<Result> request(Method.DELETE_SONG_BOOKMARK, params, songBookmarkDeleteRequest, true,
+				new TypeToken<Response<Result>>() {
 				});
 	}
 
-	public void deleteArtistBookmark(String bookmarkToken) throws BelugaException
-	{
+	public void deleteArtistBookmark(String bookmarkToken) throws BelugaException {
 		ParameterMap params = getDefaultParameterMap();
 
 		ArtistBookmarkDeleteRequest artistBookmarkDeleteRequest = new ArtistBookmarkDeleteRequest();
@@ -289,14 +259,12 @@ public class PandoraClient
 		artistBookmarkDeleteRequest.setUserAuthToken(userAuthToken);
 		artistBookmarkDeleteRequest.setBookmarkToken(bookmarkToken);
 
-		HTTPUtil.<Result> request(Method.DELETE_ARTIST_BOOKMARK, params,
-				artistBookmarkDeleteRequest, true, new TypeToken<Response<Result>>()
-				{
+		HTTPUtil.<Result> request(Method.DELETE_ARTIST_BOOKMARK, params, artistBookmarkDeleteRequest, true,
+				new TypeToken<Response<Result>>() {
 				});
 	}
 
-	public void deleteFeedback(String feedbackId) throws BelugaException
-	{
+	public void deleteFeedback(String feedbackId) throws BelugaException {
 		ParameterMap params = getDefaultParameterMap();
 
 		FeedbackDeleteRequest feedbackDeleteRequest = new FeedbackDeleteRequest();
@@ -305,13 +273,11 @@ public class PandoraClient
 		feedbackDeleteRequest.setFeedbackId(feedbackId);
 
 		HTTPUtil.<Result> request(Method.DELETE_FEEDBACK, params, feedbackDeleteRequest, true,
-				new TypeToken<Response<Result>>()
-				{
+				new TypeToken<Response<Result>>() {
 				});
 	}
 
-	public void sleepSong(Song song) throws BelugaException
-	{
+	public void sleepSong(Song song) throws BelugaException {
 		ParameterMap params = getDefaultParameterMap();
 
 		SongSleepRequest songSleep = new SongSleepRequest();
@@ -319,14 +285,11 @@ public class PandoraClient
 		songSleep.setUserAuthToken(userAuthToken);
 		songSleep.setTrackToken(song.getTrackToken());
 
-		HTTPUtil.<Result> request(Method.SLEEP_SONG, params, songSleep, true,
-				new TypeToken<Response<Result>>()
-				{
-				});
+		HTTPUtil.<Result> request(Method.SLEEP_SONG, params, songSleep, true, new TypeToken<Response<Result>>() {
+		});
 	}
 
-	public void addSongBookmark(String trackToken) throws BelugaException
-	{
+	public void addSongBookmark(String trackToken) throws BelugaException {
 		ParameterMap params = getDefaultParameterMap();
 
 		SongBookmarkRequest songBookmark = new SongBookmarkRequest();
@@ -335,13 +298,11 @@ public class PandoraClient
 		songBookmark.setTrackToken(trackToken);
 
 		HTTPUtil.<Result> request(Method.ADD_SONG_BOOKMARK, params, songBookmark, true,
-				new TypeToken<Response<Result>>()
-				{
+				new TypeToken<Response<Result>>() {
 				});
 	}
 
-	public void addArtistBookmark(String trackToken) throws BelugaException
-	{
+	public void addArtistBookmark(String trackToken) throws BelugaException {
 		ParameterMap params = getDefaultParameterMap();
 
 		ArtistBookmarkRequest artistBookmark = new ArtistBookmarkRequest();
@@ -350,13 +311,11 @@ public class PandoraClient
 		artistBookmark.setTrackToken(trackToken);
 
 		HTTPUtil.<Result> request(Method.ADD_ARTIST_BOOKMARK, params, artistBookmark, true,
-				new TypeToken<Response<Result>>()
-				{
+				new TypeToken<Response<Result>>() {
 				});
 	}
 
-	public Result search(String query) throws BelugaException
-	{
+	public Result search(String query) throws BelugaException {
 		ParameterMap params = getDefaultParameterMap();
 
 		SearchRequest search = new SearchRequest();
@@ -364,14 +323,11 @@ public class PandoraClient
 		search.setUserAuthToken(userAuthToken);
 		search.setSearchText(query);
 
-		return HTTPUtil.<Result> request(Method.SEARCH, params, search, true,
-				new TypeToken<Response<Result>>()
-				{
-				});
+		return HTTPUtil.<Result> request(Method.SEARCH, params, search, true, new TypeToken<Response<Result>>() {
+		});
 	}
 
-	public void addStation(String musicToken) throws BelugaException
-	{
+	public void addStation(String musicToken) throws BelugaException {
 		ParameterMap params = getDefaultParameterMap();
 
 		CreateStationRequest createStation = new CreateStationRequest();
@@ -380,13 +336,11 @@ public class PandoraClient
 		createStation.setMusicToken(musicToken);
 
 		HTTPUtil.<Result> request(Method.CREATE_STATION, params, createStation, true,
-				new TypeToken<Response<Result>>()
-				{
+				new TypeToken<Response<Result>>() {
 				});
 	}
 
-	public void addStation(String type, String trackToken) throws BelugaException
-	{
+	public void addStation(String type, String trackToken) throws BelugaException {
 		ParameterMap params = getDefaultParameterMap();
 
 		CreateStationRequest createStation = new CreateStationRequest();
@@ -396,13 +350,11 @@ public class PandoraClient
 		createStation.setTrackToken(trackToken);
 
 		HTTPUtil.<Result> request(Method.CREATE_STATION, params, createStation, true,
-				new TypeToken<Response<Result>>()
-				{
+				new TypeToken<Response<Result>>() {
 				});
 	}
 
-	public void deleteStation(Station station) throws BelugaException
-	{
+	public void deleteStation(Station station) throws BelugaException {
 		ParameterMap params = getDefaultParameterMap();
 
 		DeleteStationRequest createStation = new DeleteStationRequest();
@@ -411,13 +363,11 @@ public class PandoraClient
 		createStation.setStationToken(station.getStationToken());
 
 		HTTPUtil.<Result> request(Method.DELETE_STATION, params, createStation, true,
-				new TypeToken<Response<Result>>()
-				{
+				new TypeToken<Response<Result>>() {
 				});
 	}
 
-	public void setQuickMix(List<String> quickMixStationIds) throws BelugaException
-	{
+	public void setQuickMix(List<String> quickMixStationIds) throws BelugaException {
 		ParameterMap params = getDefaultParameterMap();
 
 		SetQuickMixRequest setQuickMix = new SetQuickMixRequest();
@@ -425,22 +375,16 @@ public class PandoraClient
 		setQuickMix.setUserAuthToken(userAuthToken);
 		setQuickMix.setQuickMixStationIds(quickMixStationIds);
 
-		HTTPUtil.<Result> request(Method.SET_QUICK_MIX, params, setQuickMix, true,
-				new TypeToken<Response<Result>>()
-				{
-				});
+		HTTPUtil.<Result> request(Method.SET_QUICK_MIX, params, setQuickMix, true, new TypeToken<Response<Result>>() {
+		});
 	}
 
-	public void createUser(String username, String password, String birthYearStr, String zipCode,
-			String gender, String emailOptInStr) throws BelugaException
-	{
+	public void createUser(String username, String password, String birthYearStr, String zipCode, String gender,
+			String emailOptInStr) throws BelugaException {
 		Integer birthYear = 0;
-		try
-		{
+		try {
 			birthYear = Integer.valueOf(birthYearStr);
-		}
-		catch (NumberFormatException e)
-		{
+		} catch (NumberFormatException e) {
 			// we don't care, Pandora is going to reject it anyway
 		}
 		Boolean emailOptIn = Boolean.valueOf(emailOptInStr);
@@ -460,9 +404,7 @@ public class PandoraClient
 		createUser.setSyncTime(PandoraUtil.getSyncTime());
 		createUser.setPartnerAuthToken(partnerAuthToken);
 
-		HTTPUtil.<Result> request(Method.CREATE_USER, params, createUser, true,
-				new TypeToken<Response<Result>>()
-				{
-				});
+		HTTPUtil.<Result> request(Method.CREATE_USER, params, createUser, true, new TypeToken<Response<Result>>() {
+		});
 	}
 }

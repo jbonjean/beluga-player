@@ -31,10 +31,8 @@ import info.bonjean.beluga.gui.PivotUI;
  * Use the option -Ddebug=1 to run in debug mode.
  * 
  */
-public class Main
-{
-	public static void main(String[] args)
-	{
+public class Main {
+	public static void main(String[] args) {
 		String version = Main.class.getPackage().getImplementationVersion();
 		if (version == null)
 			version = BelugaConfiguration.CONFIGURATION_DEFAULT_VERSION;

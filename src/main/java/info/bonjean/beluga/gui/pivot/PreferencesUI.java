@@ -42,8 +42,7 @@ import org.apache.pivot.wtk.content.ListItem;
  * @author Julien Bonjean <julien@bonjean.info>
  * 
  */
-public class PreferencesUI extends TablePane implements Bindable
-{
+public class PreferencesUI extends TablePane implements Bindable {
 	@BXML
 	protected TextInput emailAddressInput;
 	@BXML
@@ -75,12 +74,10 @@ public class PreferencesUI extends TablePane implements Bindable
 
 	private final BelugaConfiguration configuration = BelugaConfiguration.getInstance();
 
-	public PreferencesUI()
-	{
+	public PreferencesUI() {
 	}
 
-	private void setListButtonSelected(ListButton button, String value)
-	{
+	private void setListButtonSelected(ListButton button, String value) {
 		@SuppressWarnings("unchecked")
 		List<ListItem> styleListData = (List<ListItem>) button.getListData();
 		for (ListItem listItem : styleListData)
@@ -90,8 +87,7 @@ public class PreferencesUI extends TablePane implements Bindable
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
-	public void initialize(Map<String, Object> namespace, URL location, Resources resources)
-	{
+	public void initialize(Map<String, Object> namespace, URL location, Resources resources) {
 		emailAddressInput.setText(configuration.getUserName());
 		passwordInput.setText(configuration.getPassword());
 		setListButtonSelected(stationsOrderBy, configuration.getStationsOrderBy());

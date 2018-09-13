@@ -24,8 +24,7 @@ package info.bonjean.beluga.request;
  * @author Julien Bonjean <julien@bonjean.info>
  * 
  */
-public class CreateUserRequest extends JsonRequest
-{
+public class CreateUserRequest extends JsonRequest {
 	private String accountType = "registered";
 	private String countryCode = "US";
 	private String registeredType = "user";
@@ -39,113 +38,91 @@ public class CreateUserRequest extends JsonRequest
 	private long syncTime;
 	private String partnerAuthToken;
 
-	public String getAccountType()
-	{
+	public String getAccountType() {
 		return accountType;
 	}
 
-	public void setAccountType(String accountType)
-	{
+	public void setAccountType(String accountType) {
 		this.accountType = accountType;
 	}
 
-	public String getCountryCode()
-	{
+	public String getCountryCode() {
 		return countryCode;
 	}
 
-	public void setCountryCode(String countryCode)
-	{
+	public void setCountryCode(String countryCode) {
 		this.countryCode = countryCode;
 	}
 
-	public String getRegisteredType()
-	{
+	public String getRegisteredType() {
 		return registeredType;
 	}
 
-	public void setRegisteredType(String registeredType)
-	{
+	public void setRegisteredType(String registeredType) {
 		this.registeredType = registeredType;
 	}
 
-	public String getUsername()
-	{
+	public String getUsername() {
 		return username;
 	}
 
-	public void setUsername(String username)
-	{
+	public void setUsername(String username) {
 		this.username = username;
 	}
 
-	public String getPassword()
-	{
+	public String getPassword() {
 		return password;
 	}
 
-	public void setPassword(String password)
-	{
+	public void setPassword(String password) {
 		this.password = password;
 	}
 
-	public int getBirthYear()
-	{
+	public int getBirthYear() {
 		return birthYear;
 	}
 
-	public void setBirthYear(int birthYear)
-	{
+	public void setBirthYear(int birthYear) {
 		this.birthYear = birthYear;
 	}
 
-	public String getZipCode()
-	{
+	public String getZipCode() {
 		return zipCode;
 	}
 
-	public void setZipCode(String zipCode)
-	{
+	public void setZipCode(String zipCode) {
 		this.zipCode = zipCode;
 	}
 
-	public String getGender()
-	{
+	public String getGender() {
 		return gender;
 	}
 
-	public void setGender(String gender)
-	{
+	public void setGender(String gender) {
 		this.gender = gender;
 	}
 
-	public boolean isEmailOptIn()
-	{
+	public boolean isEmailOptIn() {
 		return emailOptIn;
 	}
 
-	public void setEmailOptIn(boolean emailOptIn)
-	{
+	public void setEmailOptIn(boolean emailOptIn) {
 		this.emailOptIn = emailOptIn;
 	}
 
-	public long getSyncTime()
-	{
+	public long getSyncTime() {
 		return syncTime;
 	}
 
-	public void setSyncTime(long syncTime)
-	{
+	public void setSyncTime(long syncTime) {
 		this.syncTime = syncTime;
 	}
 
-	public String getPartnerAuthToken()
-	{
+	public String getPartnerAuthToken() {
 		return partnerAuthToken;
 	}
 
-	public void setPartnerAuthToken(String partnerAuthToken)
-	{
+	public void setPartnerAuthToken(String partnerAuthToken) {
 		this.partnerAuthToken = partnerAuthToken;
 	}
 }

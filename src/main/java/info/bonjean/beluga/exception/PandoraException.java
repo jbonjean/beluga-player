@@ -26,34 +26,28 @@ import info.bonjean.beluga.request.Method;
  * @author Julien Bonjean <julien@bonjean.info>
  * 
  */
-public class PandoraException extends BelugaException
-{
+public class PandoraException extends BelugaException {
 	private static final long serialVersionUID = -3262873433055296370L;
 	private Method method;
 	private String message;
 	private long code;
 
-	public PandoraException(Method method, long code)
-	{
+	public PandoraException(Method method, long code) {
 		super(PandoraError.get(code).getMessageKey());
 		this.method = method;
 		this.code = code;
 	}
 
 	@Override
-	public String toString()
-	{
-		return "Pandora returned an error when calling " + method + ", code: " + code
-				+ ", message: " + message;
+	public String toString() {
+		return "Pandora returned an error when calling " + method + ", code: " + code + ", message: " + message;
 	}
 
-	public PandoraError getError()
-	{
+	public PandoraError getError() {
 		return PandoraError.get(code);
 	}
 
-	public Method getMethod()
-	{
+	public Method getMethod() {
 		return method;
 	}
 }

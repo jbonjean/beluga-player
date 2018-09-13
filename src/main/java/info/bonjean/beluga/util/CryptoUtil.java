@@ -36,8 +36,7 @@ import org.slf4j.LoggerFactory;
  * @author Julien Bonjean <julien@bonjean.info>
  * 
  */
-public class CryptoUtil
-{
+public class CryptoUtil {
 	private static final Logger log = LoggerFactory.getLogger(CryptoUtil.class);
 
 	private static final Map<String, Cipher> encryptCiphers = new HashMap<String, Cipher>();
@@ -46,8 +45,7 @@ public class CryptoUtil
 	private static final String ENCRYPT_KEY = "6#26FRL$ZWD";
 	private static final String DECRYPT_KEY = "R=U!LH$O2B#";
 
-	private static Cipher getCipher(String strKey, boolean encoder)
-	{
+	private static Cipher getCipher(String strKey, boolean encoder) {
 		Cipher cipher = null;
 		if (encoder)
 			cipher = encryptCiphers.get(strKey);
@@ -57,8 +55,7 @@ public class CryptoUtil
 		if (cipher != null)
 			return cipher;
 
-		try
-		{
+		try {
 			SecretKeySpec key = new SecretKeySpec(strKey.getBytes(), "Blowfish");
 			cipher = Cipher.getInstance("Blowfish/ECB/NoPadding");
 			cipher.init(encoder ? Cipher.ENCRYPT_MODE : Cipher.DECRYPT_MODE, key);
@@ -67,84 +64,65 @@ public class CryptoUtil
 				encryptCiphers.put(strKey, cipher);
 			else
 				decryptCiphers.put(strKey, cipher);
-		}
-		catch (Exception e)
-		{
+		} catch (Exception e) {
 			log.error(e.getMessage(), e);
 		}
 
 		return cipher;
 	}
 
-	public static String passwordDecrypt(String text, String strKey)
-	{
+	public static String passwordDecrypt(String text, String strKey) {
 		return new String(decryptBlowfish(Base64.decodeBase64(text.getBytes()), strKey)).trim();
 	}
 
-	public static String passwordEncrypt(String text, String strKey)
-	{
+	public static String passwordEncrypt(String text, String strKey) {
 		return new String(Base64.encodeBase64(encryptBlowfish(text, strKey)));
 	}
 
-	public static String pandoraDecrypt(String text)
-	{
-		try
-		{
-			return new String(decryptBlowfish(Hex.decodeHex(text.toCharArray()), DECRYPT_KEY))
-					.trim();
-		}
-		catch (DecoderException e)
-		{
+	public static String pandoraDecrypt(String text) {
+		try {
+			return new String(decryptBlowfish(Hex.decodeHex(text.toCharArray()), DECRYPT_KEY)).trim();
+		} catch (DecoderException e) {
 			log.error(e.getMessage(), e);
 			return null;
 		}
 	}
 
-	public static String pandoraEncrypt(String text)
-	{
+	public static String pandoraEncrypt(String text) {
 		return new String(Hex.encodeHex(encryptBlowfish(text, ENCRYPT_KEY)));
 	}
 
-	public static byte[] encryptBlowfish(String strToEncrypt, String strKey)
-	{
+	public static byte[] encryptBlowfish(String strToEncrypt, String strKey) {
 		if (strToEncrypt == null || strToEncrypt.isEmpty())
 			return new byte[] {};
 
 		byte[] toEncrypt = strToEncrypt.getBytes();
 
 		// padding with null bytes if not a multiple of 8
-		if (toEncrypt.length % 8 != 0)
-		{
+		if (toEncrypt.length % 8 != 0) {
 			byte[] padded = new byte[toEncrypt.length + 8 - (toEncrypt.length % 8)];
 			System.arraycopy(toEncrypt, 0, padded, 0, toEncrypt.length);
 			toEncrypt = padded;
 		}
 
-		try
-		{
+		try {
 			return getCipher(strKey, true).doFinal(toEncrypt);
-		}
-		catch (Exception e)
-		{
+		} catch (Exception e) {
 			// TODO: throw the exception, should be handled in higher layers
 			log.error(e.getMessage(), e);
 			return new byte[] {};
 		}
 	}
 
-	public static byte[] decryptBlowfish(byte[] strToDecrypt, String strKey)
-	{
+	public static byte[] decryptBlowfish(byte[] strToDecrypt, String strKey) {
 		if (strToDecrypt == null || strToDecrypt.length == 0)
 			return new byte[] {};
 
 		byte[] decrypt = strToDecrypt;// .getBytes();
 
-		try
-		{
+		try {
 			return getCipher(strKey, false).doFinal(decrypt);
-		}
-		catch (Exception e)
-		{
+		} catch (Exception e) {
 			// TODO: throw the exception, should be handled in higher layers
 			log.error(e.getMessage(), e);
 			return new byte[] {};

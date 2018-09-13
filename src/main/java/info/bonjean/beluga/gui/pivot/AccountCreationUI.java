@@ -38,8 +38,7 @@ import org.apache.pivot.wtk.TextInput;
  * @author Julien Bonjean <julien@bonjean.info>
  * 
  */
-public class AccountCreationUI extends TablePane implements Bindable
-{
+public class AccountCreationUI extends TablePane implements Bindable {
 	@BXML
 	protected TextInput emailAddressInput;
 	@BXML
@@ -59,13 +58,11 @@ public class AccountCreationUI extends TablePane implements Bindable
 
 	private final BelugaConfiguration configuration = BelugaConfiguration.getInstance();
 
-	public AccountCreationUI()
-	{
+	public AccountCreationUI() {
 	}
 
 	@Override
-	public void initialize(Map<String, Object> namespace, URL location, Resources resources)
-	{
+	public void initialize(Map<String, Object> namespace, URL location, Resources resources) {
 		emailAddressInput.setText(configuration.getUserName());
 		passwordInput.setText(configuration.getPassword());
 	}

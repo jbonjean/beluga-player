@@ -36,17 +36,14 @@ import javazoom.jl.decoder.SampleBuffer;
  * @author Julien Bonjean <julien@bonjean.info>
  * 
  */
-public class SimpleAudioDevice implements AudioDevice
-{
+public class SimpleAudioDevice implements AudioDevice {
 	private static final byte[] byteBuffer = new byte[SampleBuffer.OBUFFERSIZE * 2];
 	private SourceDataLine sourceDataLine;
 
-	public SimpleAudioDevice(Decoder decoder) throws InternalException
-	{
-		try
-		{
-			AudioFormat audioFormat = new AudioFormat(decoder.getOutputFrequency(), 16,
-					decoder.getOutputChannels(), true, false);
+	public SimpleAudioDevice(Decoder decoder) throws InternalException {
+		try {
+			AudioFormat audioFormat = new AudioFormat(decoder.getOutputFrequency(), 16, decoder.getOutputChannels(),
+					true, false);
 			DataLine.Info dataLineInfo = new DataLine.Info(SourceDataLine.class, audioFormat);
 			Line line = AudioSystem.getLine(dataLineInfo);
 
@@ -57,33 +54,27 @@ public class SimpleAudioDevice implements AudioDevice
 			sourceDataLine = (SourceDataLine) line;
 			sourceDataLine.open(audioFormat);
 			sourceDataLine.start();
-		}
-		catch (LineUnavailableException e)
-		{
+		} catch (LineUnavailableException e) {
 			throw new InternalException("cannotGetSourceDataLine");
 		}
 	}
 
 	@Override
-	public void close()
-	{
+	public void close() {
 		sourceDataLine.drain();
 		sourceDataLine.close();
 	}
 
 	@Override
-	public void write(SampleBuffer output)
-	{
+	public void write(SampleBuffer output) {
 		int length = output.getBufferLength();
 		sourceDataLine.write(toByteArray(output.getBuffer(), 0, length), 0, length * 2);
 	}
 
-	protected byte[] toByteArray(short[] samples, int offset, int length)
-	{
+	protected byte[] toByteArray(short[] samples, int offset, int length) {
 		int idx = 0;
 		short s;
-		while (length-- > 0)
-		{
+		while (length-- > 0) {
 			s = samples[offset++];
 			byteBuffer[idx++] = (byte) s;
 			byteBuffer[idx++] = (byte) (s >>> 8);

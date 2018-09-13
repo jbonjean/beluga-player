@@ -24,17 +24,14 @@ package info.bonjean.beluga.exception;
  * @author Julien Bonjean <julien@bonjean.info>
  * 
  */
-public class CommunicationException extends BelugaException
-{
+public class CommunicationException extends BelugaException {
 	private static final long serialVersionUID = -3347089765636221702L;
 
-	public CommunicationException(String message)
-	{
+	public CommunicationException(String message) {
 		super(message);
 	}
 
-	public CommunicationException(String message, Throwable cause)
-	{
+	public CommunicationException(String message, Throwable cause) {
 		super(message, cause);
 	}
 }

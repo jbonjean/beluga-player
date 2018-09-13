@@ -24,28 +24,23 @@ package info.bonjean.beluga.request;
  * @author Julien Bonjean <julien@bonjean.info>
  * 
  */
-public class FeedbackRequest extends AuthentifiedJsonRequest
-{
+public class FeedbackRequest extends AuthentifiedJsonRequest {
 	private boolean isPositive;
 	private String trackToken;
 
-	public boolean isPositive()
-	{
+	public boolean isPositive() {
 		return isPositive;
 	}
 
-	public void setPositive(boolean isPositive)
-	{
+	public void setPositive(boolean isPositive) {
 		this.isPositive = isPositive;
 	}
 
-	public String getTrackToken()
-	{
+	public String getTrackToken() {
 		return trackToken;
 	}
 
-	public void setTrackToken(String trackToken)
-	{
+	public void setTrackToken(String trackToken) {
 		this.trackToken = trackToken;
 	}
 }

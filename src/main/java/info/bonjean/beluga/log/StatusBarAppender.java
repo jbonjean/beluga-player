@@ -47,8 +47,7 @@ import org.apache.pivot.wtk.Label;
  * 
  */
 @Plugin(name = "StatusBar", category = "Core", elementType = "appender", printObject = true)
-public final class StatusBarAppender extends AbstractAppender
-{
+public final class StatusBarAppender extends AbstractAppender {
 	private static final long LOG_MESSAGE_DURATION = 3 * 1000;
 
 	private static Label statusBarText;
@@ -58,25 +57,20 @@ public final class StatusBarAppender extends AbstractAppender
 	private static StatusBarAppender instance;
 
 	protected StatusBarAppender(String name, Filter filter, Layout<? extends Serializable> layout,
-			boolean ignoreExceptions)
-	{
+			boolean ignoreExceptions) {
 		super(name, filter, layout, ignoreExceptions);
 		instance = this;
 	}
 
 	@PluginFactory
 	public static StatusBarAppender createAppender(@PluginAttribute("name") final String name,
-			@PluginElement("Layout") Layout<? extends Serializable> layout,
-			@PluginElement("Filter") Filter filter,
-			@PluginAttribute(value = "ignoreExceptions", defaultBoolean = true) final String ignore)
-	{
-		if (name == null)
-		{
+			@PluginElement("Layout") Layout<? extends Serializable> layout, @PluginElement("Filter") Filter filter,
+			@PluginAttribute(value = "ignoreExceptions", defaultBoolean = true) final String ignore) {
+		if (name == null) {
 			LOGGER.error("No name provided for StatusBarAppender");
 			return null;
 		}
-		if (layout == null)
-		{
+		if (layout == null) {
 			layout = PatternLayout.createDefaultLayout();
 		}
 		final boolean ignoreExceptions = Booleans.parseBoolean(ignore, true);
@@ -85,8 +79,7 @@ public final class StatusBarAppender extends AbstractAppender
 	}
 
 	@Override
-	public void append(LogEvent event)
-	{
+	public void append(LogEvent event) {
 		// stop if we didn't receive the UI information
 		if (statusBarText == null || resources == null)
 			return;
@@ -94,14 +87,11 @@ public final class StatusBarAppender extends AbstractAppender
 		display(event);
 	}
 
-	private void clearMessage()
-	{
+	private void clearMessage() {
 		// clear the status bar
-		ApplicationContext.queueCallback(new Runnable()
-		{
+		ApplicationContext.queueCallback(new Runnable() {
 			@Override
-			public void run()
-			{
+			public void run() {
 				statusBarText.setText("");
 			}
 		}, true);
@@ -109,8 +99,7 @@ public final class StatusBarAppender extends AbstractAppender
 		messageDisplayed = null;
 	}
 
-	public static void clearErrorMessage()
-	{
+	public static void clearErrorMessage() {
 		if (instance == null)
 			return;
 
@@ -121,19 +110,16 @@ public final class StatusBarAppender extends AbstractAppender
 			instance.clearMessage();
 	}
 
-	private final Runnable expirationTask = new Runnable()
-	{
+	private final Runnable expirationTask = new Runnable() {
 		@Override
-		public void run()
-		{
+		public void run() {
 			// ensure we don't clear an error message
 			if (!instance.messageDisplayed.getLevel().isMoreSpecificThan(Level.ERROR))
 				clearMessage();
 		}
 	};
 
-	private String formatMessage(LogEvent event)
-	{
+	private String formatMessage(LogEvent event) {
 		// retrieve the original message
 		String key = event.getMessage().getFormattedMessage();
 
@@ -152,18 +138,15 @@ public final class StatusBarAppender extends AbstractAppender
 		return ResourcesUtil.shorten(message, 80);
 	}
 
-	public boolean display(LogEvent event)
-	{
+	public boolean display(LogEvent event) {
 		// if no message currently displayed
-		if (messageDisplayed == null)
-		{
+		if (messageDisplayed == null) {
 			doDisplay(event);
 			return true;
 		}
 
 		// if this is at least as important as what we currently display
-		if (event.getLevel().isMoreSpecificThan(messageDisplayed.getLevel()))
-		{
+		if (event.getLevel().isMoreSpecificThan(messageDisplayed.getLevel())) {
 			doDisplay(event);
 			return true;
 		}
@@ -172,8 +155,7 @@ public final class StatusBarAppender extends AbstractAppender
 		return false;
 	}
 
-	public void doDisplay(final LogEvent event)
-	{
+	public void doDisplay(final LogEvent event) {
 		if (!event.getLevel().isMoreSpecificThan(Level.ERROR))
 			scheduleMessageExpiration();
 		else
@@ -181,14 +163,11 @@ public final class StatusBarAppender extends AbstractAppender
 
 		messageDisplayed = event;
 
-		ApplicationContext.queueCallback(new Runnable()
-		{
+		ApplicationContext.queueCallback(new Runnable() {
 			@Override
-			public void run()
-			{
+			public void run() {
 				String message = formatMessage(event);
-				if (message != null)
-				{
+				if (message != null) {
 					statusBarText.setText(message);
 					if (event.getLevel().isMoreSpecificThan(Level.ERROR))
 						statusBarText.getStyles().put("color", "#ff0000");
@@ -199,28 +178,24 @@ public final class StatusBarAppender extends AbstractAppender
 		}, false);
 	}
 
-	public void unscheduleMessageExpiration()
-	{
+	public void unscheduleMessageExpiration() {
 		if (expirationTaskFuture != null && !expirationTaskFuture.isDone())
 			expirationTaskFuture.cancel(true);
 	}
 
-	public void scheduleMessageExpiration()
-	{
+	public void scheduleMessageExpiration() {
 		unscheduleMessageExpiration();
 
 		// schedule the expiration task
-		expirationTaskFuture = ThreadPools.statusBarScheduler.schedule(expirationTask,
-				LOG_MESSAGE_DURATION, TimeUnit.MILLISECONDS);
+		expirationTaskFuture = ThreadPools.statusBarScheduler.schedule(expirationTask, LOG_MESSAGE_DURATION,
+				TimeUnit.MILLISECONDS);
 	}
 
-	public static void setLabel(Label statusBarText)
-	{
+	public static void setLabel(Label statusBarText) {
 		StatusBarAppender.statusBarText = statusBarText;
 	}
 
-	public static void setResources(Resources resources)
-	{
+	public static void setResources(Resources resources) {
 		StatusBarAppender.resources = resources;
 	}
 }

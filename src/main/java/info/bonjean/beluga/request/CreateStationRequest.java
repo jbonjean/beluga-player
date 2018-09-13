@@ -24,39 +24,32 @@ package info.bonjean.beluga.request;
  * @author Julien Bonjean <julien@bonjean.info>
  * 
  */
-public class CreateStationRequest extends AuthentifiedJsonRequest
-{
+public class CreateStationRequest extends AuthentifiedJsonRequest {
 	String musicToken;
 	String trackToken;
 	String musicType;
 
-	public String getMusicToken()
-	{
+	public String getMusicToken() {
 		return musicToken;
 	}
 
-	public void setMusicToken(String musicToken)
-	{
+	public void setMusicToken(String musicToken) {
 		this.musicToken = musicToken;
 	}
 
-	public String getTrackToken()
-	{
+	public String getTrackToken() {
 		return trackToken;
 	}
 
-	public void setTrackToken(String trackToken)
-	{
+	public void setTrackToken(String trackToken) {
 		this.trackToken = trackToken;
 	}
 
-	public String getMusicType()
-	{
+	public String getMusicType() {
 		return musicType;
 	}
 
-	public void setMusicType(String musicType)
-	{
+	public void setMusicType(String musicType) {
 		this.musicType = musicType;
 	}
 }

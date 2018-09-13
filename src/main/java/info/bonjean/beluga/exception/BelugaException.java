@@ -24,28 +24,23 @@ package info.bonjean.beluga.exception;
  * @author Julien Bonjean <julien@bonjean.info>
  * 
  */
-public abstract class BelugaException extends Exception
-{
+public abstract class BelugaException extends Exception {
 	private static final long serialVersionUID = 2501365574939142633L;
 	public static final String ACCOMPANYING_MESSAGE = "The following exception occurred";
 
-	public BelugaException()
-	{
+	public BelugaException() {
 		super();
 	}
 
-	public BelugaException(String message)
-	{
+	public BelugaException(String message) {
 		super(message);
 	}
 
-	public BelugaException(Throwable cause)
-	{
+	public BelugaException(Throwable cause) {
 		super(cause);
 	}
 
-	public BelugaException(String message, Throwable cause)
-	{
+	public BelugaException(String message, Throwable cause) {
 		super(message, cause);
 	}
 }

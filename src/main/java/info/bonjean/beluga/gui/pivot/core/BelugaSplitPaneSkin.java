@@ -31,24 +31,20 @@ import org.apache.pivot.wtk.skin.terra.TerraSplitPaneSkin;
  * Add support for ratio keep of the left side.
  *
  */
-public class BelugaSplitPaneSkin extends TerraSplitPaneSkin
-{
+public class BelugaSplitPaneSkin extends TerraSplitPaneSkin {
 	// fix for SVG (no max size)
 	private static final int DRAWING_MAX_HEIGHT = 500;
 
 	@Override
-	public void layout()
-	{
+	public void layout() {
 		SplitPane splitPane = (SplitPane) getComponent();
 		int splitPaneHeight = getHeight();
 		int splitPaneWidth = getWidth();
 		int leftWidth = splitPaneHeight;
-		if (splitPane instanceof SplitPaneExtended)
-		{
+		if (splitPane instanceof SplitPaneExtended) {
 			SplitPaneExtended splitPaneExtended = (SplitPaneExtended) splitPane;
 			ImageView imageView = splitPaneExtended.getImageView();
-			if (imageView != null && imageView.getImage() != null)
-			{
+			if (imageView != null && imageView.getImage() != null) {
 				int imageHeight = splitPaneHeight - splitPaneExtended.getPrimaryRegionReserved()
 						- 2 * splitPaneExtended.getPrimaryRegionPadding();
 				int imageMaxHeight = imageView.getImage() instanceof Drawing ? DRAWING_MAX_HEIGHT

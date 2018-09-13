@@ -24,12 +24,10 @@ package info.bonjean.beluga.exception;
  * @author Julien Bonjean <julien@bonjean.info>
  * 
  */
-public class InternalException extends BelugaException
-{
+public class InternalException extends BelugaException {
 	private static final long serialVersionUID = -2616331392230022391L;
 
-	public InternalException(String message)
-	{
+	public InternalException(String message) {
 		super(message);
 	}
 }

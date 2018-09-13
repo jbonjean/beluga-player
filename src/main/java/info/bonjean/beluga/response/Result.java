@@ -26,8 +26,7 @@ import java.util.List;
  * @author Julien Bonjean <julien@bonjean.info>
  * 
  */
-public class Result
-{
+public class Result {
 	private String partnerId;
 	private String partnerAuthToken;
 	private String syncTime;
@@ -40,113 +39,91 @@ public class Result
 	private boolean nearMatchesAvailable;
 	private String explanation;
 
-	public String getPartnerId()
-	{
+	public String getPartnerId() {
 		return partnerId;
 	}
 
-	public void setPartnerId(String partnerId)
-	{
+	public void setPartnerId(String partnerId) {
 		this.partnerId = partnerId;
 	}
 
-	public String getPartnerAuthToken()
-	{
+	public String getPartnerAuthToken() {
 		return partnerAuthToken;
 	}
 
-	public void setPartnerAuthToken(String partnerAuthToken)
-	{
+	public void setPartnerAuthToken(String partnerAuthToken) {
 		this.partnerAuthToken = partnerAuthToken;
 	}
 
-	public String getSyncTime()
-	{
+	public String getSyncTime() {
 		return syncTime;
 	}
 
-	public void setSyncTime(String syncTime)
-	{
+	public void setSyncTime(String syncTime) {
 		this.syncTime = syncTime;
 	}
 
-	public String getUserAuthToken()
-	{
+	public String getUserAuthToken() {
 		return userAuthToken;
 	}
 
-	public void setUserAuthToken(String userAuthToken)
-	{
+	public void setUserAuthToken(String userAuthToken) {
 		this.userAuthToken = userAuthToken;
 	}
 
-	public String getUserId()
-	{
+	public String getUserId() {
 		return userId;
 	}
 
-	public void setUserId(String userId)
-	{
+	public void setUserId(String userId) {
 		this.userId = userId;
 	}
 
-	public List<Station> getStations()
-	{
+	public List<Station> getStations() {
 		return stations;
 	}
 
-	public void setStations(List<Station> stations)
-	{
+	public void setStations(List<Station> stations) {
 		this.stations = stations;
 	}
 
-	public List<Song> getItems()
-	{
+	public List<Song> getItems() {
 		return items;
 	}
 
-	public void setItems(List<Song> items)
-	{
+	public void setItems(List<Song> items) {
 		this.items = items;
 	}
 
-	public List<SearchSong> getSongs()
-	{
+	public List<SearchSong> getSongs() {
 		return songs;
 	}
 
-	public void setSongs(List<SearchSong> songs)
-	{
+	public void setSongs(List<SearchSong> songs) {
 		this.songs = songs;
 	}
 
-	public List<SearchArtist> getArtists()
-	{
+	public List<SearchArtist> getArtists() {
 		return artists;
 	}
 
-	public void setArtists(List<SearchArtist> artists)
-	{
+	public void setArtists(List<SearchArtist> artists) {
 		this.artists = artists;
 	}
 
-	public boolean isNearMatchesAvailable()
-	{
+	public boolean isNearMatchesAvailable() {
 		return nearMatchesAvailable;
 	}
 
-	public void setNearMatchesAvailable(boolean nearMatchesAvailable)
-	{
+	public void setNearMatchesAvailable(boolean nearMatchesAvailable) {
 		this.nearMatchesAvailable = nearMatchesAvailable;
 	}
 
-	public String getExplanation()
-	{
+	public String getExplanation() {
 		return explanation;
 	}
 
-	public void setExplanation(String explanation)
-	{
+	public void setExplanation(String explanation) {
 		this.explanation = explanation;
 	}
 }

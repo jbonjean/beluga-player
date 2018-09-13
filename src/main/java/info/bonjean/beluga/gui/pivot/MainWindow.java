@@ -49,8 +49,7 @@ import org.slf4j.LoggerFactory;
  * @author Julien Bonjean <julien@bonjean.info>
  *
  */
-public class MainWindow extends Window implements Bindable
-{
+public class MainWindow extends Window implements Bindable {
 	private static Logger log = LoggerFactory.getLogger(MainWindow.class);
 	@BXML
 	protected TablePane.Row contentWrapper;
@@ -84,16 +83,14 @@ public class MainWindow extends Window implements Bindable
 	private static MainWindow instance;
 	private UIController uiDispatcher;
 
-	public MainWindow()
-	{
+	public MainWindow() {
 		instance = this;
 		uiDispatcher = new UIController(this);
 		uiDispatcher.registerActions();
 	}
 
 	@Override
-	public void initialize(Map<String, Object> namespace, URL location, Resources resources)
-	{
+	public void initialize(Map<String, Object> namespace, URL location, Resources resources) {
 		this.resources = resources;
 
 		// give a reference of the status bar to the logger
@@ -109,42 +106,32 @@ public class MainWindow extends Window implements Bindable
 		uiDispatcher.enableUI(true);
 	}
 
-	public void enableUI(boolean enabled)
-	{
+	public void enableUI(boolean enabled) {
 		uiDispatcher.enableUI(enabled);
 	}
 
-	public synchronized void loadPage(String bxml)
-	{
-		try
-		{
+	public synchronized void loadPage(String bxml) {
+		try {
 			BXMLSerializer bxmlSerializer = new BXMLSerializer();
-			Component content = (Component) bxmlSerializer.readObject(
-					MainWindow.class.getResource(PivotUI.BXML_PATH + bxml + ".bxml"), resources);
+			Component content = (Component) bxmlSerializer
+					.readObject(MainWindow.class.getResource(PivotUI.BXML_PATH + bxml + ".bxml"), resources);
 			contentWrapper.remove(0, contentWrapper.getLength());
 			contentWrapper.add(content);
 			state.setPage(new Page(bxml, content));
-		}
-		catch (Exception e)
-		{
+		} catch (Exception e) {
 			log.error(e.getMessage(), e);
 		}
 	}
 
-	public void reloadResources()
-	{
-		try
-		{
+	public void reloadResources() {
+		try {
 			resources = new Resources("i18n.messages");
-		}
-		catch (Exception e)
-		{
+		} catch (Exception e) {
 			log.debug(e.getMessage());
 		}
 	}
 
-	public static MainWindow getInstance()
-	{
+	public static MainWindow getInstance() {
 		return instance;
 	}
 }

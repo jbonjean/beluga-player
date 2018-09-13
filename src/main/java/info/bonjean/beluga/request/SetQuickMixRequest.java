@@ -26,17 +26,14 @@ import java.util.List;
  * @author Julien Bonjean <julien@bonjean.info>
  * 
  */
-public class SetQuickMixRequest extends AuthentifiedJsonRequest
-{
+public class SetQuickMixRequest extends AuthentifiedJsonRequest {
 	private List<String> quickMixStationIds;
 
-	public List<String> getQuickMixStationIds()
-	{
+	public List<String> getQuickMixStationIds() {
 		return quickMixStationIds;
 	}
 
-	public void setQuickMixStationIds(List<String> quickMixStationIds)
-	{
+	public void setQuickMixStationIds(List<String> quickMixStationIds) {
 		this.quickMixStationIds = quickMixStationIds;
 	}
 }

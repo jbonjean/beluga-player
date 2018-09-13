@@ -30,17 +30,14 @@ import org.apache.http.message.BasicNameValuePair;
  * @author Julien Bonjean <julien@bonjean.info>
  * 
  */
-public class ParameterMap
-{
+public class ParameterMap {
 	private List<NameValuePair> params = new LinkedList<NameValuePair>();
 
-	public List<NameValuePair> getNameValuePairList()
-	{
+	public List<NameValuePair> getNameValuePairList() {
 		return params;
 	}
 
-	public void add(String key, String value)
-	{
+	public void add(String key, String value) {
 		params.add(new BasicNameValuePair(key, value));
 	}
 }

@@ -26,8 +26,7 @@ import javazoom.jl.decoder.SampleBuffer;
  * @author Julien Bonjean <julien@bonjean.info>
  * 
  */
-public interface AudioDevice
-{
+public interface AudioDevice {
 	public void close();
 
 	public void write(SampleBuffer output);

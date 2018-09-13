@@ -49,16 +49,14 @@ import com.google.gson.reflect.TypeToken;
  * @author Julien Bonjean <julien@bonjean.info>
  * 
  */
-public class HTTPUtil
-{
+public class HTTPUtil {
 	private static final Logger log = LoggerFactory.getLogger(HTTPUtil.class);
 
 	private static final Gson gson = GsonUtil.getGsonInstance();
 	private static final String SERVICE_URL = "http://tuner.pandora.com/services/json/?";
 
-	public static <E> E request(Method method, ParameterMap params, JsonRequest jsonData,
-			boolean encrypt, TypeToken<Response<E>> typeToken) throws BelugaException
-	{
+	public static <E> E request(Method method, ParameterMap params, JsonRequest jsonData, boolean encrypt,
+			TypeToken<Response<E>> typeToken) throws BelugaException {
 		String urlStr = createRequestUrl(method, params);
 		String data = gson.toJson(jsonData);
 
@@ -72,12 +70,9 @@ public class HTTPUtil
 		log.debug("Response: " + requestResponse);
 
 		Response<E> response;
-		try
-		{
+		try {
 			response = gson.fromJson(requestResponse, typeToken.getType());
-		}
-		catch (JsonSyntaxException e)
-		{
+		} catch (JsonSyntaxException e) {
 			throw new CommunicationException("invalidPandoraResponse", e);
 		}
 
@@ -87,8 +82,7 @@ public class HTTPUtil
 		return response.getResult();
 	}
 
-	private static String createRequestUrl(Method method, ParameterMap params)
-	{
+	private static String createRequestUrl(Method method, ParameterMap params) {
 		StringBuffer url = new StringBuffer(SERVICE_URL);
 		if (params == null)
 			params = new ParameterMap();
@@ -98,44 +92,34 @@ public class HTTPUtil
 		return url.toString();
 	}
 
-	private static String jsonRequest(String urlStr, String data) throws CommunicationException
-	{
-		try
-		{
+	private static String jsonRequest(String urlStr, String data) throws CommunicationException {
+		try {
 			StringEntity json = new StringEntity(data.toString());
 			json.setContentType("application/json");
 			HttpPost post = new HttpPost(urlStr);
 			post.addHeader("Content-Type", "application/json");
 			post.setEntity(json);
 			return BelugaHTTPClient.getInstance().requestPost(post);
-		}
-		catch (Exception e)
-		{
+		} catch (Exception e) {
 			throw new CommunicationException("communicationProblem", e);
 		}
 	}
 
-	public static byte[] request(String urlStr) throws CommunicationException
-	{
-		try
-		{
+	public static byte[] request(String urlStr) throws CommunicationException {
+		try {
 			return BelugaHTTPClient.getInstance().requestGet(new HttpGet(urlStr));
-		}
-		catch (IOException e)
-		{
+		} catch (IOException e) {
 			throw new CommunicationException("communicationProblem", e);
 		}
 	}
 
-	public static Map<String, String> parseUrl(String url)
-	{
+	public static Map<String, String> parseUrl(String url) {
 		Map<String, String> parametersMap = new HashMap<String, String>();
 		String parameters = url.substring(url.indexOf("?") + 1);
 
 		StringTokenizer paramGroup = new StringTokenizer(parameters, "&");
 
-		while (paramGroup.hasMoreTokens())
-		{
+		while (paramGroup.hasMoreTokens()) {
 			StringTokenizer value = new StringTokenizer(paramGroup.nextToken(), "=");
 			parametersMap.put(value.nextToken(), value.nextToken());
 		}

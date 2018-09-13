@@ -41,8 +41,7 @@ import org.apache.pivot.wtk.TablePane;
  * @author Julien Bonjean <julien@bonjean.info>
  * 
  */
-public class QuickMixUI extends TablePane implements Bindable
-{
+public class QuickMixUI extends TablePane implements Bindable {
 	@BXML
 	protected BoxPane stationsPane;
 	@BXML
@@ -52,13 +51,11 @@ public class QuickMixUI extends TablePane implements Bindable
 	@BXML
 	protected PushButton submitButton;
 
-	public QuickMixUI()
-	{
+	public QuickMixUI() {
 	}
 
 	@Override
-	public void initialize(Map<String, Object> namespace, URL location, Resources resources)
-	{
+	public void initialize(Map<String, Object> namespace, URL location, Resources resources) {
 		// find the quickmix station, should be the first one but better be safe
 		Station quickmixStation = null;
 		for (Station station : BelugaState.getInstance().getStationList())
@@ -66,8 +63,7 @@ public class QuickMixUI extends TablePane implements Bindable
 				quickmixStation = station;
 
 		// create the checkboxes
-		for (Station station : BelugaState.getInstance().getStationList())
-		{
+		for (Station station : BelugaState.getInstance().getStationList()) {
 			if (station.isQuickMix())
 				continue;
 
@@ -79,16 +75,12 @@ public class QuickMixUI extends TablePane implements Bindable
 				checkbox.setSelected(true);
 
 			// validator, disable submit button if no station selected
-			checkbox.getButtonPressListeners().add(new ButtonPressListener()
-			{
+			checkbox.getButtonPressListeners().add(new ButtonPressListener() {
 				@Override
-				public void buttonPressed(Button button)
-				{
-					for (int i = 0; i < stationsPane.getLength(); i++)
-					{
+				public void buttonPressed(Button button) {
+					for (int i = 0; i < stationsPane.getLength(); i++) {
 						Checkbox checkbox = (Checkbox) stationsPane.get(i);
-						if (checkbox.isSelected())
-						{
+						if (checkbox.isSelected()) {
 							PivotUI.enableComponent(submitButton, true);
 							return;
 						}
@@ -100,13 +92,10 @@ public class QuickMixUI extends TablePane implements Bindable
 			stationsPane.add(checkbox);
 		}
 
-		selectAllButton.getButtonPressListeners().add(new ButtonPressListener()
-		{
+		selectAllButton.getButtonPressListeners().add(new ButtonPressListener() {
 			@Override
-			public void buttonPressed(Button button)
-			{
-				for (int i = 0; i < stationsPane.getLength(); i++)
-				{
+			public void buttonPressed(Button button) {
+				for (int i = 0; i < stationsPane.getLength(); i++) {
 					Checkbox checkbox = (Checkbox) stationsPane.get(i);
 					checkbox.setSelected(true);
 				}
@@ -114,13 +103,10 @@ public class QuickMixUI extends TablePane implements Bindable
 			}
 		});
 
-		deselectAllButton.getButtonPressListeners().add(new ButtonPressListener()
-		{
+		deselectAllButton.getButtonPressListeners().add(new ButtonPressListener() {
 			@Override
-			public void buttonPressed(Button button)
-			{
-				for (int i = 0; i < stationsPane.getLength(); i++)
-				{
+			public void buttonPressed(Button button) {
+				for (int i = 0; i < stationsPane.getLength(); i++) {
 					Checkbox checkbox = (Checkbox) stationsPane.get(i);
 					checkbox.setSelected(false);
 				}

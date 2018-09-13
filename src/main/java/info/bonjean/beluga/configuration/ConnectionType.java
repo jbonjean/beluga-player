@@ -28,39 +28,35 @@ import java.util.Map;
  * @author Julien Bonjean <julien@bonjean.info>
  *
  */
-public enum ConnectionType
-{
+public enum ConnectionType {
 	// TODO: handle i18n
-	DIRECT("direct", "No Proxy"), PROXY_DNS("proxy-dns", "Proxy DNS"), PORTALLER("portaller",
-			"Portaller"), HTTP_PROXY("http-proxy", "HTTP Proxy");
+	DIRECT("direct", "No Proxy"),
+	PROXY_DNS("proxy-dns", "Proxy DNS"),
+	PORTALLER("portaller", "Portaller"),
+	HTTP_PROXY("http-proxy", "HTTP Proxy");
 	private String id;
 	private String name;
 	private static final Map<String, ConnectionType> lookup = new HashMap<String, ConnectionType>();
 
-	static
-	{
+	static {
 		for (ConnectionType s : EnumSet.allOf(ConnectionType.class))
 			lookup.put(s.getId(), s);
 	}
 
-	public static ConnectionType get(String id)
-	{
+	public static ConnectionType get(String id) {
 		return lookup.get(id);
 	}
 
-	private ConnectionType(String id, String name)
-	{
+	private ConnectionType(String id, String name) {
 		this.id = id;
 		this.name = name;
 	}
 
-	public String getId()
-	{
+	public String getId() {
 		return id;
 	}
 
-	public String toString()
-	{
+	public String toString() {
 		return name;
 	}
 }

@@ -26,29 +26,24 @@ import info.bonjean.beluga.response.Song;
  * @author Julien Bonjean <julien@bonjean.info>
  * 
  */
-public class PlaybackEvent
-{
-	public enum Type
-	{
+public class PlaybackEvent {
+	public enum Type {
 		SONG_START, SONG_PAUSE, SONG_RESUME, SONG_FINISH, PANDORA_CONNECTED, PANDORA_DISCONNECTED;
 	}
 
 	private Song song;
 	private Type type;
 
-	public PlaybackEvent(Type type, Song song)
-	{
+	public PlaybackEvent(Type type, Song song) {
 		this.type = type;
 		this.song = song;
 	}
 
-	public Song getSong()
-	{
+	public Song getSong() {
 		return song;
 	}
 
-	public Type getType()
-	{
+	public Type getType() {
 		return type;
 	}
 }

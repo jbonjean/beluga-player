@@ -26,28 +26,23 @@ import java.util.List;
  * @author Julien Bonjean <julien@bonjean.info>
  * 
  */
-public class StationMusic
-{
+public class StationMusic {
 	private List<Song> songs;
 	private List<Song> artists;
 
-	public List<Song> getSongs()
-	{
+	public List<Song> getSongs() {
 		return songs;
 	}
 
-	public void setSongs(List<Song> songs)
-	{
+	public void setSongs(List<Song> songs) {
 		this.songs = songs;
 	}
 
-	public List<Song> getArtists()
-	{
+	public List<Song> getArtists() {
 		return artists;
 	}
 
-	public void setArtists(List<Song> artists)
-	{
+	public void setArtists(List<Song> artists) {
 		this.artists = artists;
 	}
 }

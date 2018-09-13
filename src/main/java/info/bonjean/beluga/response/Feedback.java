@@ -24,61 +24,50 @@ package info.bonjean.beluga.response;
  * @author Julien Bonjean <julien@bonjean.info>
  * 
  */
-public class Feedback
-{
+public class Feedback {
 	private String artistName;
 	private Date dateCreated;
 	private String feedbackId;
 	private boolean isPositive;
 	private String songName;
 
-	public String getArtistName()
-	{
+	public String getArtistName() {
 		return artistName;
 	}
 
-	public void setArtistName(String artistName)
-	{
+	public void setArtistName(String artistName) {
 		this.artistName = artistName;
 	}
 
-	public Date getDateCreated()
-	{
+	public Date getDateCreated() {
 		return dateCreated;
 	}
 
-	public void setDateCreated(Date dateCreated)
-	{
+	public void setDateCreated(Date dateCreated) {
 		this.dateCreated = dateCreated;
 	}
 
-	public String getFeedbackId()
-	{
+	public String getFeedbackId() {
 		return feedbackId;
 	}
 
-	public void setFeedbackId(String feedbackId)
-	{
+	public void setFeedbackId(String feedbackId) {
 		this.feedbackId = feedbackId;
 	}
 
-	public boolean isPositive()
-	{
+	public boolean isPositive() {
 		return isPositive;
 	}
 
-	public void setPositive(boolean isPositive)
-	{
+	public void setPositive(boolean isPositive) {
 		this.isPositive = isPositive;
 	}
 
-	public String getSongName()
-	{
+	public String getSongName() {
 		return songName;
 	}
 
-	public void setSongName(String songName)
-	{
+	public void setSongName(String songName) {
 		this.songName = songName;
 	}
 }

@@ -24,28 +24,23 @@ package info.bonjean.beluga.request;
  * @author Julien Bonjean <julien@bonjean.info>
  * 
  */
-public abstract class AuthentifiedJsonRequest extends JsonRequest
-{
+public abstract class AuthentifiedJsonRequest extends JsonRequest {
 	private String userAuthToken;
 	private long syncTime;
 
-	public String getUserAuthToken()
-	{
+	public String getUserAuthToken() {
 		return userAuthToken;
 	}
 
-	public void setUserAuthToken(String userAuthToken)
-	{
+	public void setUserAuthToken(String userAuthToken) {
 		this.userAuthToken = userAuthToken;
 	}
 
-	public long getSyncTime()
-	{
+	public long getSyncTime() {
 		return syncTime;
 	}
 
-	public void setSyncTime(long syncTime)
-	{
+	public void setSyncTime(long syncTime) {
 		this.syncTime = syncTime;
 	}
 }

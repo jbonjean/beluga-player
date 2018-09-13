@@ -28,8 +28,7 @@ import java.util.Map;
  * @author Julien Bonjean <julien@bonjean.info>
  * 
  */
-public class Song
-{
+public class Song {
 	private String trackToken;
 	private String artistName;
 	private String albumName;
@@ -54,225 +53,183 @@ public class Song
 	private long duration;
 	private long position;
 
-	public String getTrackToken()
-	{
+	public String getTrackToken() {
 		return trackToken;
 	}
 
-	public Map<String, Audio> getAudioUrlMap()
-	{
+	public Map<String, Audio> getAudioUrlMap() {
 		return audioUrlMap;
 	}
 
-	public void setAudioUrlMap(Map<String, Audio> audioUrlMap)
-	{
+	public void setAudioUrlMap(Map<String, Audio> audioUrlMap) {
 		this.audioUrlMap = audioUrlMap;
 	}
 
-	public void setTrackToken(String trackToken)
-	{
+	public void setTrackToken(String trackToken) {
 		this.trackToken = trackToken;
 	}
 
-	public String getArtistName()
-	{
+	public String getArtistName() {
 		if (ad)
 			return "Pandora";
 
 		return artistName;
 	}
 
-	public void setArtistName(String artistName)
-	{
+	public void setArtistName(String artistName) {
 		this.artistName = artistName;
 	}
 
-	public String getAlbumName()
-	{
+	public String getAlbumName() {
 		if (ad)
 			return "";
 
 		return albumName;
 	}
 
-	public void setAlbumName(String albumName)
-	{
+	public void setAlbumName(String albumName) {
 		this.albumName = albumName;
 	}
 
-	public String getAmazonAlbumUrl()
-	{
+	public String getAmazonAlbumUrl() {
 		return amazonAlbumUrl;
 	}
 
-	public void setAmazonAlbumUrl(String amazonAlbumUrl)
-	{
+	public void setAmazonAlbumUrl(String amazonAlbumUrl) {
 		this.amazonAlbumUrl = amazonAlbumUrl;
 	}
 
-	public String getSongExplorerUrl()
-	{
+	public String getSongExplorerUrl() {
 		return songExplorerUrl;
 	}
 
-	public void setSongExplorerUrl(String songExplorerUrl)
-	{
+	public void setSongExplorerUrl(String songExplorerUrl) {
 		this.songExplorerUrl = songExplorerUrl;
 	}
 
-	public String getAlbumArtUrl()
-	{
+	public String getAlbumArtUrl() {
 		if (ad)
 			return "";
 		return albumArtUrl;
 	}
 
-	public void setAlbumArtUrl(String albumArtUrl)
-	{
+	public void setAlbumArtUrl(String albumArtUrl) {
 		this.albumArtUrl = albumArtUrl;
 	}
 
-	public String getArtistDetailUrl()
-	{
+	public String getArtistDetailUrl() {
 		return artistDetailUrl;
 	}
 
-	public void setArtistDetailUrl(String artistDetailUrl)
-	{
+	public void setArtistDetailUrl(String artistDetailUrl) {
 		this.artistDetailUrl = artistDetailUrl;
 	}
 
-	public String getAdToken()
-	{
+	public String getAdToken() {
 		return adToken;
 	}
 
-	public void setAdToken(String adToken)
-	{
+	public void setAdToken(String adToken) {
 		this.adToken = adToken;
 	}
 
-	public String getSongName()
-	{
+	public String getSongName() {
 		if (ad)
 			return "Commercial advertisement";
 		return songName;
 	}
 
-	public void setSongName(String songName)
-	{
+	public void setSongName(String songName) {
 		this.songName = songName;
 	}
 
-	public int getSongRating()
-	{
+	public int getSongRating() {
 		return songRating;
 	}
 
-	public void setSongRating(int songRating)
-	{
+	public void setSongRating(int songRating) {
 		this.songRating = songRating;
 	}
 
-	public String getStationId()
-	{
+	public String getStationId() {
 		return stationId;
 	}
 
-	public void setStationId(String stationId)
-	{
+	public void setStationId(String stationId) {
 		this.stationId = stationId;
 	}
 
-	public String getTrackGain()
-	{
+	public String getTrackGain() {
 		return trackGain;
 	}
 
-	public void setTrackGain(String trackGain)
-	{
+	public void setTrackGain(String trackGain) {
 		this.trackGain = trackGain;
 	}
 
-	public boolean isSongBookmarked()
-	{
+	public boolean isSongBookmarked() {
 		return songBookmarked;
 	}
 
-	public void setSongBookmarked(boolean songBookmarked)
-	{
+	public void setSongBookmarked(boolean songBookmarked) {
 		this.songBookmarked = songBookmarked;
 	}
 
-	public boolean isArtistBookmarked()
-	{
+	public boolean isArtistBookmarked() {
 		return artistBookmarked;
 	}
 
-	public void setArtistBookmarked(boolean artistBookmarked)
-	{
+	public void setArtistBookmarked(boolean artistBookmarked) {
 		this.artistBookmarked = artistBookmarked;
 	}
 
-	public String getAlbumArtBase64()
-	{
+	public String getAlbumArtBase64() {
 		return albumArtBase64;
 	}
 
-	public void setAlbumArtBase64(String albumArtBase64)
-	{
+	public void setAlbumArtBase64(String albumArtBase64) {
 		this.albumArtBase64 = albumArtBase64;
 	}
 
-	public List<String> getFocusTraits()
-	{
+	public List<String> getFocusTraits() {
 		if (ad)
 			return new ArrayList<String>();
 		return focusTraits;
 	}
 
-	public void setFocusTraits(List<String> focusTraits)
-	{
+	public void setFocusTraits(List<String> focusTraits) {
 		this.focusTraits = focusTraits;
 	}
 
-	public String getAdditionalAudioUrl()
-	{
+	public String getAdditionalAudioUrl() {
 		return additionalAudioUrl;
 	}
 
-	public void setAdditionalAudioUrl(String additionalAudioUrl)
-	{
+	public void setAdditionalAudioUrl(String additionalAudioUrl) {
 		this.additionalAudioUrl = additionalAudioUrl;
 	}
 
-	public boolean isAd()
-	{
+	public boolean isAd() {
 		return ad;
 	}
 
-	public void setAd(boolean ad)
-	{
+	public void setAd(boolean ad) {
 		this.ad = ad;
 	}
 
-	public long getDuration()
-	{
+	public long getDuration() {
 		return duration;
 	}
 
-	public void setDuration(long duration)
-	{
+	public void setDuration(long duration) {
 		this.duration = duration;
 	}
 
-	public long getPosition()
-	{
+	public long getPosition() {
 		return position;
 	}
 
-	public void setPosition(long position)
-	{
+	public void setPosition(long position) {
 		this.position = position;
 	}
 }

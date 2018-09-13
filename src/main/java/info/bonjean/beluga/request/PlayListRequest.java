@@ -24,28 +24,23 @@ package info.bonjean.beluga.request;
  * @author Julien Bonjean <julien@bonjean.info>
  * 
  */
-public class PlayListRequest extends AuthentifiedJsonRequest
-{
+public class PlayListRequest extends AuthentifiedJsonRequest {
 	private String stationToken;
 	private String additionalAudioUrl;
 
-	public String getStationToken()
-	{
+	public String getStationToken() {
 		return stationToken;
 	}
 
-	public void setStationToken(String stationToken)
-	{
+	public void setStationToken(String stationToken) {
 		this.stationToken = stationToken;
 	}
 
-	public String getAdditionalAudioUrl()
-	{
+	public String getAdditionalAudioUrl() {
 		return additionalAudioUrl;
 	}
 
-	public void setAdditionalAudioUrl(String additionalAudioUrl)
-	{
+	public void setAdditionalAudioUrl(String additionalAudioUrl) {
 		this.additionalAudioUrl = additionalAudioUrl;
 	}
 }

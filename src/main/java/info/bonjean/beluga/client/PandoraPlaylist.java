@@ -32,8 +32,7 @@ import org.slf4j.LoggerFactory;
  * @author Julien Bonjean <julien@bonjean.info>
  * 
  */
-public class PandoraPlaylist
-{
+public class PandoraPlaylist {
 	private static final Logger log = LoggerFactory.getLogger(PandoraPlaylist.class);
 	private final BelugaState state = BelugaState.getInstance();
 	private final PandoraClient pandoraClient = PandoraClient.getInstance();
@@ -41,19 +40,16 @@ public class PandoraPlaylist
 	private static PandoraPlaylist instance;
 	private LinkedList<Song> queue = new LinkedList<Song>();
 
-	private PandoraPlaylist()
-	{
+	private PandoraPlaylist() {
 	}
 
-	public static PandoraPlaylist getInstance()
-	{
+	public static PandoraPlaylist getInstance() {
 		if (instance == null)
 			instance = new PandoraPlaylist();
 		return instance;
 	}
 
-	public Song getNext() throws BelugaException
-	{
+	public Song getNext() throws BelugaException {
 		// queue empty, feed with pandora data
 		if (queue.isEmpty())
 			feedQueue();
@@ -70,8 +66,7 @@ public class PandoraPlaylist
 		return song;
 	}
 
-	public synchronized void feedQueue() throws BelugaException
-	{
+	public synchronized void feedQueue() throws BelugaException {
 		// check if Pandora client is ready
 		if (!pandoraClient.isLoggedIn() || state.getStation() == null)
 			return;
@@ -91,8 +86,7 @@ public class PandoraPlaylist
 		queue.addAll(playlist);
 	}
 
-	public void clear()
-	{
+	public void clear() {
 		log.debug("Invalidating playlist");
 		queue.clear();
 	}

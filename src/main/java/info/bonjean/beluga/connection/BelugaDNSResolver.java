@@ -46,8 +46,7 @@ import org.xbill.DNS.Type;
  * Custom DNS resolver
  *
  */
-public class BelugaDNSResolver implements DnsResolver
-{
+public class BelugaDNSResolver implements DnsResolver {
 	private static final Logger log = LoggerFactory.getLogger(BelugaDNSResolver.class);
 	private static final int MAX_RETRIES = 1;
 	private static final int TIMEOUT_SECONDS = 2;
@@ -55,20 +54,16 @@ public class BelugaDNSResolver implements DnsResolver
 	private final List<String> backlistedAddresses = new ArrayList<String>();
 	private final DNSProxy dnsProxy;
 
-	public BelugaDNSResolver(DNSProxy dnsProxy)
-	{
+	public BelugaDNSResolver(DNSProxy dnsProxy) {
 		this.dnsProxy = dnsProxy;
 		if ("debug".equals(System.getProperty("log.level")))
 			Options.set("verbose", "true");
-		try
-		{
-			resolver = new ExtendedResolver(new String[] { dnsProxy.getPrimaryServer(),
-					dnsProxy.getSecondaryServer() });
+		try {
+			resolver = new ExtendedResolver(
+					new String[] { dnsProxy.getPrimaryServer(), dnsProxy.getSecondaryServer() });
 			resolver.setTimeout(TIMEOUT_SECONDS);
 			resolver.setRetries(MAX_RETRIES);
-		}
-		catch (UnknownHostException e)
-		{
+		} catch (UnknownHostException e) {
 			// XXX
 			// throw new InternalException(e);
 		}
@@ -77,10 +72,8 @@ public class BelugaDNSResolver implements DnsResolver
 	}
 
 	@Override
-	public InetAddress[] resolve(String host) throws UnknownHostException
-	{
-		try
-		{
+	public InetAddress[] resolve(String host) throws UnknownHostException {
+		try {
 			Lookup dnsProxyLookup = new Lookup(host, Type.A);
 			dnsProxyLookup.setResolver(resolver);
 
@@ -88,12 +81,9 @@ public class BelugaDNSResolver implements DnsResolver
 
 			Record[] records = dnsProxyLookup.run();
 
-			if (records != null)
-			{
-				for (Record record : records)
-				{
-					if (record instanceof ARecord)
-					{
+			if (records != null) {
+				for (Record record : records) {
+					if (record instanceof ARecord) {
 						InetAddress address = ((ARecord) record).getAddress();
 						if (!backlistedAddresses.contains(address.getHostAddress()))
 							addresses.add(address);
@@ -106,15 +96,12 @@ public class BelugaDNSResolver implements DnsResolver
 			log.debug("Resolved Pandora address using " + dnsProxy.getName());
 
 			return addresses.toArray(new InetAddress[addresses.size()]);
-		}
-		catch (TextParseException e)
-		{
+		} catch (TextParseException e) {
 			throw new UnknownHostException("dns.proxy.error");
 		}
 	}
 
-	public void blacklistAddress(InetAddress address)
-	{
+	public void blacklistAddress(InetAddress address) {
 		String strAddress = address.getHostAddress();
 		log.debug("Add " + strAddress + " to blacklist");
 		backlistedAddresses.add(strAddress);

@@ -28,57 +28,48 @@ import java.util.Map;
  * @author Julien Bonjean <julien@bonjean.info>
  *
  */
-public enum DNSProxy
-{
-	PROXY_DNS("proxy-dns", "Proxy DNS", "74.207.242.213", "50.116.28.138"), PORTALLER("portaller",
-			"Portaller", "107.170.15.247", "77.88.8.8");
+public enum DNSProxy {
+	PROXY_DNS("proxy-dns", "Proxy DNS", "74.207.242.213", "50.116.28.138"),
+	PORTALLER("portaller", "Portaller", "107.170.15.247", "77.88.8.8");
 	private final String id;
 	private final String name;
 	private final String primaryServer;
 	private final String secondaryServer;
 	private static final Map<String, DNSProxy> lookup = new HashMap<String, DNSProxy>();
 
-	static
-	{
+	static {
 		for (DNSProxy s : EnumSet.allOf(DNSProxy.class))
 			lookup.put(s.getId(), s);
 	}
 
-	public static DNSProxy get(String id)
-	{
+	public static DNSProxy get(String id) {
 		return lookup.get(id);
 	}
 
-	private DNSProxy(String id, String name, String primaryServer, String secondaryServer)
-	{
+	private DNSProxy(String id, String name, String primaryServer, String secondaryServer) {
 		this.id = id;
 		this.name = name;
 		this.primaryServer = primaryServer;
 		this.secondaryServer = secondaryServer;
 	}
 
-	public String getId()
-	{
+	public String getId() {
 		return id;
 	}
 
-	public String getName()
-	{
+	public String getName() {
 		return name;
 	}
 
-	public String getPrimaryServer()
-	{
+	public String getPrimaryServer() {
 		return primaryServer;
 	}
 
-	public String getSecondaryServer()
-	{
+	public String getSecondaryServer() {
 		return secondaryServer;
 	}
 
-	public String toString()
-	{
+	public String toString() {
 		return name;
 	}
 }

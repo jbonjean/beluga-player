@@ -34,8 +34,7 @@ import java.util.Set;
  * @author Julien Bonjean <julien@bonjean.info>
  * 
  */
-public class BelugaState
-{
+public class BelugaState {
 	private static BelugaState instance;
 
 	private List<Station> stationList = new ArrayList<Station>();
@@ -50,108 +49,88 @@ public class BelugaState
 
 	Set<String> errors = new HashSet<String>();
 
-	private BelugaState()
-	{
+	private BelugaState() {
 	}
 
-	public static BelugaState getInstance()
-	{
+	public static BelugaState getInstance() {
 		if (instance == null)
 			instance = new BelugaState();
 
 		return instance;
 	}
 
-	public List<Station> getStationList()
-	{
+	public List<Station> getStationList() {
 		return stationList;
 	}
 
-	public void setStationList(List<Station> stationList)
-	{
+	public void setStationList(List<Station> stationList) {
 		this.stationList = stationList;
 	}
 
-	public Station getStation()
-	{
+	public Station getStation() {
 		return station;
 	}
 
-	public void setStation(Station station)
-	{
+	public void setStation(Station station) {
 		this.station = station;
 	}
 
-	public List<Song> getPlaylist()
-	{
+	public List<Song> getPlaylist() {
 		return playlist;
 	}
 
-	public void setPlaylist(List<Song> playlist)
-	{
+	public void setPlaylist(List<Song> playlist) {
 		this.playlist = playlist;
 	}
 
-	public Song getSong()
-	{
+	public Song getSong() {
 		return song;
 	}
 
-	public void setSong(Song song)
-	{
+	public void setSong(Song song) {
 		this.song = song;
 	}
 
-	public Set<String> getErrors()
-	{
+	public Set<String> getErrors() {
 		return errors;
 	}
 
-	public void clearErrors()
-	{
+	public void clearErrors() {
 		errors.clear();
 	}
 
-	public void addError(String key)
-	{
+	public void addError(String key) {
 		errors.add(key);
 	}
 
-	public void reset()
-	{
+	public void reset() {
 		stationList = new ArrayList<Station>();
 		station = null;
 		playlist = null;
 		song = null;
 	}
 
-	public Bookmarks getBookmarks()
-	{
+	public Bookmarks getBookmarks() {
 		return bookmarks;
 	}
 
-	public void setBookmarks(Bookmarks bookmarks)
-	{
+	public void setBookmarks(Bookmarks bookmarks) {
 		this.bookmarks = bookmarks;
 	}
 
-	public String getVersion()
-	{
+	public String getVersion() {
 		return version;
 	}
 
-	public void setVersion(String version)
-	{
+	public void setVersion(String version) {
 		this.version = version;
 	}
 
-	public Page getPage()
-	{
+	public Page getPage() {
 		return page;
 	}
 
-	public void setPage(Page page)
-	{
+	public void setPage(Page page) {
 		this.page = page;
 	}
 }

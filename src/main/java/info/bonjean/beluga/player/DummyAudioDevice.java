@@ -31,27 +31,22 @@ import javazoom.jl.decoder.SampleBuffer;
  * @author Julien Bonjean <julien@bonjean.info>
  * 
  */
-public class DummyAudioDevice implements AudioDevice
-{
+public class DummyAudioDevice implements AudioDevice {
 	private static final int TIME_SLEEP_OFFSET = 500;
 	private AudioFormat audioFormat;
 	private int timeBuffer;
 
-	public DummyAudioDevice(Decoder decoder) throws InternalException
-	{
-		audioFormat = new AudioFormat(decoder.getOutputFrequency(), 16,
-				decoder.getOutputChannels(), true, false);
+	public DummyAudioDevice(Decoder decoder) throws InternalException {
+		audioFormat = new AudioFormat(decoder.getOutputFrequency(), 16, decoder.getOutputChannels(), true, false);
 		timeBuffer = 0;
 	}
 
 	@Override
-	public void close()
-	{
+	public void close() {
 	}
 
 	@Override
-	public void write(SampleBuffer output)
-	{
+	public void write(SampleBuffer output) {
 		int length = output.getBufferLength() * 2;
 		if (length % audioFormat.getFrameSize() != 0)
 			throw new IllegalArgumentException(
@@ -65,15 +60,10 @@ public class DummyAudioDevice implements AudioDevice
 		if (timeBuffer < TIME_SLEEP_OFFSET)
 			return;
 
-		try
-		{
+		try {
 			Thread.sleep(timeBuffer);
-		}
-		catch (InterruptedException e)
-		{
-		}
-		finally
-		{
+		} catch (InterruptedException e) {
+		} finally {
 			timeBuffer = 0;
 		}
 	}

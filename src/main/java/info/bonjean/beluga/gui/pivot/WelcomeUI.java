@@ -43,8 +43,7 @@ import org.slf4j.LoggerFactory;
  * @author Julien Bonjean <julien@bonjean.info>
  *
  */
-public class WelcomeUI extends TablePane implements Bindable
-{
+public class WelcomeUI extends TablePane implements Bindable {
 	private static Logger log = LoggerFactory.getLogger(WelcomeUI.class);
 	@BXML
 	private Label belugaVersion;
@@ -58,38 +57,28 @@ public class WelcomeUI extends TablePane implements Bindable
 	private final BelugaState state = BelugaState.getInstance();
 
 	@Override
-	public void initialize(Map<String, Object> namespace, URL location, Resources resources)
-	{
+	public void initialize(Map<String, Object> namespace, URL location, Resources resources) {
 		belugaVersion.setText("Beluga Player " + state.getVersion());
 
 		if ("Linux".equals(System.getProperty("os.name"))
-				&& "Java(TM) SE Runtime Environment"
-						.equals(System.getProperty("java.runtime.name")))
+				&& "Java(TM) SE Runtime Environment".equals(System.getProperty("java.runtime.name")))
 			javaVersionWarningPane.setVisible(true);
 
-		new Thread()
-		{
+		new Thread() {
 			@Override
-			public void run()
-			{
-				try(InputStream in = new URL("http://jbonjean.github.io/beluga-player/VERSION").openStream())
-				{
-					if (StringUtil.compareVersions(state.getVersion(), IOUtils.toString(in, StandardCharsets.UTF_8)) < 0)
-					{
-						ApplicationContext.queueCallback(new Runnable()
-						{
+			public void run() {
+				try (InputStream in = new URL("http://jbonjean.github.io/beluga-player/VERSION").openStream()) {
+					if (StringUtil.compareVersions(state.getVersion(),
+							IOUtils.toString(in, StandardCharsets.UTF_8)) < 0) {
+						ApplicationContext.queueCallback(new Runnable() {
 							@Override
-							public void run()
-							{
+							public void run() {
 								newVersionPane.setVisible(true);
 							}
 						}, true);
-					}
-					else
+					} else
 						log.debug("No new version available");
-				}
-				catch (Exception e)
-				{
+				} catch (Exception e) {
 					log.debug("error while checking for new version", e);
 				}
 			}

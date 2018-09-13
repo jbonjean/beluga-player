@@ -24,17 +24,14 @@ package info.bonjean.beluga.request;
  * @author Julien Bonjean <julien@bonjean.info>
  * 
  */
-public class SearchRequest extends AuthentifiedJsonRequest
-{
+public class SearchRequest extends AuthentifiedJsonRequest {
 	private String searchText;
 
-	public String getSearchText()
-	{
+	public String getSearchText() {
 		return searchText;
 	}
 
-	public void setSearchText(String searchText)
-	{
+	public void setSearchText(String searchText) {
 		this.searchText = searchText;
 	}
 }

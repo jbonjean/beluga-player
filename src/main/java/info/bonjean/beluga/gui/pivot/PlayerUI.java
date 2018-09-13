@@ -50,8 +50,7 @@ import org.slf4j.LoggerFactory;
  * @author Julien Bonjean <julien@bonjean.info>
  * 
  */
-public class PlayerUI extends TablePane implements Bindable
-{
+public class PlayerUI extends TablePane implements Bindable {
 	private static Logger log = LoggerFactory.getLogger(PlayerUI.class);
 	@BXML
 	private MainWindow mainWindow;
@@ -80,25 +79,19 @@ public class PlayerUI extends TablePane implements Bindable
 	private volatile boolean closed;
 
 	@Override
-	public void initialize(Map<String, Object> namespace, URL location, Resources resources)
-	{
+	public void initialize(Map<String, Object> namespace, URL location, Resources resources) {
 		currentTime.setText("00:00");
 		totalTime.setText("00:00");
 		progress.setPercentage(0);
 		progressCache.setPercentage(0);
 	}
 
-	private String formatTime(long ms)
-	{
-		return String.format(
-				"%02d:%02d",
-				TimeUnit.MILLISECONDS.toMinutes(ms),
-				TimeUnit.MILLISECONDS.toSeconds(ms)
-						- TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(ms)));
+	private String formatTime(long ms) {
+		return String.format("%02d:%02d", TimeUnit.MILLISECONDS.toMinutes(ms),
+				TimeUnit.MILLISECONDS.toSeconds(ms) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(ms)));
 	}
 
-	public void open()
-	{
+	public void open() {
 		closed = false;
 
 		// ensure the thread is running
@@ -108,26 +101,20 @@ public class PlayerUI extends TablePane implements Bindable
 		// playback will start automatically
 	}
 
-	public void playPause()
-	{
+	public void playPause() {
 		mp3Player.pause();
 
-		InternalBus.publish(new PlaybackEvent(mp3Player.isPaused() ? PlaybackEvent.Type.SONG_PAUSE
-				: PlaybackEvent.Type.SONG_RESUME, null));
+		InternalBus.publish(new PlaybackEvent(
+				mp3Player.isPaused() ? PlaybackEvent.Type.SONG_PAUSE : PlaybackEvent.Type.SONG_RESUME, null));
 
 		// replace play/pause button
-		ApplicationContext.queueCallback(new Runnable()
-		{
+		ApplicationContext.queueCallback(new Runnable() {
 			@Override
-			public void run()
-			{
-				try
-				{
-					pauseButton.setButtonData(ResourcesUtil.getSVGImage(mp3Player.isPaused() ? "/img/play.svg"
-							: "/img/pause.svg"));
-				}
-				catch (IOException e)
-				{
+			public void run() {
+				try {
+					pauseButton.setButtonData(
+							ResourcesUtil.getSVGImage(mp3Player.isPaused() ? "/img/play.svg" : "/img/pause.svg"));
+				} catch (IOException e) {
 					log.debug(e.getMessage());
 				}
 			}
@@ -135,14 +122,12 @@ public class PlayerUI extends TablePane implements Bindable
 
 	}
 
-	public void skip()
-	{
+	public void skip() {
 		// stop the player to skip the song
 		mp3Player.stop();
 	}
 
-	public void close()
-	{
+	public void close() {
 		if (playbackThreadFuture == null || playbackThreadFuture.isDone() || closed)
 			return;
 
@@ -152,33 +137,26 @@ public class PlayerUI extends TablePane implements Bindable
 		mp3Player.stop();
 
 		// stop the playback thread
-		try
-		{
+		try {
 			if (playbackThreadFuture != null)
 				playbackThreadFuture.get(5, TimeUnit.SECONDS);
-		}
-		catch (Exception e)
-		{
+		} catch (Exception e) {
 			log.error(e.getMessage(), e);
 			playbackThreadFuture.cancel(true);
 		}
 	}
 
-	public boolean isPaused()
-	{
+	public boolean isPaused() {
 		return mp3Player.isPaused();
 	}
 
-	public boolean isClosed()
-	{
+	public boolean isClosed() {
 		return closed;
 	}
 
-	private Runnable syncUI = new Runnable()
-	{
+	private Runnable syncUI = new Runnable() {
 		@Override
-		public void run()
-		{
+		public void run() {
 			if (!mp3Player.isActive())
 				return;
 
@@ -189,11 +167,9 @@ public class PlayerUI extends TablePane implements Bindable
 			// update song position (playback can stop anytime)
 			state.getSong().setPosition(position);
 
-			ApplicationContext.queueCallback(new Runnable()
-			{
+			ApplicationContext.queueCallback(new Runnable() {
 				@Override
-				public void run()
-				{
+				public void run() {
 					// update progress bar
 					currentTime.setText(formatTime(position));
 					progress.setPercentage(progressValue);
@@ -203,36 +179,31 @@ public class PlayerUI extends TablePane implements Bindable
 		}
 	};
 
-	private class Playback implements Runnable
-	{
+	private class Playback implements Runnable {
 		@Override
-		public void run()
-		{
+		public void run() {
 			// init failure counter
 			int successiveFailures = 0;
 
 			// start the UI synchronization thread
-			playerUISyncFuture = ThreadPools.playerUIScheduler.scheduleAtFixedRate(syncUI, 0,
-					UI_REFRESH_INTERVAL, TimeUnit.MILLISECONDS);
+			playerUISyncFuture = ThreadPools.playerUIScheduler.scheduleAtFixedRate(syncUI, 0, UI_REFRESH_INTERVAL,
+					TimeUnit.MILLISECONDS);
 
 			Song song;
-			while (true)
-			{
+			while (true) {
 				song = null;
 
 				if (closed)
 					break;
 
-				try
-				{
+				try {
 					if (successiveFailures == 0 || state.getSong() == null)
 						song = PandoraPlaylist.getInstance().getNext();
 					else
 						// do not skip to next song if we failed before
 						song = state.getSong();
 
-					if (song == null)
-					{
+					if (song == null) {
 						Thread.sleep(500);
 						continue;
 					}
@@ -240,23 +211,17 @@ public class PlayerUI extends TablePane implements Bindable
 					log.debug("New song: " + song.getAdditionalAudioUrl());
 
 					// initialize the player
-					try
-					{
+					try {
 						log.info("openingAudioStream");
 						mp3Player.loadSong(song.getAdditionalAudioUrl());
 						successiveFailures = 0;
-					}
-					catch (Exception e)
-					{
+					} catch (Exception e) {
 						successiveFailures++;
 
-						if (successiveFailures >= 3)
-						{
+						if (successiveFailures >= 3) {
 							log.error(e.getMessage(), e);
 							break;
-						}
-						else
-						{
+						} else {
 							log.info(e.getMessage(), e);
 							Thread.sleep(2000);
 						}
@@ -268,16 +233,14 @@ public class PlayerUI extends TablePane implements Bindable
 
 					// is there a better way to detect the Pandora skip
 					// protection (42sec length mp3)?
-					if (duration == 42569 && mp3Player.getBitrate() == 64000)
-					{
+					if (duration == 42569 && mp3Player.getBitrate() == 64000) {
 						log.error("pandoraSkipProtection");
 						break;
 					}
 
 					// guess if it's an ad (not very reliable)
 					if (configuration.getAdsDetectionEnabled() && mp3Player.getBitrate() == 128000
-							&& duration < 45000)
-					{
+							&& duration < 45000) {
 						log.debug("Ad detected");
 
 						// set the ad flag on the song, for the display and to
@@ -289,11 +252,9 @@ public class PlayerUI extends TablePane implements Bindable
 					InternalBus.publish(new PlaybackEvent(PlaybackEvent.Type.SONG_START, song));
 
 					// initialize controls
-					ApplicationContext.queueCallback(new Runnable()
-					{
+					ApplicationContext.queueCallback(new Runnable() {
 						@Override
-						public void run()
-						{
+						public void run() {
 							// update song duration
 							totalTime.setText(formatTime(duration));
 
@@ -312,11 +273,9 @@ public class PlayerUI extends TablePane implements Bindable
 					Thread.currentThread().setPriority(Thread.NORM_PRIORITY);
 
 					// disable controls
-					ApplicationContext.queueCallback(new Runnable()
-					{
+					ApplicationContext.queueCallback(new Runnable() {
 						@Override
-						public void run()
-						{
+						public void run() {
 							// set progress bar to full
 							currentTime.setText(formatTime(duration));
 							progress.setPercentage(1);
@@ -324,18 +283,13 @@ public class PlayerUI extends TablePane implements Bindable
 					}, false);
 
 					log.debug("Playback finished");
-				}
-				catch (Exception e)
-				{
+				} catch (Exception e) {
 					log.error(e.getMessage(), e);
 					break;
-				}
-				finally
-				{
+				} finally {
 					if (song != null && song.getDuration() > 0)
 						// notify song finished
-						InternalBus
-								.publish(new PlaybackEvent(PlaybackEvent.Type.SONG_FINISH, song));
+						InternalBus.publish(new PlaybackEvent(PlaybackEvent.Type.SONG_FINISH, song));
 				}
 			}
 
@@ -343,8 +297,7 @@ public class PlayerUI extends TablePane implements Bindable
 
 			// if closed has not been requested, we are disconnected
 			if (!closed)
-				InternalBus
-						.publish(new PlaybackEvent(PlaybackEvent.Type.PANDORA_DISCONNECTED, null));
+				InternalBus.publish(new PlaybackEvent(PlaybackEvent.Type.PANDORA_DISCONNECTED, null));
 
 			closed = true;
 

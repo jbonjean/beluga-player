@@ -25,8 +25,7 @@ package info.bonjean.beluga.request;
  * 
  */
 @SuppressWarnings("unused")
-public class PartnerAuthRequest extends JsonRequest
-{
+public class PartnerAuthRequest extends JsonRequest {
 	private String username = "android";
 	private String password = "AC7IBG09A3DTSYM4R41UJWL07VLN8JI7";
 	private String version = "5";

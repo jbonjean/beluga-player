@@ -35,16 +35,14 @@ import org.apache.pivot.wtk.TablePane;
  * @author Julien Bonjean <julien@bonjean.info>
  * 
  */
-public class AboutUI extends TablePane implements Bindable
-{
+public class AboutUI extends TablePane implements Bindable {
 	@BXML
 	private Label belugaVersion;
 
 	private final BelugaState state = BelugaState.getInstance();
 
 	@Override
-	public void initialize(Map<String, Object> namespace, URL location, Resources resources)
-	{
+	public void initialize(Map<String, Object> namespace, URL location, Resources resources) {
 		belugaVersion.setText("Beluga Player " + state.getVersion());
 	}
 }

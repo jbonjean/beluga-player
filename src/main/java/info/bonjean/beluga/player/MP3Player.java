@@ -44,8 +44,7 @@ import org.slf4j.LoggerFactory;
  * @author Julien Bonjean <julien@bonjean.info>
  *
  */
-public class MP3Player
-{
+public class MP3Player {
 	private static final Logger log = LoggerFactory.getLogger(MP3Player.class);
 
 	private Bitstream bitstream;
@@ -58,13 +57,11 @@ public class MP3Player
 	private int bitrate;
 	private HttpGet streamRequest;
 
-	public MP3Player()
-	{
+	public MP3Player() {
 	}
 
-	public void loadSong(String url) throws JavaLayerException, MalformedURLException, IOException,
-			CommunicationException, InternalException
-	{
+	public void loadSong(String url)
+			throws JavaLayerException, MalformedURLException, IOException, CommunicationException, InternalException {
 		streamRequest = new HttpGet(url);
 		HttpResponse httpResponse = BelugaHTTPClient.getInstance().requestGetStream(streamRequest);
 
@@ -74,8 +71,7 @@ public class MP3Player
 
 		// get the first frame header to get bitrate
 		Header frame = bitstream.readFrame();
-		if (frame == null)
-		{
+		if (frame == null) {
 			cleanResources();
 			throw new IOException("noAudioStream");
 		}
@@ -99,59 +95,43 @@ public class MP3Player
 		pause = false;
 	}
 
-	public void play(boolean dummy) throws JavaLayerException, InternalException
-	{
+	public void play(boolean dummy) throws JavaLayerException, InternalException {
 		// create audio device
 		audioDeviceManager = dummy ? new DummyAudioDevice(decoder) : new SimpleAudioDevice(decoder);
 
 		close = false;
-		try
-		{
-			while (decodeFrame())
-			{
-				while (pause)
-				{
-					try
-					{
+		try {
+			while (decodeFrame()) {
+				while (pause) {
+					try {
 						Thread.sleep(100);
-					}
-					catch (InterruptedException e)
-					{
+					} catch (InterruptedException e) {
 						break;
 					}
 				}
 			}
-		}
-		catch (JavaLayerException e)
-		{
+		} catch (JavaLayerException e) {
 			throw e;
-		}
-		finally
-		{
+		} finally {
 			close = true;
 			cleanResources();
 		}
 	}
 
-	private void cleanResources()
-	{
+	private void cleanResources() {
 		// cleanup audio stack
 		if (audioDeviceManager != null)
 			audioDeviceManager.close();
 
 		// cleanup bitstream
-		try
-		{
+		try {
 			if (bitstream != null)
 				bitstream.close();
-		}
-		catch (BitstreamException e)
-		{
+		} catch (BitstreamException e) {
 			log.debug(e.getMessage());
 		}
 
-		if (streamRequest != null)
-		{
+		if (streamRequest != null) {
 			// shut down the underlying connection and remove it from the
 			// connection pool
 			streamRequest.abort();
@@ -159,43 +139,33 @@ public class MP3Player
 		}
 	}
 
-	public void stop()
-	{
+	public void stop() {
 		close = true;
 		pause = false;
 	}
 
-	public void pause()
-	{
+	public void pause() {
 		pause = !pause;
 	}
 
-	public long getCachePosition()
-	{
-		try
-		{
-			return ((cachedInputStream.available() + bitstream.getPosition()) * 1000)
-					/ (bitrate / 8);
-		}
-		catch (IOException e)
-		{
+	public long getCachePosition() {
+		try {
+			return ((cachedInputStream.available() + bitstream.getPosition()) * 1000) / (bitrate / 8);
+		} catch (IOException e) {
 			log.debug(e.getMessage());
 			return 0;
 		}
 	}
 
-	public long getPosition()
-	{
+	public long getPosition() {
 		return (bitstream.getPosition() * 1000) / (bitrate / 8);
 	}
 
-	protected boolean decodeFrame() throws JavaLayerException
-	{
+	protected boolean decodeFrame() throws JavaLayerException {
 		if (close)
 			return false;
 
-		try
-		{
+		try {
 			Header h = bitstream.readFrame();
 
 			if (h == null)
@@ -204,31 +174,25 @@ public class MP3Player
 			SampleBuffer output = (SampleBuffer) decoder.decodeFrame(h, bitstream);
 			audioDeviceManager.write(output);
 			bitstream.closeFrame();
-		}
-		catch (RuntimeException ex)
-		{
+		} catch (RuntimeException ex) {
 			throw new JavaLayerException("Exception decoding audio frame", ex);
 		}
 		return true;
 	}
 
-	public long getDuration()
-	{
+	public long getDuration() {
 		return duration;
 	}
 
-	public boolean isPaused()
-	{
+	public boolean isPaused() {
 		return pause;
 	}
 
-	public int getBitrate()
-	{
+	public int getBitrate() {
 		return bitrate;
 	}
 
-	public boolean isActive()
-	{
+	public boolean isActive() {
 		return !close;
 	}
 }

@@ -35,8 +35,7 @@ import org.slf4j.LoggerFactory;
  * @author Julien Bonjean <julien@bonjean.info>
  * 
  */
-public class CachedInputStream extends FilterInputStream
-{
+public class CachedInputStream extends FilterInputStream {
 	private static Logger log = LoggerFactory.getLogger(CachedInputStream.class);
 
 	private static final int OUTPUT_CACHE_SIZE = 512 * 1024;
@@ -46,16 +45,12 @@ public class CachedInputStream extends FilterInputStream
 	private Future<?> future;
 	private boolean closed = false;
 
-	public CachedInputStream(final InputStream inputstream)
-	{
+	public CachedInputStream(final InputStream inputstream) {
 		super(new PipedInputStream(OUTPUT_CACHE_SIZE));
 
-		future = ThreadPools.streamPool.submit(new Runnable()
-		{
-			public void run()
-			{
-				try
-				{
+		future = ThreadPools.streamPool.submit(new Runnable() {
+			public void run() {
+				try {
 					// create the pipe, connect output (producer) to input
 					// stream (consumer)
 					pipe = new PipedOutputStream((PipedInputStream) in);
@@ -71,15 +66,11 @@ public class CachedInputStream extends FilterInputStream
 						pipe.write(buffer, 0, length);
 
 					log.debug("producer: stream finished");
-				}
-				catch (IOException e)
-				{
+				} catch (IOException e) {
 					log.debug(e.getMessage());
 				}
-				if (pipe != null)
-				{
-					try
-					{
+				if (pipe != null) {
+					try {
 						// no more data will be send, flush
 						pipe.flush();
 						log.debug("producer: pipe flushed");
@@ -87,9 +78,7 @@ public class CachedInputStream extends FilterInputStream
 						// close the producer, break the pipe
 						pipe.close();
 						log.debug("producer: pipe closed");
-					}
-					catch (IOException e)
-					{
+					} catch (IOException e) {
 						log.debug(e.getMessage());
 					}
 				}
@@ -99,32 +88,23 @@ public class CachedInputStream extends FilterInputStream
 		});
 
 		// wait for enough cache
-		try
-		{
-			while (in.available() < INITIAL_CACHE_SIZE && !closed)
-			{
+		try {
+			while (in.available() < INITIAL_CACHE_SIZE && !closed) {
 				log.debug("caching stream (" + in.available() + "/" + INITIAL_CACHE_SIZE + ")");
-				try
-				{
+				try {
 					Thread.sleep(100);
-				}
-				catch (InterruptedException e)
-				{
+				} catch (InterruptedException e) {
 					log.debug(e.getMessage());
 				}
 			}
-		}
-		catch (IOException e)
-		{
+		} catch (IOException e) {
 			log.debug(e.getMessage());
 		}
 	}
 
 	@Override
-	public void close()
-	{
-		try
-		{
+	public void close() {
+		try {
 			// break the pipe by closing the consumer
 			in.close();
 			log.debug("consumer: pipe closed");
@@ -132,9 +112,7 @@ public class CachedInputStream extends FilterInputStream
 			// block until thread is finished
 			future.get();
 			log.debug("consumer: producer thread ended");
-		}
-		catch (Exception e)
-		{
+		} catch (Exception e) {
 			log.error(e.getMessage(), e);
 		}
 	}

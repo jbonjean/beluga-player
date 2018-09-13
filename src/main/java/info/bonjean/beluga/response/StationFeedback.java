@@ -26,28 +26,23 @@ import java.util.List;
  * @author Julien Bonjean <julien@bonjean.info>
  * 
  */
-public class StationFeedback
-{
+public class StationFeedback {
 	private List<Feedback> thumbsDown;
 	private List<Feedback> thumbsUp;
 
-	public List<Feedback> getThumbsDown()
-	{
+	public List<Feedback> getThumbsDown() {
 		return thumbsDown;
 	}
 
-	public void setThumbsDown(List<Feedback> thumbsDown)
-	{
+	public void setThumbsDown(List<Feedback> thumbsDown) {
 		this.thumbsDown = thumbsDown;
 	}
 
-	public List<Feedback> getThumbsUp()
-	{
+	public List<Feedback> getThumbsUp() {
 		return thumbsUp;
 	}
 
-	public void setThumbsUp(List<Feedback> thumbsUp)
-	{
+	public void setThumbsUp(List<Feedback> thumbsUp) {
 		this.thumbsUp = thumbsUp;
 	}
 }

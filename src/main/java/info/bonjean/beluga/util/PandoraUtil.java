@@ -31,20 +31,16 @@ import java.util.List;
  * @author Julien Bonjean <julien@bonjean.info>
  * 
  */
-public class PandoraUtil
-{
-	public static String getSyncTime(String encryptedSyncTime) throws CryptoException
-	{
+public class PandoraUtil {
+	public static String getSyncTime(String encryptedSyncTime) throws CryptoException {
 		return CryptoUtil.pandoraDecrypt(encryptedSyncTime).substring(4, 14);
 	}
 
-	public static long getSyncTime()
-	{
+	public static long getSyncTime() {
 		return (new Date().getTime() / 1000L) + 10;
 	}
 
-	public static void cleanItemList(List<Song> items)
-	{
+	public static void cleanItemList(List<Song> items) {
 		List<Song> toRemove = new ArrayList<Song>();
 
 		for (Song item : items)
@@ -55,19 +51,15 @@ public class PandoraUtil
 			items.remove(item);
 	}
 
-	public static String formatTime(long timeMillis)
-	{
+	public static String formatTime(long timeMillis) {
 		long time = timeMillis / 1000;
 		String seconds = Integer.toString((int) (time % 60));
 		String minutes = Integer.toString((int) ((time % 3600) / 60));
-		for (int i = 0; i < 2; i++)
-		{
-			if (seconds.length() < 2)
-			{
+		for (int i = 0; i < 2; i++) {
+			if (seconds.length() < 2) {
 				seconds = "0" + seconds;
 			}
-			if (minutes.length() < 2)
-			{
+			if (minutes.length() < 2) {
 				minutes = "0" + minutes;
 			}
 		}

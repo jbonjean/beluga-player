@@ -34,21 +34,15 @@ import org.apache.pivot.wtk.TextArea;
  * @author Julien Bonjean <julien@bonjean.info>
  * 
  */
-public class LogsUI extends TablePane implements Bindable
-{
+public class LogsUI extends TablePane implements Bindable {
 	@BXML
 	TextArea displayArea;
 
 	@Override
-	public void initialize(Map<String, Object> namespace, URL location, Resources resources)
-	{
-		try
-		{
-			displayArea.setText(new FileReader(System.getProperty("user.home")
-					+ "/.log/beluga-player.log"));
-		}
-		catch (Exception e)
-		{
+	public void initialize(Map<String, Object> namespace, URL location, Resources resources) {
+		try {
+			displayArea.setText(new FileReader(System.getProperty("user.home") + "/.log/beluga-player.log"));
+		} catch (Exception e) {
 			// do nothing, we just have nothing to display
 		}
 		if (displayArea.getText().isEmpty())

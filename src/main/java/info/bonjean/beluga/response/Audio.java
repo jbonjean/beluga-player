@@ -24,50 +24,41 @@ package info.bonjean.beluga.response;
  * @author Julien Bonjean <julien@bonjean.info>
  * 
  */
-public class Audio
-{
+public class Audio {
 	private String audioUrl;
 	private String bitrate;
 	private String encoding;
 	private String protocol;
 
-	public String getAudioUrl()
-	{
+	public String getAudioUrl() {
 		return audioUrl;
 	}
 
-	public void setAudioUrl(String audioUrl)
-	{
+	public void setAudioUrl(String audioUrl) {
 		this.audioUrl = audioUrl;
 	}
 
-	public String getBitrate()
-	{
+	public String getBitrate() {
 		return bitrate;
 	}
 
-	public void setBitrate(String bitrate)
-	{
+	public void setBitrate(String bitrate) {
 		this.bitrate = bitrate;
 	}
 
-	public String getEncoding()
-	{
+	public String getEncoding() {
 		return encoding;
 	}
 
-	public void setEncoding(String encoding)
-	{
+	public void setEncoding(String encoding) {
 		this.encoding = encoding;
 	}
 
-	public String getProtocol()
-	{
+	public String getProtocol() {
 		return protocol;
 	}
 
-	public void setProtocol(String protocol)
-	{
+	public void setProtocol(String protocol) {
 		this.protocol = protocol;
 	}
 }

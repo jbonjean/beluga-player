@@ -41,8 +41,7 @@ import org.apache.pivot.wtk.TablePane;
  * @author Julien Bonjean <julien@bonjean.info>
  * 
  */
-public class BookmarksUI extends TablePane implements Bindable
-{
+public class BookmarksUI extends TablePane implements Bindable {
 	@BXML
 	protected BoxPane artistBookmarksPane;
 	@BXML
@@ -51,23 +50,19 @@ public class BookmarksUI extends TablePane implements Bindable
 	private Resources resources;
 	private final BelugaState state = BelugaState.getInstance();
 
-	public BookmarksUI()
-	{
+	public BookmarksUI() {
 	}
 
 	@Override
-	public void initialize(Map<String, Object> namespace, URL location, Resources resources)
-	{
+	public void initialize(Map<String, Object> namespace, URL location, Resources resources) {
 		this.resources = resources;
 		artistBookmarksPane.removeAll();
 		for (ArtistBookmark artistBookmark : state.getBookmarks().getArtists())
-			artistBookmarksPane.add(newBookmark(
-					new Date(artistBookmark.getDateCreated().getTime()),
+			artistBookmarksPane.add(newBookmark(new Date(artistBookmark.getDateCreated().getTime()),
 					artistBookmark.getArtistName(), artistBookmark.getBookmarkToken(), "artist"));
 
 		songBookmarksPane.removeAll();
-		for (SongBookmark songBookmark : state.getBookmarks().getSongs())
-		{
+		for (SongBookmark songBookmark : state.getBookmarks().getSongs()) {
 			StringBuffer sb = new StringBuffer(songBookmark.getSongName());
 			sb.append(" ");
 			sb.append((String) resources.get("by"));
@@ -76,13 +71,12 @@ public class BookmarksUI extends TablePane implements Bindable
 			sb.append(" (");
 			sb.append(songBookmark.getAlbumName());
 			sb.append(")");
-			songBookmarksPane.add(newBookmark(new Date(songBookmark.getDateCreated().getTime()),
-					sb.toString(), songBookmark.getBookmarkToken(), "song"));
+			songBookmarksPane.add(newBookmark(new Date(songBookmark.getDateCreated().getTime()), sb.toString(),
+					songBookmark.getBookmarkToken(), "song"));
 		}
 	}
 
-	private MenuButton newBookmark(Date date, String label, String bookmarkToken, String type)
-	{
+	private MenuButton newBookmark(Date date, String label, String bookmarkToken, String type) {
 		MenuButton link = new MenuButton();
 		link.getStyles().put("padding", 0);
 		StringBuffer sb = new StringBuffer(new SimpleDateFormat("yyyy-MM-dd").format(date));

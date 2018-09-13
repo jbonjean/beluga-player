@@ -24,17 +24,14 @@ package info.bonjean.beluga.response;
  * @author Julien Bonjean <julien@bonjean.info>
  * 
  */
-public class SearchArtist extends SearchItem
-{
+public class SearchArtist extends SearchItem {
 	private boolean likelyMatch;
 
-	public boolean isLikelyMatch()
-	{
+	public boolean isLikelyMatch() {
 		return likelyMatch;
 	}
 
-	public void setLikelyMatch(boolean likelyMatch)
-	{
+	public void setLikelyMatch(boolean likelyMatch) {
 		this.likelyMatch = likelyMatch;
 	}
 }

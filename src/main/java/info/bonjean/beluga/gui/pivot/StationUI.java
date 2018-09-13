@@ -45,8 +45,7 @@ import org.slf4j.LoggerFactory;
  * @author Julien Bonjean <julien@bonjean.info>
  * 
  */
-public class StationUI extends SplitPane implements Bindable, SplitPaneExtended
-{
+public class StationUI extends SplitPane implements Bindable, SplitPaneExtended {
 	private static Logger log = LoggerFactory.getLogger(StationUI.class);
 	@BXML
 	protected ImageView stationCover;
@@ -64,41 +63,33 @@ public class StationUI extends SplitPane implements Bindable, SplitPaneExtended
 	private final BelugaState state = BelugaState.getInstance();
 	private Resources resources;
 
-	public StationUI()
-	{
+	public StationUI() {
 	}
 
 	@Override
-	public void initialize(Map<String, Object> namespace, URL location, Resources resources)
-	{
+	public void initialize(Map<String, Object> namespace, URL location, Resources resources) {
 		this.resources = resources;
 		stationName.setText(state.getStation().getStationName());
 
 		if (state.getStation().getArtUrl().isEmpty())
 			stationCover.setImage("/img/beluga-player.svg");
-		else
-		{
-			try
-			{
+		else {
+			try {
 				stationCover.setImage(new URL(state.getStation().getArtUrl()));
-			}
-			catch (Exception e)
-			{
+			} catch (Exception e) {
 				stationCover.setImage("/img/beluga-player.svg");
 			}
 		}
 
-		stationCreationDate.setText(new SimpleDateFormat("yyyy-MM-dd").format(new Date(state
-				.getStation().getDateCreated().getTime())));
+		stationCreationDate.setText(
+				new SimpleDateFormat("yyyy-MM-dd").format(new Date(state.getStation().getDateCreated().getTime())));
 		StringBuffer sb = new StringBuffer();
-		for (String genre : state.getStation().getGenre())
-		{
+		for (String genre : state.getStation().getGenre()) {
 			if (sb.length() > 0)
 				sb.append(", ");
 			sb.append(genre);
 		}
-		if (sb.length() > 0)
-		{
+		if (sb.length() > 0) {
 			// capitalize first letter
 			sb.setCharAt(0, Character.toUpperCase(sb.charAt(0)));
 			// finish with a period
@@ -115,8 +106,7 @@ public class StationUI extends SplitPane implements Bindable, SplitPaneExtended
 			bannedSongsPane.add(newFeedback(feedback));
 	}
 
-	private MenuButton newFeedback(Feedback feedback)
-	{
+	private MenuButton newFeedback(Feedback feedback) {
 		MenuButton link = new MenuButton();
 		link.getStyles().put("padding", 0);
 		StringBuffer sb = new StringBuffer(feedback.getSongName());
@@ -127,8 +117,7 @@ public class StationUI extends SplitPane implements Bindable, SplitPaneExtended
 		link.setButtonData(sb.toString());
 		Menu menu = new Menu();
 		Menu.Section menuSection = new Menu.Section();
-		Menu.Item menuItem = new Menu.Item(feedback.isPositive() ? resources.get("unlike")
-				: resources.get("unban"));
+		Menu.Item menuItem = new Menu.Item(feedback.isPositive() ? resources.get("unlike") : resources.get("unban"));
 		menuItem.setAction("delete-feedback");
 		menuItem.getUserData().put("feedback", feedback);
 		menuItem.getUserData().put("item", link);
@@ -144,20 +133,16 @@ public class StationUI extends SplitPane implements Bindable, SplitPaneExtended
 	 * playing
 	 * 
 	 */
-	protected void updateSongFeedback(String feedbackId)
-	{
+	protected void updateSongFeedback(String feedbackId) {
 		if (state.getSong() == null)
 			return;
 
-		for (Feedback feedback : state.getStation().getFeedback().getThumbsUp())
-		{
-			if (feedback.getFeedbackId().equals(feedbackId))
-			{
+		for (Feedback feedback : state.getStation().getFeedback().getThumbsUp()) {
+			if (feedback.getFeedbackId().equals(feedbackId)) {
 				// this is not bulletproof but should be good enough for 99% of
 				// cases.
 				if (state.getSong().getArtistName().equals(feedback.getArtistName())
-						&& state.getSong().getSongName().equals(feedback.getSongName()))
-				{
+						&& state.getSong().getSongName().equals(feedback.getSongName())) {
 					state.getSong().setSongRating(0);
 					log.debug("Current song feedback updated");
 				}
@@ -167,25 +152,21 @@ public class StationUI extends SplitPane implements Bindable, SplitPaneExtended
 	}
 
 	@Override
-	public ImageView getImageView()
-	{
+	public ImageView getImageView() {
 		return stationCover;
 	}
 
 	@Override
-	public int getPrimaryRegionReserved()
-	{
+	public int getPrimaryRegionReserved() {
 		return 0;
 	}
 
 	@Override
-	public int getPrimaryRegionPadding()
-	{
+	public int getPrimaryRegionPadding() {
 		return 10;
 	}
 
 	@Override
-	public void setPrimaryRegionWidth(int width)
-	{
+	public void setPrimaryRegionWidth(int width) {
 	}
 }

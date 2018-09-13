@@ -46,8 +46,7 @@ import org.apache.pivot.wtk.TextInput;
  * @author Julien Bonjean <julien@bonjean.info>
  *
  */
-public class MenuUI extends TablePane implements Bindable
-{
+public class MenuUI extends TablePane implements Bindable {
 	@BXML
 	protected MenuBar menubar;
 	@BXML
@@ -58,78 +57,63 @@ public class MenuUI extends TablePane implements Bindable
 	private final BelugaState state = BelugaState.getInstance();
 
 	@Override
-	public void initialize(Map<String, Object> namespace, URL location, Resources resources)
-	{
-		if (System.getProperty("debug") != null)
-		{
+	public void initialize(Map<String, Object> namespace, URL location, Resources resources) {
+		if (System.getProperty("debug") != null) {
 			Menu.Item debugEntry = new Menu.Item("Refresh");
 			debugEntry.setAction(Action.getNamedActions().get("debug-refresh"));
 			menubar.getItems().get(0).getMenu().getSections().get(0).insert(debugEntry, 0);
 		}
 
-		stationsSearch.getComponentMouseButtonListeners().add(new ComponentMouseButtonListener()
-		{
+		stationsSearch.getComponentMouseButtonListeners().add(new ComponentMouseButtonListener() {
 			@Override
-			public boolean mouseUp(Component component, Button button, int x, int y)
-			{
+			public boolean mouseUp(Component component, Button button, int x, int y) {
 				return false;
 			}
 
 			@Override
-			public boolean mouseDown(Component component, Button button, int x, int y)
-			{
+			public boolean mouseDown(Component component, Button button, int x, int y) {
 				return false;
 			}
 
 			@Override
-			public boolean mouseClick(Component component, Button button, int x, int y, int count)
-			{
+			public boolean mouseClick(Component component, Button button, int x, int y, int count) {
 				showPopup();
 				return true;
 			}
 		});
 
-		stationsSearch.getComponentKeyListeners().add(new ComponentKeyListener()
-		{
+		stationsSearch.getComponentKeyListeners().add(new ComponentKeyListener() {
 
 			@Override
-			public boolean keyTyped(Component component, char character)
-			{
+			public boolean keyTyped(Component component, char character) {
 				showPopup();
 				return false;
 			}
 
 			@Override
-			public boolean keyReleased(Component component, int keyCode, KeyLocation keyLocation)
-			{
+			public boolean keyReleased(Component component, int keyCode, KeyLocation keyLocation) {
 				return false;
 			}
 
 			@Override
-			public boolean keyPressed(Component component, int keyCode, KeyLocation keyLocation)
-			{
+			public boolean keyPressed(Component component, int keyCode, KeyLocation keyLocation) {
 				return false;
 			}
 		});
 	}
 
-	private void showPopup()
-	{
+	private void showPopup() {
 		String text = stationsSearch.getText();
 		String[] textParts = text.replaceAll("\\s+", " ").trim().toLowerCase().split(" ");
 		org.apache.pivot.collections.ArrayList<Station> suggestions = new org.apache.pivot.collections.ArrayList<Station>();
 
-		for (Station station : state.getStationList())
-		{
-			if (state.getStation() != null
-					&& state.getStation().getStationId().equals(station.getStationId()))
+		for (Station station : state.getStationList()) {
+			if (state.getStation() != null && state.getStation().getStationId().equals(station.getStationId()))
 				continue;
 
 			boolean contained = true;
-			for (String textPart : textParts)
-			{
-				if (!station.getStationName().toLowerCase().contains(textPart))
-				{
+			for (String textPart : textParts) {
+				if (!station.getStationName().toLowerCase().contains(textPart)) {
 					contained = false;
 					break;
 				}
@@ -140,11 +124,9 @@ public class MenuUI extends TablePane implements Bindable
 		}
 
 		stationsPopup.setSuggestionData(suggestions);
-		stationsPopup.open(stationsSearch, new SuggestionPopupCloseListener()
-		{
+		stationsPopup.open(stationsSearch, new SuggestionPopupCloseListener() {
 			@Override
-			public void suggestionPopupClosed(SuggestionPopup suggestionPopup)
-			{
+			public void suggestionPopupClosed(SuggestionPopup suggestionPopup) {
 				stationsSearch.setText("");
 				Station station = (Station) suggestionPopup.getSelectedSuggestion();
 				if (station == null)

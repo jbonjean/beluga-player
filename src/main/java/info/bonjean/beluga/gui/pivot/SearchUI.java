@@ -47,8 +47,7 @@ import org.apache.pivot.wtk.TextInput;
  * @author Julien Bonjean <julien@bonjean.info>
  * 
  */
-public class SearchUI extends TablePane implements Bindable
-{
+public class SearchUI extends TablePane implements Bindable {
 	@BXML
 	protected TextInput searchInput;
 	@BXML
@@ -65,49 +64,41 @@ public class SearchUI extends TablePane implements Bindable
 	protected Label nearMatchesAvailable;
 	private Resources resources;
 
-	public SearchUI()
-	{
+	public SearchUI() {
 	}
 
 	@Override
-	public void initialize(Map<String, Object> namespace, URL location, Resources resources)
-	{
+	public void initialize(Map<String, Object> namespace, URL location, Resources resources) {
 		this.resources = resources;
-		searchInput.getComponentKeyListeners().add(new ComponentKeyListener()
-		{
+		searchInput.getComponentKeyListeners().add(new ComponentKeyListener() {
 			@Override
-			public boolean keyTyped(Component component, char character)
-			{
+			public boolean keyTyped(Component component, char character) {
 				return false;
 			}
 
 			@Override
-			public boolean keyPressed(Component component, int keyCode, KeyLocation keyLocation)
-			{
+			public boolean keyPressed(Component component, int keyCode, KeyLocation keyLocation) {
 				if (keyCode == Keyboard.KeyCode.ENTER)
 					submitButton.press();
 				return false;
 			}
 
 			@Override
-			public boolean keyReleased(Component component, int keyCode, KeyLocation keyLocation)
-			{
+			public boolean keyReleased(Component component, int keyCode, KeyLocation keyLocation) {
 				return false;
 			}
 		});
 
 		// add current playing song as search result
 		Song song = BelugaState.getInstance().getSong();
-		artistsPane.add(newResult(song.getArtistName(), song.getArtistName(), song.getTrackToken(),
-				"artist"));
-		songsPane.add(newResult(song.getSongName() + " (" + song.getArtistName() + ")",
-				song.getSongName(), song.getTrackToken(), "song"));
+		artistsPane.add(newResult(song.getArtistName(), song.getArtistName(), song.getTrackToken(), "artist"));
+		songsPane.add(newResult(song.getSongName() + " (" + song.getArtistName() + ")", song.getSongName(),
+				song.getTrackToken(), "song"));
 		setTabTitles();
 		setFocus();
 	}
 
-	protected String getTabTitle(BoxPane boxPane, String baseNameKey)
-	{
+	protected String getTabTitle(BoxPane boxPane, String baseNameKey) {
 		int count = boxPane.getLength();
 		StringBuffer sb = new StringBuffer((String) resources.get(baseNameKey));
 		sb.append(" (");
@@ -121,8 +112,7 @@ public class SearchUI extends TablePane implements Bindable
 		return sb.toString();
 	}
 
-	protected MenuButton newResult(String label, String station, String token, String type)
-	{
+	protected MenuButton newResult(String label, String station, String token, String type) {
 		MenuButton link = new MenuButton();
 		link.getStyles().put("padding", 0);
 		link.setButtonData(label);
@@ -142,14 +132,12 @@ public class SearchUI extends TablePane implements Bindable
 		return link;
 	}
 
-	protected void setTabTitles()
-	{
+	protected void setTabTitles() {
 		TabPane.setTabData(artistsTabPane, getTabTitle(artistsPane, "artists"));
 		TabPane.setTabData(songsTabPane, getTabTitle(songsPane, "tracks"));
 	}
 
-	protected void setFocus()
-	{
+	protected void setFocus() {
 		searchInput.requestFocus();
 	}
 }

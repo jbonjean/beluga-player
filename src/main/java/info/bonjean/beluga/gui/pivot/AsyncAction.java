@@ -33,29 +33,25 @@ import org.slf4j.LoggerFactory;
  * @author Julien Bonjean <julien@bonjean.info>
  * 
  */
-public abstract class AsyncAction extends Action
-{
+public abstract class AsyncAction extends Action {
 	private static Logger log = LoggerFactory.getLogger(AsyncAction.class);
 
 	private MainWindow mainWindow;
 	private boolean disableUI;
 	private boolean enabled = true;
 
-	public AsyncAction(MainWindow mainWindow)
-	{
+	public AsyncAction(MainWindow mainWindow) {
 		this.mainWindow = mainWindow;
 		this.disableUI = true;
 	}
 
-	public AsyncAction(MainWindow mainWindow, boolean disableUI)
-	{
+	public AsyncAction(MainWindow mainWindow, boolean disableUI) {
 		this.mainWindow = mainWindow;
 		this.disableUI = disableUI;
 	}
 
 	@Override
-	public void setEnabled(boolean enabled)
-	{
+	public void setEnabled(boolean enabled) {
 		this.enabled = enabled;
 		// stop propagation to bypass the bug
 		// that prevent having button with different enabled state
@@ -63,46 +59,33 @@ public abstract class AsyncAction extends Action
 	}
 
 	@Override
-	public boolean isEnabled()
-	{
+	public boolean isEnabled() {
 		return enabled;
 	}
 
 	@Override
-	public final void perform(final Component source)
-	{
-		ThreadPools.actionPool.execute(new Runnable()
-		{
+	public final void perform(final Component source) {
+		ThreadPools.actionPool.execute(new Runnable() {
 			@Override
-			public void run()
-			{
+			public void run() {
 				StatusBarAppender.clearErrorMessage();
-				try
-				{
+				try {
 					if (disableUI)
-						ApplicationContext.queueCallback(new Runnable()
-						{
+						ApplicationContext.queueCallback(new Runnable() {
 							@Override
-							public void run()
-							{
+							public void run() {
 								mainWindow.enableUI(false);
 							}
 						}, true);
 
 					asyncPerform(source);
-				}
-				catch (Throwable e)
-				{
+				} catch (Throwable e) {
 					log.error(e.getMessage(), e);
-				}
-				finally
-				{
+				} finally {
 					if (disableUI)
-						ApplicationContext.queueCallback(new Runnable()
-						{
+						ApplicationContext.queueCallback(new Runnable() {
 							@Override
-							public void run()
-							{
+							public void run() {
 								mainWindow.enableUI(true);
 							}
 						}, true);
@@ -112,8 +95,7 @@ public abstract class AsyncAction extends Action
 		});
 	}
 
-	public void afterPerform()
-	{
+	public void afterPerform() {
 	}
 
 	// BelugaException thrown inside an action must only be logged

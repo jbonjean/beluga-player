@@ -35,8 +35,7 @@ import de.umass.lastfm.scrobble.ScrobbleResult;
  * @author Julien Bonjean <julien@bonjean.info>
  * 
  */
-public class LastFMSession
-{
+public class LastFMSession {
 	private static Logger log = LoggerFactory.getLogger(LastFMSession.class);
 
 	public static final String API_KEY = "79bb16780e65af77078e118f59de365a";
@@ -45,26 +44,21 @@ public class LastFMSession
 	private static LastFMSession instance;
 	private Session session = null;
 
-	private LastFMSession()
-	{
+	private LastFMSession() {
 	}
 
-	public static void reset()
-	{
+	public static void reset() {
 		instance = null;
 	}
 
-	public static LastFMSession getInstance()
-	{
+	public static LastFMSession getInstance() {
 		if (instance == null)
 			instance = new LastFMSession();
 		return instance;
 	}
 
-	private Session getSession()
-	{
-		if (session == null)
-		{
+	private Session getSession() {
+		if (session == null) {
 			log.debug("Creating last.fm session");
 
 			session = Authenticator.getMobileSession(configuration.getLastFMUsername(),
@@ -77,11 +71,9 @@ public class LastFMSession
 		return session;
 	}
 
-	public void scrobbleTrack(Song song)
-	{
+	public void scrobbleTrack(Song song) {
 		// don't scrobble if less than 90%
-		if (song.getDuration() == 0 || song.getPosition() / (float) song.getDuration() < 0.9f)
-		{
+		if (song.getDuration() == 0 || song.getPosition() / (float) song.getDuration() < 0.9f) {
 			log.debug("Played less than 90%, will no be scrobbled with last.fm");
 			return;
 		}
@@ -92,8 +84,8 @@ public class LastFMSession
 
 		// send data to last.fm
 		int now = (int) (System.currentTimeMillis() / 1000);
-		ScrobbleResult TrackScrobbleResult = Track.scrobble(song.getArtistName(),
-				song.getSongName(), now, getSession());
+		ScrobbleResult TrackScrobbleResult = Track.scrobble(song.getArtistName(), song.getSongName(), now,
+				getSession());
 
 		if (TrackScrobbleResult.isSuccessful() && !TrackScrobbleResult.isIgnored())
 			log.info("lastfmScrobbleSuccess");
@@ -101,13 +93,11 @@ public class LastFMSession
 			log.warn("lastfmScrobbleFailure");
 	}
 
-	public void loveTrack(Song song)
-	{
+	public void loveTrack(Song song) {
 		if (getSession() == null)
 			return;
 
-		Result TrackScrobbleResult = Track.love(song.getArtistName(), song.getSongName(),
-				getSession());
+		Result TrackScrobbleResult = Track.love(song.getArtistName(), song.getSongName(), getSession());
 
 		if (TrackScrobbleResult.isSuccessful())
 			log.info("lastfmLoveTrackSuccess");
@@ -115,13 +105,12 @@ public class LastFMSession
 			log.warn("lastfmLoveTrackFailure");
 	}
 
-	public void updateNowPlaying(Song song)
-	{
+	public void updateNowPlaying(Song song) {
 		if (getSession() == null)
 			return;
 
-		ScrobbleResult nowPlayingResult = Track.updateNowPlaying(song.getArtistName(),
-				song.getSongName(), getSession());
+		ScrobbleResult nowPlayingResult = Track.updateNowPlaying(song.getArtistName(), song.getSongName(),
+				getSession());
 
 		if (nowPlayingResult.isSuccessful() && !nowPlayingResult.isIgnored())
 			log.info("lastfmNowPlayingSuccess");

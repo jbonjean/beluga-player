@@ -26,28 +26,23 @@ import java.util.List;
  * @author Julien Bonjean <julien@bonjean.info>
  * 
  */
-public class Bookmarks
-{
+public class Bookmarks {
 	private List<ArtistBookmark> artists;
 	private List<SongBookmark> songs;
 
-	public List<ArtistBookmark> getArtists()
-	{
+	public List<ArtistBookmark> getArtists() {
 		return artists;
 	}
 
-	public void setArtists(List<ArtistBookmark> artists)
-	{
+	public void setArtists(List<ArtistBookmark> artists) {
 		this.artists = artists;
 	}
 
-	public List<SongBookmark> getSongs()
-	{
+	public List<SongBookmark> getSongs() {
 		return songs;
 	}
 
-	public void setSongs(List<SongBookmark> songs)
-	{
+	public void setSongs(List<SongBookmark> songs) {
 		this.songs = songs;
 	}
 }

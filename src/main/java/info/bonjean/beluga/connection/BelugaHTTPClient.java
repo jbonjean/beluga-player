@@ -55,8 +55,7 @@ import org.slf4j.LoggerFactory;
  * @author Julien Bonjean <julien@bonjean.info>
  *
  */
-public class BelugaHTTPClient
-{
+public class BelugaHTTPClient {
 	private static final Logger log = LoggerFactory.getLogger(BelugaHTTPClient.class);
 	private static final int TIMEOUT = 4000;
 	private static BelugaHTTPClient instance;
@@ -64,46 +63,39 @@ public class BelugaHTTPClient
 	private HttpClient httpClient;
 	private PoolingHttpClientConnectionManager connectionManager;
 
-	private BelugaHTTPClient()
-	{
+	private BelugaHTTPClient() {
 		BelugaConfiguration configuration = BelugaConfiguration.getInstance();
 		HttpClientBuilder clientBuilder = HttpClients.custom();
 
 		// timeout
-		RequestConfig config = RequestConfig.custom().setConnectTimeout(TIMEOUT)
-				.setSocketTimeout(TIMEOUT).setConnectionRequestTimeout(TIMEOUT).build();
+		RequestConfig config = RequestConfig.custom().setConnectTimeout(TIMEOUT).setSocketTimeout(TIMEOUT)
+				.setConnectionRequestTimeout(TIMEOUT).build();
 		clientBuilder.setDefaultRequestConfig(config);
 
-		switch (configuration.getConnectionType())
-		{
-			case DIRECT:
-				connectionManager = new PoolingHttpClientConnectionManager();
-				break;
-			case HTTP_PROXY:
-				HttpHost proxy = new HttpHost(configuration.getProxyHost(),
-						configuration.getProxyPort(), "http");
-				clientBuilder.setProxy(proxy);
-			default:
-				Registry<ConnectionSocketFactory> registry = RegistryBuilder
-						.<ConnectionSocketFactory> create()
-						.register("http", PlainConnectionSocketFactory.getSocketFactory())
-						.register("https", SSLConnectionSocketFactory.getSocketFactory()).build();
-				BelugaDNSResolver dnsOverrider = new BelugaDNSResolver(DNSProxy.get(configuration
-						.getConnectionType().getId()));
-				connectionManager = new PoolingHttpClientConnectionManager(registry, dnsOverrider);
-				break;
+		switch (configuration.getConnectionType()) {
+		case DIRECT:
+			connectionManager = new PoolingHttpClientConnectionManager();
+			break;
+		case HTTP_PROXY:
+			HttpHost proxy = new HttpHost(configuration.getProxyHost(), configuration.getProxyPort(), "http");
+			clientBuilder.setProxy(proxy);
+		default:
+			Registry<ConnectionSocketFactory> registry = RegistryBuilder.<ConnectionSocketFactory> create()
+					.register("http", PlainConnectionSocketFactory.getSocketFactory())
+					.register("https", SSLConnectionSocketFactory.getSocketFactory()).build();
+			BelugaDNSResolver dnsOverrider = new BelugaDNSResolver(
+					DNSProxy.get(configuration.getConnectionType().getId()));
+			connectionManager = new PoolingHttpClientConnectionManager(registry, dnsOverrider);
+			break;
 		}
 
 		// limit the pool size
 		connectionManager.setDefaultMaxPerRoute(2);
 
 		// add interceptor, currently for debugging only
-		clientBuilder.addInterceptorFirst(new HttpResponseInterceptor()
-		{
+		clientBuilder.addInterceptorFirst(new HttpResponseInterceptor() {
 			@Override
-			public void process(HttpResponse response, HttpContext context) throws HttpException,
-					IOException
-			{
+			public void process(HttpResponse response, HttpContext context) throws HttpException, IOException {
 				HttpInetConnection connection = (HttpInetConnection) context
 						.getAttribute(HttpCoreContext.HTTP_CONNECTION);
 				log.debug("Remote address: " + connection.getRemoteAddress());
@@ -118,48 +110,41 @@ public class BelugaHTTPClient
 		httpClient = clientBuilder.build();
 	}
 
-	public static BelugaHTTPClient getInstance()
-	{
+	public static BelugaHTTPClient getInstance() {
 		if (instance == null)
 			instance = new BelugaHTTPClient();
 		return instance;
 	}
 
-	public static void reset()
-	{
-		if (instance != null)
-		{
+	public static void reset() {
+		if (instance != null) {
 			instance.connectionManager.close();
 			instance = null;
 		}
 	}
 
-	public String requestPost(HttpPost post) throws CommunicationException,
-			ClientProtocolException, IOException
-	{
+	public String requestPost(HttpPost post) throws CommunicationException, ClientProtocolException, IOException {
 		HttpResponse httpResponse = httpClient.execute(post);
 		String result = IOUtils.toString(httpResponse.getEntity().getContent(), StandardCharsets.UTF_8);
 		EntityUtils.consume(httpResponse.getEntity());
 		return result;
 	}
 
-	public byte[] requestGet(HttpGet get) throws ClientProtocolException, IOException
-	{
+	public byte[] requestGet(HttpGet get) throws ClientProtocolException, IOException {
 		HttpResponse httpResponse = httpClient.execute(get);
 		byte[] result = IOUtils.toByteArray(httpResponse.getEntity().getContent());
 		EntityUtils.consume(httpResponse.getEntity());
 		return result;
 	}
 
-	public HttpResponse requestGetStream(HttpGet get) throws ClientProtocolException, IOException
-	{
+	public HttpResponse requestGetStream(HttpGet get) throws ClientProtocolException, IOException {
 		// TODO: use a different client with BasicHttpClientConnectionManager
 		// for the streaming connection
 
 		// no socket timeout, this may improve pause support
 		// TODO: check if it is working as expected (also depends of the server)
-		RequestConfig config = RequestConfig.custom().setConnectTimeout(TIMEOUT)
-				.setConnectionRequestTimeout(TIMEOUT).build();
+		RequestConfig config = RequestConfig.custom().setConnectTimeout(TIMEOUT).setConnectionRequestTimeout(TIMEOUT)
+				.build();
 		get.setConfig(config);
 		HttpResponse httpResponse = httpClient.execute(get);
 		if (httpResponse.getStatusLine().getStatusCode() != HttpStatus.SC_OK)

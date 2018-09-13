@@ -24,17 +24,14 @@ package info.bonjean.beluga.request;
  * @author Julien Bonjean <julien@bonjean.info>
  * 
  */
-public class FeedbackDeleteRequest extends AuthentifiedJsonRequest
-{
+public class FeedbackDeleteRequest extends AuthentifiedJsonRequest {
 	private String feedbackId;
 
-	public String getFeedbackId()
-	{
+	public String getFeedbackId() {
 		return feedbackId;
 	}
 
-	public void setFeedbackId(String feedbackId)
-	{
+	public void setFeedbackId(String feedbackId) {
 		this.feedbackId = feedbackId;
 	}
 }

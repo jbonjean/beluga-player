@@ -24,61 +24,50 @@ package info.bonjean.beluga.request;
  * @author Julien Bonjean <julien@bonjean.info>
  * 
  */
-public class UserLoginRequest extends JsonRequest
-{
+public class UserLoginRequest extends JsonRequest {
 	private String username;
 	private String password;
 	private long syncTime;
 	private String loginType = "user";
 	private String partnerAuthToken;
 
-	public String getUsername()
-	{
+	public String getUsername() {
 		return username;
 	}
 
-	public void setUsername(String username)
-	{
+	public void setUsername(String username) {
 		this.username = username;
 	}
 
-	public String getPassword()
-	{
+	public String getPassword() {
 		return password;
 	}
 
-	public void setPassword(String password)
-	{
+	public void setPassword(String password) {
 		this.password = password;
 	}
 
-	public String getLoginType()
-	{
+	public String getLoginType() {
 		return loginType;
 	}
 
-	public void setLoginType(String loginType)
-	{
+	public void setLoginType(String loginType) {
 		this.loginType = loginType;
 	}
 
-	public String getPartnerAuthToken()
-	{
+	public String getPartnerAuthToken() {
 		return partnerAuthToken;
 	}
 
-	public void setPartnerAuthToken(String partnerAuthToken)
-	{
+	public void setPartnerAuthToken(String partnerAuthToken) {
 		this.partnerAuthToken = partnerAuthToken;
 	}
 
-	public long getSyncTime()
-	{
+	public long getSyncTime() {
 		return syncTime;
 	}
 
-	public void setSyncTime(long syncTime)
-	{
+	public void setSyncTime(long syncTime) {
 		this.syncTime = syncTime;
 	}
 }

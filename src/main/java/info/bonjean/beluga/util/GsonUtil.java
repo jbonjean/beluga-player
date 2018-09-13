@@ -30,17 +30,14 @@ import com.google.gson.GsonBuilder;
  * @author Julien Bonjean <julien@bonjean.info>
  * 
  */
-public class GsonUtil
-{
+public class GsonUtil {
 	@SuppressWarnings("unused")
 	private static final Logger log = LoggerFactory.getLogger(GsonUtil.class);
 
 	private static Gson gson;
 
-	public static Gson getGsonInstance()
-	{
-		if (gson == null)
-		{
+	public static Gson getGsonInstance() {
+		if (gson == null) {
 			GsonBuilder gsonBuilder = new GsonBuilder();
 			gsonBuilder.disableHtmlEscaping();
 			gson = gsonBuilder.create();

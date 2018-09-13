@@ -34,42 +34,31 @@ import org.slf4j.LoggerFactory;
  * @author Julien Bonjean <julien@bonjean.info>
  * 
  */
-public class InternalBus
-{
+public class InternalBus {
 	private static Logger log = LoggerFactory.getLogger(InternalBus.class);
-	private static final BlockingQueue<PlaybackEvent> queue = new ArrayBlockingQueue<PlaybackEvent>(
-			10);
+	private static final BlockingQueue<PlaybackEvent> queue = new ArrayBlockingQueue<PlaybackEvent>(10);
 	private static final List<InternalBusSubscriber> subscribers = new ArrayList<InternalBusSubscriber>();
 
-	public static void publish(PlaybackEvent event)
-	{
+	public static void publish(PlaybackEvent event) {
 		queue.add(event);
 	}
 
-	public static void subscribe(InternalBusSubscriber subscriber)
-	{
+	public static void subscribe(InternalBusSubscriber subscriber) {
 		subscribers.add(subscriber);
 	}
 
-	public static void start()
-	{
+	public static void start() {
 		for (int i = 0; i < ThreadPools.INTERNAL_BUS_POOL_SIZE; i++)
-			ThreadPools.internalBusPool.submit(new Runnable()
-			{
+			ThreadPools.internalBusPool.submit(new Runnable() {
 				@Override
-				public void run()
-				{
-					while (true)
-					{
-						try
-						{
+				public void run() {
+					while (true) {
+						try {
 							PlaybackEvent event = queue.take();
 							log.debug("received event " + event);
 							for (InternalBusSubscriber subscriber : subscribers)
 								subscriber.receive(event);
-						}
-						catch (InterruptedException e)
-						{
+						} catch (InterruptedException e) {
 							log.debug("thread interrupted");
 						}
 					}

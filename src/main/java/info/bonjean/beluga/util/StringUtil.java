@@ -27,10 +27,8 @@ import org.apache.maven.artifact.versioning.DefaultArtifactVersion;
  * @author Julien Bonjean <julien@bonjean.info>
  *
  */
-public class StringUtil
-{
-	private static String sanitizeVersion(String version)
-	{
+public class StringUtil {
+	private static String sanitizeVersion(String version) {
 		String sanitized = StringUtils.strip(version, " \n\r");
 		return StringUtils.isBlank(sanitized) ? null : sanitized;
 	}
@@ -39,8 +37,7 @@ public class StringUtil
 	 * Returns a negative integer, zero, or a positive integer as this version1
 	 * is less than, equal to, or greater than version2.
 	 */
-	public static int compareVersions(String version1, String version2)
-	{
+	public static int compareVersions(String version1, String version2) {
 		DefaultArtifactVersion v1 = new DefaultArtifactVersion(sanitizeVersion(version1));
 		DefaultArtifactVersion v2 = new DefaultArtifactVersion(sanitizeVersion(version2));
 		return v1.compareTo(v2);

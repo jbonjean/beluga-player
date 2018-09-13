@@ -24,7 +24,6 @@ package info.bonjean.beluga.bus;
  * @author Julien Bonjean <julien@bonjean.info>
  * 
  */
-public interface InternalBusSubscriber
-{
+public interface InternalBusSubscriber {
 	public void receive(PlaybackEvent event);
 }

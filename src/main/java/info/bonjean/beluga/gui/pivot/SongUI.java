@@ -40,8 +40,7 @@ import org.apache.pivot.wtk.SplitPane;
  * @author Julien Bonjean <julien@bonjean.info>
  * 
  */
-public class SongUI extends SplitPane implements Bindable, SplitPaneExtended
-{
+public class SongUI extends SplitPane implements Bindable, SplitPaneExtended {
 	@BXML
 	protected Label songTitle;
 	@BXML
@@ -61,27 +60,23 @@ public class SongUI extends SplitPane implements Bindable, SplitPaneExtended
 
 	private final BelugaState state = BelugaState.getInstance();
 
-	public SongUI()
-	{
+	public SongUI() {
 	}
 
 	@Override
-	public void initialize(Map<String, Object> namespace, URL location, Resources resources)
-	{
+	public void initialize(Map<String, Object> namespace, URL location, Resources resources) {
 		songTitle.setText(state.getSong().getSongName());
 		albumTitle.setText(ResourcesUtil.shorten(state.getSong().getAlbumName(), 80));
 		artistName.setText("by " + state.getSong().getArtistName());
 
 		StringBuffer focusTraits = new StringBuffer();
-		for (String focusTrait : state.getSong().getFocusTraits())
-		{
+		for (String focusTrait : state.getSong().getFocusTraits()) {
 			if (focusTraits.length() > 0)
 				focusTraits.append(", ");
 
 			focusTraits.append(focusTrait);
 		}
-		if (focusTraits.length() > 0)
-		{
+		if (focusTraits.length() > 0) {
 			// capitalize first letter
 			focusTraits.setCharAt(0, Character.toUpperCase(focusTraits.charAt(0)));
 
@@ -91,12 +86,9 @@ public class SongUI extends SplitPane implements Bindable, SplitPaneExtended
 
 		songTraits.setText(focusTraits.toString());
 
-		try
-		{
+		try {
 			albumCover.setImage(new URL(state.getSong().getAlbumArtUrl()));
-		}
-		catch (Exception e)
-		{
+		} catch (Exception e) {
 			albumCover.setImage("/img/beluga-player.svg");
 		}
 
@@ -104,35 +96,30 @@ public class SongUI extends SplitPane implements Bindable, SplitPaneExtended
 	}
 
 	@Override
-	public void setEnabled(boolean enabled)
-	{
+	public void setEnabled(boolean enabled) {
 		super.setEnabled(enabled);
 		PivotUI.enableComponent(likeButton, state.getSong().getSongRating() > 0 ? false : enabled);
 	}
 
 	@Override
-	public int getPrimaryRegionReserved()
-	{
+	public int getPrimaryRegionReserved() {
 		// space reserved for the album title
 		return 35;
 	}
 
 	@Override
-	public ImageView getImageView()
-	{
+	public ImageView getImageView() {
 		return albumCover;
 	}
 
 	@Override
-	public void setPrimaryRegionWidth(int width)
-	{
+	public void setPrimaryRegionWidth(int width) {
 		// set width to trigger text wrap
 		albumTitle.setWidthLimits(0, width);
 	}
 
 	@Override
-	public int getPrimaryRegionPadding()
-	{
+	public int getPrimaryRegionPadding() {
 		return 10;
 	}
 }

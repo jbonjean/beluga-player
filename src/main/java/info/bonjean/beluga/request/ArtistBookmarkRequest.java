@@ -24,17 +24,14 @@ package info.bonjean.beluga.request;
  * @author Julien Bonjean <julien@bonjean.info>
  * 
  */
-public class ArtistBookmarkRequest extends AuthentifiedJsonRequest
-{
+public class ArtistBookmarkRequest extends AuthentifiedJsonRequest {
 	private String trackToken;
 
-	public String getTrackToken()
-	{
+	public String getTrackToken() {
 		return trackToken;
 	}
 
-	public void setTrackToken(String trackToken)
-	{
+	public void setTrackToken(String trackToken) {
 		this.trackToken = trackToken;
 	}
 }

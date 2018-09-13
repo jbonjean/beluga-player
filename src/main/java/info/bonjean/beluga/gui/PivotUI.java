@@ -53,29 +53,22 @@ import org.apache.pivot.wtk.Window;
  * @author Julien Bonjean <julien@bonjean.info>
  *
  */
-public class PivotUI implements Application
-{
+public class PivotUI implements Application {
 	private Window window = null;
 	public static final String BXML_PATH = "/bxml/";
 
-	public static void startDesktopUI()
-	{
-		try
-		{
-			Preferences preferences = Preferences
-					.userNodeForPackage(DesktopApplicationContext.class);
+	public static void startDesktopUI() {
+		try {
+			Preferences preferences = Preferences.userNodeForPackage(DesktopApplicationContext.class);
 			preferences = preferences.node(PivotUI.class.getName());
-			if (!BelugaConfiguration.getInstance().getWindowRestoreEnabled())
-			{
+			if (!BelugaConfiguration.getInstance().getWindowRestoreEnabled()) {
 				preferences.clear();
 				preferences.putInt("width", 600);
 				preferences.putInt("height", 415);
 			}
 			preferences.putBoolean("resizable", false);
 			preferences.flush();
-		}
-		catch (BackingStoreException e)
-		{
+		} catch (BackingStoreException e) {
 		}
 
 		Theme.getTheme().set(LinkButton.class, FixedTerraLinkButtonSkin.class);
@@ -87,10 +80,8 @@ public class PivotUI implements Application
 		DesktopApplicationContext.main(PivotUI.class, new String[] {});
 	}
 
-	public static void enableComponent(Component component, boolean enabled)
-	{
-		if (component instanceof Button)
-		{
+	public static void enableComponent(Component component, boolean enabled) {
+		if (component instanceof Button) {
 			Button button = (Button) component;
 			// sync action to prevent the inconsistent exception
 			if (button.getAction() != null)
@@ -101,25 +92,21 @@ public class PivotUI implements Application
 			// re-enable the action, it could be used by other buttons!
 			if (button.getAction() != null)
 				button.getAction().setEnabled(true);
-		}
-		else
+		} else
 			component.setEnabled(enabled);
 	}
 
 	@Override
-	public void startup(Display display, Map<String, String> properties) throws Exception
-	{
+	public void startup(Display display, Map<String, String> properties) throws Exception {
 		BXMLSerializer bxmlSerializer = new BXMLSerializer();
-		window = (Window) bxmlSerializer.readObject(MainWindow.class.getResource(BXML_PATH
-				+ "main.bxml"), new Resources("i18n.messages"));
+		window = (Window) bxmlSerializer.readObject(MainWindow.class.getResource(BXML_PATH + "main.bxml"),
+				new Resources("i18n.messages"));
 		window.open(display);
 	}
 
 	@Override
-	public boolean shutdown(boolean optional)
-	{
-		if (window != null)
-		{
+	public boolean shutdown(boolean optional) {
+		if (window != null) {
 			window.close();
 		}
 
@@ -127,12 +114,10 @@ public class PivotUI implements Application
 	}
 
 	@Override
-	public void suspend()
-	{
+	public void suspend() {
 	}
 
 	@Override
-	public void resume()
-	{
+	public void resume() {
 	}
 }

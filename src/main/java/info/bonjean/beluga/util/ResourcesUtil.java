@@ -43,20 +43,17 @@ import com.kitfox.svg.app.beans.SVGIcon;
  * @author Julien Bonjean <julien@bonjean.info>
  * 
  */
-public class ResourcesUtil
-{
+public class ResourcesUtil {
 	private static Logger log = LoggerFactory.getLogger(ResourcesUtil.class);
 	private static final String SVG_NAME_PREFIX = "beluga_player_";
 
-	public static String shorten(String str, int length)
-	{
+	public static String shorten(String str, int length) {
 		if (str.length() > length)
 			return str.substring(0, length - 3) + "...";
 		return str;
 	}
 
-	public static SVGIcon getSVGIcon(String resource) throws IOException
-	{
+	public static SVGIcon getSVGIcon(String resource) throws IOException {
 		SVGUniverse universe = SVGCache.getSVGUniverse();
 		URI uri = universe.loadSVG(Notification.class.getResourceAsStream(resource),
 				SVG_NAME_PREFIX + FilenameUtils.getBaseName(resource));
@@ -65,49 +62,40 @@ public class ResourcesUtil
 		return svgIcon;
 	}
 
-	public static Image getSVGImage(String resource) throws IOException
-	{
+	public static Image getSVGImage(String resource) throws IOException {
 		SVGUniverse universe = SVGCache.getSVGUniverse();
 		URI uri = universe.loadSVG(Notification.class.getResourceAsStream(resource),
 				SVG_NAME_PREFIX + FilenameUtils.getBaseName(resource));
 		return new Drawing(universe.getDiagram(uri, true));
 	}
 
-	private static byte[] getResourceAsByteArray(String resource)
-	{
+	private static byte[] getResourceAsByteArray(String resource) {
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		InputStream bais;
-		try
-		{
+		try {
 			bais = ResourcesUtil.class.getResourceAsStream(resource);
 			int c;
-			while ((c = bais.read()) != -1)
-			{
+			while ((c = bais.read()) != -1) {
 				baos.write(c);
 			}
 			bais.close();
 			baos.close();
-		}
-		catch (Exception e)
-		{
+		} catch (Exception e) {
 			log.error("Cannot load resource " + resource);
 			System.exit(-1);
 		}
 		return baos.toByteArray();
 	}
 
-	public static String getResourceAsString(String resource)
-	{
+	public static String getResourceAsString(String resource) {
 		return new String(getResourceAsByteArray(resource));
 	}
 
-	public static String getResourceBase64(String resource)
-	{
+	public static String getResourceBase64(String resource) {
 		return Base64.encodeBase64String(getResourceAsByteArray(resource));
 	}
 
-	public static String getRemoteResourceBase64(String url) throws CommunicationException
-	{
+	public static String getRemoteResourceBase64(String url) throws CommunicationException {
 		return Base64.encodeBase64String(HTTPUtil.request(url));
 	}
 }

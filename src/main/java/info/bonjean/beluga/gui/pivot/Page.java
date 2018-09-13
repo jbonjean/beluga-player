@@ -26,24 +26,20 @@ import org.apache.pivot.wtk.Component;
  * @author Julien Bonjean <julien@bonjean.info>
  * 
  */
-public class Page
-{
+public class Page {
 	private Component component;
 	private String name;
 
-	public Page(String name, Component component)
-	{
+	public Page(String name, Component component) {
 		this.name = name;
 		this.component = component;
 	}
 
-	public Component getComponent()
-	{
+	public Component getComponent() {
 		return component;
 	}
 
-	public String getName()
-	{
+	public String getName() {
 		return name;
 	}
 }
