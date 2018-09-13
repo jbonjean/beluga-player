@@ -1,4 +1,4 @@
-<local:QuickMixUI xmlns:bxml="http://pivot.apache.org/bxml"
+<local:StationsUI xmlns:bxml="http://pivot.apache.org/bxml"
 	xmlns:local="info.bonjean.beluga.gui.pivot" xmlns="org.apache.pivot.wtk"
 	styles="{padding:6}">
 	<columns>
@@ -6,7 +6,7 @@
 	</columns>
 
 	<TablePane.Row height="-1">
-		<Label text="%manageQuickMixInfo"
+		<Label text="%manageStationsInfo"
 			styles="{padding:{bottom:5},color:'#999999',wrapText:'true'}" />
 	</TablePane.Row>
 
@@ -37,10 +37,10 @@
 						styles="{minimumAspectRatio:3}" />
 				</BoxPane>
 				<BoxPane styles="{horizontalAlignment:'right', padding:{top:5}}">
-					<PushButton bxml:id="submitButton" buttonData="%update"
-						styles="{minimumAspectRatio:3}" action="update-quickmix" />
+					<PushButton bxml:id="submitButton" buttonData="%delete"
+						styles="{minimumAspectRatio:3}" action="delete-stations" />
 				</BoxPane>
 			</TablePane.Row>
 		</TablePane>
 	</TablePane.Row>
-</local:QuickMixUI>
+</local:StationsUI>

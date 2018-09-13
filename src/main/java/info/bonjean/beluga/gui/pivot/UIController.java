@@ -47,6 +47,9 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 import org.apache.pivot.wtk.Action;
 import org.apache.pivot.wtk.ApplicationContext;
 import org.apache.pivot.wtk.Checkbox;
@@ -54,8 +57,6 @@ import org.apache.pivot.wtk.Component;
 import org.apache.pivot.wtk.Container;
 import org.apache.pivot.wtk.Menu;
 import org.apache.pivot.wtk.MenuButton;
-import org.apache.pivot.wtk.Sheet;
-import org.apache.pivot.wtk.SheetCloseListener;
 import org.apache.pivot.wtk.content.ListItem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -158,35 +159,6 @@ public class UIController implements InternalBusSubscriber {
 				} catch (Exception e) {
 					log.error(e.getMessage(), e);
 				}
-			}
-		});
-
-		Action.getNamedActions().put("delete-station", new AsyncAction(mainWindow) {
-			@Override
-			public void asyncPerform(Component source) throws BelugaException {
-				ApplicationContext.queueCallback(new Runnable() {
-					@Override
-					public void run() {
-						mainWindow.confirmStationDelete.open(mainWindow, new SheetCloseListener() {
-							@Override
-							public void sheetClosed(Sheet sheet) {
-								if (mainWindow.confirmStationDelete.getResult()
-										&& mainWindow.confirmStationDelete.getSelectedOptionIndex() == 1) {
-									try {
-										log.info("deletingStation");
-										pandoraClient.deleteStation(state.getStation());
-										log.info("stationDeleted");
-										updateStationsList();
-										selectStation(null);
-										playerUI.skip();
-									} catch (BelugaException e) {
-										log.error(e.getMessage(), e);
-									}
-								}
-							}
-						});
-					}
-				}, true);
 			}
 		});
 
@@ -387,10 +359,71 @@ public class UIController implements InternalBusSubscriber {
 				}, true);
 			}
 		});
+
+		Action.getNamedActions().put("delete-stations", new AsyncAction(mainWindow) {
+			@Override
+			public void asyncPerform(final Component source) throws BelugaException {
+				List<String> stationIds = new ArrayList<String>();
+				ApplicationContext.queueCallback(new Runnable() {
+					@Override
+					public void run() {
+						StationsUI quickMixUI;
+						try {
+							quickMixUI = getPage(StationsUI.class);
+						} catch (BelugaException e) {
+							log.error(e.getMessage(), e);
+							return;
+						}
+						for (int i = 0; i < quickMixUI.stationsPane.getLength(); i++) {
+							Checkbox station = (Checkbox) quickMixUI.stationsPane.get(i);
+							if (station.isSelected())
+								stationIds.add((String) station.getUserData().get("stationId"));
+						}
+					}
+				}, true);
+
+				// prepare a lookup map for stations
+				Map<String, Station> stationsLookup = state.getStationList().stream()
+						.collect(Collectors.toMap(Station::getStationId, Function.identity()));
+				log.info("deletingStations");
+				for (String stationId : stationIds) {
+					try {
+						Station station = stationsLookup.get(stationId);
+						if (station == null) {
+							log.error("Skipping station {} that disapeared", stationId);
+							continue;
+						}
+						log.debug("Deleting station {}", stationId);
+						pandoraClient.deleteStation(station);
+					} catch (BelugaException e) {
+						log.error(e.getMessage(), e);
+					}
+				}
+				log.info("stationDeleted");
+
+				// refresh stations.
+				updateStationsList();
+
+				// if the current station is contained in the list, switch to QuickMix.
+				if (stationIds.contains(state.getStation().getStationId())) {
+					selectStation(null);
+					playerUI.skip();
+				}
+
+				// redirect to the main screen
+				ApplicationContext.queueCallback(new Runnable() {
+					@Override
+					public void run() {
+						mainWindow.loadPage("song");
+					}
+				}, false);
+			}
+		});
+
 		Action.getNamedActions().put("update-quickmix", new AsyncAction(mainWindow) {
 			@Override
 			public void asyncPerform(final Component source) throws BelugaException {
-				final List<String> quickMixStationIds = new ArrayList<String>();
+				List<String> quickMixStationIds = new ArrayList<String>();
 				ApplicationContext.queueCallback(new Runnable() {
 					@Override
 					public void run() {
@@ -681,13 +714,6 @@ public class UIController implements InternalBusSubscriber {
 
 		// enable/disable Pandora related features if connected
 		if (enabled && connected) {
-			// disable delete station button if only 1 station (quickmix) or
-			// if quickmix is selected
-			if (state.getStationList().size() < 3 || (state.getStation() != null && state.getStation().isQuickMix()))
-				PivotUI.enableComponent(mainWindow.deleteStationButton, false);
-			else
-				PivotUI.enableComponent(mainWindow.deleteStationButton, true);
-
 			// there is no station details for the quickmix
 			if (state.getStation() != null && state.getStation().isQuickMix())
 				PivotUI.enableComponent(mainWindow.stationDetailsButton, false);

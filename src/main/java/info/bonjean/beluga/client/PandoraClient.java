@@ -1,18 +1,18 @@
 /*
  * Copyright (C) 2012-2018 Julien Bonjean <julien@bonjean.info>
- * 
+ *
  * This file is part of Beluga Player.
- * 
+ *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
  * Foundation; either version 3 of the License, or (at your option) any later
  * version.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
  * details.
- * 
+ *
  * You should have received a copy of the GNU General Public License along with
  * this program; if not, write to the Free Software Foundation, Inc., 51
  * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
@@ -63,9 +63,9 @@ import org.w3c.dom.NodeList;
 import com.google.gson.reflect.TypeToken;
 
 /**
- * 
+ *
  * @author Julien Bonjean <julien@bonjean.info>
- * 
+ *
  */
 public class PandoraClient {
 	private static final Logger log = LoggerFactory.getLogger(PandoraClient.class);
@@ -357,12 +357,12 @@ public class PandoraClient {
 	public void deleteStation(Station station) throws BelugaException {
 		ParameterMap params = getDefaultParameterMap();
 
-		DeleteStationRequest createStation = new DeleteStationRequest();
-		createStation.setSyncTime(PandoraUtil.getSyncTime());
-		createStation.setUserAuthToken(userAuthToken);
-		createStation.setStationToken(station.getStationToken());
+		DeleteStationRequest deleteStation = new DeleteStationRequest();
+		deleteStation.setSyncTime(PandoraUtil.getSyncTime());
+		deleteStation.setUserAuthToken(userAuthToken);
+		deleteStation.setStationToken(station.getStationToken());
 
-		HTTPUtil.<Result> request(Method.DELETE_STATION, params, createStation, true,
+		HTTPUtil.<Result> request(Method.DELETE_STATION, params, deleteStation, true,
 				new TypeToken<Response<Result>>() {
 				});
 	}

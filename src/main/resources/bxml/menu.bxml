@@ -30,8 +30,6 @@
 						<Menu.Item buttonData="%createStation" action="load">
 							<userData bxml="search" />
 						</Menu.Item>
-						<Menu.Item bxml:id="deleteStationButton" buttonData="%deleteStation"
-							action="delete-station" />
 						<Menu.Item bxml:id="stationDetailsButton" buttonData="%stationDetails"
 							action="load">
 							<userData bxml="station" />
@@ -45,6 +43,9 @@
 						</Menu.Item>
 					</Menu.Section>
 					<Menu.Section>
+						<Menu.Item buttonData="%manageStations" action="load">
+							<userData bxml="stations" />
+						</Menu.Item>
 						<Menu.Item buttonData="%manageQuickMix" action="load">
 							<userData bxml="quickmix" />
 						</Menu.Item>

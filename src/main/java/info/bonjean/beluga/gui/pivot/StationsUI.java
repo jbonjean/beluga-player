@@ -39,7 +39,7 @@ import org.apache.pivot.wtk.TablePane;
  * @author Julien Bonjean <julien@bonjean.info>
  *
  */
-public class QuickMixUI extends TablePane implements Bindable {
+public class StationsUI extends TablePane implements Bindable {
 	@BXML
 	protected BoxPane stationsPane;
 	@BXML
@@ -49,17 +49,8 @@ public class QuickMixUI extends TablePane implements Bindable {
 	@BXML
 	protected PushButton submitButton;
 
-	public QuickMixUI() {
-	}
-
 	@Override
 	public void initialize(Map<String, Object> namespace, URL location, Resources resources) {
-		// find the quickmix station, should be the first one but better be safe
-		Station quickmixStation = null;
-		for (Station station : BelugaState.getInstance().getStationList())
-			if (station.isQuickMix())
-				quickmixStation = station;
-
 		// create the checkboxes
 		for (Station station : BelugaState.getInstance().getStationList()) {
 			if (station.isQuickMix())
@@ -68,11 +59,6 @@ public class QuickMixUI extends TablePane implements Bindable {
 			Checkbox checkbox = new Checkbox(station.getStationName());
 			checkbox.getUserData().put("stationId", station.getStationId());
 
-			// if the station is member of the quickmix, select it
-			if (quickmixStation.getQuickMixStationIds().contains(station.getStationId()))
-				checkbox.setSelected(true);
-
-			// validator, disable submit button if no station selected
 			checkbox.getButtonPressListeners().add(new ButtonPressListener() {
 				@Override
 				public void buttonPressed(Button button) {
@@ -90,7 +76,7 @@ public class QuickMixUI extends TablePane implements Bindable {
 					Checkbox checkbox = (Checkbox) stationsPane.get(i);
 					checkbox.setSelected(true);
 				}
-				PivotUI.enableComponent(submitButton, true);
+				PivotUI.enableComponent(submitButton, false);
 			}
 		});
 
@@ -105,14 +91,23 @@ public class QuickMixUI extends TablePane implements Bindable {
 			}
 		});
 
-		PivotUI.enableComponent(submitButton, canSubmit());
+		PivotUI.enableComponent(submitButton, false);
 	}
 
 	private boolean canSubmit() {
+		// we need both a selected and unselect entries to enable the submit
+		// (unselected because we want to ensure there is always at least one station)
+		boolean hasSelectedEntry = false;
+		boolean hasUnSelectedEntry = false;
 		for (int i = 0; i < stationsPane.getLength(); i++) {
 			Checkbox checkbox = (Checkbox) stationsPane.get(i);
 			if (checkbox.isSelected())
+				hasSelectedEntry = true;
+			else
+				hasUnSelectedEntry = true;
+			if (hasSelectedEntry && hasUnSelectedEntry) {
 				return true;
+			}
 		}
 		return false;
 	}
