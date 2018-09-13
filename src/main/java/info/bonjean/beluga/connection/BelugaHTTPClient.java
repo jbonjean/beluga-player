@@ -22,9 +22,8 @@ package info.bonjean.beluga.connection;
 import info.bonjean.beluga.configuration.BelugaConfiguration;
 import info.bonjean.beluga.configuration.DNSProxy;
 import info.bonjean.beluga.exception.CommunicationException;
-
 import java.io.IOException;
-
+import java.nio.charset.StandardCharsets;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpException;
 import org.apache.http.HttpHost;
@@ -139,7 +138,7 @@ public class BelugaHTTPClient
 			ClientProtocolException, IOException
 	{
 		HttpResponse httpResponse = httpClient.execute(post);
-		String result = IOUtils.toString(httpResponse.getEntity().getContent());
+		String result = IOUtils.toString(httpResponse.getEntity().getContent(), StandardCharsets.UTF_8);
 		EntityUtils.consume(httpResponse.getEntity());
 		return result;
 	}

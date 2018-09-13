@@ -24,7 +24,7 @@ import info.bonjean.beluga.util.StringUtil;
 
 import java.io.InputStream;
 import java.net.URL;
-
+import java.nio.charset.StandardCharsets;
 import org.apache.commons.io.IOUtils;
 import org.apache.pivot.beans.BXML;
 import org.apache.pivot.beans.Bindable;
@@ -72,11 +72,9 @@ public class WelcomeUI extends TablePane implements Bindable
 			@Override
 			public void run()
 			{
-				InputStream in = null;
-				try
+				try(InputStream in = new URL("http://jbonjean.github.io/beluga-player/VERSION").openStream())
 				{
-					in = new URL("http://jbonjean.github.io/beluga-player/VERSION").openStream();
-					if (StringUtil.compareVersions(state.getVersion(), IOUtils.toString(in)) < 0)
+					if (StringUtil.compareVersions(state.getVersion(), IOUtils.toString(in, StandardCharsets.UTF_8)) < 0)
 					{
 						ApplicationContext.queueCallback(new Runnable()
 						{
@@ -93,11 +91,6 @@ public class WelcomeUI extends TablePane implements Bindable
 				catch (Exception e)
 				{
 					log.debug("error while checking for new version", e);
-				}
-				finally
-				{
-					if (in != null)
-						IOUtils.closeQuietly(in);
 				}
 			}
 		}.start();
