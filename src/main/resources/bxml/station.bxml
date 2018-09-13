@@ -4,7 +4,7 @@
 	<left>
 		<BoxPane orientation="vertical"
 			styles="{horizontalAlignment:'center', padding:10}">
-			<ImageView bxml:id="stationCover" styles="{fill: 'true'}" />
+			<ImageView bxml:id="stationCover" styles="{fill: 'true'}" asynchronous="true" />
 		</BoxPane>
 	</left>
 	<right>

@@ -5,7 +5,7 @@
 		<BoxPane orientation="vertical"
 			styles="{horizontalAlignment:'center', padding:10}">
 			<ImageView bxml:id="albumCover"
-				styles="{fill: 'true', horizontalAlignment:'left'}" />
+				styles="{fill: 'true', horizontalAlignment:'left'}" asynchronous="true" />
 			<Label bxml:id="albumTitle"
 				styles="{horizontalAlignment:'center', font:{bold:true},wrapText:true, padding:{left:10,right:10}}" />
 		</BoxPane>
