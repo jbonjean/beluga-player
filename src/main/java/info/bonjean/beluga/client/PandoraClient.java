@@ -19,6 +19,7 @@
  */
 package info.bonjean.beluga.client;
 
+import com.google.gson.reflect.TypeToken;
 import info.bonjean.beluga.configuration.BelugaConfiguration;
 import info.bonjean.beluga.exception.BelugaException;
 import info.bonjean.beluga.request.ArtistBookmarkDeleteRequest;
@@ -30,6 +31,7 @@ import info.bonjean.beluga.request.DeleteStationRequest;
 import info.bonjean.beluga.request.FeedbackDeleteRequest;
 import info.bonjean.beluga.request.FeedbackRequest;
 import info.bonjean.beluga.request.Method;
+import info.bonjean.beluga.request.NoParameterRequest;
 import info.bonjean.beluga.request.ParameterMap;
 import info.bonjean.beluga.request.PartnerAuthRequest;
 import info.bonjean.beluga.request.PlayListRequest;
@@ -42,6 +44,7 @@ import info.bonjean.beluga.request.StationListRequest;
 import info.bonjean.beluga.request.StationRequest;
 import info.bonjean.beluga.request.UserLoginRequest;
 import info.bonjean.beluga.response.Bookmarks;
+import info.bonjean.beluga.response.Category;
 import info.bonjean.beluga.response.Feedback;
 import info.bonjean.beluga.response.Response;
 import info.bonjean.beluga.response.Result;
@@ -49,18 +52,13 @@ import info.bonjean.beluga.response.Song;
 import info.bonjean.beluga.response.Station;
 import info.bonjean.beluga.util.HTTPUtil;
 import info.bonjean.beluga.util.PandoraUtil;
-
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.xml.parsers.DocumentBuilderFactory;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
-
-import com.google.gson.reflect.TypeToken;
 
 /**
  *
@@ -156,6 +154,20 @@ public class PandoraClient {
 				});
 
 		return result.getStations();
+	}
+
+	public List<Category> getGenreStationList() throws BelugaException {
+		ParameterMap params = getDefaultParameterMap();
+
+		NoParameterRequest stationList = new NoParameterRequest();
+		stationList.setSyncTime(PandoraUtil.getSyncTime());
+		stationList.setUserAuthToken(userAuthToken);
+
+		Result result = HTTPUtil.<Result> request(Method.GET_GENRE_STATIONS, params, stationList, true,
+				new TypeToken<Response<Result>>() {
+				});
+
+		return result.getCategories();
 	}
 
 	public Station getStation(Station station) throws BelugaException {

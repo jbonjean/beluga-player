@@ -1,3 +1,11 @@
+Beluga Player 0.12
+
+* Add support for AAC
+* Remove pause button (unreliable)
+* Add stations management menu
+* Add predefined stations
+* Load album art asynchronously
+
 Beluga Player 0.11
 
 * Fix startup bug with Java version

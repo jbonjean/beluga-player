@@ -58,6 +58,7 @@ import org.apache.pivot.wtk.Container;
 import org.apache.pivot.wtk.Menu;
 import org.apache.pivot.wtk.MenuButton;
 import org.apache.pivot.wtk.content.ListItem;
+import org.apache.pivot.wtk.content.TreeNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -459,6 +460,45 @@ public class UIController implements InternalBusSubscriber {
 				}, false);
 			}
 		});
+
+		Action.getNamedActions().put("create-station-from-genre", new AsyncAction(mainWindow) {
+			@Override
+			public void asyncPerform(final Component source) throws BelugaException {
+				List<Station> station = new ArrayList<>(); // dirty workaround to avoid thread issue.
+				ApplicationContext.queueCallback(new Runnable() {
+					@Override
+					public void run() {
+						GenresUI genresUI = findComponent(state.getPage().getComponent(), GenresUI.class, 2);
+						if (genresUI == null) {
+							log.error("invalidActionCall");
+							return;
+						}
+						Object node = genresUI.genresTree.getSelectedNode();
+						if (node != null && node.getClass().equals(TreeNode.class)) {
+							TreeNode treeNode = ((TreeNode) node);
+							if (treeNode.getUserData() instanceof Station)
+								station.add((Station) treeNode.getUserData());
+						}
+					}
+				}, true);
+
+				if (!station.isEmpty()) {
+					log.info("creatingNewStation");
+					pandoraClient.addStation(station.get(0).getStationToken());
+					log.info("newStationCreated");
+					updateStationsList();
+				}
+
+				// redirect to the main screen
+				ApplicationContext.queueCallback(new Runnable() {
+					@Override
+					public void run() {
+						mainWindow.loadPage("song");
+					}
+				}, false);
+			}
+		});
+
 		Action.getNamedActions().put("create-account", new AsyncAction(mainWindow) {
 			@Override
 			public void asyncPerform(final Component source) throws BelugaException {
@@ -671,6 +711,28 @@ public class UIController implements InternalBusSubscriber {
 
 	private boolean isPlaybackStarted() {
 		return pandoraClient.isLoggedIn() && state.getSong() != null;
+	}
+
+	@SuppressWarnings("unchecked")
+	private <T extends Component> T findComponent(Component parent, Class<T> clazz, int maxDepth) {
+		// quick and dirty last resort solution, find a specific component in the tree.
+		// TODO: store references instead of this brute-force approach.
+
+		if (maxDepth == 0)
+			return null;
+
+		if (parent instanceof Container && !(parent instanceof Menu)) {
+			Iterator<Component> iterator = ((Container) parent).iterator();
+			while (iterator.hasNext()) {
+				Component child = iterator.next();
+				if (child.getClass().equals(clazz))
+					return (T) child;
+				child = findComponent(child, clazz, maxDepth - 1);
+				if (child != null)
+					return (T) child;
+			}
+		}
+		return null;
 	}
 
 	private void recursiveEnableComponent(Component component, boolean enabled) {

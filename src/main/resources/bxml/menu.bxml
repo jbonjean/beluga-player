@@ -28,7 +28,7 @@
 				<Menu>
 					<Menu.Section>
 						<Menu.Item buttonData="%createStation" action="load">
-							<userData bxml="search" />
+							<userData bxml="station_create" />
 						</Menu.Item>
 						<Menu.Item bxml:id="stationDetailsButton" buttonData="%stationDetails"
 							action="load">

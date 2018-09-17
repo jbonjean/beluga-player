@@ -1,6 +1,6 @@
-<local:SearchUI xmlns:bxml="http://pivot.apache.org/bxml"
+<local:SearchUI TabPane.tabData="%search" xmlns:bxml="http://pivot.apache.org/bxml"
 	xmlns:local="info.bonjean.beluga.gui.pivot" xmlns:content="org.apache.pivot.wtk.content"
-	xmlns="org.apache.pivot.wtk" styles="{padding:15}">
+	xmlns="org.apache.pivot.wtk" styles="{padding:2}">
 	<columns>
 		<TablePane.Column width="1*" />
 	</columns>

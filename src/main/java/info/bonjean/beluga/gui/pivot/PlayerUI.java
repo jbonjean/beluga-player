@@ -53,6 +53,7 @@ import org.slf4j.LoggerFactory;
  */
 public class PlayerUI extends TablePane implements Bindable {
 	private static Logger log = LoggerFactory.getLogger(PlayerUI.class);
+
 	@BXML
 	private MainWindow mainWindow;
 	@BXML
