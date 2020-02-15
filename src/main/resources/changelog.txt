@@ -5,6 +5,8 @@ Beluga Player 0.12
 * Add stations management menu
 * Add predefined stations
 * Load album art asynchronously
+* Remove portaller (abandoned)
+* Add support for socks5 proxy
 
 Beluga Player 0.11
 
