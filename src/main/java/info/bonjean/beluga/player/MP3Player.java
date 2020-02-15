@@ -69,8 +69,10 @@ public class MP3Player extends AudioPlayer {
 		try {
 			while (active) {
 				Header h = bitstream.readFrame();
-				if (h == null)
-					continue;
+				if (h == null) {
+					log.debug("end of the stream has been reached");
+					break;
+				}
 
 				try {
 					SampleBuffer output = (SampleBuffer) decoder.decodeFrame(h, bitstream);
