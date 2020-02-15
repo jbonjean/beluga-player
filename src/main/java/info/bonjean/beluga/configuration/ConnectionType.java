@@ -40,7 +40,7 @@ public enum ConnectionType {
 	}
 
 	public static ConnectionType get(String id) {
-		return lookup.get(id);
+		return lookup.getOrDefault(id, DIRECT);
 	}
 
 	private ConnectionType(String id, String name) {

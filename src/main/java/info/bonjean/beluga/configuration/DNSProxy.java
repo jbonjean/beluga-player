@@ -38,7 +38,7 @@ public enum DNSProxy {
 	}
 
 	public static DNSProxy get(String id) {
-		return lookup.get(id);
+		return lookup.getOrDefault(id, PROXY_DNS);
 	}
 
 	private DNSProxy(String id, String name, String primaryServer, String secondaryServer) {
