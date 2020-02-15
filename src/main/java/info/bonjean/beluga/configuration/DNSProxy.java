@@ -29,8 +29,8 @@ import java.util.Map;
  *
  */
 public enum DNSProxy {
-	PROXY_DNS("proxy-dns", "Proxy DNS", "74.207.242.213", "50.116.28.138"),
-	PORTALLER("portaller", "Portaller", "107.170.15.247", "77.88.8.8");
+	PROXY_DNS("proxy-dns", "Proxy DNS", "74.207.242.213", "50.116.28.138");
+
 	private final String id;
 	private final String name;
 	private final String primaryServer;

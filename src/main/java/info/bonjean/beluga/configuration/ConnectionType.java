@@ -32,7 +32,6 @@ public enum ConnectionType {
 	// TODO: handle i18n
 	DIRECT("direct", "No Proxy"),
 	PROXY_DNS("proxy-dns", "Proxy DNS"),
-	PORTALLER("portaller", "Portaller"),
 	HTTP_PROXY("http-proxy", "HTTP Proxy");
 	private final String id;
 	private final String name;
