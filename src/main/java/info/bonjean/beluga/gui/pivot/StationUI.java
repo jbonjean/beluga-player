@@ -22,11 +22,9 @@ package info.bonjean.beluga.gui.pivot;
 import info.bonjean.beluga.client.BelugaState;
 import info.bonjean.beluga.gui.pivot.core.SplitPaneExtended;
 import info.bonjean.beluga.response.Feedback;
-
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-
 import org.apache.pivot.beans.BXML;
 import org.apache.pivot.beans.Bindable;
 import org.apache.pivot.collections.Map;
@@ -37,6 +35,7 @@ import org.apache.pivot.wtk.Label;
 import org.apache.pivot.wtk.Menu;
 import org.apache.pivot.wtk.MenuButton;
 import org.apache.pivot.wtk.SplitPane;
+import org.apache.pivot.wtk.TextInput;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -45,7 +44,7 @@ public class StationUI extends SplitPane implements Bindable, SplitPaneExtended 
 	@BXML
 	protected ImageView stationCover;
 	@BXML
-	protected Label stationName;
+	protected TextInput stationNameInput;
 	@BXML
 	protected Label stationCreationDate;
 	@BXML
@@ -64,7 +63,7 @@ public class StationUI extends SplitPane implements Bindable, SplitPaneExtended 
 	@Override
 	public void initialize(Map<String, Object> namespace, URL location, Resources resources) {
 		this.resources = resources;
-		stationName.setText(state.getStation().getStationName());
+		stationNameInput.setText(state.getStation().getStationName());
 
 		if (state.getStation().getArtUrl().isEmpty())
 			stationCover.setImage("/img/beluga-player.svg");

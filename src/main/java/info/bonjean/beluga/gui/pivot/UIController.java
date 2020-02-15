@@ -610,6 +610,16 @@ public class UIController implements InternalBusSubscriber {
 				}, false);
 			}
 		});
+		Action.getNamedActions().put("rename-station", new AsyncAction(mainWindow) {
+			@Override
+			public void asyncPerform(final Component source) throws BelugaException {
+				final StationUI stationUI = getPage(StationUI.class);
+				log.info("renamingStation");
+				pandoraClient.renameStation(state.getStation(), stationUI.stationNameInput.getText());
+				updateStationsList();
+				playerUI.refreshStationName();
+			}
+		});
 	}
 
 	private void clearResources() {
@@ -687,6 +697,16 @@ public class UIController implements InternalBusSubscriber {
 			});
 		}
 		state.setStationList(stationList);
+		// also update the currently select station
+		if (state.getStation() != null) {
+			// TODO: we should probably do something if we don't find it in the new list...
+			for (Station station : stationList) {
+				if (station.getStationId().equals(state.getStation().getStationId())) {
+					state.setStation(station);
+					break;
+				}
+			}
+		}
 	}
 
 	private boolean isPlaybackStarted() {

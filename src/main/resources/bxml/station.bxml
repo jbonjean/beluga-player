@@ -17,8 +17,10 @@
 					<TablePane.Row height="1*">
 						<BoxPane orientation="vertical"
 							styles="{fill:true,horizontalAlignment:'left',padding: 10}">
-							<Label bxml:id="stationName" preferredWidth="230"
-								styles="{horizontalAlignment:'center', font:{bold:true}, padding:10}" />
+							<BoxPane>
+								<TextInput bxml:id="stationNameInput" />
+								<PushButton bxml:id="submitButton" buttonData="%update" styles="{minimumAspectRatio:3}" action="rename-station" />
+							</BoxPane>
 							<Label bxml:id="stationCreationDate" textKey="%creation" />
 							<Label bxml:id="stationGenres" textKey="%genre" />
 						</BoxPane>

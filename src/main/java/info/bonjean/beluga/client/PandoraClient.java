@@ -35,6 +35,7 @@ import info.bonjean.beluga.request.NoParameterRequest;
 import info.bonjean.beluga.request.ParameterMap;
 import info.bonjean.beluga.request.PartnerAuthRequest;
 import info.bonjean.beluga.request.PlayListRequest;
+import info.bonjean.beluga.request.RenameStationRequest;
 import info.bonjean.beluga.request.SearchRequest;
 import info.bonjean.beluga.request.SetQuickMixRequest;
 import info.bonjean.beluga.request.SongBookmarkDeleteRequest;
@@ -370,6 +371,20 @@ public class PandoraClient {
 		deleteStation.setStationToken(station.getStationToken());
 
 		HTTPUtil.<Result> request(Method.DELETE_STATION, params, deleteStation, true,
+				new TypeToken<Response<Result>>() {
+				});
+	}
+
+	public void renameStation(Station station, String newName) throws BelugaException {
+		ParameterMap params = getDefaultParameterMap();
+
+		RenameStationRequest renameStation = new RenameStationRequest();
+		renameStation.setSyncTime(PandoraUtil.getSyncTime());
+		renameStation.setUserAuthToken(userAuthToken);
+		renameStation.setStationToken(station.getStationToken());
+		renameStation.setStationName(newName);
+
+		HTTPUtil.<Result> request(Method.RENAME_STATION, params, renameStation, true,
 				new TypeToken<Response<Result>>() {
 				});
 	}

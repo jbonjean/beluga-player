@@ -4,6 +4,7 @@ Beluga Player 0.12
 * Remove pause button (unreliable)
 * Add stations management menu
 * Add predefined stations
+* Add support for station rename
 * Load album art asynchronously
 * Remove portaller (abandoned)
 * Add support for socks5 proxy

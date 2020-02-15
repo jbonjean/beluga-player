@@ -308,4 +308,14 @@ public class PlayerUI extends TablePane implements Bindable {
 			playerUISyncFuture.cancel(false);
 		}
 	}
+
+	public void refreshStationName() {
+		ApplicationContext.queueCallback(new Runnable() {
+			@Override
+			public void run() {
+				// update station name
+				stationName.setText(state.getStation().getStationName());
+			}
+		}, false);
+	}
 }
