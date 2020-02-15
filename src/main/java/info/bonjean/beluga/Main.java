@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2018 Julien Bonjean <julien@bonjean.info>
+ * Copyright (C) 2012-2020 Julien Bonjean <julien@bonjean.info>
  *
  * This file is part of Beluga Player.
  *
@@ -30,12 +30,8 @@ import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.LoggerConfig;
 
 /**
- *
- * @author Julien Bonjean <julien@bonjean.info>
- *
  * - Use the option -Ddebug=1 to run in debug mode.
  * - Use the option -Dlog.level=LEVEL to control log level.
- *
  */
 public class Main {
 	public static void main(String[] args) {

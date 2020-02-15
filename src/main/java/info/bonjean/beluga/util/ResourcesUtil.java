@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2018 Julien Bonjean <julien@bonjean.info>
+ * Copyright (C) 2012-2020 Julien Bonjean <julien@bonjean.info>
  *
  * This file is part of Beluga Player.
  *
@@ -35,11 +35,6 @@ import org.apache.pivot.wtk.media.Image;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
- *
- * @author Julien Bonjean <julien@bonjean.info>
- *
- */
 public class ResourcesUtil {
 	private static Logger log = LoggerFactory.getLogger(ResourcesUtil.class);
 	private static final String SVG_NAME_PREFIX = "beluga_player_";

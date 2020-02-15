@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2018 Julien Bonjean <julien@bonjean.info>
+ * Copyright (C) 2012-2020 Julien Bonjean <julien@bonjean.info>
  *
  * This file is part of Beluga Player.
  *
@@ -24,12 +24,8 @@ import org.apache.pivot.wtk.Insets;
 import org.apache.pivot.wtk.skin.terra.TerraLinkButtonSkin;
 
 /**
- *
- * @author Julien Bonjean <julien@bonjean.info>
- *
  * Fixes the NPE in ButtonDataRenderer when using an icon and the fillIcon=true
  * property value.
- *
  */
 public class FixedTerraLinkButtonSkin extends TerraLinkButtonSkin {
 	private Insets padding;

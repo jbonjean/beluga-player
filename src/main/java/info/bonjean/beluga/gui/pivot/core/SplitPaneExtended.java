@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2018 Julien Bonjean <julien@bonjean.info>
+ * Copyright (C) 2012-2020 Julien Bonjean <julien@bonjean.info>
  *
  * This file is part of Beluga Player.
  *
@@ -21,11 +21,6 @@ package info.bonjean.beluga.gui.pivot.core;
 
 import org.apache.pivot.wtk.ImageView;
 
-/**
- *
- * @author Julien Bonjean <julien@bonjean.info>
- *
- */
 public interface SplitPaneExtended {
 	public ImageView getImageView();
 

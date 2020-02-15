@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2018 Julien Bonjean <julien@bonjean.info>
+ * Copyright (C) 2012-2020 Julien Bonjean <julien@bonjean.info>
  *
  * This file is part of Beluga Player.
  *
@@ -19,11 +19,6 @@
  */
 package info.bonjean.beluga.player;
 
-/**
- *
- * @author Julien Bonjean <julien@bonjean.info>
- *
- */
 public interface AudioDevice {
 	public void close();
 

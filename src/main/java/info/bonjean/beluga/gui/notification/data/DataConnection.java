@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2018 Julien Bonjean <julien@bonjean.info>
+ * Copyright (C) 2012-2020 Julien Bonjean <julien@bonjean.info>
  *
  * This file is part of Beluga Player.
  *
@@ -27,11 +27,6 @@ import java.net.URLConnection;
 
 import javax.xml.bind.DatatypeConverter;
 
-/**
- *
- * @author Julien Bonjean <julien@bonjean.info>
- *
- */
 public class DataConnection extends URLConnection {
 
 	public DataConnection(URL u) {

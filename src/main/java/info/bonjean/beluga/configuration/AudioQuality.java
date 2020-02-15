@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2018 Julien Bonjean <julien@bonjean.info>
+ * Copyright (C) 2012-2020 Julien Bonjean <julien@bonjean.info>
  *
  * This file is part of Beluga Player.
  *
@@ -23,13 +23,9 @@ import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- *
- * @author Julien Bonjean <julien@bonjean.info>
- *
- */
 public enum AudioQuality {
 	LOW("low", "AAC Low"), MEDIUM("medium", "AAC Medium"), HIGH("high", "AAC High"), MP3("mp3", "MP3");
+
 	private final String id;
 	private final String name;
 	private static final Map<String, AudioQuality> lookup = new HashMap<String, AudioQuality>();

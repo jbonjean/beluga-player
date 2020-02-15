@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2018 Julien Bonjean <julien@bonjean.info>
+ * Copyright (C) 2012-2020 Julien Bonjean <julien@bonjean.info>
  *
  * This file is part of Beluga Player.
  *
@@ -36,11 +36,6 @@ import org.apache.pivot.wtk.TablePane;
 import org.apache.pivot.wtk.TextInput;
 import org.apache.pivot.wtk.content.ListItem;
 
-/**
- *
- * @author Julien Bonjean <julien@bonjean.info>
- *
- */
 public class PreferencesUI extends TablePane implements Bindable {
 	@BXML
 	protected TextInput emailAddressInput;

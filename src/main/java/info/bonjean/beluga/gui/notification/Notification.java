@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2018 Julien Bonjean <julien@bonjean.info>
+ * Copyright (C) 2012-2020 Julien Bonjean <julien@bonjean.info>
  *
  * This file is part of Beluga Player.
  *
@@ -44,11 +44,6 @@ import ch.swingfx.twinkle.window.Positions;
 
 import com.kitfox.svg.app.beans.SVGIcon;
 
-/**
- *
- * @author Julien Bonjean <julien@bonjean.info>
- *
- */
 public class Notification {
 	private static Logger log = LoggerFactory.getLogger(Notification.class);
 

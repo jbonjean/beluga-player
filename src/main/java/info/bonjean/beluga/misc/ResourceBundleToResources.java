@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2018 Julien Bonjean <julien@bonjean.info>
+ * Copyright (C) 2012-2020 Julien Bonjean <julien@bonjean.info>
  *
  * This file is part of Beluga Player.
  *
@@ -24,13 +24,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Properties;
 
-/**
- *
- * @author Julien Bonjean
- *
- * I find it a lot easier to maintain a properties file.
- *
- */
 public class ResourceBundleToResources {
 	private static final String[] RESOURCES = { "messages" };
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2018 Julien Bonjean <julien@bonjean.info>
+ * Copyright (C) 2012-2020 Julien Bonjean <julien@bonjean.info>
  *
  * This file is part of Beluga Player.
  *
@@ -25,11 +25,7 @@ import org.apache.pivot.wtk.media.Drawing;
 import org.apache.pivot.wtk.skin.terra.TerraSplitPaneSkin;
 
 /**
- *
- * @author Julien Bonjean <julien@bonjean.info>
- *
  * Add support for ratio keep of the left side.
- *
  */
 public class BelugaSplitPaneSkin extends TerraSplitPaneSkin {
 	// fix for SVG (no max size)

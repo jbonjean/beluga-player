@@ -61,7 +61,6 @@ import org.apache.pivot.wtk.skin.terra.FadeWindowTransition;
  * Terra suggestion popup skin.
  *
  * Modified to accept mouse scrolling, disable text input population and dynamically move depending on the size.
- *
  */
 public class BelugaSuggestionPopupSkin extends WindowSkin
     implements SuggestionPopupListener, SuggestionPopupSelectionListener, SuggestionPopupStateListener {

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2018 Julien Bonjean <julien@bonjean.info>
+ * Copyright (C) 2012-2020 Julien Bonjean <julien@bonjean.info>
  *
  * This file is part of Beluga Player.
  *
@@ -21,11 +21,6 @@ package info.bonjean.beluga.bus;
 
 import info.bonjean.beluga.response.Song;
 
-/**
- *
- * @author Julien Bonjean <julien@bonjean.info>
- *
- */
 public class PlaybackEvent {
 	public enum Type {
 		SONG_START, SONG_RESUME, SONG_FINISH, PANDORA_CONNECTED, PANDORA_DISCONNECTED;

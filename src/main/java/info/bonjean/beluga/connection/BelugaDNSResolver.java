@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2018 Julien Bonjean <julien@bonjean.info>
+ * Copyright (C) 2012-2020 Julien Bonjean <julien@bonjean.info>
  *
  * This file is part of Beluga Player.
  *
@@ -40,11 +40,7 @@ import org.xbill.DNS.TextParseException;
 import org.xbill.DNS.Type;
 
 /**
- *
- * @author Julien Bonjean <julien@bonjean.info>
- *
  * Custom DNS resolver
- *
  */
 public class BelugaDNSResolver implements DnsResolver {
 	private static final Logger log = LoggerFactory.getLogger(BelugaDNSResolver.class);

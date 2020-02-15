@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2018 Julien Bonjean <julien@bonjean.info>
+ * Copyright (C) 2012-2020 Julien Bonjean <julien@bonjean.info>
  *
  * This file is part of Beluga Player.
  *
@@ -30,11 +30,6 @@ import java.util.Properties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
- *
- * @author Julien Bonjean <julien@bonjean.info>
- *
- */
 public class BelugaConfiguration {
 	private static Logger log = LoggerFactory.getLogger(BelugaConfiguration.class);
 	public static final String CONFIGURATION_DEFAULT_VERSION = "(dev)";

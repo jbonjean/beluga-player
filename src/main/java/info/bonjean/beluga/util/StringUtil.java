@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2018 Julien Bonjean <julien@bonjean.info>
+ * Copyright (C) 2012-2020 Julien Bonjean <julien@bonjean.info>
  *
  * This file is part of Beluga Player.
  *
@@ -22,11 +22,6 @@ package info.bonjean.beluga.util;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.maven.artifact.versioning.DefaultArtifactVersion;
 
-/**
- *
- * @author Julien Bonjean <julien@bonjean.info>
- *
- */
 public class StringUtil {
 	private static String sanitizeVersion(String version) {
 		String sanitized = StringUtils.strip(version, " \n\r");

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2018 Julien Bonjean <julien@bonjean.info>
+ * Copyright (C) 2012-2020 Julien Bonjean <julien@bonjean.info>
  *
  * This file is part of Beluga Player.
  *
@@ -22,11 +22,6 @@ package info.bonjean.beluga.player;
 import info.bonjean.beluga.exception.InternalException;
 import javax.sound.sampled.AudioFormat;
 
-/**
- *
- * @author Julien Bonjean <julien@bonjean.info>
- *
- */
 public class DummyAudioDevice implements AudioDevice {
 	private static final int TIME_SLEEP_OFFSET = 500;
 	private AudioFormat audioFormat;

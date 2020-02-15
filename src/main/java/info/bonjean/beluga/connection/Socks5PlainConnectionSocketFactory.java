@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2018 Julien Bonjean <julien@bonjean.info>
+ * Copyright (C) 2012-2020 Julien Bonjean <julien@bonjean.info>
  *
  * This file is part of Beluga Player.
  *
@@ -27,11 +27,6 @@ import org.apache.http.HttpHost;
 import org.apache.http.conn.socket.PlainConnectionSocketFactory;
 import org.apache.http.protocol.HttpContext;
 
-/**
-*
-* @author Julien Bonjean <julien@bonjean.info>
-*
-*/
 public class Socks5PlainConnectionSocketFactory extends PlainConnectionSocketFactory {
 	private final Proxy socks5Proxy;
 

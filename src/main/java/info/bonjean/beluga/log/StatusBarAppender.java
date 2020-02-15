@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2018 Julien Bonjean <julien@bonjean.info>
+ * Copyright (C) 2012-2020 Julien Bonjean <julien@bonjean.info>
  *
  * This file is part of Beluga Player.
  *
@@ -40,11 +40,6 @@ import org.apache.pivot.util.Resources;
 import org.apache.pivot.wtk.ApplicationContext;
 import org.apache.pivot.wtk.Label;
 
-/**
- *
- * @author Julien Bonjean <julien@bonjean.info>
- *
- */
 @Plugin(name = "StatusBar", category = "Core", elementType = "appender", printObject = true)
 public final class StatusBarAppender extends AbstractAppender {
 	private static final long LOG_MESSAGE_DURATION = 3 * 1000;

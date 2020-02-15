@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2018 Julien Bonjean <julien@bonjean.info>
+ * Copyright (C) 2012-2020 Julien Bonjean <julien@bonjean.info>
  *
  * This file is part of Beluga Player.
  *
@@ -34,11 +34,6 @@ import org.apache.pivot.wtk.Checkbox;
 import org.apache.pivot.wtk.PushButton;
 import org.apache.pivot.wtk.TablePane;
 
-/**
- *
- * @author Julien Bonjean <julien@bonjean.info>
- *
- */
 public class StationsUI extends TablePane implements Bindable {
 	@BXML
 	protected BoxPane stationsPane;

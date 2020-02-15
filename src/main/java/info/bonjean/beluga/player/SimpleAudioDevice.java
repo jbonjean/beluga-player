@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2018 Julien Bonjean <julien@bonjean.info>
+ * Copyright (C) 2012-2020 Julien Bonjean <julien@bonjean.info>
  *
  * This file is part of Beluga Player.
  *
@@ -27,11 +27,6 @@ import javax.sound.sampled.Line;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.SourceDataLine;
 
-/**
- *
- * @author Julien Bonjean <julien@bonjean.info>
- *
- */
 public class SimpleAudioDevice implements AudioDevice {
 	private SourceDataLine sourceDataLine;
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2018 Julien Bonjean <julien@bonjean.info>
+ * Copyright (C) 2012-2020 Julien Bonjean <julien@bonjean.info>
  *
  * This file is part of Beluga Player.
  *
@@ -45,11 +45,6 @@ import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
- *
- * @author Julien Bonjean <julien@bonjean.info>
- *
- */
 public class BelugaHTTPClient {
 	private static final Logger log = LoggerFactory.getLogger(BelugaHTTPClient.class);
 	public static final BelugaHTTPClient PANDORA_API_INSTANCE = new BelugaHTTPClient(4000, 4000, 4000, 2);

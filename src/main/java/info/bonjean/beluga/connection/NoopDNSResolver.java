@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2018 Julien Bonjean <julien@bonjean.info>
+ * Copyright (C) 2012-2020 Julien Bonjean <julien@bonjean.info>
  *
  * This file is part of Beluga Player.
  *
@@ -24,11 +24,7 @@ import java.net.UnknownHostException;
 import org.apache.http.conn.DnsResolver;
 
 /**
- *
- * @author Julien Bonjean <julien@bonjean.info>
- *
  * Noop DNS resolver
- *
  */
 public class NoopDNSResolver implements DnsResolver {
 	@Override

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2018 Julien Bonjean <julien@bonjean.info>
+ * Copyright (C) 2012-2020 Julien Bonjean <julien@bonjean.info>
  *
  * This file is part of Beluga Player.
  *
@@ -27,13 +27,9 @@ import org.apache.pivot.wtk.MenuButton;
 import org.apache.pivot.wtk.skin.terra.TerraMenuButtonSkin;
 
 /**
- *
- * @author Julien Bonjean <julien@bonjean.info>
- *
  * Simplifies the menu-button skin to behave the same way as other menu
  * buttons.
  * Also fixes the focusable value to false (should be configurable?).
- *
  */
 public class BelugaMenuButtonSkin extends TerraMenuButtonSkin {
 	@Override

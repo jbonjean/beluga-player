@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2018 Julien Bonjean <julien@bonjean.info>
+ * Copyright (C) 2012-2020 Julien Bonjean <julien@bonjean.info>
  *
  * This file is part of Beluga Player.
  *
@@ -64,15 +64,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- *
- * @author Julien Bonjean <julien@bonjean.info>
- *
  * This is the main controller, that acts as a "glue" between the UI and the
  * backend.
  * Any idea to improve this design is welcome.
  *
  * TODO: more cleanup to do...
- *
  */
 public class UIController implements InternalBusSubscriber {
 	private static Logger log = LoggerFactory.getLogger(UIController.class);

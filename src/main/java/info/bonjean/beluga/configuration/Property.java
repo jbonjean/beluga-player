@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2018 Julien Bonjean <julien@bonjean.info>
+ * Copyright (C) 2012-2020 Julien Bonjean <julien@bonjean.info>
  *
  * This file is part of Beluga Player.
  *
@@ -19,11 +19,6 @@
  */
 package info.bonjean.beluga.configuration;
 
-/**
- *
- * @author Julien Bonjean <julien@bonjean.info>
- *
- */
 public enum Property {
 	CONFIGURATION_VERSION("configuration.version"),
 	USER("user"),
