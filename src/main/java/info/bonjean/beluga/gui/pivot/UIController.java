@@ -240,7 +240,7 @@ public class UIController implements InternalBusSubscriber {
 			}
 		});
 
-		Action.getNamedActions().put("next-song", new AsyncAction(mainWindow) {
+		Action.getNamedActions().put("next-song", new AsyncAction(mainWindow, true, true) {
 			@Override
 			public void asyncPerform(Component source) throws BelugaException {
 				log.info("skippingSong");
@@ -248,7 +248,7 @@ public class UIController implements InternalBusSubscriber {
 			}
 		});
 
-		Action.getNamedActions().put("select-station", new AsyncAction(mainWindow) {
+		Action.getNamedActions().put("select-station", new AsyncAction(mainWindow, true, true) {
 			@Override
 			public void asyncPerform(Component source) throws BelugaException {
 				log.info("changingStation");
@@ -265,7 +265,7 @@ public class UIController implements InternalBusSubscriber {
 				log.info("feedbackSent");
 			}
 		});
-		Action.getNamedActions().put("ban", new AsyncAction(mainWindow) {
+		Action.getNamedActions().put("ban", new AsyncAction(mainWindow, true, true) {
 			@Override
 			public void asyncPerform(final Component source) throws BelugaException {
 				log.info("sendingFeedback");
@@ -274,7 +274,7 @@ public class UIController implements InternalBusSubscriber {
 				playerUI.skip();
 			}
 		});
-		Action.getNamedActions().put("sleep", new AsyncAction(mainWindow) {
+		Action.getNamedActions().put("sleep", new AsyncAction(mainWindow, true, true) {
 			@Override
 			public void asyncPerform(final Component source) throws BelugaException {
 				log.info("sendingFeedback");
@@ -620,7 +620,7 @@ public class UIController implements InternalBusSubscriber {
 				playerUI.refreshStationName();
 			}
 		});
-		Action.getNamedActions().put("mute", new AsyncAction(mainWindow) {
+		Action.getNamedActions().put("mute", new AsyncAction(mainWindow, false, true) {
 			@Override
 			public void asyncPerform(final Component source) throws BelugaException {
 				playerUI.toggleMute();
@@ -812,9 +812,6 @@ public class UIController implements InternalBusSubscriber {
 		}
 		mainWindow.pandoraMenu.setEnabled(connected);
 		mainWindow.stationsSearch.setEnabled(connected);
-
-		// update player UI
-		recursiveEnableComponent(playerUI, !playerUI.isClosed());
 	}
 
 	@Override
@@ -855,13 +852,5 @@ public class UIController implements InternalBusSubscriber {
 		case PANDORA_CONNECTED:
 		case SONG_RESUME:
 		}
-
-		ApplicationContext.queueCallback(new Runnable() {
-			@Override
-			public void run() {
-				// update player UI
-				recursiveEnableComponent(playerUI, !playerUI.isClosed());
-			}
-		}, false);
 	}
 }

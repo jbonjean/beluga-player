@@ -21,7 +21,6 @@ package info.bonjean.beluga.gui.pivot;
 
 import info.bonjean.beluga.exception.BelugaException;
 import info.bonjean.beluga.log.StatusBarAppender;
-
 import org.apache.pivot.wtk.Action;
 import org.apache.pivot.wtk.ApplicationContext;
 import org.apache.pivot.wtk.Component;
@@ -31,26 +30,28 @@ import org.slf4j.LoggerFactory;
 public abstract class AsyncAction extends Action {
 	private static Logger log = LoggerFactory.getLogger(AsyncAction.class);
 
-	private MainWindow mainWindow;
-	private boolean disableUI;
+	private final MainWindow mainWindow;
+	private final boolean disableMainWindowUI;
+	private final boolean disablePlayerUI;
 	private boolean enabled = true;
 
 	public AsyncAction(MainWindow mainWindow) {
 		this.mainWindow = mainWindow;
-		this.disableUI = true;
+		this.disableMainWindowUI = true;
+		this.disablePlayerUI = false;
 	}
 
-	public AsyncAction(MainWindow mainWindow, boolean disableUI) {
+	public AsyncAction(MainWindow mainWindow, boolean disableMainWindowUI, boolean disablePlayerUI) {
 		this.mainWindow = mainWindow;
-		this.disableUI = disableUI;
+		this.disableMainWindowUI = disableMainWindowUI;
+		this.disablePlayerUI = disablePlayerUI;
 	}
 
 	@Override
 	public void setEnabled(boolean enabled) {
 		this.enabled = enabled;
-		// stop propagation to bypass the bug
-		// that prevent having button with different enabled state
-		// linked to the same action
+		// stop propagation to bypass the bug that prevent having button with different enabled state linked to the
+		// same action
 	}
 
 	@Override
@@ -65,25 +66,37 @@ public abstract class AsyncAction extends Action {
 			public void run() {
 				StatusBarAppender.clearErrorMessage();
 				try {
-					if (disableUI)
+					if (disableMainWindowUI || disablePlayerUI) {
 						ApplicationContext.queueCallback(new Runnable() {
 							@Override
 							public void run() {
-								mainWindow.enableUI(false);
+								if (disableMainWindowUI) {
+									mainWindow.enableUI(false);
+								}
+								if (disablePlayerUI) {
+									mainWindow.playerUI.enableUI(false);
+								}
 							}
 						}, true);
+					}
 
 					asyncPerform(source);
 				} catch (Throwable e) {
 					log.error(e.getMessage(), e);
 				} finally {
-					if (disableUI)
+					if (disableMainWindowUI || disablePlayerUI) {
 						ApplicationContext.queueCallback(new Runnable() {
 							@Override
 							public void run() {
-								mainWindow.enableUI(true);
+								if (disableMainWindowUI) {
+									mainWindow.enableUI(true);
+								}
+								if (disablePlayerUI) {
+									mainWindow.playerUI.enableUI(true);
+								}
 							}
 						}, true);
+					}
 					afterPerform();
 				}
 			}

@@ -25,6 +25,7 @@ import info.bonjean.beluga.client.BelugaState;
 import info.bonjean.beluga.client.PandoraPlaylist;
 import info.bonjean.beluga.configuration.AudioQuality;
 import info.bonjean.beluga.configuration.BelugaConfiguration;
+import info.bonjean.beluga.gui.PivotUI;
 import info.bonjean.beluga.player.AACPlayer;
 import info.bonjean.beluga.player.AudioPlayer;
 import info.bonjean.beluga.player.MP3Player;
@@ -75,10 +76,12 @@ public class PlayerUI extends TablePane implements Bindable {
 
 	private volatile AudioPlayer audioPlayer;
 	private volatile long duration;
-	private volatile boolean closed;
+	private volatile boolean closed = true;
+	private volatile boolean playing = false;
 
 	@Override
 	public void initialize(Map<String, Object> namespace, URL location, Resources resources) {
+		enableUI(false);
 		currentTime.setText("00:00");
 		totalTime.setText("00:00");
 		progress.setPercentage(0);
@@ -99,6 +102,9 @@ public class PlayerUI extends TablePane implements Bindable {
 	}
 
 	public void skip() {
+		if (audioPlayer == null || !audioPlayer.isActive())
+			return;
+
 		// stop the player to skip the song
 		audioPlayer.stop();
 	}
@@ -260,6 +266,9 @@ public class PlayerUI extends TablePane implements Bindable {
 
 							// update station name
 							stationName.setText(state.getStation().getStationName());
+
+							playing = true;
+							enableUI(true);
 						}
 					}, false);
 
@@ -272,21 +281,23 @@ public class PlayerUI extends TablePane implements Bindable {
 					// restore thread priority to normal
 					Thread.currentThread().setPriority(Thread.NORM_PRIORITY);
 
-					// disable controls
+					log.debug("Playback finished");
+				} catch (Exception e) {
+					log.error(e.getMessage(), e);
+					break;
+				} finally {
 					ApplicationContext.queueCallback(new Runnable() {
 						@Override
 						public void run() {
+							playing = false;
+							enableUI(false);
+
 							// set progress bar to full
 							currentTime.setText(formatTime(duration));
 							progress.setPercentage(1);
 						}
 					}, false);
 
-					log.debug("Playback finished");
-				} catch (Exception e) {
-					log.error(e.getMessage(), e);
-					break;
-				} finally {
 					// close player, we don't reuse it
 					if (audioPlayer != null)
 						audioPlayer.close();
@@ -308,6 +319,16 @@ public class PlayerUI extends TablePane implements Bindable {
 			// stop the UI thread
 			playerUISyncFuture.cancel(false);
 		}
+	}
+
+	public void enableUI(boolean enabled) {
+		boolean enable = playing && enabled;
+		PivotUI.enableComponent(muteButton, enable);
+		PivotUI.enableComponent(nextButton, enable);
+		PivotUI.enableComponent(currentTime, enable);
+		PivotUI.enableComponent(totalTime, enable);
+		PivotUI.enableComponent(progress, enable);
+		PivotUI.enableComponent(progressCache, enable);
 	}
 
 	public void refreshStationName() {
