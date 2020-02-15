@@ -32,7 +32,7 @@
 		<pivot.version>2.0.5</pivot.version>
 		<lastfm-java.version>0.1.2</lastfm-java.version>
 		<jlayer.version>1.0.1.4</jlayer.version>
-		<svg-salamander.version>1.0</svg-salamander.version>
+		<svg-salamander.version>1.1.2</svg-salamander.version>
 		<jaad.version>0.8.6-SNAPSHOT</jaad.version>
 		<jdeb-plugin.version>1.8</jdeb-plugin.version>
 		<maven-artifact.version>3.6.3</maven-artifact.version>
@@ -223,8 +223,8 @@
 			<version>${pivot.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>com.kitfox.svg</groupId>
-			<artifactId>svg-salamander</artifactId>
+			<groupId>com.kitfox</groupId>
+			<artifactId>svgSalamander</artifactId>
 			<version>${svg-salamander.version}</version>
 		</dependency>
 		<dependency>

@@ -22,5 +22,5 @@ package info.bonjean.beluga.player;
 public interface AudioDevice {
 	public void close();
 
-	public void write(byte[] b, int len);
+	public int write(byte[] b, int len);
 }

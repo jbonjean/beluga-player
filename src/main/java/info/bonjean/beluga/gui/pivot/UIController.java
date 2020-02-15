@@ -620,6 +620,12 @@ public class UIController implements InternalBusSubscriber {
 				playerUI.refreshStationName();
 			}
 		});
+		Action.getNamedActions().put("mute", new AsyncAction(mainWindow) {
+			@Override
+			public void asyncPerform(final Component source) throws BelugaException {
+				playerUI.toggleMute();
+			}
+		});
 	}
 
 	private void clearResources() {

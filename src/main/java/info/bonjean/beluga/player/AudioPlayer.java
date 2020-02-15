@@ -28,8 +28,11 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
 
 public abstract class AudioPlayer {
+	private static final int ZEROS_BUFFER_LENGTH = 16384;
+	private static final byte[] ZEROS_BUFFER = new byte[ZEROS_BUFFER_LENGTH];
 	private AudioDevice audioDeviceManager;
 	protected volatile boolean active;
+	private volatile boolean muted;
 	private CachedInputStream cachedInputStream;
 	private HttpGet streamRequest;
 	private long contentLength;
@@ -60,6 +63,14 @@ public abstract class AudioPlayer {
 
 	public final void setBitrate(int bitrate) {
 		this.bitrate = bitrate;
+	}
+
+	public boolean isMuted() {
+		return muted;
+	}
+
+	public void toggleMuted() {
+		this.muted = !this.muted;
 	}
 
 	public final double getProgressRatio() {
@@ -102,7 +113,14 @@ public abstract class AudioPlayer {
 	}
 
 	protected void audioWrite(byte[] b, int len) {
-		audioDeviceManager.write(b, len);
+		int remaining = len;
+		while (remaining > 0) {
+			if (muted) {
+				remaining -= audioDeviceManager.write(ZEROS_BUFFER, Math.min(remaining, ZEROS_BUFFER_LENGTH));
+			} else {
+				remaining -= audioDeviceManager.write(b, remaining);
+			}
+		}
 	}
 
 	protected final InputStream openStream(String url) throws UnsupportedOperationException, IOException {

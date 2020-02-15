@@ -22,39 +22,39 @@
 
 				<BoxPane orientation="vertical" styles="{padding:{top:15}}">
 					<Label
-						text="Skip Forward and Play designed by Alex Fuller from the Noun Project "
+						text="Volume, Mute and Forward icons designed by iconeu from the Noun Project "
 						styles="{font:{bold:true}}" />
 					<LinkButton action="open-url">
-						<content:ButtonData text="http://thenounproject.com/alexfuller" />
-						<userData url="http://thenounproject.com/alexfuller" />
+						<content:ButtonData text="https://thenounproject.com/iconeu/" />
+						<userData url="https://thenounproject.com/iconeu/" />
 					</LinkButton>
 				</BoxPane>
 
 				<BoxPane orientation="vertical" styles="{padding:{top:15}}">
 					<Label
-						text="Disconnect designed by Danny Amacher from the Noun Project "
+						text="Disconnect icon designed by Danny Amacher from the Noun Project "
 						styles="{font:{bold:true}}" />
 					<LinkButton action="open-url">
-						<content:ButtonData text="http://thenounproject.com/dannyamacher" />
-						<userData url="http://thenounproject.com/dannyamacher" />
+						<content:ButtonData text="https://thenounproject.com/dannyamacher/" />
+						<userData url="https://thenounproject.com/dannyamacher/" />
 					</LinkButton>
 				</BoxPane>
 
 				<BoxPane orientation="vertical" styles="{padding:{top:15}}">
-					<Label text="Home designed by Edward Boatman from the Noun Project "
+					<Label text="Home icon designed by Edward Boatman from the Noun Project "
 						styles="{font:{bold:true}}" />
 					<LinkButton action="open-url">
-						<content:ButtonData text="http://thenounproject.com/edward" />
-						<userData url="http://thenounproject.com/edward" />
+						<content:ButtonData text="https://thenounproject.com/edward/" />
+						<userData url="https://thenounproject.com/edward/" />
 					</LinkButton>
 				</BoxPane>
 
 				<BoxPane orientation="vertical" styles="{padding:{top:15}}">
-					<Label text="Pisces designed by Erika Jasso from the Noun Project "
+					<Label text="Pisces icon designed by Erika Jasso from the Noun Project "
 						styles="{font:{bold:true}}" />
 					<LinkButton action="open-url">
-						<content:ButtonData text="http://thenounproject.com/kikajasso" />
-						<userData url="http://thenounproject.com/kikajasso" />
+						<content:ButtonData text="https://thenounproject.com/kikajasso/" />
+						<userData url="https://thenounproject.com/kikajasso/" />
 					</LinkButton>
 				</BoxPane>
 			</ScrollPane>

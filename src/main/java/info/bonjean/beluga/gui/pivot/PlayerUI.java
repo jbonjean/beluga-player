@@ -43,6 +43,7 @@ import org.apache.pivot.wtk.Label;
 import org.apache.pivot.wtk.LinkButton;
 import org.apache.pivot.wtk.Meter;
 import org.apache.pivot.wtk.TablePane;
+import org.apache.pivot.wtk.content.ButtonData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -64,7 +65,7 @@ public class PlayerUI extends TablePane implements Bindable {
 	@BXML
 	protected LinkButton nextButton;
 	@BXML
-	protected LinkButton pauseButton;
+	protected LinkButton muteButton;
 
 	private final BelugaState state = BelugaState.getInstance();
 	private final BelugaConfiguration configuration = BelugaConfiguration.getInstance();
@@ -317,5 +318,13 @@ public class PlayerUI extends TablePane implements Bindable {
 				stationName.setText(state.getStation().getStationName());
 			}
 		}, false);
+	}
+
+	public void toggleMute() {
+		if (audioPlayer == null || !audioPlayer.isActive())
+			return;
+		audioPlayer.toggleMuted();
+		ButtonData buttonData = (ButtonData) muteButton.getButtonData();
+		buttonData.setIcon(audioPlayer.isMuted() ? "/img/mute.svg" : "/img/volume.svg");
 	}
 }

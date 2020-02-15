@@ -38,7 +38,7 @@ public class DummyAudioDevice implements AudioDevice {
 	}
 
 	@Override
-	public void write(byte[] b, int len) {
+	public int write(byte[] b, int len) {
 		if (len % audioFormat.getFrameSize() != 0)
 			throw new IllegalArgumentException(
 					"Number of bytes does not represent an integral number of sample frames.");
@@ -49,7 +49,7 @@ public class DummyAudioDevice implements AudioDevice {
 
 		// we try to have a long sleep instead of multiple short ones
 		if (timeBuffer < TIME_SLEEP_OFFSET)
-			return;
+			return len;
 
 		try {
 			Thread.sleep(timeBuffer);
@@ -57,5 +57,7 @@ public class DummyAudioDevice implements AudioDevice {
 		} finally {
 			timeBuffer = 0;
 		}
+
+		return len;
 	}
 }

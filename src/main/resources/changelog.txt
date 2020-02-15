@@ -2,6 +2,7 @@ Beluga Player 0.12
 
 * Add support for AAC
 * Remove pause button (unreliable)
+* Add mute button
 * Add stations management menu
 * Add predefined stations
 * Add support for station rename

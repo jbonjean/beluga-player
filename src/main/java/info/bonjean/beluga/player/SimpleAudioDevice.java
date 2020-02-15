@@ -56,7 +56,7 @@ public class SimpleAudioDevice implements AudioDevice {
 	}
 
 	@Override
-	public void write(byte[] b, int len) {
-		sourceDataLine.write(b, 0, len);
+	public int write(byte[] b, int len) {
+		return sourceDataLine.write(b, 0, len);
 	}
 }

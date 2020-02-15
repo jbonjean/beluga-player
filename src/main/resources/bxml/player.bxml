@@ -6,7 +6,6 @@
 		<TablePane.Column width="1*" />
 		<TablePane.Column width="40" />
 		<TablePane.Column width="40" />
-		<TablePane.Column width="35" />
 	</columns>
 
 	<TablePane.Row height="-1">
@@ -17,8 +16,7 @@
 				<TablePane.Column width="-1" />
 			</columns>
 			<TablePane.Row height="22">
-				<Label TablePane.columnSpan="3" bxml:id="stationName"
-					styles="{font:{bold:true},horizontalAlignment:'center',verticalAlignment:'center'}" />
+				<Label TablePane.columnSpan="3" bxml:id="stationName" styles="{font:{bold:true},horizontalAlignment:'center',verticalAlignment:'center'}" />
 			</TablePane.Row>
 			<TablePane.Row height="1*">
 				<Label bxml:id="currentTime" styles="{padding:{left:5,right:5}}" />
@@ -34,14 +32,20 @@
 				<TablePane.Filler />
 			</TablePane.Row>
 		</TablePane>
-		<LinkButton bxml:id="nextButton" action="next-song"
-			tooltipText="%skip">
+		<LinkButton bxml:id="muteButton" action="mute" tooltipText="%mute">
 			<dataRenderer>
-				<content:ButtonDataRenderer orientation="vertical"
-					iconWidth="30" iconHeight="30" fillIcon="true" />
+				<content:ButtonDataRenderer orientation="vertical" iconWidth="25" iconHeight="25" fillIcon="true" />
 			</dataRenderer>
 			<buttonData>
-				<content:ButtonData icon="/img/skip.svg" />
+				<content:ButtonData icon="/img/volume.svg" />
+			</buttonData>
+		</LinkButton>
+		<LinkButton bxml:id="nextButton" action="next-song" tooltipText="%skip">
+			<dataRenderer>
+				<content:ButtonDataRenderer orientation="vertical" iconWidth="25" iconHeight="25" fillIcon="true" />
+			</dataRenderer>
+			<buttonData>
+				<content:ButtonData icon="/img/forward.svg" />
 			</buttonData>
 		</LinkButton>
 	</TablePane.Row>
