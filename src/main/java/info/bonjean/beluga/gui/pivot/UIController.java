@@ -48,6 +48,7 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import org.apache.pivot.wtk.Action;
@@ -309,7 +310,7 @@ public class UIController implements InternalBusSubscriber {
 		Action.getNamedActions().put("search", new AsyncAction(mainWindow) {
 			@Override
 			public void asyncPerform(final Component source) throws BelugaException {
-				final SearchUI searchUI = getPage(SearchUI.class);
+				SearchUI searchUI = getPageComponent(SearchUI.class, 2);
 				String query = searchUI.searchInput.getText();
 
 				if (query.isEmpty()) {
@@ -318,9 +319,8 @@ public class UIController implements InternalBusSubscriber {
 				}
 
 				log.info("searching");
-				setEnabled(false);
 
-				final Result results = pandoraClient.search(searchUI.searchInput.getText());
+				final Result results = pandoraClient.search(query);
 
 				ApplicationContext.queueCallback(new Runnable() {
 					@Override
@@ -338,26 +338,24 @@ public class UIController implements InternalBusSubscriber {
 											artist.getSongName(), artist.getMusicToken(), "search"));
 
 						searchUI.nearMatchesAvailable.setVisible(results.isNearMatchesAvailable());
-
-						setEnabled(true);
 					}
 				}, true);
 			}
 
 			@Override
 			public void afterPerform() {
-				ApplicationContext.queueCallback(new Runnable() {
-					@Override
-					public void run() {
-						try {
-							SearchUI searchUI = getPage(SearchUI.class);
+				try {
+					SearchUI searchUI = getPageComponent(SearchUI.class, 2);
+					ApplicationContext.queueCallback(new Runnable() {
+						@Override
+						public void run() {
 							searchUI.setTabTitles();
 							searchUI.setFocus();
-						} catch (BelugaException e) {
-							log.error(e.getMessage(), e);
 						}
-					}
-				}, true);
+					}, true);
+				} catch (BelugaException e) {
+					log.error(e.getMessage(), e);
+				}
 			}
 		});
 
@@ -464,27 +462,19 @@ public class UIController implements InternalBusSubscriber {
 		Action.getNamedActions().put("create-station-from-genre", new AsyncAction(mainWindow) {
 			@Override
 			public void asyncPerform(final Component source) throws BelugaException {
-				List<Station> station = new ArrayList<>(); // dirty workaround to avoid thread issue.
-				ApplicationContext.queueCallback(new Runnable() {
-					@Override
-					public void run() {
-						GenresUI genresUI = findComponent(state.getPage().getComponent(), GenresUI.class, 2);
-						if (genresUI == null) {
-							log.error("invalidActionCall");
-							return;
-						}
-						Object node = genresUI.genresTree.getSelectedNode();
-						if (node != null && node.getClass().equals(TreeNode.class)) {
-							TreeNode treeNode = ((TreeNode) node);
-							if (treeNode.getUserData() instanceof Station)
-								station.add((Station) treeNode.getUserData());
-						}
-					}
-				}, true);
+				GenresUI genresUI = getPageComponent(GenresUI.class, 2);
 
-				if (!station.isEmpty()) {
+				Station station = null;
+				Object node = genresUI.genresTree.getSelectedNode();
+				if (node != null && node.getClass().equals(TreeNode.class)) {
+					TreeNode treeNode = ((TreeNode) node);
+					if (treeNode.getUserData() instanceof Station)
+						station = (Station) treeNode.getUserData();
+				}
+
+				if (station != null) {
 					log.info("creatingNewStation");
-					pandoraClient.addStation(station.get(0).getStationToken());
+					pandoraClient.addStation(station.getStationToken());
 					log.info("newStationCreated");
 					updateStationsList();
 				}
@@ -624,14 +614,6 @@ public class UIController implements InternalBusSubscriber {
 		});
 	}
 
-	@SuppressWarnings("unchecked")
-	private <E extends Component> E getPage(Class<E> clazz) throws BelugaException {
-		Component page = state.getPage().getComponent();
-		if (clazz.isInstance(page))
-			return (E) page;
-		throw new InternalException("invalidActionCall");
-	}
-
 	private void clearResources() {
 		state.reset();
 		pandoraClient.reset();
@@ -714,10 +696,32 @@ public class UIController implements InternalBusSubscriber {
 	}
 
 	@SuppressWarnings("unchecked")
-	private <T extends Component> T findComponent(Component parent, Class<T> clazz, int maxDepth) {
-		// quick and dirty last resort solution, find a specific component in the tree.
-		// TODO: store references instead of this brute-force approach.
+	private <E extends Component> E getPage(Class<E> clazz) throws BelugaException {
+		Component page = state.getPage().getComponent();
+		if (clazz.isInstance(page))
+			return (E) page;
+		throw new InternalException("invalidActionCall");
+	}
 
+	private <E extends Component> E getPageComponent(Class<E> clazz, int maxDepth) throws BelugaException {
+		AtomicReference<E> componentWrapper = new AtomicReference<>();
+		ApplicationContext.queueCallback(new Runnable() {
+			@Override
+			public void run() {
+				componentWrapper.set(findComponent(state.getPage().getComponent(), clazz, maxDepth));
+			}
+		}, true);
+		E component = componentWrapper.get();
+		if (component == null) {
+			throw new InternalException("invalidActionCall");
+		}
+		return component;
+	}
+
+	@SuppressWarnings("unchecked")
+	private <T extends Component> T findComponent(Component parent, Class<T> clazz, int maxDepth) {
+		// quick and dirty solution, find a specific component in the tree.
+		// TODO: store references instead of this brute-force approach.
 		if (maxDepth == 0)
 			return null;
 

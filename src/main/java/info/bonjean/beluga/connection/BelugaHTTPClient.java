@@ -25,11 +25,8 @@ import info.bonjean.beluga.exception.CommunicationException;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import org.apache.commons.io.IOUtils;
-import org.apache.http.HttpException;
 import org.apache.http.HttpHost;
-import org.apache.http.HttpInetConnection;
 import org.apache.http.HttpResponse;
-import org.apache.http.HttpResponseInterceptor;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
@@ -44,8 +41,6 @@ import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
-import org.apache.http.protocol.HttpContext;
-import org.apache.http.protocol.HttpCoreContext;
 import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -101,19 +96,6 @@ public class BelugaHTTPClient {
 		}
 
 		connectionManager.setDefaultMaxPerRoute(poolSize);
-
-		// add interceptor, currently for debugging only
-		clientBuilder.addInterceptorFirst(new HttpResponseInterceptor() {
-			@Override
-			public void process(HttpResponse response, HttpContext context) throws HttpException, IOException {
-				HttpInetConnection connection = (HttpInetConnection) context
-						.getAttribute(HttpCoreContext.HTTP_CONNECTION);
-				log.debug("Remote address: " + connection.getRemoteAddress());
-				// TODO: reimplement blacklisting for DNS proxy by maintaining a
-				// map [DNS IP,RESOLVED IP] in the DNS resolver for reverse
-				// lookup
-			}
-		});
 
 		// finally create the HTTP client
 		clientBuilder.setConnectionManager(connectionManager);
