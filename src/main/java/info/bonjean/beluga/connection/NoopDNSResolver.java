@@ -17,40 +17,22 @@
  * this program; if not, write to the Free Software Foundation, Inc., 51
  * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
-package info.bonjean.beluga.configuration;
+package info.bonjean.beluga.connection;
+
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import org.apache.http.conn.DnsResolver;
 
 /**
  *
  * @author Julien Bonjean <julien@bonjean.info>
  *
+ * Noop DNS resolver
+ *
  */
-public enum Property {
-	CONFIGURATION_VERSION("configuration.version"),
-	USER("user"),
-	PASSWORD("password"),
-	CONNECTION_TYPE("connection.type"),
-	HTTP_PROXY_HOST("http_proxy.host"),
-	HTTP_PROXY_PORT("http_proxy.port"),
-	SOCKS5_PROXY_HOST("socks5_proxy.host"),
-	SOCKS5_PROXY_PORT("socks5_proxy.port"),
-	DEFAULT_STATION("default.station"),
-	LAST_FM_USERNAME("last.fm.username"),
-	LAST_FM_PASSWORD("last.fm.password"),
-	LAST_FM_ENABLED("last.fm.enabled"),
-	ADS_DETECTION_ENABLED("ads.detection.enabled"),
-	ADS_SILENCE_ENABLED("ads.silence.enabled"),
-	NOTIFICATIONS_STYLE("notifications.style"),
-	STATIONS_ORDER_BY("stations.order.by"),
-	WINDOW_RESTORE("window.restore"),
-	AUDIO_QUALITY("audio.quality");
-
-	private final String key;
-
-	private Property(String key) {
-		this.key = key;
-	}
-
-	public String getKey() {
-		return key;
+public class NoopDNSResolver implements DnsResolver {
+	@Override
+	public InetAddress[] resolve(String host) throws UnknownHostException {
+		return new InetAddress[] { InetAddress.getByAddress(new byte[] { 1, 1, 1, 1 }) };
 	}
 }

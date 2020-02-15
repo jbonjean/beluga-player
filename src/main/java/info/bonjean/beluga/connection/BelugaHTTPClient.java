@@ -81,10 +81,23 @@ public class BelugaHTTPClient {
 		case DIRECT:
 			connectionManager = new PoolingHttpClientConnectionManager();
 			break;
+
 		case HTTP_PROXY:
-			HttpHost proxy = new HttpHost(BelugaConfiguration.getInstance().getProxyHost(),
-					BelugaConfiguration.getInstance().getProxyPort(), "http");
+			HttpHost proxy = new HttpHost(BelugaConfiguration.getInstance().getHTTPProxyHost(),
+					BelugaConfiguration.getInstance().getHTTPProxyPort(), "http");
 			clientBuilder.setProxy(proxy);
+			connectionManager = new PoolingHttpClientConnectionManager();
+			break;
+
+		case SOCKS5_PROXY:
+			String socks5Host = BelugaConfiguration.getInstance().getSocks5ProxyHost();
+			int socks5Port = BelugaConfiguration.getInstance().getSocks5ProxyPort();
+			Registry<ConnectionSocketFactory> reg = RegistryBuilder.<ConnectionSocketFactory> create()
+					.register("http", new Socks5PlainConnectionSocketFactory(socks5Host, socks5Port))
+					.register("https", new Socks5SSLConnectionSocketFactory(socks5Host, socks5Port)).build();
+			connectionManager = new PoolingHttpClientConnectionManager(reg, new NoopDNSResolver());
+			break;
+
 		default:
 			Registry<ConnectionSocketFactory> registry = RegistryBuilder.<ConnectionSocketFactory> create()
 					.register("http", PlainConnectionSocketFactory.getSocketFactory())

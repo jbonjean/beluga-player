@@ -14,6 +14,12 @@
 		return value != null &amp;&amp;
 		value.getId().equals("http-proxy");
 		}
+
+		function
+		isSocks5ProxyVisible(value) {
+		return value != null &amp;&amp;
+		value.getId().equals("socks5-proxy");
+		}
 	</bxml:script>
 
 	<columns>
@@ -45,6 +51,13 @@
 						<TextInput bxml:id="httpProxyHostInput" textSize="17"
 							prompt="%hostname" />
 						<TextInput bxml:id="httpProxyPortInput" textSize="5"
+							prompt="%port" />
+					</BoxPane>
+					<BoxPane Form.label="%sock5Proxy"
+						visible="${isSocks5ProxyVisible:connectionType.selectedItem}">
+						<TextInput bxml:id="socks5ProxyHostInput" textSize="17"
+							prompt="%hostname" />
+						<TextInput bxml:id="socks5ProxyPortInput" textSize="5"
 							prompt="%port" />
 					</BoxPane>
 				</Form.Section>

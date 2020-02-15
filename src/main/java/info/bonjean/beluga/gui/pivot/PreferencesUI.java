@@ -59,6 +59,10 @@ public class PreferencesUI extends TablePane implements Bindable {
 	@BXML
 	protected TextInput httpProxyPortInput;
 	@BXML
+	protected TextInput socks5ProxyHostInput;
+	@BXML
+	protected TextInput socks5ProxyPortInput;
+	@BXML
 	protected ListButton audioQuality;
 	@BXML
 	protected Checkbox adsEnableDetectionCheckbox;
@@ -94,8 +98,10 @@ public class PreferencesUI extends TablePane implements Bindable {
 		setListButtonSelected(stationsOrderBy, configuration.getStationsOrderBy());
 		connectionType.setListData(new EnumList(ConnectionType.class));
 		connectionType.setSelectedItem(configuration.getConnectionType());
-		httpProxyHostInput.setText(configuration.getProxyHost());
-		httpProxyPortInput.setText(configuration.getProxyPortStr());
+		httpProxyHostInput.setText(configuration.getHTTPProxyHost());
+		httpProxyPortInput.setText(configuration.getHTTPProxyPortStr());
+		socks5ProxyHostInput.setText(configuration.getSocks5ProxyHost());
+		socks5ProxyPortInput.setText(configuration.getSocks5ProxyPortStr());
 		lastFMUsernameInput.setText(configuration.getLastFMUsername());
 		lastFMPasswordInput.setText(configuration.getLastFMPassword());
 		lastFMEnableCheckbox.setSelected(configuration.getLastFMEnabled());

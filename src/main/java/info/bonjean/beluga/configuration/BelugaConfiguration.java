@@ -62,12 +62,25 @@ public class BelugaConfiguration {
 		if (proxyDNS != null && !proxyDNS.isEmpty())
 			setConnectionType(ConnectionType.PROXY_DNS);
 		else {
-			String httpProxyHost = getProxyHost();
-			Integer httpProxyPort = getProxyPort();
+			String httpProxyHost = getHTTPProxyHost();
+			Integer httpProxyPort = getHTTPProxyPort();
 			if (httpProxyHost != null && !httpProxyHost.isEmpty() && httpProxyPort != null)
 				setConnectionType(ConnectionType.HTTP_PROXY);
 			else
 				setConnectionType(ConnectionType.DIRECT);
+		}
+	}
+
+	private void propertiesMigrationV0_12() {
+		String httpProxyHost = (String) properties.get("proxy.host");
+		if (httpProxyHost != null) {
+			properties.remove("proxy.host");
+			setHTTPProxyHost(httpProxyHost);
+		}
+		String httpProxyPort = (String) properties.get("proxy.port");
+		if (httpProxyPort != null) {
+			properties.remove("proxy.port");
+			setHTTPProxyPort(httpProxyPort);
 		}
 	}
 
@@ -136,6 +149,11 @@ public class BelugaConfiguration {
 					log.debug("Configuration file migration to 0.8");
 					propertiesMigrationV0_8();
 				}
+				if (StringUtil.compareVersions(getConfigurationVersion(), "0.12") < 0) {
+					log.info("migratingConfiguration");
+					log.debug("Configuration file migration to 0.12");
+					propertiesMigrationV0_12();
+				}
 				// update configuration version
 				setConfigurationVersion(BelugaState.getInstance().getVersion());
 			} else if (versionComparison < 0) {
@@ -195,24 +213,44 @@ public class BelugaConfiguration {
 		set(Property.PASSWORD, CryptoUtil.passwordEncrypt(password, Property.PASSWORD.getKey()));
 	}
 
-	public String getProxyHost() {
-		return getString(Property.PROXY_HOST, "");
+	public String getHTTPProxyHost() {
+		return getString(Property.HTTP_PROXY_HOST, "");
 	}
 
-	public void setProxyHost(String proxyServer) {
-		set(Property.PROXY_HOST, proxyServer);
+	public void setHTTPProxyHost(String httpProxyServer) {
+		set(Property.HTTP_PROXY_HOST, httpProxyServer);
 	}
 
-	public String getProxyPortStr() {
-		return getProxyPort() == null ? "" : String.valueOf(getProxyPort());
+	public String getHTTPProxyPortStr() {
+		return getHTTPProxyPort() == null ? "" : String.valueOf(getHTTPProxyPort());
 	}
 
-	public Integer getProxyPort() {
-		return getInteger(Property.PROXY_PORT, null);
+	public Integer getHTTPProxyPort() {
+		return getInteger(Property.HTTP_PROXY_PORT, null);
 	}
 
-	public void setProxyPort(String proxyServerPort) {
-		set(Property.PROXY_PORT, proxyServerPort);
+	public void setHTTPProxyPort(String httpProxyServerPort) {
+		set(Property.HTTP_PROXY_PORT, httpProxyServerPort);
+	}
+
+	public String getSocks5ProxyHost() {
+		return getString(Property.SOCKS5_PROXY_HOST, "");
+	}
+
+	public void setSocks5ProxyHost(String socks5ProxyServer) {
+		set(Property.SOCKS5_PROXY_HOST, socks5ProxyServer);
+	}
+
+	public String getSocks5ProxyPortStr() {
+		return getSocks5ProxyPort() == null ? "" : String.valueOf(getSocks5ProxyPort());
+	}
+
+	public Integer getSocks5ProxyPort() {
+		return getInteger(Property.SOCKS5_PROXY_PORT, null);
+	}
+
+	public void setSocks5ProxyPort(String socks5ProxyServerPort) {
+		set(Property.SOCKS5_PROXY_PORT, socks5ProxyServerPort);
 	}
 
 	public String getDefaultStationId() {

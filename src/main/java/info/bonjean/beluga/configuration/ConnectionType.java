@@ -32,7 +32,9 @@ public enum ConnectionType {
 	// TODO: handle i18n
 	DIRECT("direct", "No Proxy"),
 	PROXY_DNS("proxy-dns", "Proxy DNS"),
-	HTTP_PROXY("http-proxy", "HTTP Proxy");
+	HTTP_PROXY("http-proxy", "HTTP Proxy"),
+	SOCKS5_PROXY("socks5-proxy", "Socks5 Proxy");
+
 	private final String id;
 	private final String name;
 	private static final Map<String, ConnectionType> lookup = new HashMap<String, ConnectionType>();

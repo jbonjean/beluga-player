@@ -578,8 +578,10 @@ public class UIController implements InternalBusSubscriber {
 				configuration.setUserName(preferencesUI.emailAddressInput.getText());
 				configuration.setPassword(preferencesUI.passwordInput.getText());
 				configuration.setConnectionType((ConnectionType) preferencesUI.connectionType.getSelectedItem());
-				configuration.setProxyHost(preferencesUI.httpProxyHostInput.getText());
-				configuration.setProxyPort(preferencesUI.httpProxyPortInput.getText());
+				configuration.setHTTPProxyHost(preferencesUI.httpProxyHostInput.getText());
+				configuration.setHTTPProxyPort(preferencesUI.httpProxyPortInput.getText());
+				configuration.setSocks5ProxyHost(preferencesUI.socks5ProxyHostInput.getText());
+				configuration.setSocks5ProxyPort(preferencesUI.socks5ProxyPortInput.getText());
 				configuration.setLastFMEnabled(preferencesUI.lastFMEnableCheckbox.isSelected());
 				configuration.setLastFMUsername(preferencesUI.lastFMUsernameInput.getText());
 				configuration.setLastFMPassword(preferencesUI.lastFMPasswordInput.getText());
