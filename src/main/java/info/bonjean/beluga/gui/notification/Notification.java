@@ -54,6 +54,7 @@ public class Notification {
 
 	public final static int TIMEOUT = 3000;
 
+	@SuppressWarnings("deprecation")
 	public Notification(Song song) {
 		Icon icon = null;
 

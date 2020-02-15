@@ -1,18 +1,18 @@
 /*
  * Copyright (C) 2012-2018 Julien Bonjean <julien@bonjean.info>
- * 
+ *
  * This file is part of Beluga Player.
- * 
+ *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
  * Foundation; either version 3 of the License, or (at your option) any later
  * version.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
  * details.
- * 
+ *
  * You should have received a copy of the GNU General Public License along with
  * this program; if not, write to the Free Software Foundation, Inc., 51
  * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
@@ -21,16 +21,15 @@ package info.bonjean.beluga.log;
 
 import info.bonjean.beluga.gui.pivot.ThreadPools;
 import info.bonjean.beluga.util.ResourcesUtil;
-
 import java.io.Serializable;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.AbstractAppender;
+import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
@@ -42,9 +41,9 @@ import org.apache.pivot.wtk.ApplicationContext;
 import org.apache.pivot.wtk.Label;
 
 /**
- * 
+ *
  * @author Julien Bonjean <julien@bonjean.info>
- * 
+ *
  */
 @Plugin(name = "StatusBar", category = "Core", elementType = "appender", printObject = true)
 public final class StatusBarAppender extends AbstractAppender {
@@ -52,13 +51,13 @@ public final class StatusBarAppender extends AbstractAppender {
 
 	private static Label statusBarText;
 	private static Resources resources;
-	private LogEvent messageDisplayed;
+	private Level levelDisplayed;
 	private ScheduledFuture<?> expirationTaskFuture;
 	private static StatusBarAppender instance;
 
 	protected StatusBarAppender(String name, Filter filter, Layout<? extends Serializable> layout,
 			boolean ignoreExceptions) {
-		super(name, filter, layout, ignoreExceptions);
+		super(name, filter, layout, ignoreExceptions, Property.EMPTY_ARRAY);
 		instance = this;
 	}
 
@@ -96,17 +95,17 @@ public final class StatusBarAppender extends AbstractAppender {
 			}
 		}, true);
 
-		messageDisplayed = null;
+		levelDisplayed = null;
 	}
 
 	public static void clearErrorMessage() {
 		if (instance == null)
 			return;
 
-		if (instance.messageDisplayed == null)
+		if (instance.levelDisplayed == null)
 			return;
 
-		if (instance.messageDisplayed.getLevel().isMoreSpecificThan(Level.ERROR))
+		if (instance.levelDisplayed.isMoreSpecificThan(Level.ERROR))
 			instance.clearMessage();
 	}
 
@@ -114,7 +113,7 @@ public final class StatusBarAppender extends AbstractAppender {
 		@Override
 		public void run() {
 			// ensure we don't clear an error message
-			if (!instance.messageDisplayed.getLevel().isMoreSpecificThan(Level.ERROR))
+			if (!instance.levelDisplayed.isMoreSpecificThan(Level.ERROR))
 				clearMessage();
 		}
 	};
@@ -140,13 +139,13 @@ public final class StatusBarAppender extends AbstractAppender {
 
 	public boolean display(LogEvent event) {
 		// if no message currently displayed
-		if (messageDisplayed == null) {
+		if (levelDisplayed == null) {
 			doDisplay(event);
 			return true;
 		}
 
 		// if this is at least as important as what we currently display
-		if (event.getLevel().isMoreSpecificThan(messageDisplayed.getLevel())) {
+		if (event.getLevel().isMoreSpecificThan(levelDisplayed)) {
 			doDisplay(event);
 			return true;
 		}
@@ -155,13 +154,15 @@ public final class StatusBarAppender extends AbstractAppender {
 		return false;
 	}
 
-	public void doDisplay(final LogEvent event) {
-		if (!event.getLevel().isMoreSpecificThan(Level.ERROR))
+	public void doDisplay(LogEvent event) {
+		final Level level = event.getLevel();
+
+		if (!level.isMoreSpecificThan(Level.ERROR))
 			scheduleMessageExpiration();
 		else
 			unscheduleMessageExpiration();
 
-		messageDisplayed = event;
+		levelDisplayed = level;
 
 		ApplicationContext.queueCallback(new Runnable() {
 			@Override
@@ -169,7 +170,7 @@ public final class StatusBarAppender extends AbstractAppender {
 				String message = formatMessage(event);
 				if (message != null) {
 					statusBarText.setText(message);
-					if (event.getLevel().isMoreSpecificThan(Level.ERROR))
+					if (level.isMoreSpecificThan(Level.ERROR))
 						statusBarText.getStyles().put("color", "#ff0000");
 					else
 						statusBarText.getStyles().put("color", "#000000");
