@@ -21,15 +21,11 @@ package info.bonjean.beluga.log;
 
 import info.bonjean.beluga.gui.pivot.ThreadPools;
 import info.bonjean.beluga.util.ResourcesUtil;
-import java.io.Serializable;
-import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.TimeUnit;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.AbstractAppender;
-import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
@@ -39,6 +35,10 @@ import org.apache.logging.log4j.core.util.Booleans;
 import org.apache.pivot.util.Resources;
 import org.apache.pivot.wtk.ApplicationContext;
 import org.apache.pivot.wtk.Label;
+
+import java.io.Serializable;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 
 @Plugin(name = "StatusBar", category = "Core", elementType = "appender", printObject = true)
 public final class StatusBarAppender extends AbstractAppender {
@@ -52,7 +52,7 @@ public final class StatusBarAppender extends AbstractAppender {
 
 	protected StatusBarAppender(String name, Filter filter, Layout<? extends Serializable> layout,
 			boolean ignoreExceptions) {
-		super(name, filter, layout, ignoreExceptions, Property.EMPTY_ARRAY);
+		super(name, filter, layout, ignoreExceptions);
 		instance = this;
 	}
 
