@@ -74,16 +74,12 @@ public class PlayerUI extends TablePane implements Bindable {
 
 	private volatile AudioPlayer audioPlayer;
 	private volatile long duration;
-	private volatile boolean closed = true;
 	private volatile boolean playing = false;
+	private volatile boolean stop = false;
 
 	@Override
 	public void initialize(Map<String, Object> namespace, URL location, Resources resources) {
-		enableUI(false);
-		currentTime.setText("00:00");
-		totalTime.setText("00:00");
-		progress.setPercentage(0);
-		progressCache.setPercentage(0);
+		resetUI();
 	}
 
 	private String formatTime(long ms) {
@@ -91,12 +87,50 @@ public class PlayerUI extends TablePane implements Bindable {
 				TimeUnit.MILLISECONDS.toSeconds(ms) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(ms)));
 	}
 
-	public void open() {
-		closed = false;
+	private void resetUI() {
+		enableUI(false);
+		stationName.setText("");
+		currentTime.setText("00:00");
+		totalTime.setText("00:00");
+		progress.setPercentage(0);
+		progressCache.setPercentage(0);
+	}
 
-		// ensure the thread is running
-		if (playbackThreadFuture == null || playbackThreadFuture.isDone() || closed)
-			playbackThreadFuture = ThreadPools.playbackPool.submit(new Playback());
+	public void start() {
+		if (playbackThreadFuture != null && !playbackThreadFuture.isDone()) {
+			log.error("playbackThreadAlreadyRunning");
+			return;
+		}
+
+		stop = false;
+		playbackThreadFuture = ThreadPools.playbackPool.submit(new Playback());
+	}
+
+	public void stop() {
+		if (playbackThreadFuture == null || playbackThreadFuture.isDone()) {
+			return;
+		}
+
+		stop = true;
+
+		// stop the player.
+		audioPlayer.stop();
+
+		// stop the playback thread.
+		try {
+			playbackThreadFuture.get(10, TimeUnit.SECONDS);
+		} catch (Exception e) {
+			playbackThreadFuture.cancel(true);
+			while (!playbackThreadFuture.isDone()) {
+				try {
+					Thread.sleep(500);
+				} catch (InterruptedException e1) {
+					Thread.currentThread().interrupt();
+					return;
+				}
+				log.debug("Waiting for playback thread to finish");
+			}
+		}
 	}
 
 	public void skip() {
@@ -105,29 +139,6 @@ public class PlayerUI extends TablePane implements Bindable {
 
 		// stop the player to skip the song
 		audioPlayer.stop();
-	}
-
-	public void close() {
-		if (playbackThreadFuture == null || playbackThreadFuture.isDone() || closed)
-			return;
-
-		closed = true;
-
-		// stop the player
-		audioPlayer.stop();
-
-		// stop the playback thread
-		try {
-			if (playbackThreadFuture != null)
-				playbackThreadFuture.get(5, TimeUnit.SECONDS);
-		} catch (Exception e) {
-			log.error(e.getMessage(), e);
-			playbackThreadFuture.cancel(true);
-		}
-	}
-
-	public boolean isClosed() {
-		return closed;
 	}
 
 	private Runnable syncUI = new Runnable() {
@@ -175,85 +186,79 @@ public class PlayerUI extends TablePane implements Bindable {
 
 		@Override
 		public void run() {
-			// init failure counter
-			int successiveFailures = 0;
-
 			// start the UI synchronization thread
 			playerUISyncFuture = ThreadPools.playerUIScheduler.scheduleAtFixedRate(syncUI, 0, UI_REFRESH_INTERVAL,
 					TimeUnit.MILLISECONDS);
 
-			Song song;
-			while (true) {
-				song = null;
-
-				if (closed)
+			int successiveFailures = 0;
+			while (!stop) {
+				if (successiveFailures >= 3) {
+					log.error("tooManyFailures");
 					break;
+				}
 
+				successiveFailures++;
+
+				Song song = null;
 				try {
-					if (successiveFailures == 0 || state.getSong() == null)
-						song = PandoraPlaylist.getInstance().getNext();
-					else
-						// do not skip to next song if we failed before
-						song = state.getSong();
-
+					song = PandoraPlaylist.getInstance().getNext();
 					if (song == null) {
-						Thread.sleep(500);
-						continue;
+						// there was a problem, probably session expired.
+						log.error("disconnected");
+						break;
 					}
 
 					String songURL = resolveSongURL(song, configuration.getAudioQuality());
 					if (StringUtils.isBlank(songURL)) {
 						log.error("resolvingAudioURL");
-						Thread.sleep(500);
 						continue;
 					}
-
 					log.debug("New song: " + songURL);
 
-					// initialize the player
-					try {
-						audioPlayer = configuration.getAudioQuality().equals(AudioQuality.MP3) ? new MP3Player()
-								: new AACPlayer();
-						log.info("openingAudioStream");
-						audioPlayer.loadSong(songURL);
-						log.debug("Audio format: {}", configuration.getAudioQuality().toString());
-						log.debug("Bitrate: {}", audioPlayer.getBitrate());
-						successiveFailures = 0;
-					} catch (Exception e) {
-						successiveFailures++;
-
-						if (successiveFailures >= 3) {
-							log.error(e.getMessage(), e);
+					// initialize the player, retry one time.
+					for (int attempt = 0; attempt < 2; attempt++) {
+						try {
+							audioPlayer = configuration.getAudioQuality().equals(AudioQuality.MP3) ? new MP3Player()
+									: new AACPlayer();
+							log.info("openingAudioStream");
+							audioPlayer.loadSong(songURL);
+							log.debug("Audio format: {}", configuration.getAudioQuality().toString());
+							log.debug("Bitrate: {}", audioPlayer.getBitrate());
 							break;
-						} else {
-							log.info(e.getMessage(), e);
-							Thread.sleep(2000);
+						} catch (Exception e) {
+							if (attempt == 0) {
+								log.info(e.getMessage(), e);
+								Thread.sleep(1000);
+							} else {
+								throw e;
+							}
 						}
-						continue;
 					}
 
 					duration = audioPlayer.getDuration();
 					song.setDuration(duration);
 
-					// is there a better way to detect the Pandora skip
-					// protection (42sec length mp3)?
+					// is there a better way to detect the Pandora skip protection (42sec length mp3)?
+					// TODO: not why this was done initially, why skip? shouldn't we just play it instead? TBD when the
+					// situation happens again (didn't hit skip protection for a long time).
 					if (duration == 42569 && audioPlayer.getBitrate() == 64000) {
 						log.error("pandoraSkipProtection");
-						break;
+						continue;
 					}
 
-					// guess if it's an ad (not very reliable)
+					// guess if it's an ad (not very reliable).
 					if (configuration.getAdsDetectionEnabled() && audioPlayer.getBitrate() == 128000
 							&& duration < 45000) {
 						log.debug("Ad detected");
 
-						// set the ad flag on the song, for the display and to
-						// skip scrobbling
+						// set the ad flag on the song, for the display and to skip scrobbling.
 						song.setAd(true);
 					}
 
-					// notify song started
+					// notify other components the song is starting.
 					InternalBus.publish(new PlaybackEvent(PlaybackEvent.Type.SONG_START, song));
+
+					playing = true;
 
 					// initialize controls
 					ApplicationContext.queueCallback(new Runnable() {
@@ -265,7 +270,6 @@ public class PlayerUI extends TablePane implements Bindable {
 							// update station name
 							stationName.setText(state.getStation().getStationName());
 
-							playing = true;
 							enableUI(true);
 						}
 					}, false);
@@ -292,44 +296,58 @@ public class PlayerUI extends TablePane implements Bindable {
 					}
 
 					log.debug("Playback finished");
+
+					// reinitialize the successive failure counter.
+					successiveFailures = 0;
+
 				} catch (Exception e) {
-					log.error(e.getMessage(), e);
-					break;
+					log.warn(e.getMessage(), e);
 				} finally {
+					playing = false;
+
+					// reset UI between plays.
 					ApplicationContext.queueCallback(new Runnable() {
 						@Override
 						public void run() {
-							playing = false;
 							enableUI(false);
 
-							// set progress bar to full
-							currentTime.setText(formatTime(duration));
-							progress.setPercentage(1);
+							if (!stop) {
+								// set progress bar to full.
+								currentTime.setText(formatTime(duration));
+								progress.setPercentage(1);
+							}
 						}
-					}, false);
+					}, !stop); // don't wait when we are stopping to avoid deadlock on with UI thread.
 
-					// close player, we don't reuse it
-					if (audioPlayer != null)
+					// close player, we don't reuse it.
+					if (audioPlayer != null) {
 						audioPlayer.close();
+					}
 
-					if (song != null && song.getDuration() > 0)
-						// notify song finished
+					if (song != null && song.getDuration() > 0) {
+						// notify song finished.
 						InternalBus.publish(new PlaybackEvent(PlaybackEvent.Type.SONG_FINISH, song));
+					}
 				}
 			}
 
 			log.debug("Exiting playback thread");
 
-			// if closed has not been requested, we are disconnected
-			if (!closed)
-				InternalBus.publish(new PlaybackEvent(PlaybackEvent.Type.PANDORA_DISCONNECTED, null));
-
-			closed = true;
-
-			// stop the UI thread
+			// stop the UI sync thread.
 			playerUISyncFuture.cancel(false);
 
-			// also shutdown audio
+			// reset UI.
+			ApplicationContext.queueCallback(new Runnable() {
+				@Override
+				public void run() {
+					resetUI();
+				}
+			}, false);
+
+			// notify we are disconnected.
+			InternalBus.publish(new PlaybackEvent(PlaybackEvent.Type.PANDORA_DISCONNECTED, null));
+
+			// also shutdown audio.
 			AudioDevice.getInstance().shutdown();
 		}
 	}

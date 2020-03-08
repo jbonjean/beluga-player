@@ -192,7 +192,7 @@ public class UIController implements InternalBusSubscriber {
 
 				// ensure the initial state is clear
 				clearResources();
-				playerUI.close();
+				playerUI.stop();
 
 				pandoraClient.partnerLogin();
 				pandoraClient.userLogin();
@@ -221,7 +221,7 @@ public class UIController implements InternalBusSubscriber {
 				InternalBus.publish(new PlaybackEvent(PlaybackEvent.Type.PANDORA_CONNECTED, null));
 
 				// start the player
-				playerUI.open();
+				playerUI.start();
 			}
 		});
 
@@ -232,7 +232,7 @@ public class UIController implements InternalBusSubscriber {
 					@Override
 					public void run() {
 						clearResources();
-						playerUI.close();
+						playerUI.stop();
 						mainWindow.loadPage("welcome");
 						log.info("disconnectedFromPandora");
 					}

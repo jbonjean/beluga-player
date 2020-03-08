@@ -61,7 +61,7 @@ public class LastFMSession {
 					configuration.getLastFMPassword(), API_KEY, API_SECRET);
 
 			if (session == null)
-				log.warn("Authentication with last.fm failed");
+				log.warn("lastFMAuthFailed");
 		}
 
 		return session;
