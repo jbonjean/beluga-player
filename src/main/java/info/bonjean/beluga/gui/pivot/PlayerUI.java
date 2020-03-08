@@ -27,26 +27,24 @@ import info.bonjean.beluga.configuration.AudioQuality;
 import info.bonjean.beluga.configuration.BelugaConfiguration;
 import info.bonjean.beluga.gui.PivotUI;
 import info.bonjean.beluga.player.AACPlayer;
+import info.bonjean.beluga.player.AudioDevice;
 import info.bonjean.beluga.player.AudioPlayer;
 import info.bonjean.beluga.player.MP3Player;
 import info.bonjean.beluga.response.Audio;
 import info.bonjean.beluga.response.Song;
-import java.net.URL;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.pivot.beans.BXML;
 import org.apache.pivot.beans.Bindable;
 import org.apache.pivot.collections.Map;
 import org.apache.pivot.util.Resources;
-import org.apache.pivot.wtk.ApplicationContext;
-import org.apache.pivot.wtk.Label;
-import org.apache.pivot.wtk.LinkButton;
-import org.apache.pivot.wtk.Meter;
-import org.apache.pivot.wtk.TablePane;
+import org.apache.pivot.wtk.*;
 import org.apache.pivot.wtk.content.ButtonData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.net.URL;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 
 public class PlayerUI extends TablePane implements Bindable {
 	private static Logger log = LoggerFactory.getLogger(PlayerUI.class);
@@ -272,14 +270,26 @@ public class PlayerUI extends TablePane implements Bindable {
 						}
 					}, false);
 
+					// check ad and add configuration to know if we should force mute.
+					boolean forceMute = configuration.getAdsSilenceEnabled() && song.isAd();
+					boolean muted = audioPlayer.isMuted();
+					if (forceMute && !muted) {
+						toggleMute();
+					}
+
 					// increase thread priority before starting playback
-					Thread.currentThread().setPriority(Thread.MAX_PRIORITY);
+					Thread.currentThread().setPriority(Thread.MAX_PRIORITY - 1);
 
 					// start playback
-					audioPlayer.play(configuration.getAdsSilenceEnabled() && song.isAd());
+					audioPlayer.play();
 
 					// restore thread priority to normal
 					Thread.currentThread().setPriority(Thread.NORM_PRIORITY);
+
+					// unmute if we forced mute before.
+					if (forceMute && !muted && audioPlayer.isMuted()) {
+						toggleMute();
+					}
 
 					log.debug("Playback finished");
 				} catch (Exception e) {
@@ -318,6 +328,9 @@ public class PlayerUI extends TablePane implements Bindable {
 
 			// stop the UI thread
 			playerUISyncFuture.cancel(false);
+
+			// also shutdown audio
+			AudioDevice.getInstance().shutdown();
 		}
 	}
 
@@ -342,8 +355,9 @@ public class PlayerUI extends TablePane implements Bindable {
 	}
 
 	public void toggleMute() {
-		if (audioPlayer == null || !audioPlayer.isActive())
+		if (audioPlayer == null) {
 			return;
+		}
 		audioPlayer.toggleMuted();
 		ButtonData buttonData = (ButtonData) muteButton.getButtonData();
 		buttonData.setIcon(audioPlayer.isMuted() ? "/img/mute.svg" : "/img/volume.svg");

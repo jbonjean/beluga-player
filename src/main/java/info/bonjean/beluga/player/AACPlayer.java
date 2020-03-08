@@ -19,7 +19,7 @@
  */
 package info.bonjean.beluga.player;
 
-import java.util.List;
+import info.bonjean.beluga.exception.InternalException;
 import net.sourceforge.jaad.aac.AACException;
 import net.sourceforge.jaad.aac.Decoder;
 import net.sourceforge.jaad.aac.SampleBuffer;
@@ -30,6 +30,8 @@ import net.sourceforge.jaad.mp4.api.Movie;
 import net.sourceforge.jaad.mp4.api.Track;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.List;
 
 public class AACPlayer extends AudioPlayer {
 	private static final Logger log = LoggerFactory.getLogger(AACPlayer.class);
@@ -47,8 +49,9 @@ public class AACPlayer extends AudioPlayer {
 
 		// find AAC track
 		final List<Track> tracks = movie.getTracks(AudioTrack.AudioCodec.AAC);
-		if (tracks.isEmpty())
-			throw new RuntimeException("movie does not contain any AAC track");
+		if (tracks.isEmpty()) {
+			throw new InternalException("noAACTrackFound");
+		}
 		track = (AudioTrack) tracks.get(0);
 
 		// create AAC decoder
@@ -58,11 +61,12 @@ public class AACPlayer extends AudioPlayer {
 	}
 
 	@Override
-	public void play(boolean dummy) throws Exception {
-		audioInit(dummy, track.getSampleRate(), track.getSampleSize(), track.getChannelCount(), true, true);
+	public void play() throws Exception {
+		audioInit(track.getSampleRate(), track.getSampleSize(), track.getChannelCount(), true, true);
 
 		Frame frame;
-		final SampleBuffer buf = new SampleBuffer();
+		SampleBuffer buf = new SampleBuffer();
+		int errorCount = 0;
 		try {
 			while (active && track.hasMoreFrames()) {
 				frame = track.readNextFrame();
@@ -74,9 +78,16 @@ public class AACPlayer extends AudioPlayer {
 				} catch (AACException e) {
 					// since the frames are separate, decoding can continue if one fails
 					log.debug(e.getMessage());
+					errorCount++;
+					if (errorCount >= 5) {
+						throw new InternalException("tooManyDecodingErrors");
+					}
 				}
 			}
 		} finally {
+			if (active) {
+				finish();
+			}
 			close();
 		}
 	}

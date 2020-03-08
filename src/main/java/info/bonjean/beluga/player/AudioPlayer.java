@@ -22,17 +22,15 @@ package info.bonjean.beluga.player;
 import info.bonjean.beluga.connection.BelugaHTTPClient;
 import info.bonjean.beluga.connection.CachedInputStream;
 import info.bonjean.beluga.exception.InternalException;
-import java.io.IOException;
-import java.io.InputStream;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
 
+import java.io.IOException;
+import java.io.InputStream;
+
 public abstract class AudioPlayer {
-	private static final int ZEROS_BUFFER_LENGTH = 16384;
-	private static final byte[] ZEROS_BUFFER = new byte[ZEROS_BUFFER_LENGTH];
-	private AudioDevice audioDeviceManager;
+	private AudioDevice audioDeviceManager = AudioDevice.getInstance();
 	protected volatile boolean active;
-	private volatile boolean muted;
 	private CachedInputStream cachedInputStream;
 	private HttpGet streamRequest;
 	private long contentLength;
@@ -41,7 +39,7 @@ public abstract class AudioPlayer {
 
 	public abstract void loadSong(String url) throws Exception;
 
-	public abstract void play(boolean dummy) throws Exception;
+	public abstract void play() throws Exception;
 
 	public abstract long getPosition();
 
@@ -65,14 +63,6 @@ public abstract class AudioPlayer {
 		this.bitrate = bitrate;
 	}
 
-	public boolean isMuted() {
-		return muted;
-	}
-
-	public void toggleMuted() {
-		this.muted = !this.muted;
-	}
-
 	public final double getProgressRatio() {
 		return cachedInputStream.getOutCount() / (double) contentLength;
 	}
@@ -89,10 +79,14 @@ public abstract class AudioPlayer {
 		return contentLength;
 	}
 
+	public void finish() {
+		audioDeviceManager.finish();
+	}
+
 	public void close() {
 		active = false;
 		if (audioDeviceManager != null)
-			audioDeviceManager.close();
+			audioDeviceManager.clear();
 		if (streamRequest != null)
 			streamRequest.abort();
 		if (cachedInputStream != null)
@@ -103,24 +97,18 @@ public abstract class AudioPlayer {
 		this.active = false;
 	}
 
-	protected void audioInit(boolean dummy, float sampleRate, int sampleSizeInBits, int channels, boolean signed,
-			boolean bigEndian) throws InternalException {
-		if (dummy)
-			audioDeviceManager = new DummyAudioDevice(sampleRate, sampleSizeInBits, channels, signed, bigEndian);
-		else
-			audioDeviceManager = new SimpleAudioDevice(sampleRate, sampleSizeInBits, channels, signed, bigEndian);
+	protected void audioInit(float sampleRate, int sampleSizeInBits, int channels, boolean signed, boolean bigEndian)
+			throws InternalException {
+		audioDeviceManager.setup(sampleRate, sampleSizeInBits, channels, signed, bigEndian);
 		active = true;
 	}
 
 	protected void audioWrite(byte[] b, int len) {
-		int remaining = len;
-		while (remaining > 0) {
-			if (muted) {
-				remaining -= audioDeviceManager.write(ZEROS_BUFFER, Math.min(remaining, ZEROS_BUFFER_LENGTH));
-			} else {
-				remaining -= audioDeviceManager.write(b, remaining);
-			}
-		}
+		audioDeviceManager.write(b, len);
+	}
+
+	protected void audioWrite(short[] s, int len) {
+		audioDeviceManager.write(s, len);
 	}
 
 	protected final InputStream openStream(String url) throws UnsupportedOperationException, IOException {
@@ -137,5 +125,13 @@ public abstract class AudioPlayer {
 
 	protected long getStreamOutCount() {
 		return cachedInputStream.getOutCount();
+	}
+
+	public void toggleMuted() {
+		audioDeviceManager.toggleMuted();
+	}
+
+	public boolean isMuted() {
+		return audioDeviceManager.isMuted();
 	}
 }

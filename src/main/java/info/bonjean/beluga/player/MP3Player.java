@@ -21,21 +21,16 @@ package info.bonjean.beluga.player;
 
 import info.bonjean.beluga.exception.CommunicationException;
 import info.bonjean.beluga.exception.InternalException;
-import java.io.IOException;
-import java.net.MalformedURLException;
-import javazoom.jl.decoder.Bitstream;
-import javazoom.jl.decoder.BitstreamException;
-import javazoom.jl.decoder.Decoder;
-import javazoom.jl.decoder.Header;
-import javazoom.jl.decoder.JavaLayerException;
-import javazoom.jl.decoder.SampleBuffer;
+import javazoom.jl.decoder.*;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
+import java.net.MalformedURLException;
+
 public class MP3Player extends AudioPlayer {
 	private static final Logger log = LoggerFactory.getLogger(MP3Player.class);
-
-	private static final byte[] byteBuffer = new byte[SampleBuffer.OBUFFERSIZE * 2];
 
 	private Bitstream bitstream;
 	private Decoder decoder;
@@ -63,8 +58,8 @@ public class MP3Player extends AudioPlayer {
 	}
 
 	@Override
-	public void play(boolean dummy) throws JavaLayerException, InternalException {
-		audioInit(dummy, decoder.getOutputFrequency(), 16, decoder.getOutputChannels(), true, false);
+	public void play() throws JavaLayerException, InternalException {
+		audioInit(decoder.getOutputFrequency(), 16, decoder.getOutputChannels(), true, false);
 
 		try {
 			while (active) {
@@ -77,14 +72,19 @@ public class MP3Player extends AudioPlayer {
 				try {
 					SampleBuffer output = (SampleBuffer) decoder.decodeFrame(h, bitstream);
 					int length = output.getBufferLength();
-					audioWrite(toByteArray(output.getBuffer(), 0, length), length * 2);
+					audioWrite(output.getBuffer(), length);
 				} finally {
 					bitstream.closeFrame();
 				}
 			}
 		} catch (JavaLayerException e) {
-			throw e;
+			if (StringUtils.isNotBlank(e.getMessage())) {
+				log.error(e.getMessage());
+			}
 		} finally {
+			if (active) {
+				finish();
+			}
 			close();
 		}
 	}
@@ -104,16 +104,5 @@ public class MP3Player extends AudioPlayer {
 		} catch (BitstreamException e) {
 			log.debug(e.getMessage());
 		}
-	}
-
-	private byte[] toByteArray(short[] samples, int offset, int length) {
-		int idx = 0;
-		short s;
-		while (length-- > 0) {
-			s = samples[offset++];
-			byteBuffer[idx++] = (byte) s;
-			byteBuffer[idx++] = (byte) (s >>> 8);
-		}
-		return byteBuffer;
 	}
 }
