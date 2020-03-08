@@ -1,3 +1,7 @@
+Beluga Player 0.13
+* Rework audio layer
+* Fix mute
+
 Beluga Player 0.12
 
 * Add support for AAC
