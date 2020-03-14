@@ -25,6 +25,8 @@ import info.bonjean.beluga.client.BelugaState;
 import info.bonjean.beluga.client.PandoraPlaylist;
 import info.bonjean.beluga.configuration.AudioQuality;
 import info.bonjean.beluga.configuration.BelugaConfiguration;
+import info.bonjean.beluga.exception.PandoraError;
+import info.bonjean.beluga.exception.PandoraException;
 import info.bonjean.beluga.gui.PivotUI;
 import info.bonjean.beluga.player.AACPlayer;
 import info.bonjean.beluga.player.AudioDevice;
@@ -126,7 +128,6 @@ public class PlayerUI extends TablePane implements Bindable {
 					Thread.sleep(500);
 				} catch (InterruptedException e1) {
 					Thread.currentThread().interrupt();
-					return;
 				}
 				log.debug("Waiting for playback thread to finish");
 			}
@@ -301,6 +302,13 @@ public class PlayerUI extends TablePane implements Bindable {
 					successiveFailures = 0;
 
 				} catch (Exception e) {
+					// handle session expiration gracefully.
+					if (e instanceof PandoraException) {
+						if(PandoraError.INVALID_AUTH_TOKEN.equals(((PandoraException)e).getError())) {
+							stop = true;
+							break;
+						}
+					}
 					log.warn(e.getMessage(), e);
 				} finally {
 					playing = false;
