@@ -1,4 +1,4 @@
-<local:MainWindow title="Beluga Player" bxml:id="mainWindow"
+<local:MainWindow title="Beluga Player" bxml:id="mainWindow" icon="/img/beluga-player-icon.png"
 	maximized="true" xmlns:bxml="http://pivot.apache.org/bxml" xmlns:local="info.bonjean.beluga.gui.pivot"
 	xmlns="org.apache.pivot.wtk" xmlns:content="org.apache.pivot.wtk.content">
 
