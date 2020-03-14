@@ -845,6 +845,8 @@ public class UIController implements InternalBusSubscriber {
 				@Override
 				public void run() {
 					mainWindow.loadPage("welcome");
+					// ensure the ui is in sync with deconnected state.
+					enableUI(true);
 				}
 			}, true);
 			log.info("disconnectedFromPandora");

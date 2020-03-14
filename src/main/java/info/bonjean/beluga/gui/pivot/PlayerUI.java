@@ -206,7 +206,6 @@ public class PlayerUI extends TablePane implements Bindable {
 					song = PandoraPlaylist.getInstance().getNext();
 					if (song == null) {
 						// there was a problem, probably session expired.
-						log.error("disconnected");
 						break;
 					}
 					log.debug("new song: {} by {}", song.getSongName(), song.getArtistName());
