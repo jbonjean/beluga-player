@@ -5,7 +5,7 @@
 	</properties>
 	<appenders>
 		<Console name='Console' target='SYSTEM_OUT'>
-			<PatternLayout pattern='[%t] %-5level %logger{0} - %msg%n' />
+			<PatternLayout pattern='%-5level %logger{0}[%t] - %msg%n' />
 		</Console>
 		<StatusBar name="StatusBar">
 			<PatternLayout pattern='%d{HH:mm:ss} %-5level %logger{0} - %msg%n' />

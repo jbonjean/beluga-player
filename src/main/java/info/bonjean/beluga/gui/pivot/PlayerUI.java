@@ -330,7 +330,7 @@ public class PlayerUI extends TablePane implements Bindable {
 					}, !stop); // don't wait when we are stopping to avoid deadlock on with UI thread.
 
 					// close player, we don't reuse it.
-					if (audioPlayer != null) {
+					if (audioPlayer != null && audioPlayer.isActive()) {
 						log.debug("closing audio player");
 						audioPlayer.close();
 					}

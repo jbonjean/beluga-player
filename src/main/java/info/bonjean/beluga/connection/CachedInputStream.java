@@ -20,15 +20,12 @@
 package info.bonjean.beluga.connection;
 
 import info.bonjean.beluga.gui.pivot.ThreadPools;
-import java.io.FilterInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.PipedInputStream;
-import java.io.PipedOutputStream;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.Future;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.*;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.Future;
 
 public class CachedInputStream extends FilterInputStream {
 	private static Logger log = LoggerFactory.getLogger(CachedInputStream.class);
@@ -37,6 +34,7 @@ public class CachedInputStream extends FilterInputStream {
 	private static final int INITIAL_CACHE_SIZE = 100 * 1024;
 	private static final byte[] buffer = new byte[8192];
 
+	private boolean closed;
 	private PipedOutputStream pipe;
 	private Future<?> future;
 	private volatile long inCount = 0; // how much has been read from the original inputstream.
@@ -130,17 +128,26 @@ public class CachedInputStream extends FilterInputStream {
 
 	@Override
 	public void close() {
+		if (closed) {
+			return;
+		}
 		try {
 			// break the pipe by closing the consumer
 			in.close();
 			log.debug("consumer: pipe closed");
-
-			// block until thread is finished
-			future.get();
-			log.debug("consumer: producer thread ended");
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);
 		}
+		if (future != null) {
+			try {
+				// block until thread is finished
+				future.get();
+				log.debug("consumer: producer thread ended");
+			} catch (Exception e) {
+				log.error(e.getMessage(), e);
+			}
+		}
+		closed = true;
 	}
 
 	public long getInCount() {
