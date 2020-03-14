@@ -129,7 +129,7 @@ public class PlayerUI extends TablePane implements Bindable {
 				} catch (InterruptedException e1) {
 					Thread.currentThread().interrupt();
 				}
-				log.debug("Waiting for playback thread to finish");
+				log.debug("waiting for playback thread to finish");
 			}
 		}
 	}
@@ -202,19 +202,21 @@ public class PlayerUI extends TablePane implements Bindable {
 
 				Song song = null;
 				try {
+					log.debug("getting next song");
 					song = PandoraPlaylist.getInstance().getNext();
 					if (song == null) {
 						// there was a problem, probably session expired.
 						log.error("disconnected");
 						break;
 					}
+					log.debug("new song: {} by {}", song.getSongName(), song.getArtistName());
 
 					String songURL = resolveSongURL(song, configuration.getAudioQuality());
 					if (StringUtils.isBlank(songURL)) {
 						log.error("resolvingAudioURL");
 						continue;
 					}
-					log.debug("New song: " + songURL);
+					log.debug("new song URL: {}", songURL);
 
 					// initialize the player, retry one time.
 					for (int attempt = 0; attempt < 2; attempt++) {
@@ -223,8 +225,8 @@ public class PlayerUI extends TablePane implements Bindable {
 									: new AACPlayer();
 							log.info("openingAudioStream");
 							audioPlayer.loadSong(songURL);
-							log.debug("Audio format: {}", configuration.getAudioQuality().toString());
-							log.debug("Bitrate: {}", audioPlayer.getBitrate());
+							log.debug("audio format: {}", configuration.getAudioQuality().toString());
+							log.debug("bitrate: {}", audioPlayer.getBitrate());
 							break;
 						} catch (Exception e) {
 							if (attempt == 0) {
@@ -250,7 +252,7 @@ public class PlayerUI extends TablePane implements Bindable {
 					// guess if it's an ad (not very reliable).
 					if (configuration.getAdsDetectionEnabled() && audioPlayer.getBitrate() == 128000
 							&& duration < 45000) {
-						log.debug("Ad detected");
+						log.debug("ad detected");
 
 						// set the ad flag on the song, for the display and to skip scrobbling.
 						song.setAd(true);
@@ -296,7 +298,7 @@ public class PlayerUI extends TablePane implements Bindable {
 						toggleMute();
 					}
 
-					log.debug("Playback finished");
+					log.debug("playback finished");
 
 					// reinitialize the successive failure counter.
 					successiveFailures = 0;
@@ -304,7 +306,7 @@ public class PlayerUI extends TablePane implements Bindable {
 				} catch (Exception e) {
 					// handle session expiration gracefully.
 					if (e instanceof PandoraException) {
-						if(PandoraError.INVALID_AUTH_TOKEN.equals(((PandoraException)e).getError())) {
+						if (PandoraError.INVALID_AUTH_TOKEN.equals(((PandoraException) e).getError())) {
 							stop = true;
 							break;
 						}
@@ -329,17 +331,21 @@ public class PlayerUI extends TablePane implements Bindable {
 
 					// close player, we don't reuse it.
 					if (audioPlayer != null) {
+						log.debug("closing audio player");
 						audioPlayer.close();
 					}
 
 					if (song != null && song.getDuration() > 0) {
 						// notify song finished.
+						log.debug("publishing SONG_FINISH event");
 						InternalBus.publish(new PlaybackEvent(PlaybackEvent.Type.SONG_FINISH, song));
 					}
+
+					log.debug("finished player loop post-processing");
 				}
 			}
 
-			log.debug("Exiting playback thread");
+			log.debug("exiting playback thread");
 
 			// stop the UI sync thread.
 			playerUISyncFuture.cancel(false);

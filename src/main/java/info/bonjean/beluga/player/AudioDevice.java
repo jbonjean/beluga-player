@@ -114,7 +114,7 @@ public class AudioDevice {
 				sourceDataLine.close();
 				log.debug("Exiting audio thread");
 			}
-		});
+		}, "audio");
 
 		shutdown = false;
 		audioThread.start();
@@ -122,9 +122,11 @@ public class AudioDevice {
 
 	public void shutdown() {
 		if (audioThread != null) {
+			log.debug("Entering audio thread shutdown");
 			shutdown = true;
 			try {
 				audioThread.join();
+				log.debug("Audio thread successfully shutdown");
 			} catch (InterruptedException e) {
 				log.debug("Interrupted during audio thread join");
 				Thread.currentThread().interrupt();

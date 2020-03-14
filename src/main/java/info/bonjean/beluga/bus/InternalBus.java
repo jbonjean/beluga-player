@@ -50,7 +50,7 @@ public class InternalBus {
 					while (true) {
 						try {
 							PlaybackEvent event = queue.take();
-							log.debug("received event " + event);
+							log.debug("received event {}", event.getType().name());
 							for (InternalBusSubscriber subscriber : subscribers)
 								subscriber.receive(event);
 						} catch (InterruptedException e) {

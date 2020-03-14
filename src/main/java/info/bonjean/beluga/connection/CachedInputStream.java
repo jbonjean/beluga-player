@@ -48,6 +48,7 @@ public class CachedInputStream extends FilterInputStream {
 
 		future = ThreadPools.streamPool.submit(new Runnable() {
 			public void run() {
+				log.debug("starting input stream cache thread");
 				try {
 					// create the pipe, connect output (producer) to input
 					// stream (consumer)

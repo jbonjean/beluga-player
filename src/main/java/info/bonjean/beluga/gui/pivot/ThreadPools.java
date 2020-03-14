@@ -19,6 +19,8 @@
  */
 package info.bonjean.beluga.gui.pivot;
 
+import org.apache.commons.lang3.concurrent.BasicThreadFactory;
+
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -27,10 +29,16 @@ import java.util.concurrent.ScheduledThreadPoolExecutor;
 public class ThreadPools {
 	public static final int INTERNAL_BUS_POOL_SIZE = 2;
 
-	public static ExecutorService playbackPool = Executors.newFixedThreadPool(1);
-	public static ExecutorService actionPool = Executors.newFixedThreadPool(1);
-	public static ExecutorService streamPool = Executors.newFixedThreadPool(1);
-	public static ExecutorService internalBusPool = Executors.newFixedThreadPool(INTERNAL_BUS_POOL_SIZE);
-	public static ScheduledExecutorService statusBarScheduler = new ScheduledThreadPoolExecutor(1);
-	public static ScheduledExecutorService playerUIScheduler = new ScheduledThreadPoolExecutor(1);
+	public static ExecutorService playbackPool = Executors.newFixedThreadPool(1,
+			new BasicThreadFactory.Builder().namingPattern("playback").build());
+	public static ExecutorService actionPool = Executors.newFixedThreadPool(1,
+			new BasicThreadFactory.Builder().namingPattern("action").build());
+	public static ExecutorService streamPool = Executors.newFixedThreadPool(1,
+			new BasicThreadFactory.Builder().namingPattern("stream").build());
+	public static ExecutorService internalBusPool = Executors.newFixedThreadPool(INTERNAL_BUS_POOL_SIZE,
+			new BasicThreadFactory.Builder().namingPattern("internal-bus-%d").build());
+	public static ScheduledExecutorService statusBarScheduler = new ScheduledThreadPoolExecutor(1,
+			new BasicThreadFactory.Builder().namingPattern("status-bar").build());
+	public static ScheduledExecutorService playerUIScheduler = new ScheduledThreadPoolExecutor(1,
+			new BasicThreadFactory.Builder().namingPattern("player-ui").build());
 }
