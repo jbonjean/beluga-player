@@ -140,7 +140,7 @@ public class AudioDevice {
 
 	public void setup(float sampleRate, int sampleSizeInBits, int channels, boolean signed, boolean bigEndian)
 			throws InternalException {
-		if (audioThread == null) {
+		if (audioThread == null || !audioThread.isAlive()) {
 			init(sampleRate, sampleSizeInBits, channels, signed, bigEndian);
 			return;
 		}
