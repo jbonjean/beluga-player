@@ -20,6 +20,7 @@
 package info.bonjean.beluga.gui.pivot;
 
 import info.bonjean.beluga.client.BelugaState;
+import info.bonjean.beluga.configuration.BelugaConfiguration;
 import info.bonjean.beluga.gui.pivot.core.SplitPaneExtended;
 import info.bonjean.beluga.response.Feedback;
 import java.net.URL;
@@ -66,12 +67,12 @@ public class StationUI extends SplitPane implements Bindable, SplitPaneExtended 
 		stationNameInput.setText(state.getStation().getStationName());
 
 		if (state.getStation().getArtUrl().isEmpty())
-			stationCover.setImage("/img/beluga-player.svg");
+			stationCover.setImage(BelugaConfiguration.getInstance().getTheme().getBelugaPlayerImagePath());
 		else {
 			try {
 				stationCover.setImage(new URL(state.getStation().getArtUrl()));
 			} catch (Exception e) {
-				stationCover.setImage("/img/beluga-player.svg");
+				stationCover.setImage(BelugaConfiguration.getInstance().getTheme().getBelugaPlayerImagePath());
 			}
 		}
 

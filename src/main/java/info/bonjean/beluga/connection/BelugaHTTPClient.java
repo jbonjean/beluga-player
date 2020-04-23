@@ -22,8 +22,6 @@ package info.bonjean.beluga.connection;
 import info.bonjean.beluga.configuration.BelugaConfiguration;
 import info.bonjean.beluga.configuration.DNSProxy;
 import info.bonjean.beluga.exception.CommunicationException;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpHost;
 import org.apache.http.HttpResponse;
@@ -42,11 +40,11 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.util.EntityUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 
 public class BelugaHTTPClient {
-	private static final Logger log = LoggerFactory.getLogger(BelugaHTTPClient.class);
 	public static final BelugaHTTPClient PANDORA_API_INSTANCE = new BelugaHTTPClient(4000, 4000, 4000, 2);
 	public static final BelugaHTTPClient AUDIO_STREAM_INSTANCE = new BelugaHTTPClient(4000, 4000, 4000, 2);
 

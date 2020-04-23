@@ -21,31 +21,25 @@ package info.bonjean.beluga.gui.pivot;
 
 import info.bonjean.beluga.client.BelugaState;
 import info.bonjean.beluga.response.Station;
-
-import java.net.URL;
-
 import org.apache.pivot.beans.BXML;
 import org.apache.pivot.beans.Bindable;
 import org.apache.pivot.collections.Map;
 import org.apache.pivot.util.Resources;
-import org.apache.pivot.wtk.Action;
-import org.apache.pivot.wtk.Component;
-import org.apache.pivot.wtk.ComponentKeyListener;
-import org.apache.pivot.wtk.ComponentMouseButtonListener;
+import org.apache.pivot.wtk.*;
 import org.apache.pivot.wtk.Keyboard.KeyLocation;
-import org.apache.pivot.wtk.Menu;
-import org.apache.pivot.wtk.MenuBar;
 import org.apache.pivot.wtk.Mouse.Button;
-import org.apache.pivot.wtk.SuggestionPopup;
-import org.apache.pivot.wtk.SuggestionPopupCloseListener;
-import org.apache.pivot.wtk.TablePane;
-import org.apache.pivot.wtk.TextInput;
+
+import java.net.URL;
 
 public class MenuUI extends TablePane implements Bindable {
 	@BXML
 	protected MenuBar menubar;
 	@BXML
 	protected TextInput stationsSearch;
+	@BXML
+	protected MenuBar.Item pandoraMenu;
+	@BXML
+	protected Menu.Item stationDetailsButton;
 
 	protected SuggestionPopup stationsPopup = new SuggestionPopup();
 
@@ -53,6 +47,7 @@ public class MenuUI extends TablePane implements Bindable {
 
 	@Override
 	public void initialize(Map<String, Object> namespace, URL location, Resources resources) {
+
 		if (System.getProperty("debug") != null) {
 			Menu.Item debugEntry = new Menu.Item("Refresh");
 			debugEntry.setAction(Action.getNamedActions().get("debug-refresh"));
@@ -78,7 +73,6 @@ public class MenuUI extends TablePane implements Bindable {
 		});
 
 		stationsSearch.getComponentKeyListeners().add(new ComponentKeyListener() {
-
 			@Override
 			public boolean keyTyped(Component component, char character) {
 				showPopup();

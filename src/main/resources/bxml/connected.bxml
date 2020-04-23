@@ -1,7 +1,7 @@
 <BoxPane
 	styles="{padding:10, verticalAlignment:'center', horizontalAlignment:'center'}"
 	xmlns="org.apache.pivot.wtk">
-	<ImageView image="/img/beluga-player.svg" preferredWidth="25"
+	<ImageView image="$belugaPlayerImagePath" preferredWidth="25"
 		preferredHeight="25" styles="{fill:true}" />
-	<Label styles="{font:{bold:true,size:16},color:'#444444'}" text="%connected" />
+	<Label styles="{font:{bold:true,size:16},color:1}" text="%connected" />
 </BoxPane>

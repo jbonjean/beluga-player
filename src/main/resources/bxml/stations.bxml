@@ -7,7 +7,7 @@
 
 	<TablePane.Row height="-1">
 		<Label text="%manageStationsInfo"
-			styles="{padding:{bottom:5},color:'#999999',wrapText:'true'}" />
+			styles="{padding:{bottom:5},color:6,wrapText:'true'}" />
 	</TablePane.Row>
 
 	<TablePane.Row height="1*">

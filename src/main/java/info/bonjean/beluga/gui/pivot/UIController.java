@@ -29,39 +29,23 @@ import info.bonjean.beluga.client.PandoraPlaylist;
 import info.bonjean.beluga.configuration.AudioQuality;
 import info.bonjean.beluga.configuration.BelugaConfiguration;
 import info.bonjean.beluga.configuration.ConnectionType;
+import info.bonjean.beluga.configuration.Theme;
 import info.bonjean.beluga.connection.BelugaHTTPClient;
 import info.bonjean.beluga.exception.BelugaException;
-import info.bonjean.beluga.exception.InternalException;
-import info.bonjean.beluga.gui.PivotUI;
 import info.bonjean.beluga.gui.notification.Notification;
-import info.bonjean.beluga.response.Feedback;
-import info.bonjean.beluga.response.Result;
-import info.bonjean.beluga.response.SearchArtist;
-import info.bonjean.beluga.response.SearchSong;
-import info.bonjean.beluga.response.Song;
-import info.bonjean.beluga.response.Station;
-import java.awt.Desktop;
-import java.net.URI;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.atomic.AtomicReference;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-import org.apache.pivot.wtk.Action;
-import org.apache.pivot.wtk.ApplicationContext;
-import org.apache.pivot.wtk.Checkbox;
-import org.apache.pivot.wtk.Component;
-import org.apache.pivot.wtk.Container;
-import org.apache.pivot.wtk.Menu;
-import org.apache.pivot.wtk.MenuButton;
+import info.bonjean.beluga.player.AudioPlayer;
+import info.bonjean.beluga.response.*;
+import org.apache.pivot.wtk.*;
 import org.apache.pivot.wtk.content.ListItem;
 import org.apache.pivot.wtk.content.TreeNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.awt.Desktop;
+import java.net.URI;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * This is the main controller, that acts as a "glue" between the UI and the
@@ -76,19 +60,14 @@ public class UIController implements InternalBusSubscriber {
 	private static final PandoraClient pandoraClient = PandoraClient.getInstance();
 	private static final BelugaConfiguration configuration = BelugaConfiguration.getInstance();
 	private static final PandoraPlaylist playlist = PandoraPlaylist.getInstance();
-	private final MainWindow mainWindow;
 
-	private static PlayerUI playerUI;
-	private static MenuUI menuUI;
+	private final MainWindow mainWindow;
+	private final AudioPlayer audioPlayer;
 
 	public UIController(MainWindow mainWindow) {
 		InternalBus.subscribe(this);
 		this.mainWindow = mainWindow;
-	}
-
-	public void initialize() {
-		playerUI = MainWindow.getInstance().playerUI;
-		menuUI = MainWindow.getInstance().menuUI;
+		audioPlayer = new AudioPlayer(mainWindow);
 	}
 
 	protected void registerActions() {
@@ -97,7 +76,7 @@ public class UIController implements InternalBusSubscriber {
 			public void asyncPerform(final Component source) throws BelugaException {
 				final String newPage = source.getUserData().get("bxml") != null
 						? (String) source.getUserData().get("bxml")
-						: state.getPage().getName();
+						: mainWindow.getCurrentPageName();
 
 				// load data outside of UI thread
 				if (newPage.equals("station")) {
@@ -117,14 +96,20 @@ public class UIController implements InternalBusSubscriber {
 				}, true);
 			}
 		});
-		Action.getNamedActions().put("debug-refresh", new AsyncAction(mainWindow) {
+		Action.getNamedActions().put("debug-refresh", new AsyncAction(mainWindow, false, false) {
 			@Override
 			public void asyncPerform(Component source) throws BelugaException {
+				try {
+					// Give some time for the menu popup to close and avoid race condition.
+					Thread.sleep(500);
+				} catch (InterruptedException e) {
+					Thread.currentThread().interrupt();
+				}
 				ApplicationContext.queueCallback(new Runnable() {
 					@Override
 					public void run() {
-						mainWindow.reloadResources();
-						mainWindow.loadPage(state.getPage().getName());
+						mainWindow.reload();
+						audioPlayer.uiResync();
 					}
 				}, true);
 			}
@@ -192,7 +177,7 @@ public class UIController implements InternalBusSubscriber {
 
 				// ensure the initial state is clear
 				clearResources();
-				playerUI.stop();
+				audioPlayer.stop();
 
 				pandoraClient.partnerLogin();
 				pandoraClient.userLogin();
@@ -221,7 +206,7 @@ public class UIController implements InternalBusSubscriber {
 				InternalBus.publish(new PlaybackEvent(PlaybackEvent.Type.PANDORA_CONNECTED, null));
 
 				// start the player
-				playerUI.start();
+				audioPlayer.start();
 			}
 		});
 
@@ -232,7 +217,7 @@ public class UIController implements InternalBusSubscriber {
 					@Override
 					public void run() {
 						clearResources();
-						playerUI.stop();
+						audioPlayer.stop();
 						mainWindow.loadPage("welcome");
 						log.info("disconnectedFromPandora");
 					}
@@ -244,7 +229,7 @@ public class UIController implements InternalBusSubscriber {
 			@Override
 			public void asyncPerform(Component source) throws BelugaException {
 				log.info("skippingSong");
-				playerUI.skip();
+				audioPlayer.skip();
 			}
 		});
 
@@ -254,7 +239,7 @@ public class UIController implements InternalBusSubscriber {
 				log.info("changingStation");
 				Station station = (Station) source.getUserData().get("station");
 				selectStation(station);
-				playerUI.skip();
+				audioPlayer.skip();
 			}
 		});
 		Action.getNamedActions().put("like", new AsyncAction(mainWindow) {
@@ -271,7 +256,7 @@ public class UIController implements InternalBusSubscriber {
 				log.info("sendingFeedback");
 				pandoraClient.addFeedback(state.getSong(), false);
 				log.info("feedbackSent");
-				playerUI.skip();
+				audioPlayer.skip();
 			}
 		});
 		Action.getNamedActions().put("sleep", new AsyncAction(mainWindow, true, true) {
@@ -280,7 +265,7 @@ public class UIController implements InternalBusSubscriber {
 				log.info("sendingFeedback");
 				pandoraClient.sleepSong(state.getSong());
 				log.info("feedbackSent");
-				playerUI.skip();
+				audioPlayer.skip();
 			}
 		});
 		Action.getNamedActions().put("create", new AsyncAction(mainWindow) {
@@ -306,7 +291,7 @@ public class UIController implements InternalBusSubscriber {
 		Action.getNamedActions().put("search", new AsyncAction(mainWindow) {
 			@Override
 			public void asyncPerform(final Component source) throws BelugaException {
-				SearchUI searchUI = getPageComponent(SearchUI.class, 2);
+				SearchUI searchUI = mainWindow.getCurrentPageComponent(StationCreateUI.class).getSearchUI();
 				String query = searchUI.searchInput.getText();
 
 				if (query.isEmpty()) {
@@ -341,7 +326,7 @@ public class UIController implements InternalBusSubscriber {
 			@Override
 			public void afterPerform() {
 				try {
-					SearchUI searchUI = getPageComponent(SearchUI.class, 2);
+					SearchUI searchUI = mainWindow.getCurrentPageComponent(StationCreateUI.class).getSearchUI();
 					ApplicationContext.queueCallback(new Runnable() {
 						@Override
 						public void run() {
@@ -364,7 +349,7 @@ public class UIController implements InternalBusSubscriber {
 					public void run() {
 						StationsUI quickMixUI;
 						try {
-							quickMixUI = getPage(StationsUI.class);
+							quickMixUI = mainWindow.getCurrentPageComponent(StationsUI.class);
 						} catch (BelugaException e) {
 							log.error(e.getMessage(), e);
 							return;
@@ -402,7 +387,7 @@ public class UIController implements InternalBusSubscriber {
 				// if the current station is contained in the list, switch to QuickMix.
 				if (stationIds.contains(state.getStation().getStationId())) {
 					selectStation(null);
-					playerUI.skip();
+					audioPlayer.skip();
 				}
 
 				// redirect to the main screen
@@ -424,7 +409,7 @@ public class UIController implements InternalBusSubscriber {
 					public void run() {
 						QuickMixUI quickMixUI;
 						try {
-							quickMixUI = getPage(QuickMixUI.class);
+							quickMixUI = mainWindow.getCurrentPageComponent(QuickMixUI.class);
 						} catch (BelugaException e) {
 							log.error(e.getMessage(), e);
 							return;
@@ -458,7 +443,7 @@ public class UIController implements InternalBusSubscriber {
 		Action.getNamedActions().put("create-station-from-genre", new AsyncAction(mainWindow) {
 			@Override
 			public void asyncPerform(final Component source) throws BelugaException {
-				GenresUI genresUI = getPageComponent(GenresUI.class, 2);
+				GenresUI genresUI = mainWindow.getCurrentPageComponent(StationCreateUI.class).getGenresUI();
 
 				Station station = null;
 				Object node = genresUI.genresTree.getSelectedNode();
@@ -488,7 +473,7 @@ public class UIController implements InternalBusSubscriber {
 		Action.getNamedActions().put("create-account", new AsyncAction(mainWindow) {
 			@Override
 			public void asyncPerform(final Component source) throws BelugaException {
-				AccountCreationUI accountCreationUI = getPage(AccountCreationUI.class);
+				AccountCreationUI accountCreationUI = mainWindow.getCurrentPageComponent(AccountCreationUI.class);
 				if (!accountCreationUI.termsOfUseInput.isSelected()) {
 					log.error("youMustAgreeToTheTermsOfUse");
 					return;
@@ -511,7 +496,7 @@ public class UIController implements InternalBusSubscriber {
 		Action.getNamedActions().put("delete-bookmark", new AsyncAction(mainWindow) {
 			@Override
 			public void asyncPerform(final Component source) throws BelugaException {
-				final BookmarksUI bookmarksUI = getPage(BookmarksUI.class);
+				final BookmarksUI bookmarksUI = mainWindow.getCurrentPageComponent(BookmarksUI.class);
 
 				log.info("deletingBookmark");
 				final String bookmarkToken = (String) source.getUserData().get("bookmarkToken");
@@ -540,7 +525,7 @@ public class UIController implements InternalBusSubscriber {
 		Action.getNamedActions().put("delete-feedback", new AsyncAction(mainWindow) {
 			@Override
 			public void asyncPerform(final Component source) throws BelugaException {
-				final StationUI stationUI = getPage(StationUI.class);
+				final StationUI stationUI = mainWindow.getCurrentPageComponent(StationUI.class);
 
 				log.info("deletingFeedback");
 				final Feedback feedback = (Feedback) source.getUserData().get("feedback");
@@ -569,7 +554,9 @@ public class UIController implements InternalBusSubscriber {
 		Action.getNamedActions().put("save-preferences", new AsyncAction(mainWindow) {
 			@Override
 			public void asyncPerform(final Component source) throws BelugaException {
-				final PreferencesUI preferencesUI = getPage(PreferencesUI.class);
+				final PreferencesUI preferencesUI = mainWindow.getCurrentPageComponent(PreferencesUI.class);
+				boolean themeChanged = configuration.getTheme().equals(preferencesUI.theme.getSelectedItem()) ? false
+						: true;
 
 				configuration.setUserName(preferencesUI.emailAddressInput.getText());
 				configuration.setPassword(preferencesUI.passwordInput.getText());
@@ -589,6 +576,7 @@ public class UIController implements InternalBusSubscriber {
 				configuration.setStationsOrderBy(
 						(String) ((ListItem) preferencesUI.stationsOrderBy.getSelectedItem()).getUserData());
 				configuration.setWindowRestoreEnabled(preferencesUI.windowRestoreCheckbox.isSelected());
+				configuration.setTheme((Theme) preferencesUI.theme.getSelectedItem());
 
 				if (!state.getVersion().equals(BelugaConfiguration.CONFIGURATION_DEFAULT_VERSION))
 					configuration.setConfigurationVersion(state.getVersion());
@@ -605,6 +593,10 @@ public class UIController implements InternalBusSubscriber {
 				ApplicationContext.queueCallback(new Runnable() {
 					@Override
 					public void run() {
+						if (themeChanged) {
+							mainWindow.reload();
+							audioPlayer.uiResync();
+						}
 						mainWindow.loadPage(isPlaybackStarted() ? "song" : "welcome");
 					}
 				}, false);
@@ -613,17 +605,22 @@ public class UIController implements InternalBusSubscriber {
 		Action.getNamedActions().put("rename-station", new AsyncAction(mainWindow) {
 			@Override
 			public void asyncPerform(final Component source) throws BelugaException {
-				final StationUI stationUI = getPage(StationUI.class);
+				final StationUI stationUI = mainWindow.getCurrentPageComponent(StationUI.class);
 				log.info("renamingStation");
 				pandoraClient.renameStation(state.getStation(), stationUI.stationNameInput.getText());
 				updateStationsList();
-				playerUI.refreshStationName();
+				ApplicationContext.queueCallback(new Runnable() {
+					@Override
+					public void run() {
+						audioPlayer.uiUpdateStationName();
+					}
+				}, false);
 			}
 		});
 		Action.getNamedActions().put("mute", new AsyncAction(mainWindow, false, true) {
 			@Override
 			public void asyncPerform(final Component source) throws BelugaException {
-				playerUI.toggleMute();
+				audioPlayer.toggleMute();
 			}
 		});
 	}
@@ -719,101 +716,6 @@ public class UIController implements InternalBusSubscriber {
 		return pandoraClient.isLoggedIn() && state.getSong() != null;
 	}
 
-	@SuppressWarnings("unchecked")
-	private <E extends Component> E getPage(Class<E> clazz) throws BelugaException {
-		Component page = state.getPage().getComponent();
-		if (clazz.isInstance(page))
-			return (E) page;
-		throw new InternalException("invalidActionCall");
-	}
-
-	private <E extends Component> E getPageComponent(Class<E> clazz, int maxDepth) throws BelugaException {
-		AtomicReference<E> componentWrapper = new AtomicReference<>();
-		ApplicationContext.queueCallback(new Runnable() {
-			@Override
-			public void run() {
-				componentWrapper.set(findComponent(state.getPage().getComponent(), clazz, maxDepth));
-			}
-		}, true);
-		E component = componentWrapper.get();
-		if (component == null) {
-			throw new InternalException("invalidActionCall");
-		}
-		return component;
-	}
-
-	@SuppressWarnings("unchecked")
-	private <T extends Component> T findComponent(Component parent, Class<T> clazz, int maxDepth) {
-		// quick and dirty solution, find a specific component in the tree.
-		// TODO: store references instead of this brute-force approach.
-		if (maxDepth == 0)
-			return null;
-
-		if (parent instanceof Container && !(parent instanceof Menu)) {
-			Iterator<Component> iterator = ((Container) parent).iterator();
-			while (iterator.hasNext()) {
-				Component child = iterator.next();
-				if (child.getClass().equals(clazz))
-					return (T) child;
-				child = findComponent(child, clazz, maxDepth - 1);
-				if (child != null)
-					return (T) child;
-			}
-		}
-		return null;
-	}
-
-	private void recursiveEnableComponent(Component component, boolean enabled) {
-		// disable the parent component first to prevent any user interaction
-		if (!enabled)
-			PivotUI.enableComponent(component, false);
-
-		// if it's a container, handle the children (except for menu)
-		if (component instanceof Container && !(component instanceof Menu)) {
-			Iterator<Component> iterator = ((Container) component).iterator();
-			while (iterator.hasNext())
-				recursiveEnableComponent(iterator.next(), enabled);
-		}
-
-		// enable the parent component
-		if (enabled)
-			PivotUI.enableComponent(component, true);
-	}
-
-	/*
-	 * Keep everything related to enabled/disabled state here, it make it easier
-	 * to ensure consistency between screens
-	 */
-	public void enableUI(boolean enabled) {
-		if (menuUI == null || mainWindow == null || playerUI == null)
-			return;
-
-		// because of the Component class sealing, we cannot override it
-		// so we need to manually update enable state of all components
-		recursiveEnableComponent(menuUI, enabled);
-		Iterator<Component> contentIterator = mainWindow.contentWrapper.iterator();
-		while (contentIterator.hasNext())
-			recursiveEnableComponent(contentIterator.next(), enabled);
-
-		// get Pandora status
-		boolean connected = pandoraClient.isLoggedIn();
-
-		// enable/disable the loading and disconnected icons
-		mainWindow.statusBarIconDiconnected.setVisible(!connected);
-		mainWindow.loader.setVisible(!enabled);
-
-		// enable/disable Pandora related features if connected
-		if (enabled && connected) {
-			// there is no station details for the quickmix
-			if (state.getStation() != null && state.getStation().isQuickMix())
-				PivotUI.enableComponent(mainWindow.stationDetailsButton, false);
-			else
-				PivotUI.enableComponent(mainWindow.stationDetailsButton, true);
-		}
-		mainWindow.pandoraMenu.setEnabled(connected);
-		mainWindow.stationsSearch.setEnabled(connected);
-	}
-
 	@Override
 	public void receive(PlaybackEvent playbackEvent) {
 		log.debug("Received event: " + playbackEvent.getType());
@@ -821,7 +723,7 @@ public class UIController implements InternalBusSubscriber {
 		switch (playbackEvent.getType()) {
 		case SONG_START:
 			// reload song page only if currently displayed
-			if (state.getPage().getName().equals("song") || state.getPage().getName().equals("connected")) {
+			if (mainWindow.getCurrentPageName().equals("song") || mainWindow.getCurrentPageName().equals("connected")) {
 				ApplicationContext.queueCallback(new Runnable() {
 					@Override
 					public void run() {
@@ -845,8 +747,8 @@ public class UIController implements InternalBusSubscriber {
 				@Override
 				public void run() {
 					mainWindow.loadPage("welcome");
-					// ensure the ui is in sync with deconnected state.
-					enableUI(true);
+					// ensure the ui is in sync with disconnected state.
+					mainWindow.enableUI(true);
 				}
 			}, true);
 			log.info("disconnectedFromPandora");

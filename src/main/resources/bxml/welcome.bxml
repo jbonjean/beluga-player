@@ -6,8 +6,8 @@
 	</columns>
 
 	<TablePane.Row height="-1">
-		<BoxPane styles="{verticalAlignment:'center', horizontalAlignment:'center'}">
-			<ImageView image="/img/beluga-player.svg" preferredWidth="25"
+		<BoxPane styles="{verticalAlignment:'center',horizontalAlignment:'center'}">
+			<ImageView image="$belugaPlayerImagePath" preferredWidth="25"
 				preferredHeight="25" styles="{fill:true}" />
 			<Label bxml:id="belugaVersion" styles="{font:{bold:true,size:16}}" />
 		</BoxPane>
@@ -16,10 +16,10 @@
 	<TablePane.Row height="-1">
 		<StackPane styles="{padding:{top:10}}" bxml:id="newVersionPane"
 			visible="false">
-			<Border styles="{color:'#2ab100',backgroundColor:'#8bde71',padding:5}">
+			<Border styles="{backgroundColor:'#ffe480',padding:5}">
 				<BoxPane orientation="horizontal">
-					<Label text="%newVersionAvailable" />
-					<LinkButton action="open-url">
+					<Label text="%newVersionAvailable" styles="{color: '#111111'}" />
+					<LinkButton action="open-url" styles="{color: '#111111'}">
 						<content:ButtonData text="http://jbonjean.github.io/beluga-player/" />
 						<userData url="http://jbonjean.github.io/beluga-player/" />
 					</LinkButton>
@@ -31,9 +31,9 @@
 	<TablePane.Row height="-1">
 		<StackPane styles="{padding:{top:10}}" bxml:id="javaVersionWarningPane"
 			visible="false">
-			<Border styles="{color:'#7c7b00',backgroundColor:'#fffc00',padding:5}">
+			<Border styles="{backgroundColor:'#ffe480',padding:5}">
 				<BoxPane orientation="horizontal">
-					<Label text="%javaVersionWarning" />
+					<Label text="%javaVersionWarning" styles="{color: '#111111'}"/>
 				</BoxPane>
 			</Border>
 		</StackPane>
@@ -41,7 +41,7 @@
 
 	<TablePane.Row height="-1">
 		<Label text="%belugaDescription"
-			styles="{padding:{top:10,bottom:10},color:'#999999',wrapText:'true',font:{bold:true}}" />
+			styles="{padding:{top:10,bottom:10},color:6,wrapText:'true',font:{bold:true}}" />
 	</TablePane.Row>
 
 	<TablePane.Row height="1*">

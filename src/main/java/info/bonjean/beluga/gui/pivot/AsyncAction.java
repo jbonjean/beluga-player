@@ -74,7 +74,7 @@ public abstract class AsyncAction extends Action {
 									mainWindow.enableUI(false);
 								}
 								if (disablePlayerUI) {
-									mainWindow.playerUI.enableUI(false);
+									mainWindow.getPlayerUI().enableUI(false);
 								}
 							}
 						}, true);
@@ -92,7 +92,7 @@ public abstract class AsyncAction extends Action {
 									mainWindow.enableUI(true);
 								}
 								if (disablePlayerUI) {
-									mainWindow.playerUI.enableUI(true);
+									mainWindow.getPlayerUI().enableUI(true);
 								}
 							}
 						}, true);

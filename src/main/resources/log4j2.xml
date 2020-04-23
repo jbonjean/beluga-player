@@ -20,6 +20,7 @@
 	</appenders>
 	<loggers>
 		<logger name="info.bonjean.beluga.util.HTTPUtil" level="warn" />
+		<logger name="org.apache.http" level="error" />
 		<root level="debug">
 			<appender-ref ref='Console' level='${sys:log.level}' />
 			<appender-ref ref='StatusBar' level="info" />

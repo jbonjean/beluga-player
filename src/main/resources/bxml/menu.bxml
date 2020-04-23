@@ -74,7 +74,7 @@
 		</MenuBar>
 		<BoxPane styles="{padding: 2}">
 			<TextInput bxml:id="stationsSearch" textSize="12"
-				prompt="%stationsPrompt" styles="{borderColor: 7, backgroundColor: 4, }" />
+				prompt="%stationsPrompt" styles="{borderColor:7,backgroundColor: 4}" />
 		</BoxPane>
 		<LinkButton bxml:id="backButton" action="back" tooltipText="%home">
 			<dataRenderer>
@@ -82,7 +82,7 @@
 					iconWidth="13" iconHeight="13" fillIcon="true" />
 			</dataRenderer>
 			<buttonData>
-				<content:ButtonData icon="/img/house.svg" />
+				<content:ButtonData icon="$homeImagePath" />
 			</buttonData>
 		</LinkButton>
 	</TablePane.Row>

@@ -22,13 +22,14 @@ package info.bonjean.beluga.configuration;
 import info.bonjean.beluga.client.BelugaState;
 import info.bonjean.beluga.util.CryptoUtil;
 import info.bonjean.beluga.util.StringUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Properties;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class BelugaConfiguration {
 	private static Logger log = LoggerFactory.getLogger(BelugaConfiguration.class);
@@ -342,5 +343,13 @@ public class BelugaConfiguration {
 
 	public void setConnectionType(ConnectionType connectionType) {
 		set(Property.CONNECTION_TYPE, connectionType.getId());
+	}
+
+	public Theme getTheme() {
+		return Theme.get(getString(Property.THEME, Theme.DEFAULT.getId()));
+	}
+
+	public void setTheme(Theme theme) {
+		set(Property.THEME, theme.getId());
 	}
 }

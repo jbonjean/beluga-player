@@ -20,6 +20,7 @@
 package info.bonjean.beluga.gui.pivot;
 
 import info.bonjean.beluga.client.BelugaState;
+import info.bonjean.beluga.configuration.BelugaConfiguration;
 import info.bonjean.beluga.gui.PivotUI;
 import info.bonjean.beluga.gui.pivot.core.SplitPaneExtended;
 import info.bonjean.beluga.util.ResourcesUtil;
@@ -84,7 +85,7 @@ public class SongUI extends SplitPane implements Bindable, SplitPaneExtended {
 		try {
 			albumCover.setImage(new URL(state.getSong().getAlbumArtUrl()));
 		} catch (Exception e) {
-			albumCover.setImage("/img/beluga-player.svg");
+			albumCover.setImage(BelugaConfiguration.getInstance().getTheme().getBelugaPlayerImagePath());
 		}
 
 		PivotUI.enableComponent(likeButton, state.getSong().getSongRating() < 1);

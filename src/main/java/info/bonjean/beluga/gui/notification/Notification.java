@@ -19,30 +19,27 @@
  */
 package info.bonjean.beluga.gui.notification;
 
+import ch.swingfx.twinkle.NotificationBuilder;
+import ch.swingfx.twinkle.style.INotificationStyle;
+import ch.swingfx.twinkle.style.theme.DarkDefaultNotification;
+import ch.swingfx.twinkle.style.theme.LightDefaultNotification;
+import ch.swingfx.twinkle.window.Positions;
+import com.kitfox.svg.app.beans.SVGIcon;
 import info.bonjean.beluga.configuration.BelugaConfiguration;
+import info.bonjean.beluga.configuration.Theme;
 import info.bonjean.beluga.response.Song;
 import info.bonjean.beluga.util.ResourcesUtil;
+import javax.imageio.ImageIO;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.awt.Dimension;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.URL;
-
-import javax.imageio.ImageIO;
-import javax.swing.Icon;
-import javax.swing.ImageIcon;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import ch.swingfx.twinkle.NotificationBuilder;
-import ch.swingfx.twinkle.style.INotificationStyle;
-import ch.swingfx.twinkle.style.theme.DarkDefaultNotification;
-import ch.swingfx.twinkle.style.theme.LightDefaultNotification;
-import ch.swingfx.twinkle.window.Positions;
-
-import com.kitfox.svg.app.beans.SVGIcon;
 
 public class Notification {
 	private static Logger log = LoggerFactory.getLogger(Notification.class);
@@ -52,6 +49,7 @@ public class Notification {
 	@SuppressWarnings("deprecation")
 	public Notification(Song song) {
 		Icon icon = null;
+		boolean dark = BelugaConfiguration.getInstance().getNotificationsStyle().equals("dark");
 
 		if (!song.getAlbumArtUrl().isEmpty()) {
 			try {
@@ -65,7 +63,8 @@ public class Notification {
 
 		if (icon == null) {
 			try {
-				SVGIcon svgIcon = ResourcesUtil.getSVGIcon("/img/beluga-player.svg");
+				SVGIcon svgIcon = ResourcesUtil.getSVGIcon(
+						dark ? Theme.DARK.getBelugaPlayerImagePath() : Theme.DEFAULT.getBelugaPlayerImagePath());
 				svgIcon.setPreferredSize(new Dimension(80, 80));
 				svgIcon.setScaleToFit(true);
 				icon = svgIcon;
@@ -74,9 +73,7 @@ public class Notification {
 			}
 		}
 
-		INotificationStyle style = BelugaConfiguration.getInstance().getNotificationsStyle().equals("dark")
-				? new DarkDefaultNotification()
-				: new LightDefaultNotification();
+		INotificationStyle style = dark ? new DarkDefaultNotification() : new LightDefaultNotification();
 
 		new NotificationBuilder().withStyle(style).withTitle(ResourcesUtil.shorten(song.getSongName(), 60))
 				.withMessage(song.getArtistName()).withIcon(icon).withDisplayTime(TIMEOUT)

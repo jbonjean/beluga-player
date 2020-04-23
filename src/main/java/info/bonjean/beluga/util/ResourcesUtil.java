@@ -22,18 +22,24 @@ package info.bonjean.beluga.util;
 import com.kitfox.svg.SVGCache;
 import com.kitfox.svg.SVGUniverse;
 import com.kitfox.svg.app.beans.SVGIcon;
+import info.bonjean.beluga.configuration.BelugaConfiguration;
+import info.bonjean.beluga.configuration.Theme;
 import info.bonjean.beluga.exception.CommunicationException;
 import info.bonjean.beluga.gui.notification.Notification;
+import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.io.FilenameUtils;
+import org.apache.pivot.beans.BXMLSerializer;
+import org.apache.pivot.wtk.media.Drawing;
+import org.apache.pivot.wtk.media.Image;
+import org.apache.pivot.wtk.skin.terra.TerraTheme;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.awt.Color;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
-import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.io.FilenameUtils;
-import org.apache.pivot.wtk.media.Drawing;
-import org.apache.pivot.wtk.media.Image;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class ResourcesUtil {
 	private static Logger log = LoggerFactory.getLogger(ResourcesUtil.class);
@@ -93,5 +99,21 @@ public class ResourcesUtil {
 
 	public static String getRemoteResourceBase64(String url) throws CommunicationException {
 		return Base64.encodeBase64String(HTTPUtil.request(url));
+	}
+
+	public static BXMLSerializer getBXMLSerializer() {
+		BXMLSerializer bxmlSerializer = new BXMLSerializer();
+		Theme theme = BelugaConfiguration.getInstance().getTheme();
+		bxmlSerializer.getNamespace().put("belugaPlayerImagePath", theme.getBelugaPlayerImagePath());
+		bxmlSerializer.getNamespace().put("homeImagePath", theme.getHomeImagePath());
+		bxmlSerializer.getNamespace().put("disconnectedImagePath", theme.getDisconnectedImagePath());
+		bxmlSerializer.getNamespace().put("forwardImagePath", theme.getForwardImagePath());
+		bxmlSerializer.getNamespace().put("volumeImagePath", theme.getVolumeImagePath());
+		bxmlSerializer.getNamespace().put("muteImagePath", theme.getMuteImagePath());
+		return bxmlSerializer;
+	}
+
+	public static Color getThemeColor(int index) {
+		return ((TerraTheme) org.apache.pivot.wtk.skin.terra.TerraTheme.getTheme()).getColor(index);
 	}
 }

@@ -4,10 +4,15 @@
 	<columns>
 		<TablePane.Column width="1*" />
 	</columns>
+
 	<TablePane.Row height="-1">
-		<Label bxml:id="belugaVersion"
-			styles="{horizontalAlignment:'center',font:{bold:true,size:16},padding:{bottom:10}}" />
+		<BoxPane styles="{verticalAlignment:'center',horizontalAlignment:'center',padding:{bottom:15}}">
+			<ImageView image="$password" preferredWidth="25"
+				preferredHeight="25" styles="{fill:true}" />
+			<Label bxml:id="belugaVersion" styles="{font:{bold:true,size:16}}" />
+		</BoxPane>
 	</TablePane.Row>
+
 	<TablePane.Row height="1*">
 		<Border styles="{padding:5}">
 			<ScrollPane horizontalScrollBarPolicy="fill">

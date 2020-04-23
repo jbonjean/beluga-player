@@ -51,11 +51,13 @@ import org.apache.pivot.wtk.SuggestionPopupStateListener;
 import org.apache.pivot.wtk.TextInput;
 import org.apache.pivot.wtk.Theme;
 import org.apache.pivot.wtk.Window;
+import org.apache.pivot.wtk.content.ListViewItemRenderer;
 import org.apache.pivot.wtk.effects.DropShadowDecorator;
 import org.apache.pivot.wtk.effects.Transition;
 import org.apache.pivot.wtk.effects.TransitionListener;
 import org.apache.pivot.wtk.skin.WindowSkin;
 import org.apache.pivot.wtk.skin.terra.FadeWindowTransition;
+import org.apache.pivot.wtk.skin.terra.TerraTheme;
 
 /**
  * Terra suggestion popup skin.
@@ -186,24 +188,34 @@ public class BelugaSuggestionPopupSkin extends WindowSkin
     private static final int DEFAULT_CLOSE_TRANSITION_DURATION = 150;
     private static final int DEFAULT_CLOSE_TRANSITION_RATE = 30;
 
-    public BelugaSuggestionPopupSkin () {
-        listView.getStyles().put("variableItemHeight", true);
+    public BelugaSuggestionPopupSkin() {
+        TerraTheme theme = (TerraTheme) Theme.getTheme();
+
         listView.getListViewSelectionListeners().add(listViewSelectionListener);
         listView.getComponentKeyListeners().add(listViewKeyListener);
+        listView.getStyles().put("variableItemHeight", true);
+        listView.getStyles().put("highlightBackgroundColor", theme.getColor(14));
+
+        // See item renderer below.
+        listView.getStyles().put("selectionColor", 3);
+
+        setBackgroundColor((Color) null);
 
         listViewPanorama = new Panorama(listView);
-        listViewPanorama.getStyles().put("buttonBackgroundColor",
-            listView.getStyles().get("backgroundColor"));
-        listViewPanorama.getStyles().put("alwaysShowScrollButtons", true);
+        listViewPanorama.getStyles().put("buttonBackgroundColor", Color.WHITE);
 
         listViewBorder = new Border(listViewPanorama);
+
+        listViewBorder.getStyles().put("color", theme.getColor(7));
+        listViewBorder.getStyles().put("backgroundColor", null);
+        listViewBorder.getStyles().put("padding", 0);
     }
 
     @Override
     public void install(Component component) {
         super.install(component);
 
-        SuggestionPopup suggestionPopup = (SuggestionPopup)component;
+        SuggestionPopup suggestionPopup = (SuggestionPopup) component;
         suggestionPopup.getSuggestionPopupListeners().add(this);
         suggestionPopup.getSuggestionPopupSelectionListeners().add(this);
         suggestionPopup.getSuggestionPopupStateListeners().add(this);
@@ -211,7 +223,36 @@ public class BelugaSuggestionPopupSkin extends WindowSkin
         suggestionPopup.setContent(listViewBorder);
 
         listView.setListData(suggestionPopup.getSuggestionData());
-        listView.setItemRenderer(suggestionPopup.getSuggestionRenderer());
+
+        // Customize item renderer to properly support highlight.
+        listView.setItemRenderer(new ListViewItemRenderer() {
+            @Override
+            protected void renderStyles(ListView listView, boolean selected, boolean highlighted, boolean disabled) {
+                imageView.getStyles().put("opacity", listView.isEnabled() ? 1.0f : 0.5f);
+
+                Font font = (Font) listView.getStyles().get("font");
+                label.getStyles().put("font", font);
+
+                Color color;
+                if (listView.isEnabled() && !disabled) {
+                    if (selected) {
+                        if (listView.isFocused()) {
+                            color = (Color) listView.getStyles().get("selectionColor");
+                        } else {
+                            color = (Color) listView.getStyles().get("inactiveSelectionColor");
+                        }
+                    } else if (highlighted) {
+                        color = (Color) listView.getStyles().get("selectionColor");
+                    } else {
+                        color = (Color) listView.getStyles().get("color");
+                    }
+                } else {
+                    color = (Color) listView.getStyles().get("disabledColor");
+                }
+
+                label.getStyles().put("color", color);
+            }
+        });
 
         // Attach the drop-shadow decorator
         dropShadowDecorator = new DropShadowDecorator(3, 3, 3);

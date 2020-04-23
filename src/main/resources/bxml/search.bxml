@@ -33,7 +33,7 @@
 	<TablePane.Row height="-1">
 		<BoxPane>
 			<Label bxml:id="nearMatchesAvailable" text="%searchResultsIncomplete"
-				visible="false" styles="{padding:{top:10},font:{bold:true},color:'#999999'}" />
+				visible="false" styles="{padding:{top:10},font:{bold:true},color:6}" />
 		</BoxPane>
 	</TablePane.Row>
 </local:SearchUI>

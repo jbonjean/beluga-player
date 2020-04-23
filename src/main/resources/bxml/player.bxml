@@ -21,7 +21,7 @@
 			<TablePane.Row height="1*">
 				<Label bxml:id="currentTime" styles="{padding:{left:5,right:5}}" />
 				<StackPane>
-					<Meter bxml:id="progressCache" styles="{gridFrequency:1,color:'#dddddd'}" />
+					<Meter bxml:id="progressCache" styles="{gridFrequency:1}" />
 					<Meter bxml:id="progress" styles="{gridFrequency:1}" />
 				</StackPane>
 				<Label bxml:id="totalTime" styles="{padding:{left:5,right:5}}" />
@@ -37,7 +37,7 @@
 				<content:ButtonDataRenderer orientation="vertical" iconWidth="25" iconHeight="25" fillIcon="true" />
 			</dataRenderer>
 			<buttonData>
-				<content:ButtonData icon="/img/volume.svg" />
+				<content:ButtonData icon="$volumeImagePath" />
 			</buttonData>
 		</LinkButton>
 		<LinkButton bxml:id="nextButton" action="next-song" tooltipText="%skip">
@@ -45,7 +45,7 @@
 				<content:ButtonDataRenderer orientation="vertical" iconWidth="25" iconHeight="25" fillIcon="true" />
 			</dataRenderer>
 			<buttonData>
-				<content:ButtonData icon="/img/forward.svg" />
+				<content:ButtonData icon="$forwardImagePath" />
 			</buttonData>
 		</LinkButton>
 	</TablePane.Row>

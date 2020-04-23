@@ -1,3 +1,7 @@
+Beluga Player 0.14
+
+* Add dark theme
+
 Beluga Player 0.13
 
 * Fix mute

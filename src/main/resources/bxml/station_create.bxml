@@ -1,4 +1,4 @@
-<TablePane xmlns:bxml="http://pivot.apache.org/bxml"
+<local:StationCreateUI xmlns:bxml="http://pivot.apache.org/bxml"
 	xmlns:local="info.bonjean.beluga.gui.pivot" xmlns="org.apache.pivot.wtk"
 	styles="{padding:6}">
 
@@ -8,8 +8,8 @@
 
 	<TablePane.Row height="1*">
 		<TabPane>
-			<bxml:include src="search.bxml"/>
-			<bxml:include src="stations_predefined.bxml"/>
+			<bxml:include bxml:id="searchUI" src="search.bxml"/>
+			<bxml:include bxml:id="genresUI" src="stations_predefined.bxml"/>
 		</TabPane>
 	</TablePane.Row>
-</TablePane>
+</local:StationCreateUI>

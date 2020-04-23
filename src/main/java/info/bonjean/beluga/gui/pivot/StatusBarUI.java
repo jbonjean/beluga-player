@@ -19,22 +19,26 @@
  */
 package info.bonjean.beluga.gui.pivot;
 
-import org.apache.pivot.wtk.Component;
+import org.apache.pivot.beans.BXML;
+import org.apache.pivot.beans.Bindable;
+import org.apache.pivot.collections.Map;
+import org.apache.pivot.util.Resources;
+import org.apache.pivot.wtk.ActivityIndicator;
+import org.apache.pivot.wtk.ImageView;
+import org.apache.pivot.wtk.Label;
+import org.apache.pivot.wtk.TablePane;
 
-public class Page {
-	private Component component;
-	private String name;
+import java.net.URL;
 
-	public Page(String name, Component component) {
-		this.name = name;
-		this.component = component;
-	}
+public class StatusBarUI extends TablePane implements Bindable {
+	@BXML
+	protected Label statusBarText;
+	@BXML
+	protected ImageView iconDisconnected;
+	@BXML
+	protected ActivityIndicator loader;
 
-	public Component getComponent() {
-		return component;
-	}
-
-	public String getName() {
-		return name;
+	@Override
+	public void initialize(Map<String, Object> namespace, URL location, Resources resources) {
 	}
 }

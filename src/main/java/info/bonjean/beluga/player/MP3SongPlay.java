@@ -29,11 +29,15 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.net.MalformedURLException;
 
-public class MP3Player extends AudioPlayer {
-	private static final Logger log = LoggerFactory.getLogger(MP3Player.class);
+public class MP3SongPlay extends SongPlay {
+	private static final Logger log = LoggerFactory.getLogger(MP3SongPlay.class);
 
 	private Bitstream bitstream;
 	private Decoder decoder;
+
+	public MP3SongPlay(AudioDeviceManager audioDeviceManager) {
+		super(audioDeviceManager);
+	}
 
 	@Override
 	public void loadSong(String url)

@@ -21,36 +21,18 @@ package info.bonjean.beluga.gui;
 
 import info.bonjean.beluga.configuration.BelugaConfiguration;
 import info.bonjean.beluga.gui.pivot.MainWindow;
-import info.bonjean.beluga.gui.pivot.core.BelugaFillPaneSkin;
-import info.bonjean.beluga.gui.pivot.core.BelugaMenuButtonSkin;
-import info.bonjean.beluga.gui.pivot.core.BelugaSplitPaneSkin;
-import info.bonjean.beluga.gui.pivot.core.BelugaSuggestionPopupSkin;
-import info.bonjean.beluga.gui.pivot.core.BelugaTextInputSkin;
-import info.bonjean.beluga.gui.pivot.core.FixedTerraLinkButtonSkin;
+import info.bonjean.beluga.gui.pivot.core.*;
+import info.bonjean.beluga.util.ResourcesUtil;
+import org.apache.pivot.collections.Map;
+import org.apache.pivot.util.Resources;
+import org.apache.pivot.wtk.*;
 
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 
-import org.apache.pivot.beans.BXMLSerializer;
-import org.apache.pivot.collections.Map;
-import org.apache.pivot.util.Resources;
-import org.apache.pivot.wtk.Application;
-import org.apache.pivot.wtk.Button;
-import org.apache.pivot.wtk.Component;
-import org.apache.pivot.wtk.DesktopApplicationContext;
-import org.apache.pivot.wtk.Display;
-import org.apache.pivot.wtk.FillPane;
-import org.apache.pivot.wtk.LinkButton;
-import org.apache.pivot.wtk.MenuButton;
-import org.apache.pivot.wtk.SplitPane;
-import org.apache.pivot.wtk.SuggestionPopup;
-import org.apache.pivot.wtk.TextInput;
-import org.apache.pivot.wtk.Theme;
-import org.apache.pivot.wtk.Window;
-
 public class PivotUI implements Application {
-	private Window window = null;
 	public static final String BXML_PATH = "/bxml/";
+	private Window window = null;
 
 	public static void startDesktopUI() {
 		try {
@@ -78,13 +60,13 @@ public class PivotUI implements Application {
 	public static void enableComponent(Component component, boolean enabled) {
 		if (component instanceof Button) {
 			Button button = (Button) component;
-			// sync action to prevent the inconsistent exception
+			// Sync action state to prevent inconsistent exceptions.
 			if (button.getAction() != null)
 				button.getAction().setEnabled(enabled);
 
 			button.setEnabled(enabled);
 
-			// re-enable the action, it could be used by other buttons!
+			// Re-enable the action, it could be used by other buttons.
 			if (button.getAction() != null)
 				button.getAction().setEnabled(true);
 		} else
@@ -93,9 +75,8 @@ public class PivotUI implements Application {
 
 	@Override
 	public void startup(Display display, Map<String, String> properties) throws Exception {
-		BXMLSerializer bxmlSerializer = new BXMLSerializer();
-		window = (Window) bxmlSerializer.readObject(MainWindow.class.getResource(BXML_PATH + "main.bxml"),
-				new Resources("i18n.messages"));
+		window = (Window) ResourcesUtil.getBXMLSerializer()
+				.readObject(MainWindow.class.getResource(BXML_PATH + "main.bxml"), new Resources("i18n.messages"));
 		window.open(display);
 	}
 
@@ -104,7 +85,6 @@ public class PivotUI implements Application {
 		if (window != null) {
 			window.close();
 		}
-
 		return false;
 	}
 

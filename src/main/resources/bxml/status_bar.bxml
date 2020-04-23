@@ -1,0 +1,21 @@
+<local:StatusBarUI
+	xmlns:bxml="http://pivot.apache.org/bxml" xmlns:local="info.bonjean.beluga.gui.pivot"
+	xmlns="org.apache.pivot.wtk" xmlns:content="org.apache.pivot.wtk.content">
+	<columns>
+		<TablePane.Column width="-1" />
+		<TablePane.Column width="-1" />
+		<TablePane.Column width="1*" />
+		<TablePane.Column width="-1" />
+	</columns>
+	<TablePane.Row height="15">
+		<ActivityIndicator bxml:id="loader"
+			preferredWidth="15" preferredHeight="15" active="true" visible="false" />
+		<ImageView bxml:id="icon" preferredWidth="7"
+			preferredHeight="7" styles="{fill:true}" visible="false" />
+		<Label bxml:id="statusBarText"
+			styles="{verticalAlignment:'center',padding:{left:5}}" />
+		<ImageView bxml:id="iconDisconnected"
+			tooltipText="%disconnected" tooltipDelay="200" preferredWidth="14"
+			preferredHeight="14" styles="{fill:true}" image="$disconnectedImagePath" />
+	</TablePane.Row>
+</local:StatusBarUI>

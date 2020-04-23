@@ -37,7 +37,8 @@ public enum Property {
 	NOTIFICATIONS_STYLE("notifications.style"),
 	STATIONS_ORDER_BY("stations.order.by"),
 	WINDOW_RESTORE("window.restore"),
-	AUDIO_QUALITY("audio.quality");
+	AUDIO_QUALITY("audio.quality"),
+	THEME("theme");
 
 	private final String key;
 

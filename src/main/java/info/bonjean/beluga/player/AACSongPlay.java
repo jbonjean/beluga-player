@@ -33,12 +33,16 @@ import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
-public class AACPlayer extends AudioPlayer {
-	private static final Logger log = LoggerFactory.getLogger(AACPlayer.class);
+public class AACSongPlay extends SongPlay {
+	private static final Logger log = LoggerFactory.getLogger(AACSongPlay.class);
 
 	private Decoder decoder;
 	private AudioTrack track;
 	private volatile long position;
+
+	public AACSongPlay(AudioDeviceManager audioDeviceManager) {
+		super(audioDeviceManager);
+	}
 
 	@Override
 	public void loadSong(String url) throws Exception {

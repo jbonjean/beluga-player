@@ -166,9 +166,9 @@ public final class StatusBarAppender extends AbstractAppender {
 				if (message != null) {
 					statusBarText.setText(message);
 					if (level.isMoreSpecificThan(Level.ERROR))
-						statusBarText.getStyles().put("color", "#ff0000");
+						statusBarText.getStyles().put("color", 21);
 					else
-						statusBarText.getStyles().put("color", "#000000");
+						statusBarText.getStyles().put("color", 0);
 				}
 			}
 		}, false);

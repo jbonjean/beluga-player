@@ -22,19 +22,17 @@ package info.bonjean.beluga.gui.pivot;
 import info.bonjean.beluga.configuration.AudioQuality;
 import info.bonjean.beluga.configuration.BelugaConfiguration;
 import info.bonjean.beluga.configuration.ConnectionType;
-import java.net.URL;
+import info.bonjean.beluga.configuration.Theme;
 import org.apache.pivot.beans.BXML;
 import org.apache.pivot.beans.Bindable;
 import org.apache.pivot.collections.EnumList;
 import org.apache.pivot.collections.List;
 import org.apache.pivot.collections.Map;
 import org.apache.pivot.util.Resources;
-import org.apache.pivot.wtk.Checkbox;
-import org.apache.pivot.wtk.ListButton;
-import org.apache.pivot.wtk.PushButton;
-import org.apache.pivot.wtk.TablePane;
-import org.apache.pivot.wtk.TextInput;
+import org.apache.pivot.wtk.*;
 import org.apache.pivot.wtk.content.ListItem;
+
+import java.net.URL;
 
 public class PreferencesUI extends TablePane implements Bindable {
 	@BXML
@@ -64,13 +62,15 @@ public class PreferencesUI extends TablePane implements Bindable {
 	@BXML
 	protected Checkbox adsEnableSilentCheckbox;
 	@BXML
-	protected PushButton submitButton;
+	protected ListButton theme;
 	@BXML
 	protected ListButton notificationsStyle;
 	@BXML
 	protected ListButton stationsOrderBy;
 	@BXML
 	protected Checkbox windowRestoreCheckbox;
+	@BXML
+	protected PushButton submitButton;
 
 	private final BelugaConfiguration configuration = BelugaConfiguration.getInstance();
 
@@ -107,5 +107,7 @@ public class PreferencesUI extends TablePane implements Bindable {
 		setListButtonSelected(notificationsStyle, configuration.getNotificationsStyle());
 		setListButtonSelected(stationsOrderBy, configuration.getStationsOrderBy());
 		windowRestoreCheckbox.setSelected(configuration.getWindowRestoreEnabled());
+		theme.setListData(new EnumList(Theme.class));
+		theme.setSelectedItem(configuration.getTheme());
 	}
 }

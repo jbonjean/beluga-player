@@ -29,9 +29,8 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.locks.ReentrantLock;
 
-public class AudioDevice {
-	private static final Logger log = LoggerFactory.getLogger(AudioDevice.class);
-	private static final AudioDevice INSTANCE = new AudioDevice();
+public class AudioDeviceManager {
+	private static final Logger log = LoggerFactory.getLogger(AudioDeviceManager.class);
 
 	float sampleRate;
 	float sampleSizeInBits;
@@ -46,13 +45,6 @@ public class AudioDevice {
 	private BufferQueue bufferQueue;
 	private byte[] zeroBuffer;
 	private volatile boolean shutdown;
-
-	private AudioDevice() {
-	}
-
-	public static AudioDevice getInstance() {
-		return INSTANCE;
-	}
 
 	private void init(float sampleRate, int sampleSizeInBits, int channels, boolean signed, boolean bigEndian)
 			throws InternalException {

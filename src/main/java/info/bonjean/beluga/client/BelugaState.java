@@ -19,7 +19,6 @@
  */
 package info.bonjean.beluga.client;
 
-import info.bonjean.beluga.gui.pivot.Page;
 import info.bonjean.beluga.response.Bookmarks;
 import info.bonjean.beluga.response.Song;
 import info.bonjean.beluga.response.Station;
@@ -39,7 +38,6 @@ public class BelugaState {
 	private Song song;
 	private Bookmarks bookmarks;
 
-	private Page page;
 	private String version;
 
 	Set<String> errors = new HashSet<String>();
@@ -119,13 +117,5 @@ public class BelugaState {
 
 	public void setVersion(String version) {
 		this.version = version;
-	}
-
-	public Page getPage() {
-		return page;
-	}
-
-	public void setPage(Page page) {
-		this.page = page;
 	}
 }
