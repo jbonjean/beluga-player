@@ -30,7 +30,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: ${{ github.ref }}
-          release_name: Beluga Player ${{ github.ref }}
+          release_name: Beluga Player ${{ steps.get_version.outputs.VERSION }}
           draft: true
           prerelease: false
       - name: Upload jar
@@ -40,7 +40,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: dist/beluga-player-${{ github.ref }}.jar
+          asset_path: dist/beluga-player-${{ steps.get_version.outputs.VERSION }}.jar
           asset_name: beluga-player-${{ steps.get_version.outputs.VERSION }}.jar
           asset_content_type: application/octet-stream
       - name: Upload deb
@@ -50,7 +50,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: dist/beluga-player_${{ github.ref }}_all.deb
+          asset_path: dist/beluga-player_${{ steps.get_version.outputs.VERSION }}_all.deb
           asset_name: beluga-player_${{ steps.get_version.outputs.VERSION }}_all.deb
           asset_content_type: application/octet-stream
 
