@@ -19,6 +19,7 @@
  */
 package info.bonjean.beluga.gui.pivot;
 
+import org.apache.pivot.beans.BXML;
 import org.apache.pivot.beans.Bindable;
 import org.apache.pivot.collections.Map;
 import org.apache.pivot.util.Resources;
@@ -27,7 +28,9 @@ import org.apache.pivot.wtk.TablePane;
 import java.net.URL;
 
 public class StationCreateUI extends TablePane implements Bindable {
+	@BXML
 	protected SearchUI searchUI;
+	@BXML
 	protected GenresUI genresUI;
 
 	@Override
