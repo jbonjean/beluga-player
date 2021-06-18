@@ -25,7 +25,7 @@ import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
 
-import javax.xml.bind.DatatypeConverter;
+import jakarta.xml.bind.DatatypeConverter;
 
 public class DataConnection extends URLConnection {
 
