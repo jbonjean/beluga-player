@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2020 Julien Bonjean <julien@bonjean.info>
+ * Copyright (C) 2012-2021 Julien Bonjean <julien@bonjean.info>
  *
  * This file is part of Beluga Player.
  *
