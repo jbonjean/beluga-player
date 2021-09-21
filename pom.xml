@@ -291,6 +291,11 @@
 			<artifactId>jakarta.xml.bind-api</artifactId>
 			<version>${jakarta-xml-bind.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>org.openjdk.nashorn</groupId>
+			<artifactId>nashorn-core</artifactId>
+			<version>15.3</version>
+		</dependency>
 	</dependencies>
 	<repositories>
 		<repository>
