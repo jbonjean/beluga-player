@@ -7,8 +7,6 @@
 
 	<TablePane.Row height="-1">
 		<BoxPane styles="{verticalAlignment:'center',horizontalAlignment:'center',padding:{bottom:15}}">
-			<ImageView image="$password" preferredWidth="25"
-				preferredHeight="25" styles="{fill:true}" />
 			<Label bxml:id="belugaVersion" styles="{font:{bold:true,size:16}}" />
 		</BoxPane>
 	</TablePane.Row>
