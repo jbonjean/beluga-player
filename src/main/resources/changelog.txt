@@ -1,3 +1,9 @@
+Beluga Player 0.15
+
+* Fix support for recent Java versions
+* Fix search
+* Fix about dialog
+
 Beluga Player 0.14
 
 * Add dark theme
