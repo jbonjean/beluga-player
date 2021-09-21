@@ -23,6 +23,7 @@ import info.bonjean.beluga.configuration.DNSProxy;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -57,7 +58,7 @@ public class BelugaDNSResolver implements DnsResolver {
 		try {
 			resolver = new ExtendedResolver(
 					new String[] { dnsProxy.getPrimaryServer(), dnsProxy.getSecondaryServer() });
-			resolver.setTimeout(TIMEOUT_SECONDS);
+			resolver.setTimeout(Duration.ofSeconds(TIMEOUT_SECONDS));
 			resolver.setRetries(MAX_RETRIES);
 		} catch (UnknownHostException e) {
 			// XXX

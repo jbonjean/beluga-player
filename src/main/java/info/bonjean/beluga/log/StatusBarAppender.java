@@ -52,7 +52,7 @@ public final class StatusBarAppender extends AbstractAppender {
 
 	protected StatusBarAppender(String name, Filter filter, Layout<? extends Serializable> layout,
 			boolean ignoreExceptions) {
-		super(name, filter, layout, ignoreExceptions);
+		super(name, filter, layout, ignoreExceptions, null);
 		instance = this;
 	}
 

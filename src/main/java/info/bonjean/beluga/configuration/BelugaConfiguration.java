@@ -182,7 +182,7 @@ public class BelugaConfiguration {
 		if (stringValue == null || stringValue.isEmpty())
 			return defaultValue;
 
-		return new Integer(stringValue);
+		return Integer.valueOf(stringValue);
 	}
 
 	private Boolean getBoolean(Property property, Boolean defaultValue) {
@@ -190,7 +190,7 @@ public class BelugaConfiguration {
 		if (stringValue == null || stringValue.isEmpty())
 			return defaultValue;
 
-		return new Boolean(stringValue);
+		return Boolean.valueOf(stringValue);
 	}
 
 	public String getUserName() {
